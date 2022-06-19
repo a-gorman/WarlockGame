@@ -79,43 +79,38 @@ namespace NeonShooter
 				}
 
 			// handle collisions between bullets and enemies
-			for (int i = 0; i < _enemies.Count; i++)
-				for (int j = 0; j < _bullets.Count; j++)
-				{
-					if (IsColliding(_enemies[i], _bullets[j]))
-					{
-						_enemies[i].WasShot();
-						_bullets[j].IsExpired = true;
-					}
-				}
-
-			// handle collisions between the player and enemies
-			for (int i = 0; i < _enemies.Count; i++)
+			foreach (var enemy in _enemies)
 			{
-				if (_enemies[i].IsActive && IsColliding(PlayerShip.Instance, _enemies[i]))
+				foreach (var bullet in _bullets.Where(bullet => IsColliding(enemy, bullet)))
 				{
-					KillPlayer();
-					break;
+					enemy.WasShot();
+					bullet.IsExpired = true;
 				}
 			}
 
-			// handle collisions with black holes
-			for (int i = 0; i < _blackHoles.Count; i++)
+			// handle collisions between the player and enemies
+			if (_enemies.Any(x => x.IsActive && IsColliding(x, PlayerShip.Instance)))
 			{
-				for (int j = 0; j < _enemies.Count; j++)
-					if (_enemies[j].IsActive && IsColliding(_blackHoles[i], _enemies[j]))
-						_enemies[j].WasShot();
+				KillPlayer();
+			}
 
-				for (int j = 0; j < _bullets.Count; j++)
+			// handle collisions with black holes
+			foreach (var blackHole in _blackHoles)
+			{
+				foreach (var enemy in _enemies)
+					if (enemy.IsActive && IsColliding(blackHole, enemy))
+						enemy.WasShot();
+
+				foreach (var bullet in _bullets)
 				{
-					if (IsColliding(_blackHoles[i], _bullets[j]))
+					if (IsColliding(blackHole, bullet))
 					{
-						_bullets[j].IsExpired = true;
-						_blackHoles[i].WasShot();
+						bullet.IsExpired = true;
+						blackHole.WasShot();
 					}
 				}
 
-				if (IsColliding(PlayerShip.Instance, _blackHoles[i]))
+				if (IsColliding(PlayerShip.Instance, blackHole))
 				{
 					KillPlayer();
 					break;
