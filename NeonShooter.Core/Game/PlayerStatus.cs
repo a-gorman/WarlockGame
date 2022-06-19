@@ -17,7 +17,7 @@ namespace NeonShooter
 		public static int Score { get; private set; }
 		public static int HighScore { get; private set; }
 		public static int Multiplier { get; private set; }
-		public static bool IsGameOver { get { return Lives == 0; } }
+		public static bool IsGameOver => Lives == 0;
 
 		private static float _multiplierTimeLeft;	// time until the current multiplier expires
 		private static int _scoreForExtraLife;		// score required to gain an extra life

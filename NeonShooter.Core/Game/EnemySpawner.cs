@@ -10,7 +10,7 @@ namespace NeonShooter
 {
 	internal static class EnemySpawner
 	{
-		private static readonly Random _rand = new Random();
+		private static readonly Random _rand = new();
 		private static float _inverseSpawnChance = 90;
 		private static readonly float _inverseBlackHoleChance = 600;
 

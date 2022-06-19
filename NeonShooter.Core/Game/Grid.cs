@@ -204,7 +204,7 @@ namespace NeonShooter
 			{
 				for (int x = 1; x < width; x++)
 				{
-					Vector2 left = new Vector2(), up = new Vector2();
+					Vector2 left = new(), up = new();
 					Vector2 p = ToVec2(_points[x, y].Position);
 					if (x > 1)
 					{

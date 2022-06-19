@@ -12,18 +12,18 @@ namespace NeonShooter
 {
 	internal static class EntityManager
 	{
-		private static List<Entity> _entities = new List<Entity>();
-		private static List<Enemy> _enemies = new List<Enemy>();
-		private static List<Bullet> _bullets = new List<Bullet>();
-		private static List<BlackHole> _blackHoles = new List<BlackHole>();
+		private static List<Entity> _entities = new();
+		private static List<Enemy> _enemies = new();
+		private static List<Bullet> _bullets = new();
+		private static List<BlackHole> _blackHoles = new();
 
-		public static IEnumerable<BlackHole> BlackHoles { get { return _blackHoles; } }
+		public static IEnumerable<BlackHole> BlackHoles => _blackHoles;
 
 		private static bool _isUpdating;
-		private static readonly List<Entity> _addedEntities = new List<Entity>();
+		private static readonly List<Entity> _addedEntities = new();
 
-		public static int Count { get { return _entities.Count; } }
-		public static int BlackHoleCount { get { return _blackHoles.Count; } }
+		public static int Count => _entities.Count;
+		public static int BlackHoleCount => _blackHoles.Count;
 
 		public static void Add(Entity entity)
 		{

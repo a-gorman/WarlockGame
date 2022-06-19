@@ -17,7 +17,7 @@ namespace NeonShooter
 
 		private static bool _isAimingWithMouse = false;
 
-		public static Vector2 MousePosition { get { return new Vector2(_mouseState.X, _mouseState.Y); } }
+		public static Vector2 MousePosition => new Vector2(_mouseState.X, _mouseState.Y);
 
 		public static void Update()
 		{

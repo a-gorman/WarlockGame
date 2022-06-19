@@ -15,17 +15,17 @@ namespace NeonShooter
 	{
 		public static Song Music { get; private set; }
 
-		private static readonly Random Rand = new Random();
+		private static readonly Random Rand = new();
 
 		private static SoundEffect[] _explosions;
 		// return a random explosion sound
-		public static SoundEffect Explosion { get { return _explosions[Rand.Next(_explosions.Length)]; } }
+		public static SoundEffect Explosion => _explosions[Rand.Next(_explosions.Length)];
 
 		private static SoundEffect[] _shots;
-		public static SoundEffect Shot { get { return _shots[Rand.Next(_shots.Length)]; } }
+		public static SoundEffect Shot => _shots[Rand.Next(_shots.Length)];
 
 		private static SoundEffect[] _spawns;
-		public static SoundEffect Spawn { get { return _spawns[Rand.Next(_spawns.Length)]; } }
+		public static SoundEffect Spawn => _spawns[Rand.Next(_spawns.Length)];
 
 		public static void Load(ContentManager content)
 		{

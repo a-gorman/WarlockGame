@@ -14,7 +14,7 @@ namespace NeonShooter
 {
 	internal class Bullet : Entity
 	{
-		private static readonly Random _rand = new Random();
+		private static readonly Random _rand = new();
 
 		public Bullet(Vector2 position, Vector2 velocity)
 		{

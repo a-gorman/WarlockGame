@@ -12,11 +12,11 @@ namespace NeonShooter
 {
 	internal class Enemy : Entity
 	{
-		public static Random Rand = new Random();
+		public static Random Rand = new();
 
-		private readonly List<IEnumerator<int>> _behaviours = new List<IEnumerator<int>>();
+		private readonly List<IEnumerator<int>> _behaviours = new();
 		private int _timeUntilStart = 60;
-		public bool IsActive { get { return _timeUntilStart <= 0; } }
+		public bool IsActive => _timeUntilStart <= 0;
 		public int PointValue { get; private set; }
 
 		public Enemy(Texture2D image, Vector2 position)

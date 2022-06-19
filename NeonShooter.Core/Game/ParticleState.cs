@@ -16,7 +16,7 @@ namespace NeonShooter
 		public ParticleType Type;
 		public float LengthMultiplier;
 
-		private static readonly Random _rand = new Random();
+		private static readonly Random _rand = new();
 
 		public ParticleState(Vector2 velocity, ParticleType type, float lengthMultiplier = 1f)
 		{
