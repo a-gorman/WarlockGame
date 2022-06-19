@@ -36,12 +36,12 @@ namespace NeonShooter
 		private static void AddEntity(Entity entity)
 		{
 			_entities.Add(entity);
-			if (entity is Bullet)
-				_bullets.Add(entity as Bullet);
-			else if (entity is Enemy)
-				_enemies.Add(entity as Enemy);
-			else if (entity is BlackHole)
-				_blackHoles.Add(entity as BlackHole);
+			if (entity is Bullet bullet)
+				_bullets.Add(bullet);
+			else if (entity is Enemy enemy)
+				_enemies.Add(enemy);
+			else if (entity is BlackHole hole)
+				_blackHoles.Add(hole);
 		}
 
 		public static void Update()
