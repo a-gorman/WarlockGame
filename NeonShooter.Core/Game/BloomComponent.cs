@@ -34,8 +34,8 @@ namespace BloomPostprocess
         // Choose what display settings the bloom should use.
         public BloomSettings Settings
         {
-            get { return _settings; }
-            set { _settings = value; }
+            get => _settings;
+            set => _settings = value;
         }
 
         private BloomSettings _settings = BloomSettings.PresetSettings[0];
@@ -54,8 +54,8 @@ namespace BloomPostprocess
 
         public IntermediateBuffer ShowBuffer
         {
-            get { return _showBuffer; }
-            set { _showBuffer = value; }
+            get => _showBuffer;
+            set => _showBuffer = value;
         }
 
         private IntermediateBuffer _showBuffer = IntermediateBuffer.FinalResult;

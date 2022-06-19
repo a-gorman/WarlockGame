@@ -27,9 +27,9 @@ namespace NeonShooter
 		private int _cooldowmRemaining = 0;
 
 		private int _framesUntilRespawn = 0;
-		public bool IsDead { get { return _framesUntilRespawn > 0; } }
+		public bool IsDead => _framesUntilRespawn > 0;
 
-		private static readonly Random _rand = new Random();
+		private static readonly Random _rand = new();
 
 		private PlayerShip()
 		{

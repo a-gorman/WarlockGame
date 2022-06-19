@@ -115,10 +115,7 @@ namespace NeonShooter
 			_particleList.Count = 0;
 		}
 
-		public int ParticleCount
-		{
-			get { return _particleList.Count; }
-		}
+		public int ParticleCount => _particleList.Count;
 
 		public class Particle
 		{
@@ -141,12 +138,12 @@ namespace NeonShooter
 			private int _start;
 			public int Start
 			{
-				get { return _start; }
-				set { _start = value % _list.Length; }
+				get => _start;
+				set => _start = value % _list.Length;
 			}
 
 			public int Count { get; set; }
-			public int Capacity { get { return _list.Length; } }
+			public int Capacity => _list.Length;
 			private readonly Particle[] _list;
 
 			public CircularParticleArray() { }  // for serialization
@@ -158,8 +155,8 @@ namespace NeonShooter
 
 			public Particle this[int i]
 			{
-				get { return _list[(_start + i) % _list.Length]; }
-				set { _list[(_start + i) % _list.Length] = value; }
+				get => _list[(_start + i) % _list.Length];
+				set => _list[(_start + i) % _list.Length] = value;
 			}
 		}
 	}

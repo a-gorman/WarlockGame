@@ -14,9 +14,9 @@ namespace NeonShooter
     {
 		// some helpful static properties
 		public static NeonShooterGame Instance { get; private set; }
-		public static Viewport Viewport { get { return Instance.GraphicsDevice.Viewport; } }
-		public static Vector2 ScreenSize { get { return new Vector2(Viewport.Width, Viewport.Height); } }
-		public static GameTime GameTime { get; private set; }
+		public static Viewport Viewport => Instance.GraphicsDevice.Viewport;
+        public static Vector2 ScreenSize => new Vector2(Viewport.Width, Viewport.Height);
+        public static GameTime GameTime { get; private set; }
 		public static ParticleManager<ParticleState> ParticleManager { get; private set; }
 		public static Grid Grid { get; private set; }
 
