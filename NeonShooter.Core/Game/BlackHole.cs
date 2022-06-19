@@ -11,7 +11,7 @@ namespace NeonShooter
 {
 	internal class BlackHole : Entity
 	{
-		private static Random _rand = new Random();
+		private static readonly Random _rand = new Random();
 
 		private int _hitpoints = 10;
 		private float _sprayAngle = 0;
