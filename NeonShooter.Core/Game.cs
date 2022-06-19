@@ -20,9 +20,9 @@ namespace NeonShooter
 		public static ParticleManager<ParticleState> ParticleManager { get; private set; }
 		public static Grid Grid { get; private set; }
 
-        private GraphicsDeviceManager _graphics;
+        private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private BloomComponent _bloom;
+        private readonly BloomComponent _bloom;
 
         private bool _paused = false;
 

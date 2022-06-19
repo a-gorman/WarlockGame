@@ -12,8 +12,8 @@ namespace NeonShooter
     public class ParticleManager<T>
 	{
 		// This delegate will be called for each particle.
-		private Action<Particle> _updateParticle;
-		private CircularParticleArray _particleList;
+		private readonly Action<Particle> _updateParticle;
+		private readonly CircularParticleArray _particleList;
 
 		/// <summary>
 		/// Allows creation of particles.
@@ -147,7 +147,7 @@ namespace NeonShooter
 
 			public int Count { get; set; }
 			public int Capacity { get { return _list.Length; } }
-			private Particle[] _list;
+			private readonly Particle[] _list;
 
 			public CircularParticleArray() { }  // for serialization
 

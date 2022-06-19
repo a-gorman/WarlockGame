@@ -16,7 +16,7 @@ namespace NeonShooter
 		{
 			public Vector3 Position;
 			public Vector3 Velocity;
-			public float InverseMass;
+			public readonly float InverseMass;
 
 			private Vector3 _acceleration;
 			private float _damping = 0.98f;
@@ -52,11 +52,11 @@ namespace NeonShooter
 
 		private struct Spring
 		{
-			public PointMass End1;
-			public PointMass End2;
-			public float TargetLength;
-			public float Stiffness;
-			public float Damping;
+			public readonly PointMass End1;
+			public readonly PointMass End2;
+			public readonly float TargetLength;
+			public readonly float Stiffness;
+			public readonly float Damping;
 
 			public Spring(PointMass end1, PointMass end2, float stiffness, float damping)
 			{
@@ -85,8 +85,8 @@ namespace NeonShooter
 			}
 		}
 
-		private Spring[] _springs;
-		private PointMass[,] _points;
+		private readonly Spring[] _springs;
+		private readonly PointMass[,] _points;
 		private Vector2 _screenSize;
 
 		public Grid(Rectangle size, Vector2 spacing)

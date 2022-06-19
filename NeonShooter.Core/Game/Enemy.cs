@@ -14,7 +14,7 @@ namespace NeonShooter
 	{
 		public static Random Rand = new Random();
 
-		private List<IEnumerator<int>> _behaviours = new List<IEnumerator<int>>();
+		private readonly List<IEnumerator<int>> _behaviours = new List<IEnumerator<int>>();
 		private int _timeUntilStart = 60;
 		public bool IsActive { get { return _timeUntilStart <= 0; } }
 		public int PointValue { get; private set; }

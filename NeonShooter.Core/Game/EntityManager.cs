@@ -20,7 +20,7 @@ namespace NeonShooter
 		public static IEnumerable<BlackHole> BlackHoles { get { return _blackHoles; } }
 
 		private static bool _isUpdating;
-		private static List<Entity> _addedEntities = new List<Entity>();
+		private static readonly List<Entity> _addedEntities = new List<Entity>();
 
 		public static int Count { get { return _entities.Count; } }
 		public static int BlackHoleCount { get { return _blackHoles.Count; } }
