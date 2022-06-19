@@ -29,7 +29,7 @@ namespace NeonShooter
 
 			foreach (var entity in entities)
 			{
-				if (entity is Enemy && !(entity as Enemy).IsActive)
+				if (entity is Enemy enemy && !enemy.IsActive)
 					continue;
 
 				// bullets are repelled by black holes and everything else is attracted
