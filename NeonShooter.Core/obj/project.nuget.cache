@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "VGsyQM3QEdfMRKpY8hO/XKWTxrgnopz3Is/JbG30JdjYCLVYvO9bm6cJQLGRLxPUrtnYWBhaa7BdQsBnKDyqRQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Alex\\RiderProjects\\Monogame\\NeonShooter.Core\\NeonShooter.Core.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Alex\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.0.1641\\monogame.framework.desktopgl.3.8.0.1641.nupkg.sha512"
+  ],
+  "logs": []
+}

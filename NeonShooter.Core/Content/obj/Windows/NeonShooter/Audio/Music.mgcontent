@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/Alex/RiderProjects/Monogame/NeonShooter.Core/Content/Audio/Music.mp3</SourceFile>
+  <SourceTime>2022-06-18T19:28:54.177107-07:00</SourceTime>
+  <DestFile>C:/Users/Alex/RiderProjects/Monogame/NeonShooter.Core/Content/bin/Windows/NeonShooter/Audio/Music.xnb</DestFile>
+  <DestTime>2022-06-18T19:30:44.1231825-07:00</DestTime>
+  <Importer>Mp3Importer</Importer>
+  <ImporterTime>2020-08-10T09:17:54-07:00</ImporterTime>
+  <Processor>SongProcessor</Processor>
+  <ProcessorTime>2020-08-10T09:17:54-07:00</ProcessorTime>
+  <Parameters>
+    <Key>Quality</Key>
+    <Value>Best</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput>
+    <string>C:/Users/Alex/RiderProjects/Monogame/NeonShooter.Core/Content/bin/Windows/NeonShooter/Audio/Music.wma</string>
+  </BuildOutput>
+</PipelineBuildEvent>
