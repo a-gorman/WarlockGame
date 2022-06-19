@@ -1,0 +1,12 @@
+C:\Users\Alex\RiderProjects\Monogame\NeonShooter.Core\bin\Debug\net6.0-windows\NeonShooter.Core.deps.json
+C:\Users\Alex\RiderProjects\Monogame\NeonShooter.Core\bin\Debug\net6.0-windows\NeonShooter.Core.dll
+C:\Users\Alex\RiderProjects\Monogame\NeonShooter.Core\bin\Debug\net6.0-windows\ref\NeonShooter.Core.dll
+C:\Users\Alex\RiderProjects\Monogame\NeonShooter.Core\bin\Debug\net6.0-windows\NeonShooter.Core.pdb
+C:\Users\Alex\RiderProjects\Monogame\NeonShooter.Core\obj\Debug\net6.0-windows\NeonShooter.Core.csproj.AssemblyReference.cache
+C:\Users\Alex\RiderProjects\Monogame\NeonShooter.Core\obj\Debug\net6.0-windows\NeonShooter.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Alex\RiderProjects\Monogame\NeonShooter.Core\obj\Debug\net6.0-windows\NeonShooter.Core.AssemblyInfoInputs.cache
+C:\Users\Alex\RiderProjects\Monogame\NeonShooter.Core\obj\Debug\net6.0-windows\NeonShooter.Core.AssemblyInfo.cs
+C:\Users\Alex\RiderProjects\Monogame\NeonShooter.Core\obj\Debug\net6.0-windows\NeonShooter.Core.csproj.CoreCompileInputs.cache
+C:\Users\Alex\RiderProjects\Monogame\NeonShooter.Core\obj\Debug\net6.0-windows\NeonShooter.Core.dll
+C:\Users\Alex\RiderProjects\Monogame\NeonShooter.Core\obj\Debug\net6.0-windows\ref\NeonShooter.Core.dll
+C:\Users\Alex\RiderProjects\Monogame\NeonShooter.Core\obj\Debug\net6.0-windows\NeonShooter.Core.pdb
