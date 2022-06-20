@@ -3,10 +3,10 @@
 // Find the full tutorial at: http://gamedev.tutsplus.com/series/vector-shooter-xna/
 //----------------------------------------------------------------------------------
 
-using Microsoft.Xna.Framework;
 using System;
+using Microsoft.Xna.Framework;
 
-namespace NeonShooter
+namespace NeonShooter.Core.Game
 {
     public enum ParticleType { None, Enemy, Bullet, IgnoreGravity }
 
@@ -27,12 +27,12 @@ namespace NeonShooter
 
 		public static ParticleState GetRandom(float minVel, float maxVel)
 		{
-			var state = new ParticleState();
-			state.Velocity = _rand.NextVector2(minVel, maxVel);
-			state.Type = ParticleType.None;
-			state.LengthMultiplier = 1;
-
-			return state;
+			return new ParticleState
+			{
+				Velocity = _rand.NextVector2(minVel, maxVel),
+				Type = ParticleType.None,
+				LengthMultiplier = 1
+			};
 		}
 
 		public static void UpdateParticle(ParticleManager<ParticleState>.Particle particle)

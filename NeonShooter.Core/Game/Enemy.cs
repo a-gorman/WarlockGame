@@ -3,12 +3,12 @@
 // Find the full tutorial at: http://gamedev.tutsplus.com/series/vector-shooter-xna/
 //----------------------------------------------------------------------------------
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
-namespace NeonShooter
+namespace NeonShooter.Core.Game
 {
 	internal class Enemy : Entity
 	{
@@ -19,9 +19,9 @@ namespace NeonShooter
 		public bool IsActive => _timeUntilStart <= 0;
 		public int PointValue { get; private set; }
 
-		public Enemy(Texture2D image, Vector2 position)
+		public Enemy(Texture2D? image, Vector2 position)
 		{
-			this.Image = image;
+			Image = image;
 			Position = position;
 			Radius = image.Width / 2f;
 			Color = Color.Transparent;

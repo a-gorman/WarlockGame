@@ -3,13 +3,13 @@
 // Find the full tutorial at: http://gamedev.tutsplus.com/series/vector-shooter-xna/
 //----------------------------------------------------------------------------------
 
+using System;
+using System.Linq;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Media;
-using System;
-using System.Linq;
 
-namespace NeonShooter
+namespace NeonShooter.Core.Game
 {
 	internal static class Sound
 	{

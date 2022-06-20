@@ -5,7 +5,7 @@
 
 using System.IO;
 
-namespace NeonShooter
+namespace NeonShooter.Core.Game
 {
 	internal static class PlayerStatus
 	{

@@ -3,10 +3,10 @@
 // Find the full tutorial at: http://gamedev.tutsplus.com/series/vector-shooter-xna/
 //----------------------------------------------------------------------------------
 
-using Microsoft.Xna.Framework;
 using System;
+using Microsoft.Xna.Framework;
 
-namespace NeonShooter
+namespace NeonShooter.Core.Game
 {
 	internal static class ColorUtil
 	{

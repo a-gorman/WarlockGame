@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------------
 #endregion
 
-namespace BloomPostprocess
+namespace NeonShooter.Core.Game
 {
     /// <summary>
     /// Class holds all the settings used to tweak the bloom effect.
