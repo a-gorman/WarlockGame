@@ -8,13 +8,14 @@
 #endregion
 
 #region Using Statements
+
 using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+
 #endregion
 
-namespace BloomPostprocess
+namespace NeonShooter.Core.Game
 {
     public class BloomComponent : DrawableGameComponent
     {
@@ -32,13 +33,7 @@ namespace BloomPostprocess
 
 
         // Choose what display settings the bloom should use.
-        public BloomSettings Settings
-        {
-            get => _settings;
-            set => _settings = value;
-        }
-
-        private BloomSettings _settings = BloomSettings.PresetSettings[0];
+        public BloomSettings Settings { get; set; } = BloomSettings.PresetSettings[0];
 
 
         // Optionally displays one of the intermediate buffers used
@@ -66,11 +61,11 @@ namespace BloomPostprocess
         #region Initialization
 
 
-        public BloomComponent(Game game)
+        public BloomComponent(Microsoft.Xna.Framework.Game game)
             : base(game)
         {
             if (game == null)
-                throw new ArgumentNullException("game");
+                throw new ArgumentNullException(nameof(game));
         }
 
 
@@ -81,9 +76,9 @@ namespace BloomPostprocess
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _bloomExtractEffect = this.Game.Content.Load<Effect>("Shaders/BloomExtract");
-			_bloomCombineEffect = this.Game.Content.Load<Effect>("Shaders/BloomCombine");
-			_gaussianBlurEffect = this.Game.Content.Load<Effect>("Shaders/GaussianBlur");
+            _bloomExtractEffect = Game.Content.Load<Effect>("Shaders/BloomExtract");
+			_bloomCombineEffect = Game.Content.Load<Effect>("Shaders/BloomCombine");
+			_gaussianBlurEffect = Game.Content.Load<Effect>("Shaders/GaussianBlur");
 
             // Look up the resolution and format of our main backbuffer.
             PresentationParameters pp = GraphicsDevice.PresentationParameters;

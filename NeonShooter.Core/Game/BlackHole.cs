@@ -3,11 +3,11 @@
 // Find the full tutorial at: http://gamedev.tutsplus.com/series/vector-shooter-xna/
 //----------------------------------------------------------------------------------
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
-namespace NeonShooter
+namespace NeonShooter.Core.Game
 {
 	internal class BlackHole : Entity
 	{
@@ -29,18 +29,22 @@ namespace NeonShooter
 
 			foreach (var entity in entities)
 			{
-				if (entity is Enemy enemy && !enemy.IsActive)
-					continue;
-
-				// bullets are repelled by black holes and everything else is attracted
-				if (entity is Bullet)
-					entity.Velocity += (entity.Position - Position).ScaleTo(0.3f);
-				else
+				switch (entity)
 				{
-					var dPos = Position - entity.Position;
-					var length = dPos.Length();
+					case Enemy { IsActive: false }:
+						continue;
+					// bullets are repelled by black holes and everything else is attracted
+					case Bullet:
+						entity.Velocity += (entity.Position - Position).ScaleTo(0.3f);
+						break;
+					default:
+					{
+						var dPos = Position - entity.Position;
+						var length = dPos.Length();
 
-					entity.Velocity += dPos.ScaleTo(MathHelper.Lerp(2, 0, length / 250f));
+						entity.Velocity += dPos.ScaleTo(MathHelper.Lerp(2, 0, length / 250f));
+						break;
+					}
 				}
 			}
 

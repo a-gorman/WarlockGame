@@ -1,11 +1,11 @@
-using BloomPostprocess;
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using System;
+using NeonShooter.Core.Game;
 
-namespace NeonShooter
+namespace NeonShooter.Core
 {
     /// <summary>
     /// This is the main type for your game
@@ -43,7 +43,7 @@ namespace NeonShooter
 
         protected override void Initialize()
         {
-            this.Content.RootDirectory = "Content";
+            Content.RootDirectory = "Content";
 
             ParticleManager = new ParticleManager<ParticleState>(1024 * 20, ParticleState.UpdateParticle);
 
@@ -92,7 +92,7 @@ namespace NeonShooter
 
             // Allows the game to exit
             if (Input.WasButtonPressed(Buttons.Back) || Input.WasKeyPressed(Keys.Escape))
-                this.Exit();
+                Exit();
 
             if (Input.WasKeyPressed(Keys.P))
                 _paused = !_paused;

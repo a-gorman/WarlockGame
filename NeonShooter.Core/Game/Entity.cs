@@ -3,14 +3,14 @@
 // Find the full tutorial at: http://gamedev.tutsplus.com/series/vector-shooter-xna/
 //----------------------------------------------------------------------------------
 
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
-namespace NeonShooter
+namespace NeonShooter.Core.Game
 {
 	internal abstract class Entity
 	{
-		protected Texture2D Image;
+		protected Texture2D? Image;
 		// The tint of the image. This will also allow us to change the transparency.
 		protected Color Color = Color.White;	
 

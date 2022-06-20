@@ -3,11 +3,11 @@
 // Find the full tutorial at: http://gamedev.tutsplus.com/series/vector-shooter-xna/
 //----------------------------------------------------------------------------------
 
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System.Linq;
 
-namespace NeonShooter
+namespace NeonShooter.Core.Game
 {
 	internal static class Input
 	{

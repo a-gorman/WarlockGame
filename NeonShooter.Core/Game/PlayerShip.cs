@@ -3,11 +3,11 @@
 // Find the full tutorial at: http://gamedev.tutsplus.com/series/vector-shooter-xna/
 //----------------------------------------------------------------------------------
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
-namespace NeonShooter
+namespace NeonShooter.Core.Game
 {
 	internal class PlayerShip : Entity
 	{

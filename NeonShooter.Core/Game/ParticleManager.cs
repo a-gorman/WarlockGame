@@ -3,11 +3,11 @@
 // Find the full tutorial at: http://gamedev.tutsplus.com/series/vector-shooter-xna/
 //----------------------------------------------------------------------------------
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
-namespace NeonShooter
+namespace NeonShooter.Core.Game
 {
     public class ParticleManager<T>
 	{
@@ -22,7 +22,7 @@ namespace NeonShooter
 		/// <param name="updateParticle">A delegate that lets you specify custom behaviour for your particles. Called once per particle, per frame.</param>
 		public ParticleManager(int capacity, Action<Particle> updateParticle)
 		{
-			this._updateParticle = updateParticle;
+			_updateParticle = updateParticle;
 			_particleList = new CircularParticleArray(capacity);
 
 			// Populate the list with empty particle objects, for reuse.

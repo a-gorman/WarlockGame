@@ -1,4 +1,5 @@
 using System;
+using NeonShooter.Core;
 
 namespace NeonShooter.WindowsDX
 {
