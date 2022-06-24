@@ -47,6 +47,11 @@ namespace NeonShooter.Core.Game
 		{
 			return _mouseState.LeftButton == ButtonState.Pressed &&  _lastMouseState.LeftButton == ButtonState.Released;
 		}
+		
+		public static bool WasRightMousePressed()
+		{
+			return _mouseState.RightButton == ButtonState.Pressed &&  _lastMouseState.RightButton == ButtonState.Released;
+		}
 
 		public static bool WasButtonPressed(Buttons button)
 		{

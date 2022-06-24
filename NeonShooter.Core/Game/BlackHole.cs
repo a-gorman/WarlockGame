@@ -6,6 +6,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using NeonShooter.Core.Game.Display;
 
 namespace NeonShooter.Core.Game
 {
@@ -16,9 +17,8 @@ namespace NeonShooter.Core.Game
 		private int _hitpoints = 10;
 		private float _sprayAngle = 0;
 
-		public BlackHole(Vector2 position)
+		public BlackHole(Vector2 position) : base(new Sprite(Art.BlackHole))
 		{
-			_sprite = new Sprite(Art.BlackHole);
 			Position = position;
 			Radius = Art.BlackHole.Width / 2f;
 		}
