@@ -20,10 +20,10 @@ namespace NeonShooter.Core.Game
 			{
 				if (_rand.Next((int)_inverseSpawnChance) == 0)
 					EntityManager.Add(Enemy.CreateSeeker(GetSpawnPosition()));
-
+				
 				if (_rand.Next((int)_inverseSpawnChance) == 0)
 					EntityManager.Add(Enemy.CreateWanderer(GetSpawnPosition()));
-
+				
 				if (EntityManager.BlackHoleCount < 2 && _rand.Next((int)_inverseBlackHoleChance) == 0)
 					EntityManager.Add(new BlackHole(GetSpawnPosition()));
 			}

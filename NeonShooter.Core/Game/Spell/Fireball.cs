@@ -1,6 +1,8 @@
 using System;
 using System.Net.Mime;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using NeonShooter.Core.Game.Display;
 
 namespace NeonShooter.Core.Game.Spell;
 
@@ -8,9 +10,9 @@ internal class Fireball : Entity
 {
     private static readonly Random _rand = new();
 
-    public Fireball(Vector2 position, Vector2 velocity)
+    public Fireball(Vector2 position, Vector2 velocity) : 
+        base(Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10))
     {
-        _sprite = new Sprite(Art.Fireball);
         Position = position;
         Velocity = velocity;
         Orientation = Velocity.ToAngle();

@@ -6,6 +6,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using NeonShooter.Core.Game.Display;
 using NeonShooter.Core.Game.Spell;
 
 namespace NeonShooter.Core.Game
@@ -22,9 +23,9 @@ namespace NeonShooter.Core.Game
 
 		private static readonly Random _rand = new();
 
-		private PlayerShip()
+		private PlayerShip() :
+			base(new Sprite(Art.Player))
 		{
-			_sprite = new Sprite(Art.Player);
 			Position = NeonShooterGame.ScreenSize / 2;
 			Radius = 10;
 		}
@@ -48,11 +49,6 @@ namespace NeonShooter.Core.Game
 			
 			FireBullets();
 
-			if (Input.WasLeftMousePressed())
-			{
-				EntityManager.Add(new Fireball(Position, Velocity));
-			}
-
 			const float speed = 8;
 			Velocity += speed * Input.GetMovementDirection();
 			Position += Velocity;
@@ -61,6 +57,11 @@ namespace NeonShooter.Core.Game
 			if (Velocity.LengthSquared() > 0)
 				Orientation = Velocity.ToAngle();
 
+			if (Input.WasRightMousePressed())
+			{
+				EntityManager.Add(new Fireball(Position, Velocity));
+			}
+			
 			MakeExhaustFire();
 			Velocity = Vector2.Zero;
 		}
@@ -83,7 +84,7 @@ namespace NeonShooter.Core.Game
 				offset = Vector2.Transform(new Vector2(35, 8), aimQuat);
 				EntityManager.Add(new Bullet(Position + offset, vel));
 
-				Sound.Shot.Play(0.2f, _rand.NextFloat(-0.2f, 0.2f), 0);
+				// Sound.Shot.Play(0.2f, _rand.NextFloat(-0.2f, 0.2f), 0);
 			}
 
 			if (_cooldowmRemaining > 0)

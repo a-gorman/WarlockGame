@@ -6,6 +6,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using NeonShooter.Core.Game.Display;
 
 namespace NeonShooter.Core.Game
 {
@@ -13,9 +14,9 @@ namespace NeonShooter.Core.Game
 	{
 		private static readonly Random _rand = new();
 
-		public Bullet(Vector2 position, Vector2 velocity)
+		public Bullet(Vector2 position, Vector2 velocity) :
+			base(new Sprite(Art.Bullet))
 		{
-			_sprite = new Sprite(Art.Bullet);
 			Position = position;
 			Velocity = velocity;
 			Orientation = Velocity.ToAngle();
