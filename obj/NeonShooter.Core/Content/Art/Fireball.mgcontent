@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/Alex/RiderProjects/Monogame/NeonShooter.Core/Content/Art/Fireball.png</SourceFile>
-  <SourceTime>2022-06-19T19:23:21.1656908-07:00</SourceTime>
+  <SourceTime>2022-06-24T00:27:43.3811348-07:00</SourceTime>
   <DestFile>C:/Users/Alex/RiderProjects/Monogame/bin/NeonShooter.Core/Content/Art/Fireball.xnb</DestFile>
-  <DestTime>2022-06-20T23:16:02.2304702-07:00</DestTime>
+  <DestTime>2022-06-24T00:42:35.7858708-07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T09:17:54-07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

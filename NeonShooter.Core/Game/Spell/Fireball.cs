@@ -11,7 +11,7 @@ internal class Fireball : Entity
     private static readonly Random _rand = new();
 
     public Fireball(Vector2 position, Vector2 velocity) : 
-        base(Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10))
+        base(Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f))
     {
         Position = position;
         Velocity = velocity;

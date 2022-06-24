@@ -10,6 +10,7 @@
 using System;
 using System.Reflection;
 
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("NeonShooter.Core.Test")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("NeonShooter.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]

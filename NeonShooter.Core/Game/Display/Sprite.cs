@@ -72,8 +72,10 @@ public class Sprite
         }
     }
 
-    public static Sprite FromGridSpriteSheet(Texture2D image, int subdivisionsX, int subdivisionsY, int framesBetweenTransitions)
+    public static Sprite FromGridSpriteSheet(Texture2D image, int subdivisionsX, int subdivisionsY, int framesBetweenTransitions, float scale = 1f)
     {
-        return new Sprite(image, image.Bounds.Subdivide(subdivisionsX, subdivisionsY).ToList(), framesBetweenTransitions);
+        var sprite = new Sprite(image, image.Bounds.Subdivide(subdivisionsX, subdivisionsY).ToList(), framesBetweenTransitions);
+        sprite.Scale = scale;
+        return sprite;
     }
 }
