@@ -71,3 +71,4 @@ C:\Users\Alex\RiderProjects\Monogame\NeonShooter.WindowsDX\obj\Debug\net6.0-wind
 C:\Users\Alex\RiderProjects\Monogame\NeonShooter.WindowsDX\obj\Debug\net6.0-windows\ref\NeonShooter.WindowsDX.dll
 C:\Users\Alex\RiderProjects\Monogame\NeonShooter.WindowsDX\obj\Debug\net6.0-windows\NeonShooter.WindowsDX.pdb
 C:\Users\Alex\RiderProjects\Monogame\NeonShooter.WindowsDX\obj\Debug\net6.0-windows\NeonShooter.WindowsDX.genruntimeconfig.cache
+C:\Users\Alex\RiderProjects\Monogame\NeonShooter.WindowsDX\bin\Debug\net6.0-windows\Content\Art\Fireball.xnb

@@ -42,6 +42,11 @@ namespace NeonShooter.Core.Game
 		{
 			return _lastKeyboardState.IsKeyUp(key) && _keyboardState.IsKeyDown(key);
 		}
+		
+		public static bool WasLeftMousePressed()
+		{
+			return _mouseState.LeftButton == ButtonState.Pressed &&  _lastMouseState.LeftButton == ButtonState.Released;
+		}
 
 		public static bool WasButtonPressed(Buttons button)
 		{
@@ -100,8 +105,8 @@ namespace NeonShooter.Core.Game
 
 			if (direction == Vector2.Zero)
 				return Vector2.Zero;
-			else
-				return Vector2.Normalize(direction);
+			
+			return Vector2.Normalize(direction);
 		}
 
 		public static bool WasBombButtonPressed()

@@ -75,12 +75,12 @@ namespace NeonShooter.Core.Game
 			}
 		}
 
-		public void CreateParticle(Texture2D texture, Vector2 position, Color tint, float duration, float scale, T state, float theta = 0)
+		public void CreateParticle(Texture2D? texture, Vector2 position, Color tint, float duration, float scale, T state, float theta = 0)
 		{
 			CreateParticle(texture, position, tint, duration, new Vector2(scale), state, theta);
 		}
 
-		public void CreateParticle(Texture2D texture, Vector2 position, Color tint, float duration, Vector2 scale, T state, float theta = 0)
+		public void CreateParticle(Texture2D? texture, Vector2 position, Color tint, float duration, Vector2 scale, T state, float theta = 0)
 		{
 			Particle particle;
 			if (_particleList.Count == _particleList.Capacity)
@@ -119,7 +119,7 @@ namespace NeonShooter.Core.Game
 
 		public class Particle
 		{
-			public Texture2D Texture;
+			public Texture2D? Texture;
 			public Vector2 Position;
 			public float Orientation;
 

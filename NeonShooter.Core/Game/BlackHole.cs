@@ -18,9 +18,9 @@ namespace NeonShooter.Core.Game
 
 		public BlackHole(Vector2 position)
 		{
-			Image = Art.BlackHole;
+			_sprite = new Sprite(Art.BlackHole);
 			Position = position;
-			Radius = Image.Width / 2f;
+			Radius = Art.BlackHole.Width / 2f;
 		}
 
 		public override void Update()
@@ -113,7 +113,7 @@ namespace NeonShooter.Core.Game
 		{
 			// make the size of the black hole pulsate
 			float scale = 1 + 0.1f * (float)Math.Sin(10 * NeonShooterGame.GameTime.TotalGameTime.TotalSeconds);
-			spriteBatch.Draw(Image, Position, null, Color, Orientation, Size / 2f, scale, 0, 0);
+			_sprite.Draw(spriteBatch, Position, Orientation);
 		}
 	}
 }

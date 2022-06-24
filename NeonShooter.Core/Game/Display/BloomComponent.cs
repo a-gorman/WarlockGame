@@ -15,7 +15,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 #endregion
 
-namespace NeonShooter.Core.Game
+namespace NeonShooter.Core.Game.Display
 {
     public class BloomComponent : DrawableGameComponent
     {
@@ -23,9 +23,9 @@ namespace NeonShooter.Core.Game
 
         private SpriteBatch _spriteBatch;
 
-        private Effect _bloomExtractEffect;
-        private Effect _bloomCombineEffect;
-        private Effect _gaussianBlurEffect;
+        private Microsoft.Xna.Framework.Graphics.Effect _bloomExtractEffect;
+        private Microsoft.Xna.Framework.Graphics.Effect _bloomCombineEffect;
+        private Microsoft.Xna.Framework.Graphics.Effect _gaussianBlurEffect;
 
         private RenderTarget2D _sceneRenderTarget;
         private RenderTarget2D _renderTarget1;
@@ -76,9 +76,9 @@ namespace NeonShooter.Core.Game
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _bloomExtractEffect = Game.Content.Load<Effect>("Shaders/BloomExtract");
-			_bloomCombineEffect = Game.Content.Load<Effect>("Shaders/BloomCombine");
-			_gaussianBlurEffect = Game.Content.Load<Effect>("Shaders/GaussianBlur");
+            _bloomExtractEffect = Game.Content.Load<Microsoft.Xna.Framework.Graphics.Effect>("Shaders/BloomExtract");
+			_bloomCombineEffect = Game.Content.Load<Microsoft.Xna.Framework.Graphics.Effect>("Shaders/BloomCombine");
+			_gaussianBlurEffect = Game.Content.Load<Microsoft.Xna.Framework.Graphics.Effect>("Shaders/GaussianBlur");
 
             // Look up the resolution and format of our main backbuffer.
             PresentationParameters pp = GraphicsDevice.PresentationParameters;
@@ -196,7 +196,7 @@ namespace NeonShooter.Core.Game
         /// a custom shader to apply postprocessing effects.
         /// </summary>
         private void DrawFullscreenQuad(Texture2D texture, RenderTarget2D renderTarget,
-                                Effect effect, IntermediateBuffer currentBuffer)
+                                Microsoft.Xna.Framework.Graphics.Effect effect, IntermediateBuffer currentBuffer)
         {
             GraphicsDevice.SetRenderTarget(renderTarget);
 
@@ -211,7 +211,7 @@ namespace NeonShooter.Core.Game
         /// using a custom shader to apply postprocessing effects.
         /// </summary>
         private void DrawFullscreenQuad(Texture2D texture, int width, int height,
-                                Effect effect, IntermediateBuffer currentBuffer)
+                                Microsoft.Xna.Framework.Graphics.Effect effect, IntermediateBuffer currentBuffer)
         {
             // If the user has selected one of the show intermediate buffer options,
             // we still draw the quad to make sure the image will end up on the screen,
