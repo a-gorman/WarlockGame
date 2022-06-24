@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using NeonShooter.Core.Game;
+using NeonShooter.Core.Game.Display;
 
 namespace NeonShooter.Core
 {
@@ -74,7 +75,7 @@ namespace NeonShooter.Core
             try
             {
                 MediaPlayer.IsRepeating = true;
-                MediaPlayer.Play(Sound.Music);
+                // MediaPlayer.Play(Sound.Music);
             }
             catch { }
 

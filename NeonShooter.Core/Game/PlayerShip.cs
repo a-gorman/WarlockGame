@@ -6,22 +6,13 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using NeonShooter.Core.Game.Spell;
 
 namespace NeonShooter.Core.Game
 {
 	internal class PlayerShip : Entity
 	{
-		private static PlayerShip _instance;
-		public static PlayerShip Instance 
-		{
-			get
-			{
-				if (_instance == null)
-					_instance = new PlayerShip();
-
-				return _instance;
-			}
-		}
+		public static PlayerShip Instance { get; } = new();
 
 		private const int CooldownFrames = 6;
 		private int _cooldowmRemaining = 0;
@@ -33,7 +24,7 @@ namespace NeonShooter.Core.Game
 
 		private PlayerShip()
 		{
-			Image = Art.Player;
+			_sprite = new Sprite(Art.Player);
 			Position = NeonShooterGame.ScreenSize / 2;
 			Radius = 10;
 		}
@@ -55,6 +46,27 @@ namespace NeonShooter.Core.Game
 				return;
 			}
 			
+			FireBullets();
+
+			if (Input.WasLeftMousePressed())
+			{
+				EntityManager.Add(new Fireball(Position, Velocity));
+			}
+
+			const float speed = 8;
+			Velocity += speed * Input.GetMovementDirection();
+			Position += Velocity;
+			Position = Vector2.Clamp(Position, _sprite.Size / 2, NeonShooterGame.ScreenSize - _sprite.Size / 2);
+			
+			if (Velocity.LengthSquared() > 0)
+				Orientation = Velocity.ToAngle();
+
+			MakeExhaustFire();
+			Velocity = Vector2.Zero;
+		}
+
+		private void FireBullets()
+		{
 			var aim = Input.GetAimDirection();
 			if (aim.LengthSquared() > 0 && _cooldowmRemaining <= 0)
 			{
@@ -76,17 +88,6 @@ namespace NeonShooter.Core.Game
 
 			if (_cooldowmRemaining > 0)
 				_cooldowmRemaining--;
-
-			const float speed = 8;
-			Velocity += speed * Input.GetMovementDirection();
-			Position += Velocity;
-			Position = Vector2.Clamp(Position, Size / 2, NeonShooterGame.ScreenSize - Size / 2);
-			
-			if (Velocity.LengthSquared() > 0)
-				Orientation = Velocity.ToAngle();
-
-			MakeExhaustFire();
-			Velocity = Vector2.Zero;
 		}
 
 		private void MakeExhaustFire()

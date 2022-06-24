@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using NeonShooter.Core.Game.Effect;
 
 namespace NeonShooter.Core.Game
 {
@@ -19,12 +20,11 @@ namespace NeonShooter.Core.Game
 		public bool IsActive => _timeUntilStart <= 0;
 		public int PointValue { get; private set; }
 
-		public Enemy(Texture2D? image, Vector2 position)
+		public Enemy(Texture2D image, Vector2 position)
 		{
-			Image = image;
+			_sprite = new Sprite(image) {Color = Color.Transparent};
 			Position = position;
 			Radius = image.Width / 2f;
-			Color = Color.Transparent;
 			PointValue = 1;
 		}
 
@@ -34,6 +34,8 @@ namespace NeonShooter.Core.Game
 			enemy.AddBehaviour(enemy.FollowPlayer(0.9f));
 			enemy.PointValue = 2;
 
+			EffectManager.Add(new SpawnIn(Art.Seeker, enemy.Position, enemy.Orientation));
+			
 			return enemy;
 		}
 
@@ -41,6 +43,8 @@ namespace NeonShooter.Core.Game
 		{
 			var enemy = new Enemy(Art.Wanderer, position);
 			enemy.AddBehaviour(enemy.MoveRandomly());
+
+			EffectManager.Add(new SpawnIn(Art.Wanderer, enemy.Position, enemy.Orientation));
 
 			return enemy;
 		}
@@ -52,26 +56,28 @@ namespace NeonShooter.Core.Game
 			else
 			{
 				_timeUntilStart--;
-				Color = Color.White * (1 - _timeUntilStart / 60f);
+				_sprite.Color = Color.White * (1 - _timeUntilStart / 60f);
 			}
 
 			Position += Velocity;
-			Position = Vector2.Clamp(Position, Size / 2, NeonShooterGame.ScreenSize - Size / 2);
+			Position = Vector2.Clamp(Position, _sprite.Size / 2, NeonShooterGame.ScreenSize - _sprite.Size / 2);
 
 			Velocity *= 0.8f;
 		}
 
-		public override void Draw(SpriteBatch spriteBatch)
-		{
-			if (_timeUntilStart > 0)
-			{
-				// Draw an expanding, fading-out version of the sprite as part of the spawn-in effect.
-				float factor = _timeUntilStart / 60f;	// decreases from 1 to 0 as the enemy spawns in
-				spriteBatch.Draw(Image, Position, null, Color.White * factor, Orientation, Size / 2f, 2 - factor, 0, 0);
-			}
-
-			base.Draw(spriteBatch);
-		}
+		// public override void Draw(SpriteBatch spriteBatch)
+		// {
+		// 	// if (_timeUntilStart > 0)
+		// 	// {
+		// 	// 	// Draw an expanding, fading-out version of the sprite as part of the spawn-in effect.
+		// 	// 	float factor = _timeUntilStart / 60f;	// decreases from 1 to 0 as the enemy spawns in
+		// 	// 	_sprite.Color = Color.White * factor;
+		// 	// 	_sprite.Scale = factor;
+		// 	// 	_sprite.Draw(spriteBatch, Position, Orientation);
+		// 	// }
+		//
+		// 	base.Draw(spriteBatch);
+		// }
 
 		private void AddBehaviour(IEnumerable<int> behaviour)
 		{
@@ -152,7 +158,7 @@ namespace NeonShooter.Core.Game
 					Orientation -= 0.05f;
 
 					var bounds = NeonShooterGame.Viewport.Bounds;
-					bounds.Inflate(-Image.Width / 2 - 1, -Image.Height / 2 - 1);
+					bounds.Inflate(-_sprite.Size.X / 2 - 1, -_sprite.Size.Y / 2 - 1);
 
 					// if the enemy is outside the bounds, make it move away from the edge
 					if (!bounds.Contains(Position.ToPoint()))

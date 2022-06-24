@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using NeonShooter.Core.Game.Spell;
 
 namespace NeonShooter.Core.Game
 {
@@ -14,7 +15,7 @@ namespace NeonShooter.Core.Game
 	{
 		private static List<Entity> _entities = new();
 		private static List<Enemy> _enemies = new();
-		private static List<Bullet> _bullets = new();
+		private static List<Entity> _projectiles = new();
 		private static List<BlackHole> _blackHoles = new();
 
 		public static IEnumerable<BlackHole> BlackHoles => _blackHoles;
@@ -37,7 +38,9 @@ namespace NeonShooter.Core.Game
 		{
 			_entities.Add(entity);
 			if (entity is Bullet bullet)
-				_bullets.Add(bullet);
+				_projectiles.Add(bullet);
+			else if (entity is Fireball fireball)
+				_projectiles.Add(fireball);
 			else if (entity is Enemy enemy)
 				_enemies.Add(enemy);
 			else if (entity is BlackHole hole)
@@ -60,7 +63,7 @@ namespace NeonShooter.Core.Game
 			_addedEntities.Clear();
 
 			_entities = _entities.Where(x => !x.IsExpired).ToList();
-			_bullets = _bullets.Where(x => !x.IsExpired).ToList();
+			_projectiles = _projectiles.Where(x => !x.IsExpired).ToList();
 			_enemies = _enemies.Where(x => !x.IsExpired).ToList();
 			_blackHoles = _blackHoles.Where(x => !x.IsExpired).ToList();
 		}
@@ -81,7 +84,7 @@ namespace NeonShooter.Core.Game
 			// handle collisions between bullets and enemies
 			foreach (var enemy in _enemies)
 			{
-				foreach (var bullet in _bullets.Where(bullet => IsColliding(enemy, bullet)))
+				foreach (var bullet in _projectiles.Where(x => IsColliding(enemy, x)))
 				{
 					enemy.WasShot();
 					bullet.IsExpired = true;
@@ -101,7 +104,7 @@ namespace NeonShooter.Core.Game
 					if (enemy.IsActive && IsColliding(blackHole, enemy))
 						enemy.WasShot();
 
-				foreach (var bullet in _bullets)
+				foreach (var bullet in _projectiles)
 				{
 					if (IsColliding(blackHole, bullet))
 					{

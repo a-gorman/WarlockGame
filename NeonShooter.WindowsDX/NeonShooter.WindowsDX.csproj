@@ -25,4 +25,9 @@
   <ItemGroup>
     <ProjectReference Include="..\NeonShooter.Core\NeonShooter.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\NeonShooter.Core\Content\bin\Windows\NeonShooter\Art\Fireball.xnb">
+      <Link>Content\Art\Fireball.xnb</Link>
+    </Content>
+  </ItemGroup>
 </Project>
