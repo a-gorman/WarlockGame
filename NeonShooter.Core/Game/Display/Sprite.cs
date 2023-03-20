@@ -16,11 +16,9 @@ public class Sprite
     public float Scale { get; set; } = 1f;
 
     private readonly List<Rectangle> _sourceRectangles;
-
     private int _activeSourceRectangleIndex = 0;
 
     private readonly int _framesBetweenTransitions = 1;
-    
     private int _frameCounter = 1;
 
     private Rectangle ActiveSourceRectangle => _sourceRectangles[_activeSourceRectangleIndex];

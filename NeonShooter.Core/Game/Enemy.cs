@@ -22,7 +22,7 @@ namespace NeonShooter.Core.Game
         public int PointValue { get; private set; }
 
         public Enemy(Texture2D image, Vector2 position) :
-            base(new Sprite(image) { Color = Color.Transparent })
+            base(new Sprite(image) { Color = Color.White })
         {
             Position = position;
             Radius = image.Width / 2f;
@@ -52,12 +52,11 @@ namespace NeonShooter.Core.Game
 
         public override void Update()
         {
-            if (_timeUntilStart <= 0)
+            if (IsActive)
                 ApplyBehaviours();
             else
             {
                 _timeUntilStart--;
-                _sprite.Color = Color.White * (1 - _timeUntilStart / 60f);
             }
 
             Position += Velocity;
@@ -66,19 +65,13 @@ namespace NeonShooter.Core.Game
             Velocity *= 0.8f;
         }
 
-        // public override void Draw(SpriteBatch spriteBatch)
-        // {
-        // 	// if (_timeUntilStart > 0)
-        // 	// {
-        // 	// 	// Draw an expanding, fading-out version of the sprite as part of the spawn-in effect.
-        // 	// 	float factor = _timeUntilStart / 60f;	// decreases from 1 to 0 as the enemy spawns in
-        // 	// 	_sprite.Color = Color.White * factor;
-        // 	// 	_sprite.Scale = factor;
-        // 	// 	_sprite.Draw(spriteBatch, Position, Orientation);
-        // 	// }
-        //
-        // 	base.Draw(spriteBatch);
-        // }
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            if (IsActive)
+            {
+                base.Draw(spriteBatch);
+            }       
+        }
 
         private void AddBehaviour(IEnumerable<int> behaviour)
         {
@@ -90,7 +83,7 @@ namespace NeonShooter.Core.Game
             for (int i = 0; i < _behaviours.Count; i++)
             {
                 if (!_behaviours[i].MoveNext())
-                    _behaviours.RemoveAt(i--);
+                    _behaviours.RemoveAt(i--); // Is this correct?
             }
         }
 

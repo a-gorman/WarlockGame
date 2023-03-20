@@ -39,7 +39,7 @@ namespace NeonShooter.Core.Game
 			_entities.Add(entity);
 			if (entity is Bullet bullet)
 				_projectiles.Add(bullet);
-			else if (entity is Fireball fireball)
+			else if (entity is FireballProjectile fireball)
 				_projectiles.Add(fireball);
 			else if (entity is Enemy enemy)
 				_enemies.Add(enemy);
@@ -70,8 +70,16 @@ namespace NeonShooter.Core.Game
 
 		private static void HandleCollisions()
 		{
-			// handle collisions between enemies
+			HandleEnemyEnemyCollisions();
+			HandleEnemyBulletCollisions();
+			HandlePlayerEnemyCollisions();
+			HandleBlackHoleCollisions();
+		}
+
+		private static void HandleEnemyEnemyCollisions()
+		{
 			for (int i = 0; i < _enemies.Count; i++)
+			{
 				for (int j = i + 1; j < _enemies.Count; j++)
 				{
 					if (IsColliding(_enemies[i], _enemies[j]))
@@ -80,8 +88,19 @@ namespace NeonShooter.Core.Game
 						_enemies[j].HandleCollision(_enemies[i]);
 					}
 				}
+			}
+		}
 
-			// handle collisions between bullets and enemies
+		private static void HandlePlayerEnemyCollisions()
+		{
+			if (_enemies.Any(x => x.IsActive && IsColliding(x, PlayerShip.Instance)))
+			{
+				KillPlayer();
+			}
+		}
+
+		private static void HandleEnemyBulletCollisions()
+		{
 			foreach (var enemy in _enemies)
 			{
 				foreach (var bullet in _projectiles.Where(x => IsColliding(enemy, x)))
@@ -90,14 +109,10 @@ namespace NeonShooter.Core.Game
 					bullet.IsExpired = true;
 				}
 			}
+		}
 
-			// handle collisions between the player and enemies
-			if (_enemies.Any(x => x.IsActive && IsColliding(x, PlayerShip.Instance)))
-			{
-				KillPlayer();
-			}
-
-			// handle collisions with black holes
+		private static void HandleBlackHoleCollisions()
+		{
 			foreach (var blackHole in _blackHoles)
 			{
 				foreach (var enemy in _enemies)

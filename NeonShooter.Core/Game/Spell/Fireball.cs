@@ -1,41 +1,38 @@
 using System;
-using System.Net.Mime;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using NeonShooter.Core.Game.Display;
 
 namespace NeonShooter.Core.Game.Spell;
 
-internal class Fireball : Entity
+class Fireball : ISpell
 {
-    private static readonly Random _rand = new();
+    public required int ManaCost { get; init; }
+    
+    public required int CooldownTime { get; init; }
 
-    public Fireball(Vector2 position, Vector2 velocity) : 
-        base(Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f))
+    public void Update()
     {
-        Position = position;
-        Velocity = velocity;
-        Orientation = Velocity.ToAngle();
-        Radius = 8;
+        Cooldown?.Update();
     }
 
-    public override void Update()
+    public GameTimer Cooldown { get; private set; } = GameTimer.FromFrames(0);
+
+    public bool OnCooldown => !Cooldown.IsExpired;
+
+    private int _speed = 5;
+    
+    public void OnHit()
     {
-        if (Velocity.LengthSquared() > 0)
-            Orientation = Velocity.ToAngle();
+        throw new NotImplementedException();
+    }
 
-        Position += Velocity;
-        NeonShooterGame.Grid.ApplyExplosiveForce(0.5f * Velocity.Length(), Position, 80);
-
-        // delete bullets that go off-screen
-        if (!NeonShooterGame.Viewport.Bounds.Contains(Position.ToPoint()))
+    public void Cast(Vector2 position, Vector2 direction)
+    {
+        if (OnCooldown)
         {
-            IsExpired = true;
-
-            for (int i = 0; i < 30; i++)
-                NeonShooterGame.ParticleManager.CreateParticle(Art.LineParticle, Position, Color.LightBlue, 50, 1,
-                    new ParticleState() { Velocity = _rand.NextVector2(0, 9), Type = ParticleType.Bullet, LengthMultiplier = 1 });
-
+            throw new Exception("Cast spell on cooldown");
         }
+
+        Cooldown = GameTimer.FromSeconds(CooldownTime);
+        EntityManager.Add(new FireballProjectile(position, direction * _speed));
     }
 }
