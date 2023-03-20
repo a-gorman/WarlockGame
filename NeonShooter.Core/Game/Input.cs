@@ -80,10 +80,10 @@ namespace NeonShooter.Core.Game
 			return direction;
 		}
 
-		public static Vector2 GetAimDirection()
+		public static Vector2 GetAimDirection(Vector2 relativeTo)
 		{
 			if (_isAimingWithMouse)
-				return GetMouseAimDirection();
+				return GetMouseAimDirection(relativeTo);
 
 			Vector2 direction = _gamepadState.ThumbSticks.Right;
 			direction.Y *= -1;
@@ -104,9 +104,9 @@ namespace NeonShooter.Core.Game
 				return Vector2.Normalize(direction);
 		}
 
-		private static Vector2 GetMouseAimDirection()
+		private static Vector2 GetMouseAimDirection(Vector2 relativeTo)
 		{
-			Vector2 direction = MousePosition - PlayerShip.Instance.Position;
+			Vector2 direction = MousePosition - relativeTo;
 
 			if (direction == Vector2.Zero)
 				return Vector2.Zero;

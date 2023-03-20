@@ -1,11 +1,12 @@
 using System;
-using System.Collections.Generic;
 
 namespace NeonShooter.Core.Game;
 
 public class GameTimer
 {
     public int FramesRemaining { get; private set; }
+    
+    private const float FramesPerSecond = 60;
 
     public bool IsExpired => FramesRemaining == 0;
 
@@ -19,8 +20,13 @@ public class GameTimer
         return new GameTimer(frames);
     }
     
+    public static GameTimer FromSeconds(float seconds)
+    {
+        return new GameTimer((int) (FramesPerSecond * seconds));
+    }
+    
     public void Update()
     {
-        FramesRemaining = Math.Min(0, FramesRemaining - 1);
+        FramesRemaining = Math.Max(0, FramesRemaining - 1);
     }
 }

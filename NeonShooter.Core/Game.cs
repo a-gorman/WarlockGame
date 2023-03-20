@@ -14,12 +14,12 @@ namespace NeonShooter.Core
     public class NeonShooterGame: Microsoft.Xna.Framework.Game
     {
 		// some helpful static properties
-		public static NeonShooterGame Instance { get; private set; }
+		public static NeonShooterGame Instance { get; private set; }  = null!;
 		public static Viewport Viewport => Instance.GraphicsDevice.Viewport;
         public static Vector2 ScreenSize => new Vector2(Viewport.Width, Viewport.Height);
-        public static GameTime GameTime { get; private set; }
-		public static ParticleManager<ParticleState> ParticleManager { get; private set; }
-		public static Grid Grid { get; private set; }
+        public static GameTime GameTime { get; private set; } = null!;
+		public static ParticleManager<ParticleState> ParticleManager { get; private set; } = null!;
+		public static Grid Grid { get; private set; } = null!;
 
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -104,6 +104,7 @@ namespace NeonShooter.Core
             {
                 PlayerStatus.Update();
                 EntityManager.Update();
+                EffectManager.Update();
                 EnemySpawner.Update();
                 ParticleManager.Update();
                 Grid.Update();
@@ -123,6 +124,7 @@ namespace NeonShooter.Core
 
             _spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive);
             EntityManager.Draw(_spriteBatch);
+            EffectManager.Draw(_spriteBatch);
             _spriteBatch.End();
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);

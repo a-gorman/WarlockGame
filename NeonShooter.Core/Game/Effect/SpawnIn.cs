@@ -34,10 +34,24 @@ public class SpawnIn : IEffect
     {
         if (!_timer.IsExpired)
         {
-            float factor = _timer.FramesRemaining / Duration;
+            float factor = 1 - (float)_timer.FramesRemaining / Duration;
             _sprite.Color = Color.White * factor;
             _sprite.Scale = factor;
             _sprite.Draw(spriteBatch, _position, _orientation);
         }
     }
+    
+    // public override void Draw(SpriteBatch spriteBatch)
+    // {
+    // 	// if (_timeUntilStart > 0)
+    // 	// {
+    // 	// 	// Draw an expanding, fading-out version of the sprite as part of the spawn-in effect.
+    // 	// 	float factor = _timeUntilStart / 60f;	// decreases from 1 to 0 as the enemy spawns in
+    // 	// 	_sprite.Color = Color.White * factor;
+    // 	// 	_sprite.Scale = factor;
+    // 	// 	_sprite.Draw(spriteBatch, Position, Orientation);
+    // 	// }
+    //
+    // 	base.Draw(spriteBatch);
+    // }
 }

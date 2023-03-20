@@ -1,14 +1,18 @@
 {
   "version": 3,
   "targets": {
-    "net6.0-windows7.0": {
+    "net7.0": {
       "MonoGame.Framework.DesktopGL/3.8.0.1641": {
         "type": "package",
         "compile": {
-          "lib/netstandard2.0/MonoGame.Framework.dll": {}
+          "lib/netstandard2.0/MonoGame.Framework.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/netstandard2.0/MonoGame.Framework.dll": {}
+          "lib/netstandard2.0/MonoGame.Framework.dll": {
+            "related": ".xml"
+          }
         },
         "build": {
           "build/MonoGame.Framework.DesktopGL.targets": {}
@@ -78,7 +82,7 @@
     }
   },
   "projectFileDependencyGroups": {
-    "net6.0-windows7.0": [
+    "net7.0": [
       "MonoGame.Framework.DesktopGL >= 3.8.0.1641"
     ]
   },
@@ -103,15 +107,15 @@
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
-        "net6.0-windows"
+        "net7.0"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net6.0-windows7.0": {
-          "targetAlias": "net6.0-windows",
+        "net7.0": {
+          "targetAlias": "net7.0",
           "projectReferences": {}
         }
       },
@@ -122,8 +126,8 @@
       }
     },
     "frameworks": {
-      "net6.0-windows7.0": {
-        "targetAlias": "net6.0-windows",
+      "net7.0": {
+        "targetAlias": "net7.0",
         "dependencies": {
           "MonoGame.Framework.DesktopGL": {
             "suppressParent": "All",
@@ -137,7 +141,8 @@
           "net47",
           "net471",
           "net472",
-          "net48"
+          "net48",
+          "net481"
         ],
         "assetTargetFallback": true,
         "warn": true,
@@ -146,7 +151,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
       }
     }
   }
