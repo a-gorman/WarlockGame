@@ -20,11 +20,6 @@ class Fireball : ISpell
 
     private int _speed = 5;
     
-    public void OnHit()
-    {
-        throw new NotImplementedException();
-    }
-
     public void Cast(Vector2 position, Vector2 direction)
     {
         if (OnCooldown)
