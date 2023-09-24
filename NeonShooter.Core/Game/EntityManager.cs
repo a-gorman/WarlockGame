@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using NeonShooter.Core.Game.Spell;
+using NeonShooter.Core.Game.Projectile;
 
 namespace NeonShooter.Core.Game
 {
@@ -15,7 +15,7 @@ namespace NeonShooter.Core.Game
 	{
 		private static List<Entity> _entities = new();
 		private static List<Enemy> _enemies = new();
-		private static List<Entity> _projectiles = new();
+		private static List<IProjectile> _projectiles = new();
 		private static List<BlackHole> _blackHoles = new();
 
 		public static IEnumerable<BlackHole> BlackHoles => _blackHoles;
@@ -37,10 +37,8 @@ namespace NeonShooter.Core.Game
 		private static void AddEntity(Entity entity)
 		{
 			_entities.Add(entity);
-			if (entity is Bullet bullet)
-				_projectiles.Add(bullet);
-			else if (entity is FireballProjectile fireball)
-				_projectiles.Add(fireball);
+			if (entity is IProjectile projectile)
+				_projectiles.Add(projectile);
 			else if (entity is Enemy enemy)
 				_enemies.Add(enemy);
 			else if (entity is BlackHole hole)
@@ -105,8 +103,8 @@ namespace NeonShooter.Core.Game
 			{
 				foreach (var bullet in _projectiles.Where(x => IsColliding(enemy, x)))
 				{
-					enemy.WasShot();
-					bullet.IsExpired = true;
+					// enemy.WasShot();
+					bullet.OnHit();
 				}
 			}
 		}
@@ -144,7 +142,7 @@ namespace NeonShooter.Core.Game
 			EnemySpawner.Reset();
 		}
 
-		private static bool IsColliding(Entity a, Entity b)
+		private static bool IsColliding(IEntity a, IEntity b)
 		{
 			float radius = a.Radius + b.Radius;
 			return !a.IsExpired && !b.IsExpired && Vector2.DistanceSquared(a.Position, b.Position) < radius * radius;

@@ -7,10 +7,11 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NeonShooter.Core.Game.Display;
+using NeonShooter.Core.Game.Projectile;
 
 namespace NeonShooter.Core.Game
 {
-	internal class Bullet : Entity
+	internal class Bullet : Entity, IProjectile
 	{
 		private static readonly Random _rand = new();
 
@@ -41,6 +42,11 @@ namespace NeonShooter.Core.Game
 						new ParticleState() { Velocity = _rand.NextVector2(0, 9), Type = ParticleType.Bullet, LengthMultiplier = 1 });
 
 			}
+		}
+
+		public void OnHit()
+		{
+			IsExpired = true;
 		}
 	}
 }

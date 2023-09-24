@@ -5,6 +5,7 @@
 
 using System;
 using Microsoft.Xna.Framework;
+using NeonShooter.Core.Game.Util;
 
 namespace NeonShooter.Core.Game
 {

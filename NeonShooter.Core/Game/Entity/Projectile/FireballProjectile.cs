@@ -1,13 +1,17 @@
 using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using NeonShooter.Core.Game.Display;
+using NeonShooter.Core.Game.Projectile;
 using NeonShooter.Core.Game.Util;
 
 namespace NeonShooter.Core.Game.Spell;
 
-internal class FireballProjectile : Entity
+internal class FireballProjectile : Entity, IProjectile
 {
     private static readonly Random _rand = new();
+    private const int Radius = 200;
+    private const int Force = 100;
 
     public FireballProjectile(Vector2 position, Vector2 velocity) : 
         base(Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f))
@@ -15,7 +19,7 @@ internal class FireballProjectile : Entity
         Position = position;
         Velocity = velocity;
         Orientation = Velocity.ToAngle();
-        Radius = 8;
+        base.Radius = 8;
     }
 
     public override void Update()
@@ -35,6 +39,23 @@ internal class FireballProjectile : Entity
                 NeonShooterGame.ParticleManager.CreateParticle(Art.LineParticle, Position, Color.LightBlue, 50, 1,
                     new ParticleState() { Velocity = _rand.NextVector2(0, 9), Type = ParticleType.Bullet, LengthMultiplier = 1 });
 
+        }
+    }
+
+    public void OnHit()
+    {
+        IsExpired = true;
+        foreach (var entity in EntityManager.GetNearbyEntities(Position, Radius))
+        {
+            switch (entity)
+            {
+                case Enemy enemy:
+                    enemy.WasShot();
+                    break;
+                case PlayerShip player:
+                    player.Push(100, player.Position - Position);
+                    break;
+            }
         }
     }
 }

@@ -12,7 +12,5 @@ internal interface ISpell
     
     bool OnCooldown { get; }
     
-    void OnHit();
-    
     void Cast(Vector2 position, Vector2 direction);
 }

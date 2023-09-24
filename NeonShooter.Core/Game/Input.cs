@@ -6,6 +6,7 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using NeonShooter.Core.Game.Util;
 
 namespace NeonShooter.Core.Game
 {
@@ -97,21 +98,13 @@ namespace NeonShooter.Core.Game
 			if (_keyboardState.IsKeyDown(Keys.Down))
 				direction.Y += 1;
 
-			// If there's no aim input, return zero. Otherwise normalize the direction to have a length of 1.
-			if (direction == Vector2.Zero)
-				return Vector2.Zero;
-			else
-				return Vector2.Normalize(direction);
+			return direction.ToNormalizedOrZero();
 		}
 
 		private static Vector2 GetMouseAimDirection(Vector2 relativeTo)
 		{
 			Vector2 direction = MousePosition - relativeTo;
-
-			if (direction == Vector2.Zero)
-				return Vector2.Zero;
-			
-			return Vector2.Normalize(direction);
+			return direction.ToNormalizedOrZero();
 		}
 
 		public static bool WasBombButtonPressed()

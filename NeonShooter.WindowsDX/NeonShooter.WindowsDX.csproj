@@ -29,5 +29,8 @@
     <Content Include="..\NeonShooter.Core\Content\bin\Windows\NeonShooter\Art\Fireball.xnb">
       <Link>Content\Art\Fireball.xnb</Link>
     </Content>
+    <Content Include="..\NeonShooter.Core\Content\bin\Windows\NeonShooter\Art\fireball_0.png">
+      <Link>Content\Art\fireball_0.png</Link>
+    </Content>
   </ItemGroup>
 </Project>
