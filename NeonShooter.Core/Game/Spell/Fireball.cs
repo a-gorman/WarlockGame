@@ -19,7 +19,7 @@ class Fireball : ISpell
     public bool OnCooldown => !Cooldown.IsExpired;
 
     private int _speed = 5;
-    
+
     public void Cast(Vector2 position, Vector2 direction)
     {
         if (OnCooldown)

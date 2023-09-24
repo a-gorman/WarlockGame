@@ -44,5 +44,11 @@ namespace NeonShooter.Core.Game
 
 			Font = content.Load<SpriteFont>("Font");
 		}
+		
+		public static Texture2D LoadTexture(string assetName)
+		{
+			var texture = Texture2D.FromFile(NeonShooterGame.Instance.GraphicsDevice, assetName);
+			return texture;
+		}
 	}
 }

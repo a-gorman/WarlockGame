@@ -20,7 +20,7 @@ namespace NeonShooter.Core.Game
 
         public List<ISpell> Spells { get; } = new() { SpellFactory.Fireball() };
 
-        public int Mana { get; set; } = 100;
+        // public int Mana { get; set; } = 100;
 
         private const int CooldownFrames = 6;
         private int _cooldowmRemaining = 0;
@@ -57,26 +57,43 @@ namespace NeonShooter.Core.Game
 
             // FireBullets();
 
+            Move();
+            
+            MakeExhaustFire();
+
+            if (Input.WasRightMousePressed())
+            {
+                CastSpell(Spells.Single());
+            }
+            
+            foreach (var spell in Spells)
+            {
+                spell.Update();
+            }
+        }
+
+        private void Move() {
             const float speed = 8;
-            Velocity += speed * Input.GetMovementDirection();
+            var inputDirection = Input.GetMovementDirection();
+
+            if (Velocity.IsLengthLessThan(speed)) {
+                Velocity = Vector2.Zero;
+            }
+            else {
+                Velocity -= Velocity.WithLength(speed);
+            }
+            
+            if (inputDirection.HasLength()) {
+                Velocity += speed * inputDirection;
+            }
+
             Position += Velocity;
             Position = Vector2.Clamp(Position, _sprite.Size / 2, NeonShooterGame.ScreenSize - _sprite.Size / 2);
 
             if (Velocity.LengthSquared() > 0)
                 Orientation = Velocity.ToAngle();
 
-            if (Input.WasRightMousePressed())
-            {
-                CastSpell(Spells.Single());
-            }
-
-            MakeExhaustFire();
-            Velocity = Vector2.Zero;
-
-            foreach (var spell in Spells)
-            {
-                spell.Update();
-            }
+            Velocity -= Velocity.ToNormalizedOrZero() * 8;
         }
 
         private void FireBullets()
@@ -106,11 +123,16 @@ namespace NeonShooter.Core.Game
 
         private void CastSpell(ISpell spell)
         {
-            if (spell.ManaCost <= Mana && !spell.OnCooldown && Input.GetAimDirection(Position) is var aim && aim.HasLength())
+            if (!spell.OnCooldown && Input.GetAimDirection(Position) is var aim && aim.HasLength())
             {
-                Mana -= spell.ManaCost;
                 spell.Cast(Position, aim);
             }
+
+            // if (spell.ManaCost <= Mana && !spell.OnCooldown && Input.GetAimDirection(Position) is var aim && aim.HasLength())
+            // {
+            //     spell.Cast(Position, aim);
+            //     Mana -= spell.ManaCost;
+            // }
         }
 
         private void MakeExhaustFire()
@@ -187,6 +209,11 @@ namespace NeonShooter.Core.Game
 
                 NeonShooterGame.ParticleManager.CreateParticle(Art.LineParticle, Position, color, 190, 1.5f, state);
             }
+        }
+
+        public void Push(int force, Vector2 direction)
+        {
+            Velocity += force * direction.ToNormalized();
         }
     }
 }
