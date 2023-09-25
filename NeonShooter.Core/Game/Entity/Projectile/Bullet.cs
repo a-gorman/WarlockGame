@@ -11,7 +11,7 @@ using NeonShooter.Core.Game.Projectile;
 
 namespace NeonShooter.Core.Game
 {
-	internal class Bullet : Entity, IProjectile
+	internal class Bullet : Entity.EntityBase, IProjectile
 	{
 		private static readonly Random _rand = new();
 

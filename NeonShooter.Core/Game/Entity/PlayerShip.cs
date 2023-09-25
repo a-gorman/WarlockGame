@@ -12,9 +12,9 @@ using NeonShooter.Core.Game.Display;
 using NeonShooter.Core.Game.Spell;
 using NeonShooter.Core.Game.Util;
 
-namespace NeonShooter.Core.Game
+namespace NeonShooter.Core.Game.Entity
 {
-    internal class PlayerShip : Entity
+    internal class PlayerShip : EntityBase
     {
         public static PlayerShip Instance { get; } = new();
 
@@ -37,21 +37,15 @@ namespace NeonShooter.Core.Game
             Radius = 10;
         }
 
-        public override void Update()
-        {
-            if (IsDead)
-            {
-                if (--_framesUntilRespawn == 0)
-                {
-                    if (PlayerStatus.Lives == 0)
-                    {
+        public override void Update() {
+            if (IsDead) {
+                if (--_framesUntilRespawn == 0) {
+                    if (PlayerStatus.Lives == 0) {
                         PlayerStatus.Reset();
                         Position = NeonShooterGame.ScreenSize / 2;
                     }
-
                     NeonShooterGame.Grid.ApplyDirectedForce(new Vector3(0, 0, 5000), new Vector3(Position, 0), 50);
                 }
-
                 return;
             }
 
@@ -61,13 +55,11 @@ namespace NeonShooter.Core.Game
             
             MakeExhaustFire();
 
-            if (Input.WasRightMousePressed())
-            {
+            if (Input.WasRightMousePressed()) {
                 CastSpell(Spells.Single());
             }
             
-            foreach (var spell in Spells)
-            {
+            foreach (var spell in Spells) {
                 spell.Update();
             }
         }
@@ -76,11 +68,11 @@ namespace NeonShooter.Core.Game
             const float speed = 8;
             var inputDirection = Input.GetMovementDirection();
 
-            if (Velocity.IsLengthLessThan(speed)) {
+            if (VectorExtensions.IsLengthLessThan(Velocity, speed)) {
                 Velocity = Vector2.Zero;
             }
             else {
-                Velocity -= Velocity.WithLength(speed);
+                Velocity -= VectorExtensions.WithLength(Velocity, speed);
             }
             
             if (inputDirection.HasLength()) {
@@ -91,9 +83,9 @@ namespace NeonShooter.Core.Game
             Position = Vector2.Clamp(Position, _sprite.Size / 2, NeonShooterGame.ScreenSize - _sprite.Size / 2);
 
             if (Velocity.LengthSquared() > 0)
-                Orientation = Velocity.ToAngle();
+                Orientation = Extensions.ToAngle(Velocity);
 
-            Velocity -= Velocity.ToNormalizedOrZero() * 8;
+            Velocity -= VectorExtensions.ToNormalizedOrZero(Velocity) * 8;
         }
 
         private void FireBullets()
@@ -140,12 +132,12 @@ namespace NeonShooter.Core.Game
             if (Velocity.LengthSquared() > 0.1f)
             {
                 // set up some variables
-                Orientation = Velocity.ToAngle();
+                Orientation = Extensions.ToAngle(Velocity);
                 Quaternion rot = Quaternion.CreateFromYawPitchRoll(0f, 0f, Orientation);
 
                 double t = NeonShooterGame.GameTime.TotalGameTime.TotalSeconds;
                 // The primary velocity of the particles is 3 pixels/frame in the direction opposite to which the ship is travelling.
-                Vector2 baseVel = Velocity.ScaleTo(-3);
+                Vector2 baseVel = Extensions.ScaleTo(Velocity, -3);
                 // Calculate the sideways velocity for the two side streams. The direction is perpendicular to the ship's velocity and the
                 // magnitude varies sinusoidally.
                 Vector2 perpVel = new Vector2(baseVel.Y, -baseVel.X) * (0.6f * (float)Math.Sin(t * 10));

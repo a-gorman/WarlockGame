@@ -7,9 +7,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NeonShooter.Core.Game.Display;
 
-namespace NeonShooter.Core.Game
+namespace NeonShooter.Core.Game.Entity
 {
-	internal abstract class Entity : IEntity
+	internal abstract class EntityBase : IEntity
 	{
 		protected readonly Sprite _sprite;
 		
@@ -19,7 +19,7 @@ namespace NeonShooter.Core.Game
 		public float Radius { get; init; } = 20;	// used for circular collision detection
 		public bool IsExpired { get; set; }		// true if the entity was destroyed and should be deleted.
 
-		protected Entity(Sprite sprite)
+		protected EntityBase(Sprite sprite)
 		{
 			_sprite = sprite;
 		}

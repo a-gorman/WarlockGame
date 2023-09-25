@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Xna.Framework;
+using NeonShooter.Core.Game.Entity.Projectile;
 
 namespace NeonShooter.Core.Game.Spell;
 

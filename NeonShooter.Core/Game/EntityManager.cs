@@ -7,13 +7,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using NeonShooter.Core.Game.Entity;
 using NeonShooter.Core.Game.Projectile;
 
 namespace NeonShooter.Core.Game
 {
 	internal static class EntityManager
 	{
-		private static List<Entity> _entities = new();
+		private static List<EntityBase> _entities = new();
 		private static List<Enemy> _enemies = new();
 		private static List<IProjectile> _projectiles = new();
 		private static List<BlackHole> _blackHoles = new();
@@ -21,12 +22,12 @@ namespace NeonShooter.Core.Game
 		public static IEnumerable<BlackHole> BlackHoles => _blackHoles;
 
 		private static bool _isUpdating;
-		private static readonly List<Entity> _addedEntities = new();
+		private static readonly List<Entity.EntityBase> _addedEntities = new();
 
 		public static int Count => _entities.Count;
 		public static int BlackHoleCount => _blackHoles.Count;
 
-		public static void Add(Entity entity)
+		public static void Add(EntityBase entity)
 		{
 			if (!_isUpdating)
 				AddEntity(entity);
@@ -34,7 +35,7 @@ namespace NeonShooter.Core.Game
 				_addedEntities.Add(entity);
 		}
 
-		private static void AddEntity(Entity entity)
+		private static void AddEntity(EntityBase entity)
 		{
 			_entities.Add(entity);
 			if (entity is IProjectile projectile)
@@ -148,7 +149,7 @@ namespace NeonShooter.Core.Game
 			return !a.IsExpired && !b.IsExpired && Vector2.DistanceSquared(a.Position, b.Position) < radius * radius;
 		}
 
-		public static IEnumerable<Entity> GetNearbyEntities(Vector2 position, float radius)
+		public static IEnumerable<Entity.EntityBase> GetNearbyEntities(Vector2 position, float radius)
 		{
 			return _entities.Where(x => Vector2.DistanceSquared(position, x.Position) < radius * radius);
 		}
