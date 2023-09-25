@@ -1,21 +1,20 @@
 using System;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using NeonShooter.Core.Game.Display;
 using NeonShooter.Core.Game.Projectile;
 using NeonShooter.Core.Game.Util;
 
-namespace NeonShooter.Core.Game.Spell;
+namespace NeonShooter.Core.Game.Entity.Projectile;
 
-internal class FireballProjectile : Entity, IProjectile
+internal class FireballProjectile : EntityBase, IProjectile
 {
     private static readonly Random _rand = new();
     private const int Radius = 200;
     private const int Force = 100;
 
     public FireballProjectile(Vector2 position, Vector2 velocity) : 
-        base(Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f))
-    {
+        base(Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f)) {
+        
         Position = position;
         Velocity = velocity;
         Orientation = Velocity.ToAngle();

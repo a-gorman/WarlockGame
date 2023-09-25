@@ -8,9 +8,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NeonShooter.Core.Game.Display;
 
-namespace NeonShooter.Core.Game
+namespace NeonShooter.Core.Game.Entity
 {
-	internal class BlackHole : Entity
+	internal class BlackHole : EntityBase
 	{
 		private static readonly Random _rand = new();
 

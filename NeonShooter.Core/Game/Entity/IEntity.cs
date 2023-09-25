@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace NeonShooter.Core.Game;
+namespace NeonShooter.Core.Game.Entity;
 
 internal interface IEntity
 {

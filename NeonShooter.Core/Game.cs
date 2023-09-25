@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using NeonShooter.Core.Game;
 using NeonShooter.Core.Game.Display;
+using NeonShooter.Core.Game.Entity;
 
 namespace NeonShooter.Core
 {

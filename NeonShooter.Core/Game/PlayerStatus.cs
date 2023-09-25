@@ -4,6 +4,7 @@
 //----------------------------------------------------------------------------------
 
 using System.IO;
+using NeonShooter.Core.Game.Entity;
 
 namespace NeonShooter.Core.Game
 {

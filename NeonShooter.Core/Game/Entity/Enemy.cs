@@ -5,9 +5,9 @@ using Microsoft.Xna.Framework.Graphics;
 using NeonShooter.Core.Game.Display;
 using NeonShooter.Core.Game.Effect;
 
-namespace NeonShooter.Core.Game
+namespace NeonShooter.Core.Game.Entity
 {
-    internal class Enemy : Entity
+    internal class Enemy : EntityBase
     {
         public static Random Rand = new();
 
