@@ -1,10 +1,13 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace NeonShooter.Core.Game.Spell;
 
 internal interface ISpell
 {
     int ManaCost { get; }
+    
+    Texture2D SpellIcon { get; }
 
     void Update();
 

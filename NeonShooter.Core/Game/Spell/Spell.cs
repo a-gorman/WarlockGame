@@ -1,18 +1,21 @@
 using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using NeonShooter.Core.Game.Entity.Projectile;
 
 namespace NeonShooter.Core.Game.Spell;
 
-class Fireball : ISpell
+class Spell : ISpell
 {
     public required int ManaCost { get; init; }
     
     public required int CooldownTime { get; init; }
+    
+    public required Texture2D SpellIcon { get; init; }
 
     public void Update()
     {
-        Cooldown?.Update();
+        Cooldown.Update();
     }
 
     public GameTimer Cooldown { get; private set; } = GameTimer.FromFrames(0);

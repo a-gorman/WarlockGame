@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Media;
 using NeonShooter.Core.Game;
 using NeonShooter.Core.Game.Display;
 using NeonShooter.Core.Game.Entity;
+using NeonShooter.Core.Game.UI;
 
 namespace NeonShooter.Core
 {
@@ -143,7 +144,11 @@ namespace NeonShooter.Core
             DrawTitleSafeRightAlignedString("Multiplier: " + PlayerStatus.Multiplier, 35);
             // draw the custom mouse cursor
             _spriteBatch.Draw(Art.Pointer, Input.MousePosition, Color.White);
+            
+            SpellDisplay.Draw(_spriteBatch);
 
+            DrawDebugInfo();
+            
             if (PlayerStatus.IsGameOver)
             {
                 string text = "Game Over\n" +
@@ -172,6 +177,10 @@ namespace NeonShooter.Core
         {
             var textWidth = Art.Font.MeasureString(text).X;
             _spriteBatch.DrawString(Art.Font, text, new Vector2(ScreenSize.X - textWidth - 5 - Viewport.TitleSafeArea.X, Viewport.TitleSafeArea.Y + y), Color.White);
+        }
+
+        private void DrawDebugInfo() {
+            DrawRightAlignedString($"Mouse POS: {Input.MousePosition}", 65);
         }
     }
 }
