@@ -17,6 +17,8 @@ namespace NeonShooter.Core.Game
 		public static Texture2D Bullet { get; private set; } = null!;
 		
 		public static Texture2D Fireball { get; private set; } = null!;
+		
+		public static Texture2D FireballIcon { get; private set; } = null!;
 		public static Texture2D Pointer { get; private set; } = null!;
 		public static Texture2D BlackHole { get; private set; } = null!;
 
@@ -33,6 +35,7 @@ namespace NeonShooter.Core.Game
 			Wanderer = content.Load<Texture2D>("Art/Wanderer");
 			Bullet = content.Load<Texture2D>("Art/Bullet");
 			Fireball = content.Load<Texture2D>("Art/Fireball");
+			FireballIcon = content.Load<Texture2D>("Art/FireballIcon");
 			Pointer = content.Load<Texture2D>("Art/Pointer");
 			BlackHole = content.Load<Texture2D>("Art/Black Hole");
 

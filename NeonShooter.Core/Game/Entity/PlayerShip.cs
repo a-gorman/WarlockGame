@@ -18,7 +18,9 @@ namespace NeonShooter.Core.Game.Entity
     {
         public static PlayerShip Instance { get; } = new();
 
-        public List<ISpell> Spells { get; } = new() { SpellFactory.Fireball() };
+        const float Speed = 8;
+
+        public List<ISpell> Spells { get; } = new() { SpellFactory.Fireball(), SpellFactory.Fireball() };
 
         // public int Mana { get; set; } = 100;
 
@@ -56,7 +58,11 @@ namespace NeonShooter.Core.Game.Entity
             MakeExhaustFire();
 
             if (Input.WasRightMousePressed()) {
-                CastSpell(Spells.Single());
+                CastSpell(Spells.First());
+            }
+            
+            if (Input.WasLeftMousePressed()) {
+                CastSpell(Spells.Skip(1).First());
             }
             
             foreach (var spell in Spells) {
@@ -65,27 +71,26 @@ namespace NeonShooter.Core.Game.Entity
         }
 
         private void Move() {
-            const float speed = 8;
             var inputDirection = Input.GetMovementDirection();
 
-            if (VectorExtensions.IsLengthLessThan(Velocity, speed)) {
+            if (Velocity.IsLengthLessThan(Speed)) {
                 Velocity = Vector2.Zero;
             }
             else {
-                Velocity -= VectorExtensions.WithLength(Velocity, speed);
+                Velocity -= Velocity.WithLength(Speed);
             }
             
             if (inputDirection.HasLength()) {
-                Velocity += speed * inputDirection;
+                Velocity += Speed * inputDirection;
             }
 
             Position += Velocity;
             Position = Vector2.Clamp(Position, _sprite.Size / 2, NeonShooterGame.ScreenSize - _sprite.Size / 2);
 
             if (Velocity.LengthSquared() > 0)
-                Orientation = Extensions.ToAngle(Velocity);
+                Orientation = Velocity.ToAngle();
 
-            Velocity -= VectorExtensions.ToNormalizedOrZero(Velocity) * 8;
+            Velocity -= Velocity.ToNormalizedOrZero() * 8;
         }
 
         private void FireBullets()
