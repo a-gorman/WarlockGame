@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace NeonShooter.Core.Game.Display;
+namespace NeonShooter.Core.Game.Graphics;
 
 public class Sprite
 {

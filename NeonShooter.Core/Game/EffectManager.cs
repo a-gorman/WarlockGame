@@ -6,7 +6,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
-using NeonShooter.Core.Game.Effect;
+using NeonShooter.Core.Game.Graphics.Effect;
 
 namespace NeonShooter.Core.Game
 {
