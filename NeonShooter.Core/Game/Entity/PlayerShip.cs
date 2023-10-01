@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using NeonShooter.Core.Game.Display;
+using NeonShooter.Core.Game.Graphics;
 using NeonShooter.Core.Game.Spell;
 using NeonShooter.Core.Game.Util;
 
@@ -20,12 +20,7 @@ namespace NeonShooter.Core.Game.Entity
 
         const float Speed = 8;
 
-        public List<ISpell> Spells { get; } = new() { SpellFactory.Fireball(), SpellFactory.Fireball() };
-
-        // public int Mana { get; set; } = 100;
-
-        private const int CooldownFrames = 6;
-        private int _cooldowmRemaining = 0;
+        public List<WarlockSpell> Spells { get; } = new() { SpellFactory.Fireball(), SpellFactory.Lightning() };
 
         private int _framesUntilRespawn = 0;
         public bool IsDead => _framesUntilRespawn > 0;
@@ -50,8 +45,6 @@ namespace NeonShooter.Core.Game.Entity
                 }
                 return;
             }
-
-            // FireBullets();
 
             Move();
             
@@ -93,43 +86,12 @@ namespace NeonShooter.Core.Game.Entity
             Velocity -= Velocity.ToNormalizedOrZero() * 8;
         }
 
-        private void FireBullets()
-        {
-            var aim = Input.GetAimDirection(Position);
-            if (aim.HasLength() && _cooldowmRemaining <= 0)
-            {
-                _cooldowmRemaining = CooldownFrames;
-                float aimAngle = aim.ToAngle();
-                Quaternion aimQuat = Quaternion.CreateFromYawPitchRoll(0, 0, aimAngle);
-
-                float randomSpread = _rand.NextFloat(-0.04f, 0.04f) + _rand.NextFloat(-0.04f, 0.04f);
-                Vector2 vel = MathUtil.FromPolar(aimAngle + randomSpread, 11f);
-
-                Vector2 offset = Vector2.Transform(new Vector2(35, -8), aimQuat);
-                EntityManager.Add(new Bullet(Position + offset, vel));
-
-                offset = Vector2.Transform(new Vector2(35, 8), aimQuat);
-                EntityManager.Add(new Bullet(Position + offset, vel));
-
-                // Sound.Shot.Play(0.2f, _rand.NextFloat(-0.2f, 0.2f), 0);
-            }
-
-            if (_cooldowmRemaining > 0)
-                _cooldowmRemaining--;
-        }
-
-        private void CastSpell(ISpell spell)
+        private void CastSpell(WarlockSpell spell)
         {
             if (!spell.OnCooldown && Input.GetAimDirection(Position) is var aim && aim.HasLength())
             {
                 spell.Cast(Position, aim);
             }
-
-            // if (spell.ManaCost <= Mana && !spell.OnCooldown && Input.GetAimDirection(Position) is var aim && aim.HasLength())
-            // {
-            //     spell.Cast(Position, aim);
-            //     Mana -= spell.ManaCost;
-            // }
         }
 
         private void MakeExhaustFire()

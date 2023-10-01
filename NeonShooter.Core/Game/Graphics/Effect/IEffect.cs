@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework.Graphics;
 
-namespace NeonShooter.Core.Game.Effect;
+namespace NeonShooter.Core.Game.Graphics.Effect;
 
 public interface IEffect
 {

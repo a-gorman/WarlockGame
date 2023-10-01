@@ -149,7 +149,7 @@ namespace NeonShooter.Core.Game
 			return !a.IsExpired && !b.IsExpired && Vector2.DistanceSquared(a.Position, b.Position) < radius * radius;
 		}
 
-		public static IEnumerable<Entity.EntityBase> GetNearbyEntities(Vector2 position, float radius)
+		public static IEnumerable<EntityBase> GetNearbyEntities(Vector2 position, float radius)
 		{
 			return _entities.Where(x => Vector2.DistanceSquared(position, x.Position) < radius * radius);
 		}

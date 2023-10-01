@@ -7,6 +7,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NeonShooter.Core.Game.Display;
+using NeonShooter.Core.Game.Graphics;
 using NeonShooter.Core.Game.Projectile;
 
 namespace NeonShooter.Core.Game

@@ -15,7 +15,8 @@ namespace NeonShooter.Core.Game
 		public static Texture2D Seeker { get; private set; } = null!;
 		public static Texture2D Wanderer { get; private set; } = null!;
 		public static Texture2D Bullet { get; private set; } = null!;
-		
+
+		public static Texture2D Lightning { get; private set; } = null!;
 		public static Texture2D Fireball { get; private set; } = null!;
 		
 		public static Texture2D FireballIcon { get; private set; } = null!;
@@ -34,6 +35,8 @@ namespace NeonShooter.Core.Game
 			Seeker = content.Load<Texture2D>("Art/Seeker");
 			Wanderer = content.Load<Texture2D>("Art/Wanderer");
 			Bullet = content.Load<Texture2D>("Art/Bullet");
+			Lightning = content.Load<Texture2D>("Art/Lightning");
+			// Lightning = Texture2D.FromFile(NeonShooterGame.Instance.GraphicsDevice, @"C:\Users\Alex\RiderProjects\Monogame\NeonShooter.Core\Content\Art\Lightning.png");
 			Fireball = content.Load<Texture2D>("Art/Fireball");
 			FireballIcon = content.Load<Texture2D>("Art/FireballIcon");
 			Pointer = content.Load<Texture2D>("Art/Pointer");

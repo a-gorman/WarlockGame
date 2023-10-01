@@ -26,6 +26,9 @@
     <ProjectReference Include="..\NeonShooter.Core\NeonShooter.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\NeonShooter.Core\Content\bin\Windows\NeonShooter\Art\2158.jpg">
+      <Link>Content\Art\2158.jpg</Link>
+    </Content>
     <Content Include="..\NeonShooter.Core\Content\bin\Windows\NeonShooter\Art\FB500-1.png">
       <Link>Content\Art\FB500-1.png</Link>
     </Content>
@@ -35,5 +38,10 @@
     <Content Include="..\NeonShooter.Core\Content\bin\Windows\NeonShooter\Art\fireball_0.png">
       <Link>Content\Art\fireball_0.png</Link>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\NeonShooter.Core\Content\bin\Windows\NeonShooter\Art\Lightning.xnb">
+      <Link>Content\Art\Lightning.xnb</Link>
+    </None>
   </ItemGroup>
 </Project>

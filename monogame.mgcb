@@ -49,30 +49,6 @@
 /processorParam:TextureFormat=Color
 /build:NeonShooter.Core/Content/Art/Fireball.png
 
-#begin NeonShooter.Core/Content/Art/Fireball.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:NeonShooter.Core/Content/Art/Fireball.png
-
-#begin NeonShooter.Core/Content/Art/FireballIcon.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:NeonShooter.Core/Content/Art/FireballIcon.png
-
 #begin NeonShooter.Core/Content/Art/FireballIcon.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -108,6 +84,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:NeonShooter.Core/Content/Art/Laser.png
+
+#begin NeonShooter.Core/Content/Art/Lightning.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:NeonShooter.Core/Content/Art/Lightning.png
 
 #begin NeonShooter.Core/Content/Art/Player.png
 /importer:TextureImporter
@@ -194,23 +182,15 @@
 /processor:
 /build:NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Laser.xnb
 
-#begin NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Player.xnb
-/importer:
-/processor:
-/build:NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Player.xnb
-
-#begin NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Pointer.xnb
-/importer:
-/processor:
-/build:NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Pointer.xnb
-
-#begin NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Seeker.xnb
-/importer:
-/processor:
-/build:NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Seeker.xnb
-
-#begin NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Wanderer.xnb
-/importer:
-/processor:
-/build:NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Wanderer.xnb
+#begin NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Lightning.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Lightning.jpg
 

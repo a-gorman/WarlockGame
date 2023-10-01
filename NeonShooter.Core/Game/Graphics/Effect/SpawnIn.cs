@@ -1,8 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using NeonShooter.Core.Game.Display;
 
-namespace NeonShooter.Core.Game.Effect;
+namespace NeonShooter.Core.Game.Graphics.Effect;
 
 public class SpawnIn : IEffect
 {
