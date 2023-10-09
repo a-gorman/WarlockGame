@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using NeonShooter.Core.Game.Entity;
 using NeonShooter.Core.Game.Entity.Projectile;
 
 namespace NeonShooter.Core.Game.Spell;
@@ -25,7 +26,7 @@ class WarlockSpell
 
     public bool OnCooldown => !Cooldown.IsExpired;
     
-    public void Cast(Vector2 position, Vector2 direction)
+    public void Cast(IEntity caster, Vector2 direction)
     {
         if (OnCooldown)
         {
@@ -33,6 +34,6 @@ class WarlockSpell
         }
 
         Cooldown = GameTimer.FromSeconds(CooldownTime);
-        Effects.ForEach(x => x.OnCast(position, direction));
+        Effects.ForEach(x => x.OnCast(caster, direction));
     }
 }

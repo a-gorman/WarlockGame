@@ -1,9 +1,8 @@
-using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NeonShooter.Core.Game.Entity;
 
-namespace NeonShooter.Core.Game.UI; 
+namespace NeonShooter.Core.Game.Graphics.UI; 
 
 public static class SpellDisplay {
     
@@ -27,8 +26,8 @@ public static class SpellDisplay {
         pointTexture.SetData(new[] { Color.Red, Color.Blue, Color.White, Color.Green });
         
         spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Left, rectangle.Bottom, rectangle.Width, width), color); // Bottom line
-        spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Left, rectangle.Top, width, rectangle.Height), color);         // Left line
-        spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Right, rectangle.Top, width, rectangle.Height), color);        // Right line
+        spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Left, rectangle.Top, width, rectangle.Height), color);        // Left line
+        spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Right, rectangle.Top, width, rectangle.Height), color);       // Right line
         spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Left, rectangle.Top, rectangle.Width, width), color);    // Top line
     }
 }

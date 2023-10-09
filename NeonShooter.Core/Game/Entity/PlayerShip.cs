@@ -90,7 +90,7 @@ namespace NeonShooter.Core.Game.Entity
         {
             if (!spell.OnCooldown && Input.GetAimDirection(Position) is var aim && aim.HasLength())
             {
-                spell.Cast(Position, aim);
+                spell.Cast(this, aim);
             }
         }
 

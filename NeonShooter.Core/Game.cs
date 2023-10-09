@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Media;
 using NeonShooter.Core.Game;
 using NeonShooter.Core.Game.Display;
 using NeonShooter.Core.Game.Entity;
-using NeonShooter.Core.Game.UI;
+using NeonShooter.Core.Game.Graphics.UI;
 
 namespace NeonShooter.Core
 {
@@ -107,7 +107,7 @@ namespace NeonShooter.Core
                 PlayerStatus.Update();
                 EntityManager.Update();
                 EffectManager.Update();
-                EnemySpawner.Update();
+                // EnemySpawner.Update();
                 ParticleManager.Update();
                 Grid.Update();
             }

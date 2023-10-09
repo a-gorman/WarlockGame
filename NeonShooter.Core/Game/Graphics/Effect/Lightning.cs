@@ -35,7 +35,7 @@ public class Lightning : IEffect
         {
             _sprite.Color = Color.White;
             _sprite.Scale = 1;
-            _sprite.Draw(spriteBatch, _position, _orientation);
+            _sprite.Draw(spriteBatch, _position, _orientation, new Vector2(0, _sprite.Size.Y / 2));
         }
     }
 }
