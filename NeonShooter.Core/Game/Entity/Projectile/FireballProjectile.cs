@@ -38,7 +38,6 @@ internal class FireballProjectile : EntityBase, IProjectile
             for (int i = 0; i < 30; i++)
                 NeonShooterGame.ParticleManager.CreateParticle(Art.LineParticle, Position, Color.LightBlue, 50, 1,
                     new ParticleState() { Velocity = _rand.NextVector2(0, 9), Type = ParticleType.Bullet, LengthMultiplier = 1 });
-
         }
     }
 

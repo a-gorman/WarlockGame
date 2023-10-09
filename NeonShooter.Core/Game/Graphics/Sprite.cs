@@ -39,9 +39,9 @@ public class Sprite
         _framesBetweenTransitions = framesBetweenTransitions;
     }
 
-    public void Draw(SpriteBatch spriteBatch, Vector2 position, float orientation)
+    public void Draw(SpriteBatch spriteBatch, Vector2 position, float orientation, Vector2? origin = null)
     {
-        spriteBatch.Draw(_image, position, ActiveSourceRectangle, Color, orientation, Size / 2f, Scale, 0, 0);
+        spriteBatch.Draw(_image, position, ActiveSourceRectangle, Color, orientation, origin ?? Size / 2f, Scale, 0, 0);
         AdvanceSpriteFrame();
     }
 
