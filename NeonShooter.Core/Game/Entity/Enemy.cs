@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using NeonShooter.Core.Game.Display;
 using NeonShooter.Core.Game.Graphics;
 using NeonShooter.Core.Game.Graphics.Effect;
+using NeonShooter.Core.Game.Util;
 
 namespace NeonShooter.Core.Game.Entity
 {

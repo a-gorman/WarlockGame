@@ -13,6 +13,18 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin NeonShooter.Core/Content/Art/Air_07_Call_Lightning.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:NeonShooter.Core/Content/Art/Air_07_Call_Lightning.png
+
 #begin NeonShooter.Core/Content/Art/Black Hole.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -36,6 +48,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:NeonShooter.Core/Content/Art/Bullet.png
+
+#begin NeonShooter.Core/Content/Art/Fire_03_Meteor.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:NeonShooter.Core/Content/Art/Fire_03_Meteor.png
 
 #begin NeonShooter.Core/Content/Art/Fireball.png
 /importer:TextureImporter

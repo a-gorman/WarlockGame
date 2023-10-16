@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NeonShooter.Core.Game.Entity;
-using NeonShooter.Core.Game.Entity.Projectile;
 
 namespace NeonShooter.Core.Game.Spell;
 
