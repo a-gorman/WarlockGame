@@ -44,7 +44,7 @@ public static class VectorExtensions
 
     public static Vector2 ProjectedOnto(this Vector2 sourceVector, Vector2 other) {
         // (a*b/b*b)b
-        return other.ToNormalized() * (Vector2.Dot(sourceVector, other) / other.LengthSquared());
+        return other * (Vector2.Dot(sourceVector, other) / other.LengthSquared());
     }
     
     public static float DistanceSquaredTo(this Vector2 sourceVector, Vector2 other) {

@@ -12,7 +12,7 @@ public class LightningEffect: ICastEffect {
 
     private Texture2D _art = Art.Lightning;
 
-    private const int Length = 1000;
+    private const int Length = 800;
     
     public void OnCast(IEntity caster, Vector2 castDirection) {
         
@@ -27,7 +27,9 @@ public class LightningEffect: ICastEffect {
         foreach (var entity in EntityManager.GetNearbyEntities(lineSegment.BoundingBox)) {
             var closetPointTo = lineSegment.GetClosetPointTo(entity.Position);
 
-            Debug.Visualize(new LineSegment(closetPointTo, entity.Position), Color.Red, 100);
+            // Debug.Visualize(new LineSegment(closetPointTo, entity.Position), Color.Blue, 100);
+
+            if (closetPointTo.DistanceSquaredTo(entity.Position) > entity.Radius * entity.Radius) { continue; }
             
             switch (entity)
             {
