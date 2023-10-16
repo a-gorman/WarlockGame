@@ -29,10 +29,16 @@ public class LineSegment {
         var AC = point - Start;
         var AB = End - Start;
 
+        Debug.Visualize(AC, Start, Color.Red, 100);
+        // Debug.Visualize(AB, Start, Color.Blue, 100);
+        
         // Get point D by taking the projection of AC onto AB then adding the offset of A
         var D = AC.ProjectedOnto(AB) + Start;
 
         var AD = D - Start;
+        
+        Debug.Visualize(new LineSegment(D, point), Color.Green, 100);
+
         // D might not be on AB so calculate k of D down AB (aka solve AD = k * AB)
         // We can use either component, but choose larger value to reduce the chance of dividing by zero
         var k = AB.X != 0 ? AD.X / AB.X : AD.Y / AB.Y;
