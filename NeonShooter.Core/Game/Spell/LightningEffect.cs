@@ -1,6 +1,8 @@
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NeonShooter.Core.Game.Entity;
+using NeonShooter.Core.Game.Geometry;
 using NeonShooter.Core.Game.Graphics.Effect;
 using NeonShooter.Core.Game.Util;
 
@@ -10,16 +12,23 @@ public class LightningEffect: ICastEffect {
 
     private Texture2D _art = Art.Lightning;
 
-    private const int Lenght = 1000;
+    private const int Length = 1000;
     
     public void OnCast(IEntity caster, Vector2 castDirection) {
         
         var startPoint = caster.Position + caster.Radius * castDirection.ToNormalized();
-        var endPoint = startPoint + castDirection * Lenght;
+        var endPoint = startPoint + castDirection * Length;
             
-        // Debug.Visualize(castDirection * Lenght, startPoint, Color.Red, 100);
-        
-        foreach (var entity in EntityManager.GetNearbyEntities(caster.Position, 100)) {
+
+        var lineSegment = new LineSegment(startPoint, endPoint);
+
+        Debug.Visualize(lineSegment, Color.Red, 100);
+
+        foreach (var entity in EntityManager.GetNearbyEntities(lineSegment.BoundingBox)) {
+            var closetPointTo = lineSegment.GetClosetPointTo(entity.Position);
+
+            Debug.Visualize(new LineSegment(closetPointTo, entity.Position), Color.Red, 100);
+            
             switch (entity)
             {
                 case Enemy enemy:

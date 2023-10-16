@@ -24,7 +24,7 @@ static class SpellFactory
         {
             ManaCost = 10, 
             CooldownTime = 1,
-            SpellIcon = Art.FireballIcon,
+            SpellIcon = Art.LightningIcon,
             Effects = new List<ICastEffect>
             {
                 new LightningEffect()

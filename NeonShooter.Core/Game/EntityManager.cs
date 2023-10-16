@@ -3,12 +3,15 @@
 // Find the full tutorial at: http://gamedev.tutsplus.com/series/vector-shooter-xna/
 //----------------------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NeonShooter.Core.Game.Entity;
+using NeonShooter.Core.Game.Geometry;
 using NeonShooter.Core.Game.Projectile;
+using NeonShooter.Core.Game.Util;
 
 namespace NeonShooter.Core.Game
 {
@@ -148,10 +151,32 @@ namespace NeonShooter.Core.Game
 			float radius = a.Radius + b.Radius;
 			return !a.IsExpired && !b.IsExpired && Vector2.DistanceSquared(a.Position, b.Position) < radius * radius;
 		}
+		
+		// public static IEnumerable<EntityBase> GetEntitiesWithinRectangle(Vector2 position, int width, int height, float angle) {
+		// 	var lineSegment = new LineSegment(position, new Vector2((position.X + width) * Single.Sin(angle), (position.Y + height) * Single.Sin(angle)));
+		//
+		// 	return _entities
+		// 		// Reject
+		// 		.Where(x => x.Position.IsWithin(lineSegment.BoundingBox) && ;
+		// }
 
+		/// <summary>
+		/// Get's entities the given rectangle. Does not check for exact collision
+		/// </summary>
+		/// <param name="rectangle">The rectangle to check near</param>
+		/// <returns>Entities near the given rectangle</returns>
+		public static IEnumerable<EntityBase> GetNearbyEntities(Rectangle rectangle)
+		{
+			// Account for radius (reject by assuming rxr rect)
+			return _entities.Where(x => {
+				var boundingBox = new Rectangle((x.Position - new Vector2(x.Radius, x.Radius)).ToPoint(), new Point((int)x.Radius, (int)x.Radius));
+				return rectangle.Intersects(boundingBox);
+			});
+		}
+		
 		public static IEnumerable<EntityBase> GetNearbyEntities(Vector2 position, float radius)
 		{
-			return _entities.Where(x => Vector2.DistanceSquared(position, x.Position) < radius * radius);
+			return _entities.Where(x => Vector2.DistanceSquared(position, x.Position) < (x.Radius + radius) * (x.Radius + radius));
 		}
 
 		public static void Draw(SpriteBatch spriteBatch)

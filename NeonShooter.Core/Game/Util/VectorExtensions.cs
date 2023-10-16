@@ -1,4 +1,3 @@
-using System;
 using Microsoft.Xna.Framework;
 
 namespace NeonShooter.Core.Game.Util;
@@ -43,6 +42,19 @@ public static class VectorExtensions
         return vector.ToNormalized() * length;
     }
 
+    public static Vector2 ProjectedOnto(this Vector2 sourceVector, Vector2 other) {
+        // (a*b/b*b)b
+        return other.ToNormalized() * (Vector2.Dot(sourceVector, other) / other.LengthSquared());
+    }
+    
+    public static float DistanceSquaredTo(this Vector2 sourceVector, Vector2 other) {
+        return (sourceVector - other).LengthSquared();
+    }
+
+    public static bool IsWithin(this Vector2 vector, Rectangle rectangle) {
+        return rectangle.Contains(vector);
+    }
+    
     // Min 0
     // public static void SubtractLength(this Vector2 vector, float length) {
     //     if (vector.IsLengthLessThan(length)) {

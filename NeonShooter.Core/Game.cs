@@ -107,7 +107,7 @@ namespace NeonShooter.Core
                 PlayerStatus.Update();
                 EntityManager.Update();
                 EffectManager.Update();
-                // EnemySpawner.Update();
+                EnemySpawner.Update();
                 ParticleManager.Update();
                 Grid.Update();
             }
