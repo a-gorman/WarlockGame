@@ -1,6 +1,4 @@
-using NeonShooter.Core.Game.Entity;
-
-namespace NeonShooter.Core.Game.Projectile;
+namespace NeonShooter.Core.Game.Entity.Projectile;
 
 interface IProjectile: IEntity
 {

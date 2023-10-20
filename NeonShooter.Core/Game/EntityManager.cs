@@ -9,8 +9,8 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NeonShooter.Core.Game.Entity;
+using NeonShooter.Core.Game.Entity.Projectile;
 using NeonShooter.Core.Game.Geometry;
-using NeonShooter.Core.Game.Projectile;
 using NeonShooter.Core.Game.Util;
 
 namespace NeonShooter.Core.Game
@@ -169,7 +169,7 @@ namespace NeonShooter.Core.Game
 		{
 			// Account for radius (reject by assuming rxr rect)
 			return _entities.Where(x => {
-				var boundingBox = new Rectangle((x.Position - new Vector2(x.Radius, x.Radius)).ToPoint(), new Point((int)x.Radius, (int)x.Radius));
+				var boundingBox = new Rectangle((x.Position - new Vector2(x.Radius, x.Radius)).ToPoint(), new Point((int)x.Radius * 2, (int)x.Radius  * 2));
 				return rectangle.Intersects(boundingBox);
 			});
 		}
