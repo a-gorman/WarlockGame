@@ -8,17 +8,20 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using NeonShooter.Core.Game.Entity.Order;
 using NeonShooter.Core.Game.Graphics;
 using NeonShooter.Core.Game.Spell;
 using NeonShooter.Core.Game.Util;
 
 namespace NeonShooter.Core.Game.Entity
 {
-    internal class PlayerShip : EntityBase
+    class PlayerShip : EntityBase
     {
         public static PlayerShip Instance { get; } = new();
 
-        const float Speed = 8;
+        public const float Speed = 8;
+
+        public Vector2? Direction { get; set; }
 
         public List<WarlockSpell> Spells { get; } = new() { SpellFactory.Fireball(), SpellFactory.Lightning() };
 
@@ -26,6 +29,8 @@ namespace NeonShooter.Core.Game.Entity
         public bool IsDead => _framesUntilRespawn > 0;
 
         private static readonly Random _rand = new();
+
+        private LinkedList<IOrder> Orders { get; } = new();
 
         private PlayerShip() :
             base(new Sprite(Art.Player))
@@ -46,16 +51,29 @@ namespace NeonShooter.Core.Game.Entity
                 return;
             }
 
+            var inputDirection = Input.GetMovementDirection();
+
+            if (inputDirection.HasLength()) {
+                Direction = inputDirection;
+                CancelOrders();
+            } else if (Input.InputType != InputType.MouseMove) {
+                Direction = Vector2.Zero;
+            }
+
+            var finished = Orders.FirstOrDefault()?.Update(this);
+            if (finished ?? false) { Orders.RemoveFirst(); }
+
             Move();
             
             MakeExhaustFire();
 
             if (Input.WasRightMousePressed()) {
-                CastSpell(Spells.First());
+                CancelOrders();
+                Orders.AddFirst(new MoveOrder(Input.MousePosition));
             }
             
             if (Input.WasLeftMousePressed()) {
-                CastSpell(Spells.Skip(1).First());
+                CastSpell(Spells.First());
             }
             
             foreach (var spell in Spells) {
@@ -63,8 +81,12 @@ namespace NeonShooter.Core.Game.Entity
             }
         }
 
+        private void CancelOrders() {
+            if(Orders.Count != 0)
+                Orders.RemoveFirst();
+        }
+
         private void Move() {
-            var inputDirection = Input.GetMovementDirection();
 
             if (Velocity.IsLengthLessThan(Speed)) {
                 Velocity = Vector2.Zero;
@@ -72,9 +94,9 @@ namespace NeonShooter.Core.Game.Entity
             else {
                 Velocity -= Velocity.WithLength(Speed);
             }
-            
-            if (inputDirection.HasLength()) {
-                Velocity += Speed * inputDirection;
+
+            if (Direction != null) {
+                Velocity += Speed * (Vector2)Direction;
             }
 
             Position += Velocity;
@@ -99,7 +121,7 @@ namespace NeonShooter.Core.Game.Entity
             if (Velocity.LengthSquared() > 0.1f)
             {
                 // set up some variables
-                Orientation = Extensions.ToAngle(Velocity);
+                Orientation = Velocity.ToAngle();
                 Quaternion rot = Quaternion.CreateFromYawPitchRoll(0f, 0f, Orientation);
 
                 double t = NeonShooterGame.GameTime.TotalGameTime.TotalSeconds;

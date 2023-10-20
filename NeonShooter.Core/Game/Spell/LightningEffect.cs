@@ -18,16 +18,11 @@ public class LightningEffect: ICastEffect {
         
         var startPoint = caster.Position + caster.Radius * castDirection.ToNormalized();
         var endPoint = startPoint + castDirection * Length;
-            
 
         var lineSegment = new LineSegment(startPoint, endPoint);
 
-        Debug.Visualize(lineSegment, Color.Red, 100);
-
         foreach (var entity in EntityManager.GetNearbyEntities(lineSegment.BoundingBox)) {
             var closetPointTo = lineSegment.GetClosetPointTo(entity.Position);
-
-            // Debug.Visualize(new LineSegment(closetPointTo, entity.Position), Color.Blue, 100);
 
             if (closetPointTo.DistanceSquaredTo(entity.Position) > entity.Radius * entity.Radius) { continue; }
             

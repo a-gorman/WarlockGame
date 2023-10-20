@@ -10,7 +10,7 @@ using NeonShooter.Core.Game.Graphics;
 
 namespace NeonShooter.Core.Game.Entity
 {
-	internal abstract class EntityBase : IEntity
+	abstract class EntityBase : IEntity
 	{
 		protected readonly Sprite _sprite;
 		
