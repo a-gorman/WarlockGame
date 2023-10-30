@@ -12,6 +12,7 @@ using NeonShooter.Core.Game.Entity.Order;
 using NeonShooter.Core.Game.Graphics;
 using NeonShooter.Core.Game.Spell;
 using NeonShooter.Core.Game.Util;
+using NeonShooter.Core.Game.UX;
 
 namespace NeonShooter.Core.Game.Entity
 {
@@ -72,15 +73,20 @@ namespace NeonShooter.Core.Game.Entity
                 Orders.AddFirst(new MoveOrder(Input.MousePosition));
             }
             
-            if (Input.WasLeftMousePressed()) {
-                CastSpell(Spells.First());
-            }
+            // if (Input.WasLeftMousePressed()) {
+            //     CastSpell(Spells.First());
+            // }
             
             foreach (var spell in Spells) {
                 spell.Update();
             }
         }
 
+        public void CastSpell(int spellIndex) {
+            if(spellIndex < Spells.Count)
+                CastSpell(Spells[spellIndex]);
+        }
+        
         private void CancelOrders() {
             if(Orders.Count != 0)
                 Orders.RemoveFirst();

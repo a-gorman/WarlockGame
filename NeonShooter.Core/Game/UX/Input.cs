@@ -3,50 +3,55 @@
 // Find the full tutorial at: http://gamedev.tutsplus.com/series/vector-shooter-xna/
 //----------------------------------------------------------------------------------
 
+using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using NeonShooter.Core.Game.Entity;
 using NeonShooter.Core.Game.Util;
 
-namespace NeonShooter.Core.Game; 
+namespace NeonShooter.Core.Game.UX; 
 
 internal static class Input
 {
-	private static KeyboardState _keyboardState, _lastKeyboardState;
 	private static MouseState _mouseState, _lastMouseState;
 	private static GamePadState _gamepadState, _lastGamepadState;
 
-	public static InputType InputType;
+	public static InputType InputType { get; private set; } = InputType.MouseMove;
+
+	public static int ActiveSpellIndex = -1;
 
 	public static Vector2 MousePosition => new Vector2(_mouseState.X, _mouseState.Y);
 
+	private static InputAction[] _inputActions = { InputAction.Spell1, InputAction.Spell2, InputAction.Spell3, InputAction.Spell4 };
+	
 	public static void Update() {
-		_lastKeyboardState = _keyboardState;
+
+		KeyboardInput.Update();
 		_lastMouseState = _mouseState;
 		_lastGamepadState = _gamepadState;
 
-		_keyboardState = Keyboard.GetState();
 		_mouseState = Mouse.GetState();
 		_gamepadState = GamePad.GetState(PlayerIndex.One);
 
 		// If the player pressed one of the arrow keys or is using a gamepad to aim, we want to disable mouse aiming. Otherwise,
 		// if the player moves the mouse, enable mouse aiming.
-		if (new[] { Keys.W, Keys.A, Keys.S, Keys.D }.Any(x => _keyboardState.IsKeyDown(x)))
+		if (new[] { InputAction.MoveLeft, InputAction.MoveRight, InputAction.MoveUp, InputAction.MoveDown }.Any(KeyboardInput.IsActionKeyDown))
 			InputType = InputType.KeyboardMove;
 		else if (MousePosition != new Vector2(_lastMouseState.X, _lastMouseState.Y))
 			InputType = InputType.MouseMove;
 		else if(_gamepadState.ThumbSticks.Right != Vector2.Zero) {
 			InputType = InputType.Gamepad;
 		}
-	
-}
 
-	// Checks if a key was just pressed down
-	public static bool WasKeyPressed(Keys key)
-	{
-		return _lastKeyboardState.IsKeyUp(key) && _keyboardState.IsKeyDown(key);
+		HandleSpellButtonPressed();
+
+		if (ActiveSpellIndex != -1 && InputType != InputType.Gamepad && WasLeftMousePressed()) {
+			PlayerShip.Instance.CastSpell(ActiveSpellIndex);
+			ActiveSpellIndex = -1;
+		}
 	}
-		
+
 	public static bool WasLeftMousePressed()
 	{
 		return _mouseState.LeftButton == ButtonState.Pressed &&  _lastMouseState.LeftButton == ButtonState.Released;
@@ -68,13 +73,13 @@ internal static class Input
 		Vector2 direction = _gamepadState.ThumbSticks.Left;
 		direction.Y *= -1;	// invert the y-axis
 
-		if (_keyboardState.IsKeyDown(Keys.A))
+		if (KeyboardInput.IsActionKeyDown(InputAction.MoveLeft))
 			direction.X -= 1;
-		if (_keyboardState.IsKeyDown(Keys.D))
+		if (KeyboardInput.IsActionKeyDown(InputAction.MoveRight))
 			direction.X += 1;
-		if (_keyboardState.IsKeyDown(Keys.W))
+		if (KeyboardInput.IsActionKeyDown(InputAction.MoveUp))
 			direction.Y -= 1;
-		if (_keyboardState.IsKeyDown(Keys.S))
+		if (KeyboardInput.IsActionKeyDown(InputAction.MoveDown))
 			direction.Y += 1;
 
 		// Clamp the length of the vector to a maximum of 1.
@@ -101,9 +106,25 @@ internal static class Input
 		return direction.ToNormalizedOrZero();
 	}
 
-	public static bool WasBombButtonPressed()
+	public static void HandleSpellButtonPressed()
 	{
-		return WasButtonPressed(Buttons.LeftTrigger) || WasButtonPressed(Buttons.RightTrigger) || WasKeyPressed(Keys.Space);
+		switch (InputType) {
+			case InputType.MouseMove:
+			case InputType.KeyboardMove:
+
+				for (var i = 0; i < _inputActions.Length; i++) {
+					if (KeyboardInput.WasActionKeyPressed(_inputActions[i])) {
+						ActiveSpellIndex = i;
+						break;
+					}
+				}
+
+				break;
+			case InputType.Gamepad:
+				break;
+			default:
+				throw new ArgumentOutOfRangeException();
+		}
 	}
 }
 

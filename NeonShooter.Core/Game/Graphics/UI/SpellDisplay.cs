@@ -1,23 +1,27 @@
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NeonShooter.Core.Game.Entity;
+using NeonShooter.Core.Game.UX;
 
 namespace NeonShooter.Core.Game.Graphics.UI; 
 
 public static class SpellDisplay {
     
     private const int spellSpacing = 100;
-    
+
+    private static InputAction[] _actions = { InputAction.Spell1, InputAction.Spell2, InputAction.Spell3, InputAction.Spell4 };
+
     public static void Draw(SpriteBatch spriteBatch) {
         DrawHollowRectangle(spriteBatch, new Rectangle(20, 925, 1880, 90), Color.White);
 
-        var spellIndex = 0;
-        foreach (var spell in PlayerShip.Instance.Spells) {
+        for (var i = 0; i < PlayerShip.Instance.Spells.Count; i++) {
+            var spell = PlayerShip.Instance.Spells[i];
             spriteBatch.Draw(
-                spell.SpellIcon, 
-                new Rectangle(60 + spellSpacing * spellIndex, 950, 50, 50), 
+                spell.SpellIcon,
+                new Rectangle(60 + spellSpacing * i, 950, 50, 50),
                 spell.OnCooldown ? Color.Gray : Color.White);
-            spellIndex++;
+            spriteBatch.DrawString(Art.Font, KeyboardInput._mappings[_actions[i]].DisplayValue, new Vector2(55 + spellSpacing * i, 950-9), Color.White);
         }
     }
 

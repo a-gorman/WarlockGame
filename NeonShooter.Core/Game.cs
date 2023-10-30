@@ -7,6 +7,7 @@ using NeonShooter.Core.Game;
 using NeonShooter.Core.Game.Display;
 using NeonShooter.Core.Game.Entity;
 using NeonShooter.Core.Game.Graphics.UI;
+using NeonShooter.Core.Game.UX;
 
 namespace NeonShooter.Core
 {
@@ -94,12 +95,12 @@ namespace NeonShooter.Core
             Input.Update();
 
             // Allows the game to exit
-            if (Input.WasButtonPressed(Buttons.Back) || Input.WasKeyPressed(Keys.Escape))
+            if (Input.WasButtonPressed(Buttons.Back) || KeyboardInput.WasKeyPressed(Keys.Escape))
                 Exit();
 
-            if (Input.WasKeyPressed(Keys.P))
+            if (KeyboardInput.WasKeyPressed(Keys.P))
                 _paused = !_paused;
-            if (Input.WasKeyPressed(Keys.B))
+            if (KeyboardInput.WasKeyPressed(Keys.B))
                 _bloom.Visible = !_bloom.Visible;
 
             if (!_paused)
