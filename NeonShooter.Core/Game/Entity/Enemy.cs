@@ -93,8 +93,8 @@ namespace NeonShooter.Core.Game.Entity
         public void WasShot()
         {
             IsExpired = true;
-            PlayerStatus.AddPoints(PointValue);
-            PlayerStatus.IncreaseMultiplier();
+            PlayerManager.ActivePlayer.Status.AddPoints(PointValue);
+            PlayerManager.ActivePlayer.Status.IncreaseMultiplier();
 
             float hue1 = Rand.NextFloat(0, 6);
             float hue2 = (hue1 + Rand.NextFloat(0, 2)) % 6f;
@@ -124,8 +124,8 @@ namespace NeonShooter.Core.Game.Entity
         {
             while (true)
             {
-                if (!PlayerShip.Instance.IsDead)
-                    Velocity += (PlayerShip.Instance.Position - Position).ScaleTo(acceleration);
+                if (!PlayerManager.ActivePlayer.Warlock.IsDead)
+                    Velocity += (PlayerManager.ActivePlayer.Warlock.Position - Position).ScaleTo(acceleration);
 
                 if (Velocity != Vector2.Zero)
                     Orientation = Velocity.ToAngle();

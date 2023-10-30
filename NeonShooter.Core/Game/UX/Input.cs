@@ -12,7 +12,7 @@ using NeonShooter.Core.Game.Util;
 
 namespace NeonShooter.Core.Game.UX; 
 
-internal static class Input
+class Input
 {
 	private static MouseState _mouseState, _lastMouseState;
 	private static GamePadState _gamepadState, _lastGamepadState;
@@ -47,7 +47,7 @@ internal static class Input
 		HandleSpellButtonPressed();
 
 		if (ActiveSpellIndex != -1 && InputType != InputType.Gamepad && WasLeftMousePressed()) {
-			PlayerShip.Instance.CastSpell(ActiveSpellIndex);
+			PlayerManager.Players.First().Warlock.CastSpell(ActiveSpellIndex); // Assume the left mouse button is always player 1
 			ActiveSpellIndex = -1;
 		}
 	}

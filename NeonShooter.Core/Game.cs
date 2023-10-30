@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -6,6 +7,7 @@ using Microsoft.Xna.Framework.Media;
 using NeonShooter.Core.Game;
 using NeonShooter.Core.Game.Display;
 using NeonShooter.Core.Game.Entity;
+using NeonShooter.Core.Game.Graphics;
 using NeonShooter.Core.Game.Graphics.UI;
 using NeonShooter.Core.Game.UX;
 
@@ -68,8 +70,7 @@ namespace NeonShooter.Core
 			Art.Load(Content);
 			Sound.Load(Content);
 
-            EntityManager.Add(PlayerShip.Instance);
-
+            PlayerManager.AddPlayer("Alex");
  
             //Known issue that you get exceptions if you use Media PLayer while connected to your PC
             //See http://social.msdn.microsoft.com/Forums/en/windowsphone7series/thread/c8a243d2-d360-46b1-96bd-62b1ef268c66
@@ -105,7 +106,7 @@ namespace NeonShooter.Core
 
             if (!_paused)
             {
-                PlayerStatus.Update();
+                PlayerManager.Update();
                 EntityManager.Update();
                 EffectManager.Update();
                 EnemySpawner.Update();
@@ -140,9 +141,11 @@ namespace NeonShooter.Core
             // Draw the user interface without bloom
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
 
-            DrawTitleSafeAlignedString("Lives: " + PlayerStatus.Lives, 5);
-            DrawTitleSafeRightAlignedString("Score: " + PlayerStatus.Score, 5);
-            DrawTitleSafeRightAlignedString("Multiplier: " + PlayerStatus.Multiplier, 35);
+            var activePlayer = PlayerManager.Players.First();
+            
+            DrawTitleSafeAlignedString("Lives: " + activePlayer.Status.Lives, 5);
+            DrawTitleSafeRightAlignedString("Score: " + activePlayer.Status.Score, 5);
+            DrawTitleSafeRightAlignedString("Multiplier: " + activePlayer.Status.Multiplier, 35);
             // draw the custom mouse cursor
             _spriteBatch.Draw(Art.Pointer, Input.MousePosition, Color.White);
             
@@ -150,11 +153,11 @@ namespace NeonShooter.Core
 
             DrawDebugInfo();
             
-            if (PlayerStatus.IsGameOver)
+            if (GameStatus.IsGameOver)
             {
                 string text = "Game Over\n" +
-                    "Your Score: " + PlayerStatus.Score + "\n" +
-                    "High Score: " + PlayerStatus.HighScore;
+                    "Your Score: " + activePlayer.Status.Score + "\n" +
+                    "High Score: " + activePlayer.Status.HighScore;
 
                 Vector2 textSize = Art.Font.MeasureString(text);
                 _spriteBatch.DrawString(Art.Font, text, ScreenSize / 2 - textSize / 2, Color.White);

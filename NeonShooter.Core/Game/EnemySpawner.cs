@@ -4,6 +4,7 @@
 //----------------------------------------------------------------------------------
 
 using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using NeonShooter.Core.Game.Entity;
 
@@ -15,9 +16,12 @@ namespace NeonShooter.Core.Game
 		private static float _inverseSpawnChance = 90;
 		private static readonly float _inverseBlackHoleChance = 600;
 
+		private static PlayerShip PlayerInstance => PlayerManager.Players.First().Warlock;
+
+		
 		public static void Update()
 		{
-			if (!PlayerShip.Instance.IsDead && EntityManager.Count < 200)
+			if (!PlayerInstance.IsDead && EntityManager.Count < 200)
 			{
 				if (_rand.Next((int)_inverseSpawnChance) == 0)
 					EntityManager.Add(Enemy.CreateSeeker(GetSpawnPosition()));
@@ -41,7 +45,7 @@ namespace NeonShooter.Core.Game
 			{
 				pos = new Vector2(_rand.Next((int)NeonShooterGame.ScreenSize.X), _rand.Next((int)NeonShooterGame.ScreenSize.Y));
 			} 
-			while (Vector2.DistanceSquared(pos, PlayerShip.Instance.Position) < 250 * 250);
+			while (Vector2.DistanceSquared(pos, PlayerInstance.Position) < 250 * 250);
 
 			return pos;
 		}

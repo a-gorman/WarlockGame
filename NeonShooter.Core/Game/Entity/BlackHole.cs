@@ -78,8 +78,8 @@ namespace NeonShooter.Core.Game.Entity
 			if (_hitpoints <= 0)
 			{
 				IsExpired = true;
-				PlayerStatus.AddPoints(5);
-				PlayerStatus.IncreaseMultiplier();
+				PlayerManager.ActivePlayer.Status.AddPoints(5);
+				PlayerManager.ActivePlayer.Status.IncreaseMultiplier();
 			}
 
 			

@@ -18,13 +18,15 @@ namespace NeonShooter.Core.Game.Entity
 {
     class PlayerShip : EntityBase
     {
-        public static PlayerShip Instance { get; } = new();
+        // public static PlayerShip Instance { get; } = new();
 
         public const float Speed = 8;
 
         public Vector2? Direction { get; set; }
 
         public List<WarlockSpell> Spells { get; } = new() { SpellFactory.Fireball(), SpellFactory.Lightning() };
+        
+        public Player Player { get; }
 
         private int _framesUntilRespawn = 0;
         public bool IsDead => _framesUntilRespawn > 0;
@@ -33,9 +35,10 @@ namespace NeonShooter.Core.Game.Entity
 
         private LinkedList<IOrder> Orders { get; } = new();
 
-        private PlayerShip() :
+        public PlayerShip(Player player) :
             base(new Sprite(Art.Player))
         {
+            Player = player;
             Position = NeonShooterGame.ScreenSize / 2;
             Radius = 10;
         }
@@ -43,8 +46,8 @@ namespace NeonShooter.Core.Game.Entity
         public override void Update() {
             if (IsDead) {
                 if (--_framesUntilRespawn == 0) {
-                    if (PlayerStatus.Lives == 0) {
-                        PlayerStatus.Reset();
+                    if (Player.Status.Lives == 0) {
+                        Player.Status.Reset();
                         Position = NeonShooterGame.ScreenSize / 2;
                     }
                     NeonShooterGame.Grid.ApplyDirectedForce(new Vector3(0, 0, 5000), new Vector3(Position, 0), 50);
@@ -178,8 +181,8 @@ namespace NeonShooter.Core.Game.Entity
 
         public void Kill()
         {
-            PlayerStatus.RemoveLife();
-            _framesUntilRespawn = PlayerStatus.IsGameOver ? 300 : 120;
+            Player.Status.RemoveLife();
+            _framesUntilRespawn = GameStatus.IsGameOver ? 300 : 120;
 
             Color explosionColor = new Color(0.8f, 0.8f, 0.4f); // yellow
 

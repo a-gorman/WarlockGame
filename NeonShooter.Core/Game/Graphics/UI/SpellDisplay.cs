@@ -1,11 +1,12 @@
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using NeonShooter.Core.Game.Entity;
 using NeonShooter.Core.Game.UX;
 
 namespace NeonShooter.Core.Game.Graphics.UI; 
 
+/// <summary>
+/// Assumes single active player (No local coop)
+/// </summary>
 public static class SpellDisplay {
     
     private const int spellSpacing = 100;
@@ -15,8 +16,8 @@ public static class SpellDisplay {
     public static void Draw(SpriteBatch spriteBatch) {
         DrawHollowRectangle(spriteBatch, new Rectangle(20, 925, 1880, 90), Color.White);
 
-        for (var i = 0; i < PlayerShip.Instance.Spells.Count; i++) {
-            var spell = PlayerShip.Instance.Spells[i];
+        for (var i = 0; i < PlayerManager.ActivePlayer.Warlock.Spells.Count; i++) {
+            var spell = PlayerManager.ActivePlayer.Warlock.Spells[i];
             spriteBatch.Draw(
                 spell.SpellIcon,
                 new Rectangle(60 + spellSpacing * i, 950, 50, 50),
