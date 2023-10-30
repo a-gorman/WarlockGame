@@ -3,15 +3,12 @@
 // Find the full tutorial at: http://gamedev.tutsplus.com/series/vector-shooter-xna/
 //----------------------------------------------------------------------------------
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NeonShooter.Core.Game.Entity;
 using NeonShooter.Core.Game.Entity.Projectile;
-using NeonShooter.Core.Game.Geometry;
-using NeonShooter.Core.Game.Util;
 
 namespace NeonShooter.Core.Game
 {
@@ -30,6 +27,8 @@ namespace NeonShooter.Core.Game
 		public static int Count => _entities.Count;
 		public static int BlackHoleCount => _blackHoles.Count;
 
+		private static PlayerShip PlayerInstance => PlayerManager.Players.First().Warlock;
+		
 		public static void Add(EntityBase entity)
 		{
 			if (!_isUpdating)
@@ -95,7 +94,7 @@ namespace NeonShooter.Core.Game
 
 		private static void HandlePlayerEnemyCollisions()
 		{
-			if (_enemies.Any(x => x.IsActive && IsColliding(x, PlayerShip.Instance)))
+			if (_enemies.Any(x => x.IsActive && IsColliding(x, PlayerInstance)))
 			{
 				KillPlayer();
 			}
@@ -130,7 +129,7 @@ namespace NeonShooter.Core.Game
 					}
 				}
 
-				if (IsColliding(PlayerShip.Instance, blackHole))
+				if (IsColliding(PlayerInstance, blackHole))
 				{
 					KillPlayer();
 					break;
@@ -140,7 +139,7 @@ namespace NeonShooter.Core.Game
 
 		private static void KillPlayer()
 		{
-			PlayerShip.Instance.Kill();
+			PlayerInstance.Kill();
 			_enemies.ForEach(x => x.WasShot());
 			_blackHoles.ForEach(x => x.Kill());
 			EnemySpawner.Reset();
