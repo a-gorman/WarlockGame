@@ -7,12 +7,11 @@ using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using NeonShooter.Core.Game.Entity;
 using NeonShooter.Core.Game.Util;
 
 namespace NeonShooter.Core.Game.UX; 
 
-class Input
+static class Input
 {
 	private static MouseState _mouseState, _lastMouseState;
 	private static GamePadState _gamepadState, _lastGamepadState;
@@ -43,7 +42,7 @@ class Input
 		else if(_gamepadState.ThumbSticks.Right != Vector2.Zero) {
 			InputType = InputType.Gamepad;
 		}
-
+		
 		HandleSpellButtonPressed();
 
 		if (ActiveSpellIndex != -1 && InputType != InputType.Gamepad && WasLeftMousePressed()) {

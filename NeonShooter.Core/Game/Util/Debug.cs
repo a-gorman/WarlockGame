@@ -19,4 +19,8 @@ public class Debug {
         EffectManager.Add(new VectorEffect(new Vector2(rectangle.Right, rectangle.Bottom), new Vector2(rectangle.Right, rectangle.Top), color, duration));
         EffectManager.Add(new VectorEffect(new Vector2(rectangle.Left, rectangle.Top), new Vector2(rectangle.Right, rectangle.Top), color, duration));
     }
+
+    public static void Visualize(string input, Vector2 position) {
+        NeonShooterGame.Instance.DrawDebugString(input, position);
+    }
 }
