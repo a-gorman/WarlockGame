@@ -1,4 +1,3 @@
-using Microsoft.Xna.Framework;
 using NeonShooter.Core.Game.Util;
 
 namespace NeonShooter.Core.Game.Entity.Order;
@@ -6,21 +5,25 @@ namespace NeonShooter.Core.Game.Entity.Order;
 class DirectionMoveOrder : IOrder {
 
     private readonly PlayerShip _player;
-    private readonly Vector2 _direction;
     private bool _active;
 
-    // Lasts only a single frame
-    public bool Finished => true;
+    public bool Finished { get; private set; }
 
-    public DirectionMoveOrder(Vector2 direction, PlayerShip player) {
+    public DirectionMoveOrder(PlayerShip player) {
         _player = player;
-        _direction = direction.ToNormalized();
     }
 
-    public bool Update() {
-        _player.Direction = _direction;
+    public void Update() {
+        var directionalInput = _player.Player.Input.GetDirectionalInput();
+
+        if (directionalInput.HasLength()) {
+            _player.Direction = directionalInput;
+        }
+        else {
+            Finished = true;
+        }
+        
         _active = true;
-        return false;
     }
 
     public void OnCancel() {
@@ -28,7 +31,6 @@ class DirectionMoveOrder : IOrder {
             _player.Direction = null;
         }
     }
-
 
     public void OnFinish() {
             _player.Direction = null;

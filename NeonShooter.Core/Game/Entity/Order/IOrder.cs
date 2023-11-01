@@ -9,10 +9,8 @@ interface IOrder {
     
     /// <summary>
     /// Updates the player character for the next tick.
-    /// Ends once the player has reached the destination
     /// </summary>
-    /// <returns>True if the order is complete</returns>
-    public bool Update();
+    public void Update();
 
     /// <summary>
     /// Called when an order is canceled

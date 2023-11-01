@@ -31,18 +31,13 @@ class Player {
     
     public void Update() {
         Status.Update();
+        Input.Update();
     }
 
     private void SetupInputActions() {
-        Input.SubscribeWhilePressed(InputAction.MoveLeft,
-            () => { Warlock.GiveOrder(x => new DirectionMoveOrder(new Vector2(-1, 0), x)); });
-        Input.SubscribeWhilePressed(InputAction.MoveRight,
-            () => { Warlock.GiveOrder(x => new DirectionMoveOrder(new Vector2(1, 0), x)); });
-        Input.SubscribeWhilePressed(InputAction.MoveUp,
-            () => { Warlock.GiveOrder(x => new DirectionMoveOrder(new Vector2(0, -1), x)); });
-        Input.SubscribeWhilePressed(InputAction.MoveDown,
-            () => { Warlock.GiveOrder(x => new DirectionMoveOrder(new Vector2(0, 1), x)); });
+        foreach (var inputAction in new[] {InputAction.MoveLeft, InputAction.MoveRight, InputAction.MoveUp, InputAction.MoveDown}) {
+            Input.SubscribeOnPressed(inputAction, () => { Warlock.GiveOrder(x => new DirectionMoveOrder(x)); });
+        }
     }
-    
 }
 

@@ -57,22 +57,13 @@ namespace NeonShooter.Core.Game.Entity
 
             Orders.FirstOrDefault()?.Update();
 
-            if (Orders.Count > 0) {
-                Debug.Visualize(new Vector2(100, 100), Position, Color.Aquamarine);
-            }
-            
             Move();
             
             MakeExhaustFire();
 
             if (Input.WasRightMousePressed()) {
-                CancelOrders();
-                Orders.AddFirst(new DestinationMoveOrder(Input.MousePosition, this));
+                GiveOrder(new DestinationMoveOrder(Input.MousePosition, this));
             }
-            
-            // if (Input.WasLeftMousePressed()) {
-            //     CastSpell(Spells.First());
-            // }
             
             foreach (var spell in Spells) {
                 spell.Update();
@@ -90,8 +81,13 @@ namespace NeonShooter.Core.Game.Entity
         }
 
         public void GiveOrder(Func<PlayerShip, IOrder> order) {
+            GiveOrder(order(this));
+        }
+        
+        private void GiveOrder(IOrder order) {
             CancelOrders();
-            Orders.AddFirst(order(this));
+            Orders.AddFirst(order);
+            Debug.Visualize($"Order created. Now {Orders.Count}", Position, duration: 20);
         }
         
         private void CancelOrders() {
@@ -110,18 +106,18 @@ namespace NeonShooter.Core.Game.Entity
             }
 
             if (Direction != null) {
-                Debug.Visualize(Direction.Value * 100, Position, Color.Red);
-
                 Velocity += Speed * (Vector2)Direction;
             }
 
             Position += Velocity;
             Position = Vector2.Clamp(Position, _sprite.Size / 2, NeonShooterGame.ScreenSize - _sprite.Size / 2);
 
-            if (Velocity.LengthSquared() > 0)
+            if (Velocity.HasLength())
                 Orientation = Velocity.ToAngle();
 
-            Velocity -= Velocity.ToNormalizedOrZero() * 8;
+            // Velocity -= Velocity.ToNormalizedOrZero() * 8;
+            
+            Debug.Visualize(Velocity.ToString(), Position);
         }
 
         private void CastSpell(WarlockSpell spell)
@@ -132,12 +128,12 @@ namespace NeonShooter.Core.Game.Entity
             }
         }
 
+        // Also secretly rotates the ship
         private void MakeExhaustFire()
         {
             if (Velocity.LengthSquared() > 0.1f)
             {
                 // set up some variables
-                Orientation = Velocity.ToAngle();
                 Quaternion rot = Quaternion.CreateFromYawPitchRoll(0f, 0f, Orientation);
 
                 double t = NeonShooterGame.GameTime.TotalGameTime.TotalSeconds;

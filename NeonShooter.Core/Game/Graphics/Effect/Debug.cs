@@ -48,7 +48,7 @@ public class VectorEffect : IEffect
         public PointEffect(Vector2 position, Color color, int duration = 1) {
             _position = position;
             _color = color;
-            _timer = GameTimer.FromFrames(duration);
+            _timer = GameTimer.FromFrames(duration+1);
         }
 
         public void Update() {
@@ -64,5 +64,29 @@ public class VectorEffect : IEffect
             }
         }
     }
+}
 
+public class StringEffect : IEffect {
+    private readonly string _displayString;
+    private readonly Vector2 _position;
+    private readonly Color _color;
+
+    private readonly GameTimer _timer;
+
+    public bool IsExpired => _timer.IsExpired;
+
+    public StringEffect(string displayString, Vector2 position, Color color, int duration = 1) {
+        _displayString = displayString;
+        _position = position;
+        _color = color;
+        _timer = GameTimer.FromFrames(duration+1);
+    }
+
+    public void Update() {
+        _timer.Update();
+    }
+
+    public void Draw(SpriteBatch spriteBatch) {
+        spriteBatch.DrawString(Art.Font, _displayString, _position, _color);
+    }
 }

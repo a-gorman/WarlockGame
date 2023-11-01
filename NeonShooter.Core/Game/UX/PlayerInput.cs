@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using NeonShooter.Core.Game.Util;
+using NeonShooter.Core.Game.UX.InputDevices;
 
 namespace NeonShooter.Core.Game.UX; 
 
@@ -12,6 +15,21 @@ class PlayerInput {
     private readonly Dictionary<InputAction, HashSet<Action>> _onPressedActions = new();
     private readonly Dictionary<InputAction, HashSet<Action>> _whilePressedActions = new();
 
+    // Input devices to use for this player. For example Keyboard+Mouse or gamepad
+    private readonly List<IInputDevice> _inputDevices = new() {new KeyboardInput()};
+
+    public bool WasActionKeyPressed(InputAction action) => _inputDevices.Any(x => x.WasActionKeyPressed(action));
+
+    public bool IsActionKeyDown(InputAction action) => _inputDevices.Any(x => x.IsActionKeyDown(action));
+
+    public void Update() {
+        foreach (var inputDevice in _inputDevices) {
+            (inputDevice as KeyboardInput).Update();
+        }
+
+        ProcessPlayerActions();
+    }
+    
     /// <summary>
     /// Subscribes to have an action called when a button is pressed
     /// Triggers once per press
@@ -26,7 +44,7 @@ class PlayerInput {
             _onPressedActions[actionType] = new HashSet<Action> { callback };
         }
     }
-    
+
     /// <summary>
     /// Subscribes to have an action called while a button is pressed
     /// Triggers every frame a button is pressed
@@ -46,16 +64,44 @@ class PlayerInput {
         _onPressedActions.GetValueOrDefault(actionType)?.Remove(callback);
     }
 
-    public void InputPlayerActions(IEnumerable<(InputAction actionType, bool wasPressed)> playerActions) {
-        foreach (var playerAction in playerActions) {
-            foreach (var action in _whilePressedActions.GetValueOrDefault(playerAction.actionType) ?? Enumerable.Empty<Action>()) {
+    public Vector2 GetDirectionalInput() {
+        // Vector2 direction = _gamepadState.ThumbSticks.Left;
+        // direction.Y *= -1;	// invert the y-axis
+
+        var direction = Vector2.Zero;
+        
+        if (IsActionKeyDown(InputAction.MoveLeft))
+            direction.X -= 1;
+        if (IsActionKeyDown(InputAction.MoveRight))
+            direction.X += 1;
+        if (IsActionKeyDown(InputAction.MoveUp))
+            direction.Y -= 1;
+        if (IsActionKeyDown(InputAction.MoveDown))
+            direction.Y += 1;
+
+        direction.ToNormalizedOrZero();
+
+        Debug.Visualize(direction, PlayerManager.ActivePlayer.Warlock.Position, Color.Brown);
+        
+        return direction;
+    }
+    
+    public void ProcessPlayerActions() {
+        foreach (var playerAction in _inputDevices.SelectMany(x => x.GetHeldActions())) {
+            foreach (var action in _whilePressedActions.GetValueOrDefault(playerAction) ?? Enumerable.Empty<Action>()) {
                 action.Invoke();
             }
-
-            if (playerAction.wasPressed) {
-                foreach (var action in _onPressedActions.GetValueOrDefault(playerAction.actionType) ?? Enumerable.Empty<Action>()) {
-                    action.Invoke();
-                }
+        }
+        
+        // foreach (var playerAction in _inputDevices.SelectMany(x => x.GetReleasedActions())) {
+        //     foreach (var action in _whilePressedActions.GetValueOrDefault(playerAction) ?? Enumerable.Empty<Action>()) {
+        //         action.Invoke();
+        //     }
+        // }
+        
+        foreach (var playerAction in _inputDevices.SelectMany(x => x.GetPressedActions())) {
+            foreach (var action in _onPressedActions.GetValueOrDefault(playerAction) ?? Enumerable.Empty<Action>()) {
+                action.Invoke();
             }
         }
     }

@@ -4,7 +4,7 @@ using NeonShooter.Core.Game.Graphics.Effect;
 
 namespace NeonShooter.Core.Game.Util; 
 
-public class Debug {
+public static class Debug {
     public static void Visualize(Vector2 vectorToVisualize, Vector2 position, Color color, int duration = 1) {
         EffectManager.Add(new VectorEffect(position, vectorToVisualize + position, color, duration));
     }
@@ -20,7 +20,7 @@ public class Debug {
         EffectManager.Add(new VectorEffect(new Vector2(rectangle.Left, rectangle.Top), new Vector2(rectangle.Right, rectangle.Top), color, duration));
     }
 
-    public static void Visualize(string input, Vector2 position) {
-        NeonShooterGame.Instance.DrawDebugString(input, position);
+    public static void Visualize(string input, Vector2 position, int duration = 1) {
+        EffectManager.Add(new StringEffect(input, position, Color.White, duration));
     }
 }

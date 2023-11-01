@@ -16,16 +16,15 @@ class DestinationMoveOrder : IOrder {
         _player = player;
     }
 
-    public bool Update() {
+    public void Update() {
         _active = true;
         
         if (_player.Position.DistanceSquaredTo(_destination) < PlayerShip.Speed.Squared()) {
             Finished = true;
-            return true;
         }
-
-        _player.Direction = (_destination - _player.Position).ToNormalizedOrZero();
-        return false;
+        else {
+            _player.Direction = (_destination - _player.Position).ToNormalizedOrZero();
+        }
     }
 
     public void OnCancel() {
