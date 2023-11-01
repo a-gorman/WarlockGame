@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NeonShooter.Core.Game.UX;
+using NeonShooter.Core.Game.UX.InputDevices;
 
 namespace NeonShooter.Core.Game.Graphics.UI; 
 
@@ -22,7 +23,7 @@ public static class SpellDisplay {
                 spell.SpellIcon,
                 new Rectangle(60 + spellSpacing * i, 950, 50, 50),
                 spell.OnCooldown ? Color.Gray : Color.White);
-            spriteBatch.DrawString(Art.Font, KeyboardInput._mappings[_actions[i]].DisplayValue, new Vector2(55 + spellSpacing * i, 950-9), Color.White);
+            spriteBatch.DrawString(Art.Font, StaticKeyboardInput._mappings[_actions[i]].DisplayValue, new Vector2(55 + spellSpacing * i, 950-9), Color.White);
         }
     }
 

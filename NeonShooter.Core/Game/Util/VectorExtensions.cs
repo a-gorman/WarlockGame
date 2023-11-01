@@ -26,15 +26,15 @@ public static class VectorExtensions
         else
             return Vector2.Normalize(vector);		
     }
-
+    
     public static bool IsLengthGreaterThan(this Vector2 vector, float length)
     {
-        return vector.LengthSquared() > length * length;
+        return vector.LengthSquared() > length.Squared();
     }
     
     public static bool IsLengthLessThan(this Vector2 vector, float length)
     {
-        return vector.LengthSquared() < length * length;
+        return vector.LengthSquared() < length.Squared();
     }
     
     public static Vector2 WithLength(this Vector2 vector, float length)

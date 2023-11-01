@@ -8,6 +8,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using NeonShooter.Core.Game.Util;
+using NeonShooter.Core.Game.UX.InputDevices;
 
 namespace NeonShooter.Core.Game.UX; 
 
@@ -26,7 +27,7 @@ static class Input
 	
 	public static void Update() {
 
-		KeyboardInput.Update();
+		StaticKeyboardInput.Update();
 		_lastMouseState = _mouseState;
 		_lastGamepadState = _gamepadState;
 
@@ -35,7 +36,7 @@ static class Input
 
 		// If the player pressed one of the arrow keys or is using a gamepad to aim, we want to disable mouse aiming. Otherwise,
 		// if the player moves the mouse, enable mouse aiming.
-		if (new[] { InputAction.MoveLeft, InputAction.MoveRight, InputAction.MoveUp, InputAction.MoveDown }.Any(KeyboardInput.IsActionKeyDown))
+		if (new[] { InputAction.MoveLeft, InputAction.MoveRight, InputAction.MoveUp, InputAction.MoveDown }.Any(StaticKeyboardInput.IsActionKeyDown))
 			InputType = InputType.KeyboardMove;
 		else if (MousePosition != new Vector2(_lastMouseState.X, _lastMouseState.Y))
 			InputType = InputType.MouseMove;
@@ -66,27 +67,27 @@ static class Input
 		return _lastGamepadState.IsButtonUp(button) && _gamepadState.IsButtonDown(button);
 	}
 
-	public static Vector2 GetMovementDirection()
-	{
-			
-		Vector2 direction = _gamepadState.ThumbSticks.Left;
-		direction.Y *= -1;	// invert the y-axis
-
-		if (KeyboardInput.IsActionKeyDown(InputAction.MoveLeft))
-			direction.X -= 1;
-		if (KeyboardInput.IsActionKeyDown(InputAction.MoveRight))
-			direction.X += 1;
-		if (KeyboardInput.IsActionKeyDown(InputAction.MoveUp))
-			direction.Y -= 1;
-		if (KeyboardInput.IsActionKeyDown(InputAction.MoveDown))
-			direction.Y += 1;
-
-		// Clamp the length of the vector to a maximum of 1.
-		if (direction.LengthSquared() > 1)
-			direction.Normalize();
-
-		return direction;
-	}
+	// public static Vector2 GetMovementDirection()
+	// {
+	// 		
+	// 	Vector2 direction = _gamepadState.ThumbSticks.Left;
+	// 	direction.Y *= -1;	// invert the y-axis
+	//
+	// 	if (KeyboardInput.IsActionKeyDown(InputAction.MoveLeft))
+	// 		direction.X -= 1;
+	// 	if (KeyboardInput.IsActionKeyDown(InputAction.MoveRight))
+	// 		direction.X += 1;
+	// 	if (KeyboardInput.IsActionKeyDown(InputAction.MoveUp))
+	// 		direction.Y -= 1;
+	// 	if (KeyboardInput.IsActionKeyDown(InputAction.MoveDown))
+	// 		direction.Y += 1;
+	//
+	// 	// Clamp the length of the vector to a maximum of 1.
+	// 	if (direction.LengthSquared() > 1)
+	// 		direction.Normalize();
+	//
+	// 	return direction;
+	// }
 
 	public static Vector2 GetAimDirection(Vector2 relativeTo)
 	{
@@ -112,7 +113,7 @@ static class Input
 			case InputType.KeyboardMove:
 
 				for (var i = 0; i < _inputActions.Length; i++) {
-					if (KeyboardInput.WasActionKeyPressed(_inputActions[i])) {
+					if (StaticKeyboardInput.WasActionKeyPressed(_inputActions[i])) {
 						ActiveSpellIndex = i;
 						break;
 					}
