@@ -87,7 +87,6 @@ namespace NeonShooter.Core.Game.Entity
         private void GiveOrder(IOrder order) {
             CancelOrders();
             Orders.AddFirst(order);
-            Debug.Visualize($"Order created. Now {Orders.Count}", Position, duration: 20);
         }
         
         private void CancelOrders() {
@@ -114,10 +113,6 @@ namespace NeonShooter.Core.Game.Entity
 
             if (Velocity.HasLength())
                 Orientation = Velocity.ToAngle();
-
-            // Velocity -= Velocity.ToNormalizedOrZero() * 8;
-            
-            Debug.Visualize(Velocity.ToString(), Position);
         }
 
         private void CastSpell(WarlockSpell spell)
