@@ -18,8 +18,6 @@ namespace NeonShooter.Core.Game.Entity
 {
     class PlayerShip : EntityBase
     {
-        // public static PlayerShip Instance { get; } = new();
-
         public const float Speed = 8;
 
         public Vector2? Direction { get; set; }
@@ -58,6 +56,8 @@ namespace NeonShooter.Core.Game.Entity
             Orders.FirstOrDefault()?.Update();
 
             Move();
+            
+            Debug.Visualize(Position.ToString(), new Vector2(100,100));
             
             MakeExhaustFire();
 
