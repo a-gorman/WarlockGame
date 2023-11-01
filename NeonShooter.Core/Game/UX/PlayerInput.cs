@@ -79,11 +79,7 @@ class PlayerInput {
         if (IsActionKeyDown(InputAction.MoveDown))
             direction.Y += 1;
 
-        direction.ToNormalizedOrZero();
-
-        Debug.Visualize(direction, PlayerManager.ActivePlayer.Warlock.Position, Color.Brown);
-        
-        return direction;
+        return direction.ToNormalizedOrZero();
     }
     
     public void ProcessPlayerActions() {
