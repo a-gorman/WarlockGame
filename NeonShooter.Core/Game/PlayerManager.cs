@@ -17,6 +17,8 @@ static class PlayerManager {
 
         Players.Add(player);
         EntityManager.Add(playerShip);
+        
+        player.Initialize();
     }
 
     public static void Update() {

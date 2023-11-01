@@ -109,7 +109,7 @@ namespace NeonShooter.Core
                 PlayerManager.Update();
                 EntityManager.Update();
                 EffectManager.Update();
-                EnemySpawner.Update();
+                // EnemySpawner.Update();
                 ParticleManager.Update();
                 Grid.Update();
             }
@@ -185,6 +185,12 @@ namespace NeonShooter.Core
 
         private void DrawDebugInfo() {
             DrawRightAlignedString($"Mouse POS: {Input.MousePosition}", 65);
+        }
+        
+        public void DrawDebugString(string text, Vector2 position) {
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
+            _spriteBatch.DrawString(Art.Font, text, position, Color.White);
+            _spriteBatch.End();
         }
     }
 }

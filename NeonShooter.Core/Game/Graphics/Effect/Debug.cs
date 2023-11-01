@@ -18,7 +18,7 @@ public class VectorEffect : IEffect
         _start = start;
         _end = end;
         _color = color;
-        _timer = GameTimer.FromFrames(duration);
+        _timer = GameTimer.FromFrames(duration+1);
     }
 
     public void Update()

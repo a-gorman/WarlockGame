@@ -92,7 +92,7 @@ namespace NeonShooter.Core.Game.Entity
 			{
 				Vector2 sprayVel = MathUtil.FromPolar(MathHelper.TwoPi * i / numParticles + startOffset, _rand.NextFloat(8, 16));
 				Vector2 pos = Position + 2f * sprayVel;
-				var state = new ParticleState() 
+				var state = new ParticleState
 				{ 
 					Velocity = sprayVel, 
 					LengthMultiplier = 1, 
@@ -115,6 +115,7 @@ namespace NeonShooter.Core.Game.Entity
 		{
 			// make the size of the black hole pulsate
 			float scale = 1 + 0.1f * (float)Math.Sin(10 * NeonShooterGame.GameTime.TotalGameTime.TotalSeconds);
+			// _sprite.Scale = scale;
 			_sprite.Draw(spriteBatch, Position, Orientation);
 		}
 	}

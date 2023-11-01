@@ -55,25 +55,19 @@ namespace NeonShooter.Core.Game.Entity
                 return;
             }
 
-            var inputDirection = Input.GetMovementDirection();
+            Orders.FirstOrDefault()?.Update();
 
-            if (inputDirection.HasLength()) {
-                Direction = inputDirection;
-                CancelOrders();
-            } else if (Input.InputType != InputType.MouseMove) {
-                Direction = Vector2.Zero;
+            if (Orders.Count > 0) {
+                Debug.Visualize(new Vector2(100, 100), Position, Color.Aquamarine);
             }
-
-            var finished = Orders.FirstOrDefault()?.Update(this);
-            if (finished ?? false) { Orders.RemoveFirst(); }
-
+            
             Move();
             
             MakeExhaustFire();
 
             if (Input.WasRightMousePressed()) {
                 CancelOrders();
-                Orders.AddFirst(new MoveOrder(Input.MousePosition));
+                Orders.AddFirst(new DestinationMoveOrder(Input.MousePosition, this));
             }
             
             // if (Input.WasLeftMousePressed()) {
@@ -83,20 +77,31 @@ namespace NeonShooter.Core.Game.Entity
             foreach (var spell in Spells) {
                 spell.Update();
             }
+
+            if (Orders.FirstOrDefault()?.Finished ?? false) {
+                Orders.First!.Value.OnFinish();
+                Orders.RemoveFirst();
+            }
         }
 
         public void CastSpell(int spellIndex) {
             if(spellIndex < Spells.Count)
                 CastSpell(Spells[spellIndex]);
         }
+
+        public void GiveOrder(Func<PlayerShip, IOrder> order) {
+            CancelOrders();
+            Orders.AddFirst(order(this));
+        }
         
         private void CancelOrders() {
-            if(Orders.Count != 0)
+            while (Orders.Count != 0) {
+                Orders.First?.Value.OnCancel();
                 Orders.RemoveFirst();
+            }
         }
 
         private void Move() {
-
             if (Velocity.IsLengthLessThan(Speed)) {
                 Velocity = Vector2.Zero;
             }
@@ -105,6 +110,8 @@ namespace NeonShooter.Core.Game.Entity
             }
 
             if (Direction != null) {
+                Debug.Visualize(Direction.Value * 100, Position, Color.Red);
+
                 Velocity += Speed * (Vector2)Direction;
             }
 
