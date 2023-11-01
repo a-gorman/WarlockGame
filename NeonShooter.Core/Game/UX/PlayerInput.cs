@@ -63,23 +63,36 @@ class PlayerInput {
     public void Unsubscribe(InputAction actionType, Action callback) {
         _onPressedActions.GetValueOrDefault(actionType)?.Remove(callback);
     }
-
-    public Vector2 GetDirectionalInput() {
+    
+    public bool TryGetDirectionalInput(out Vector2 direction) {
         // Vector2 direction = _gamepadState.ThumbSticks.Left;
         // direction.Y *= -1;	// invert the y-axis
 
-        var direction = Vector2.Zero;
+        var hasInput = false;
         
-        if (IsActionKeyDown(InputAction.MoveLeft))
-            direction.X -= 1;
-        if (IsActionKeyDown(InputAction.MoveRight))
-            direction.X += 1;
-        if (IsActionKeyDown(InputAction.MoveUp))
-            direction.Y -= 1;
-        if (IsActionKeyDown(InputAction.MoveDown))
-            direction.Y += 1;
+        direction = Vector2.Zero;
 
-        return direction.ToNormalizedOrZero();
+        if (IsActionKeyDown(InputAction.MoveLeft)) {
+            direction.X -= 1;
+            hasInput = true;
+        }
+        if (IsActionKeyDown(InputAction.MoveRight)) {
+            direction.X += 1;
+            hasInput = true;
+
+        }
+        if (IsActionKeyDown(InputAction.MoveUp)) {
+            direction.Y -= 1;
+            hasInput = true;
+        }
+        if (IsActionKeyDown(InputAction.MoveDown)) {
+            direction.Y += 1;
+            hasInput = true;
+        }
+        
+        direction = direction.ToNormalizedOrZero();
+
+        return hasInput;
     }
     
     public void ProcessPlayerActions() {

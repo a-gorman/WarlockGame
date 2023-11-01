@@ -14,10 +14,8 @@ class DirectionMoveOrder : IOrder {
     }
 
     public void Update() {
-        var directionalInput = _player.Player.Input.GetDirectionalInput();
-
-        if (directionalInput.HasLength()) {
-            _player.Direction = directionalInput;
+        if (_player.Player.Input.TryGetDirectionalInput(out var directionalInput)) {
+            _player.Direction = directionalInput.HasLength() ? directionalInput : null;
         }
         else {
             Finished = true;
