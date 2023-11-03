@@ -107,11 +107,13 @@ namespace NeonShooter.Core
 
             if (!_paused)
             {
+                InputDeviceManager.Update();
                 PlayerManager.Update();
                 EntityManager.Update();
                 EffectManager.Update();
-                // EnemySpawner.Update();
+                EnemySpawner.Update();
                 ParticleManager.Update();
+                
                 Grid.Update();
             }
             base.Update(gameTime);

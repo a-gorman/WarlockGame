@@ -67,28 +67,6 @@ static class Input
 		return _lastGamepadState.IsButtonUp(button) && _gamepadState.IsButtonDown(button);
 	}
 
-	// public static Vector2 GetMovementDirection()
-	// {
-	// 		
-	// 	Vector2 direction = _gamepadState.ThumbSticks.Left;
-	// 	direction.Y *= -1;	// invert the y-axis
-	//
-	// 	if (KeyboardInput.IsActionKeyDown(InputAction.MoveLeft))
-	// 		direction.X -= 1;
-	// 	if (KeyboardInput.IsActionKeyDown(InputAction.MoveRight))
-	// 		direction.X += 1;
-	// 	if (KeyboardInput.IsActionKeyDown(InputAction.MoveUp))
-	// 		direction.Y -= 1;
-	// 	if (KeyboardInput.IsActionKeyDown(InputAction.MoveDown))
-	// 		direction.Y += 1;
-	//
-	// 	// Clamp the length of the vector to a maximum of 1.
-	// 	if (direction.LengthSquared() > 1)
-	// 		direction.Normalize();
-	//
-	// 	return direction;
-	// }
-
 	public static Vector2 GetAimDirection(Vector2 relativeTo)
 	{
 		if (InputType == InputType.Gamepad) {
