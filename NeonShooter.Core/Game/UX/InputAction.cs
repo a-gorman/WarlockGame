@@ -9,5 +9,7 @@ public enum InputAction {
     MoveLeft,
     MoveRight,
     MoveUp,
-    MoveDown
+    MoveDown,
+    Select,
+    RightClick
 }

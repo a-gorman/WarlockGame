@@ -14,22 +14,34 @@ class PlayerInput {
 
     private readonly Dictionary<InputAction, HashSet<Action>> _onPressedActions = new();
     private readonly Dictionary<InputAction, HashSet<Action>> _whilePressedActions = new();
+    
+    private static InputState _inputState =  new(new HashSet<InputAction>());
+    private static InputState _lastInputState =  new(new HashSet<InputAction>());
 
     // Input devices to use for this player. For example Keyboard+Mouse or gamepad
-    private readonly List<IInputDevice> _inputDevices = new() {new KeyboardInput()};
+    private readonly List<IInputDevice> _inputDevices = new();
 
-    public bool WasActionKeyPressed(InputAction action) => _inputDevices.Any(x => x.WasActionKeyPressed(action));
-
-    public bool IsActionKeyDown(InputAction action) => _inputDevices.Any(x => x.IsActionKeyDown(action));
-
-    public void Update() {
-        foreach (var inputDevice in _inputDevices) {
-            (inputDevice as KeyboardInput).Update();
-        }
-
-        ProcessPlayerActions();
+    public PlayerInput() {
+        var keyboardInput = new KeyboardInput();
+        _inputDevices.Add(keyboardInput);
+        _inputDevices.Add(new MouseInput());
+        InputDeviceManager.Add(keyboardInput);
     }
     
+    public bool IsActionKeyDown(InputAction action) => _inputState.Actions.Contains(action);
+    
+    public void Update() {
+        CreateInputState();
+        ProcessPlayerActions();
+    }
+
+    private void CreateInputState() {
+        (_inputState, _lastInputState) = (_lastInputState, _inputState);
+        
+        _inputState.Actions.Clear();
+        _inputDevices.ForEach(x => _inputState.Actions.UnionWith(x.GetInputActions()));
+    }
+
     /// <summary>
     /// Subscribes to have an action called when a button is pressed
     /// Triggers once per press
@@ -63,6 +75,10 @@ class PlayerInput {
     public void Unsubscribe(InputAction actionType, Action callback) {
         _onPressedActions.GetValueOrDefault(actionType)?.Remove(callback);
     }
+
+    public Vector2? GetAimDirection() {
+        return _inputDevices.FirstOrDefault(x => x.Position != null)?.Position;
+    }
     
     public bool TryGetDirectionalInput(out Vector2 direction) {
         // Vector2 direction = _gamepadState.ThumbSticks.Left;
@@ -79,7 +95,6 @@ class PlayerInput {
         if (IsActionKeyDown(InputAction.MoveRight)) {
             direction.X += 1;
             hasInput = true;
-
         }
         if (IsActionKeyDown(InputAction.MoveUp)) {
             direction.Y -= 1;
@@ -95,23 +110,26 @@ class PlayerInput {
         return hasInput;
     }
     
-    public void ProcessPlayerActions() {
-        foreach (var playerAction in _inputDevices.SelectMany(x => x.GetHeldActions())) {
-            foreach (var action in _whilePressedActions.GetValueOrDefault(playerAction) ?? Enumerable.Empty<Action>()) {
+    private void ProcessPlayerActions() {
+        foreach (var heldAction in _inputState.Actions.Intersect(_lastInputState.Actions)) {
+            foreach (var action in _whilePressedActions.GetValueOrDefault(heldAction) ?? Enumerable.Empty<Action>()) {
                 action.Invoke();
             }
         }
         
-        // foreach (var playerAction in _inputDevices.SelectMany(x => x.GetReleasedActions())) {
+        // foreach (var playerAction in _lastInputState.Actions.Except(_inputState.Actions)) {
         //     foreach (var action in _whilePressedActions.GetValueOrDefault(playerAction) ?? Enumerable.Empty<Action>()) {
         //         action.Invoke();
         //     }
         // }
         
-        foreach (var playerAction in _inputDevices.SelectMany(x => x.GetPressedActions())) {
-            foreach (var action in _onPressedActions.GetValueOrDefault(playerAction) ?? Enumerable.Empty<Action>()) {
+        foreach (var pressedActions in _inputState.Actions.Except(_lastInputState.Actions)) {
+            foreach (var action in _onPressedActions.GetValueOrDefault(pressedActions) ?? Enumerable.Empty<Action>()) {
                 action.Invoke();
             }
         }
     }
+    
+    private record InputState(HashSet<InputAction> Actions);
+
 }

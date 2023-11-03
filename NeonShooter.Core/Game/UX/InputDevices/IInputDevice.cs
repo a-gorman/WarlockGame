@@ -1,17 +1,12 @@
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 
 namespace NeonShooter.Core.Game.UX.InputDevices; 
 
 interface IInputDevice {
-    public bool WasActionKeyPressed(InputAction action);
+    public IReadOnlySet<InputAction> GetInputActions();
 
-    public bool WasActionReleased(InputAction action);
+    public Vector2? Position { get; }
 
-    public bool IsActionKeyDown(InputAction action);
-
-    public IReadOnlySet<InputAction> GetReleasedActions();
-    
-    public IReadOnlySet<InputAction> GetPressedActions();
-    
-    public IReadOnlySet<InputAction> GetHeldActions();
+    public void Update();
 }
