@@ -11,10 +11,8 @@ public static class StaticKeyboardInput {
 
     public static IReadOnlyDictionary<InputAction, KeyMapping> _mappings;
 
-    private static IReadOnlyDictionary<Keys, KeyMapping> _reverseMappings;
-    
     static StaticKeyboardInput() {
-        var keyMappings = new List<KeyMapping>()
+        var keyMappings = new List<KeyMapping>
         {
             new() { DisplayValue = "W", Key = Keys.W, InputAction = InputAction.MoveUp },
             new() { DisplayValue = "S", Key = Keys.S, InputAction = InputAction.MoveDown },
@@ -27,28 +25,11 @@ public static class StaticKeyboardInput {
         };
 
         _mappings = keyMappings.ToDictionary(x => x.InputAction);
-        _reverseMappings = keyMappings.ToDictionary(x => x.Key);
     }
 
     // Checks if a key was just pressed down
     public static bool WasKeyPressed(Keys key) {
         return _lastKeyboardState.IsKeyUp(key) && _keyboardState.IsKeyDown(key);
-    }
-
-    public static bool WasActionKeyPressed(InputAction action) {
-        if (_mappings.TryGetValue(action, out var mapping)) {
-            return WasKeyPressed(mapping.Key);
-        }
-
-        return false;
-    }
-
-    public static bool IsActionKeyDown(InputAction action) {
-        if (_mappings.TryGetValue(action, out var mapping)) {
-            return _keyboardState.IsKeyDown(mapping.Key);
-        }
-
-        return false;
     }
 
     public static void Update() {

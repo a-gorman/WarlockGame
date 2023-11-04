@@ -102,8 +102,6 @@ namespace NeonShooter.Core
 
             if (StaticKeyboardInput.WasKeyPressed(Keys.P))
                 _paused = !_paused;
-            if (StaticKeyboardInput.WasKeyPressed(Keys.B))
-                _bloom.Visible = !_bloom.Visible;
 
             if (!_paused)
             {
