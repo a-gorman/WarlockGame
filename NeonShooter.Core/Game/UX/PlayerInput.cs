@@ -12,8 +12,8 @@ namespace NeonShooter.Core.Game.UX;
 /// </summary>
 class PlayerInput {
 
-    private readonly Dictionary<InputAction, HashSet<Action>> _onPressedActions = new();
-    private readonly Dictionary<InputAction, HashSet<Action>> _whilePressedActions = new();
+    private readonly Dictionary<InputAction, HashSet<Action<InputAction>>> _onPressedActions = new();
+    private readonly Dictionary<InputAction, HashSet<Action<InputAction>>> _whilePressedActions = new();
     
     private static InputState _inputState =  new(new HashSet<InputAction>());
     private static InputState _lastInputState =  new(new HashSet<InputAction>());
@@ -24,8 +24,10 @@ class PlayerInput {
     public PlayerInput() {
         var keyboardInput = new KeyboardInput();
         _inputDevices.Add(keyboardInput);
-        _inputDevices.Add(new MouseInput());
         InputDeviceManager.Add(keyboardInput);
+        var mouseInput = new MouseInput();
+        _inputDevices.Add(mouseInput);
+        InputDeviceManager.Add(mouseInput);
     }
     
     public bool IsActionKeyDown(InputAction action) => _inputState.Actions.Contains(action);
@@ -48,12 +50,12 @@ class PlayerInput {
     /// </summary>
     /// <param name="actionType">The type of action to subscribe to</param>
     /// <param name="callback">The action to perform when the button is pressed</param>
-    public void SubscribeOnPressed(InputAction actionType, Action callback) {
+    public void SubscribeOnPressed(InputAction actionType, Action<InputAction> callback) {
         if (_onPressedActions.ContainsKey(actionType)) {
             _onPressedActions[actionType].Add(callback);
         }
         else {
-            _onPressedActions[actionType] = new HashSet<Action> { callback };
+            _onPressedActions[actionType] = new HashSet<Action<InputAction>> { callback };
         }
     }
 
@@ -63,20 +65,24 @@ class PlayerInput {
     /// </summary>
     /// <param name="actionType">The type of action to subscribe to</param>
     /// <param name="callback">The action to perform each frame</param>
-    public void SubscribeWhilePressed(InputAction actionType, Action callback) {
+    public void SubscribeWhilePressed(InputAction actionType, Action<InputAction> callback) {
         if (_whilePressedActions.ContainsKey(actionType)) {
             _whilePressedActions[actionType].Add(callback);
         }
         else {
-            _whilePressedActions[actionType] = new HashSet<Action> { callback };
+            _whilePressedActions[actionType] = new HashSet<Action<InputAction>> { callback };
         }
     }
 
-    public void Unsubscribe(InputAction actionType, Action callback) {
-        _onPressedActions.GetValueOrDefault(actionType)?.Remove(callback);
-    }
+    // public void Unsubscribe(InputAction actionType, Action callback) {
+    //     _onPressedActions.GetValueOrDefault(actionType)?.Remove(callback);
+    // }
 
-    public Vector2? GetAimDirection() {
+    public Vector2? GetAimDirection(Vector2 relativeTo) {
+        return (_inputDevices.FirstOrDefault(x => x.Position != null)?.Position - relativeTo)?.ToNormalizedOrZero();
+    }
+    
+    public Vector2? GetAimPosition() {
         return _inputDevices.FirstOrDefault(x => x.Position != null)?.Position;
     }
     
@@ -112,8 +118,8 @@ class PlayerInput {
     
     private void ProcessPlayerActions() {
         foreach (var heldAction in _inputState.Actions.Intersect(_lastInputState.Actions)) {
-            foreach (var action in _whilePressedActions.GetValueOrDefault(heldAction) ?? Enumerable.Empty<Action>()) {
-                action.Invoke();
+            foreach (var callback in _whilePressedActions.GetValueOrDefault(heldAction) ?? Enumerable.Empty<Action<InputAction>>()) {
+                callback.Invoke(heldAction);
             }
         }
         
@@ -123,9 +129,9 @@ class PlayerInput {
         //     }
         // }
         
-        foreach (var pressedActions in _inputState.Actions.Except(_lastInputState.Actions)) {
-            foreach (var action in _onPressedActions.GetValueOrDefault(pressedActions) ?? Enumerable.Empty<Action>()) {
-                action.Invoke();
+        foreach (var pressedAction in _inputState.Actions.Except(_lastInputState.Actions)) {
+            foreach (var callback in _onPressedActions.GetValueOrDefault(pressedAction) ?? Enumerable.Empty<Action<InputAction>>()) {
+                callback.Invoke(pressedAction);
             }
         }
     }

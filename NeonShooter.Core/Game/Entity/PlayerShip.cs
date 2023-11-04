@@ -61,10 +61,6 @@ namespace NeonShooter.Core.Game.Entity
             
             MakeExhaustFire();
 
-            if (Input.WasRightMousePressed()) {
-                GiveOrder(new DestinationMoveOrder(Input.MousePosition, this));
-            }
-            
             foreach (var spell in Spells) {
                 spell.Update();
             }
@@ -75,9 +71,9 @@ namespace NeonShooter.Core.Game.Entity
             }
         }
 
-        public void CastSpell(int spellIndex) {
+        public void CastSpell(int spellIndex, Vector2 castDirection) {
             if(spellIndex < Spells.Count)
-                CastSpell(Spells[spellIndex]);
+                CastSpell(Spells[spellIndex], castDirection);
         }
 
         public void GiveOrder(Func<PlayerShip, IOrder> order) {
@@ -115,11 +111,11 @@ namespace NeonShooter.Core.Game.Entity
                 Orientation = Velocity.ToAngle();
         }
 
-        private void CastSpell(WarlockSpell spell)
+        public void CastSpell(WarlockSpell spell, Vector2 castDirection)
         {
-            if (!spell.OnCooldown && Input.GetAimDirection(Position) is var aim && aim.HasLength())
+            if (!spell.OnCooldown && castDirection.HasLength())
             {
-                spell.Cast(this, aim);
+                spell.Cast(this, castDirection);
             }
         }
 
