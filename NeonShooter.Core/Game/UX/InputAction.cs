@@ -11,5 +11,6 @@ public enum InputAction {
     MoveUp,
     MoveDown,
     Select,
-    RightClick
+    RightClick,
+    Cancel
 }

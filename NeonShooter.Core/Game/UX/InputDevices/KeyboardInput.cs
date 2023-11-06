@@ -10,9 +10,11 @@ public class KeyboardInput: IInputDevice {
     private static KeyboardState _keyboardState;
     private readonly IReadOnlyDictionary<Keys, KeyMapping> _mappings;
     public Vector2? Position => null;
+    public Vector2? LeftStick => null;
+    public Vector2? RightStick => null;
 
     public KeyboardInput() {
-        var keyMappings = new List<KeyMapping>()
+        _mappings = new List<KeyMapping>()
         {
             new() { DisplayValue = "W", Key = Keys.W, InputAction = InputAction.MoveUp },
             new() { DisplayValue = "S", Key = Keys.S, InputAction = InputAction.MoveDown },
@@ -22,9 +24,7 @@ public class KeyboardInput: IInputDevice {
             new() { DisplayValue = "E", Key = Keys.E, InputAction = InputAction.Spell2 },
             new() { DisplayValue = "R", Key = Keys.R, InputAction = InputAction.Spell3 },
             new() { DisplayValue = "F", Key = Keys.F, InputAction = InputAction.Spell4 }
-        };
-
-        _mappings = keyMappings.ToDictionary(x => x.Key);
+        }.ToDictionary(x => x.Key);
     }
 
     public IReadOnlySet<InputAction> GetInputActions() {

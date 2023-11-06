@@ -1,5 +1,56 @@
-namespace NeonShooter.Core.Game.UX; 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using NeonShooter.Core.Game.Util;
 
-static class GamepadInput {
+namespace NeonShooter.Core.Game.UX.InputDevices;
+
+class GamepadInput: IInputDevice {
+
+    private readonly int _playerIndex;
+    private GamePadState _gamePadState;
+    private readonly IReadOnlyDictionary<Buttons,GamepadMapping> _mappings;
+    private HashSet<InputAction> _actions = new();
+
+    public GamepadInput(int playerIndex) {
+        _playerIndex = playerIndex;
+        
+        _mappings = new List<GamepadMapping>
+        {
+            new() { DisplayValue = "A", Button = Buttons.A, Action = InputAction.Select },
+            new() { DisplayValue = "B", Button = Buttons.B, Action = InputAction.Cancel },
+            new() { DisplayValue = "Y", Button = Buttons.RightTrigger, Action = InputAction.Spell2 },
+            new() { DisplayValue = "Y", Button = Buttons.RightShoulder, Action = InputAction.Spell1 },
+            // new() { DisplayValue = "X", Button = Buttons.X, Action = null }
+        }.ToDictionary(x => x.Button);
+    }
     
+    public IReadOnlySet<InputAction> GetInputActions() {
+        return _actions;
+    }
+
+    public Vector2? Position => null;
+
+    public Vector2? LeftStick { get; private set; } = null;
+    public Vector2? RightStick { get; private set; } = null;
+    
+    public void Update() {
+        _gamePadState = GamePad.GetState(_playerIndex);
+
+        _actions.Clear();
+        _mappings.Where(x => _gamePadState.IsButtonDown(x.Value.Button))
+                 .Select(x => x.Value.Action)
+                 .ForEach(x => _actions.Add(x));
+
+        LeftStick = _gamePadState.ThumbSticks.Left;
+        RightStick = _gamePadState.ThumbSticks.Right;
+    }
+    
+    private struct GamepadMapping {
+        public string DisplayValue { get; set; }
+        public InputAction Action { get; set; }
+        public Buttons Button { get; set; }
+    }
 }

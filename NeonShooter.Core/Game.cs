@@ -6,11 +6,11 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using NeonShooter.Core.Game;
 using NeonShooter.Core.Game.Display;
-using NeonShooter.Core.Game.Entity;
 using NeonShooter.Core.Game.Graphics;
 using NeonShooter.Core.Game.Graphics.UI;
 using NeonShooter.Core.Game.UX;
 using NeonShooter.Core.Game.UX.InputDevices;
+using PS4Mono;
 
 namespace NeonShooter.Core
 {
@@ -58,6 +58,8 @@ namespace NeonShooter.Core
             Vector2 gridSpacing = new Vector2((float)Math.Sqrt(Viewport.Width * Viewport.Height / maxGridPoints));
             Grid = new Grid(Viewport.Bounds, gridSpacing);
 
+            // Ps4Input.Initialize(this);
+
             base.Initialize();
         }
 
@@ -71,7 +73,8 @@ namespace NeonShooter.Core
 			Art.Load(Content);
 			Sound.Load(Content);
 
-            PlayerManager.AddPlayer("Alex");
+            PlayerManager.AddPlayer("Alex", PlayerManager.DeviceType.MouseAndKeyboard);
+            PlayerManager.AddPlayer("John", PlayerManager.DeviceType.Gamepad1);
  
             //Known issue that you get exceptions if you use Media PLayer while connected to your PC
             //See http://social.msdn.microsoft.com/Forums/en/windowsphone7series/thread/c8a243d2-d360-46b1-96bd-62b1ef268c66
@@ -109,7 +112,7 @@ namespace NeonShooter.Core
                 PlayerManager.Update();
                 EntityManager.Update();
                 EffectManager.Update();
-                EnemySpawner.Update();
+                // EnemySpawner.Update();
                 ParticleManager.Update();
                 
                 Grid.Update();

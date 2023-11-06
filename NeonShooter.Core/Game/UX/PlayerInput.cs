@@ -15,22 +15,21 @@ class PlayerInput {
     private readonly Dictionary<InputAction, HashSet<Action<InputAction>>> _onPressedActions = new();
     private readonly Dictionary<InputAction, HashSet<Action<InputAction>>> _whilePressedActions = new();
     
-    private static InputState _inputState =  new(new HashSet<InputAction>());
-    private static InputState _lastInputState =  new(new HashSet<InputAction>());
+    private static InputState _inputState =  new();
+    private static InputState _lastInputState =  new();
 
     // Input devices to use for this player. For example Keyboard+Mouse or gamepad
     private readonly List<IInputDevice> _inputDevices = new();
 
-    public PlayerInput() {
-        var keyboardInput = new KeyboardInput();
-        _inputDevices.Add(keyboardInput);
-        InputDeviceManager.Add(keyboardInput);
-        var mouseInput = new MouseInput();
-        _inputDevices.Add(mouseInput);
-        InputDeviceManager.Add(mouseInput);
+    public PlayerInput(IEnumerable<IInputDevice> inputDevices) {
+        _inputDevices.AddRange(inputDevices);
     }
-    
+
     public bool IsActionKeyDown(InputAction action) => _inputState.Actions.Contains(action);
+    
+    public bool WasActionKeyPressed(InputAction action) => _inputState.Actions.Contains(action) && !_lastInputState.Actions.Contains(action);
+
+    public bool WasDirectionalInputAdded() => _inputState.MovementDirection != null && _lastInputState.MovementDirection == null;
     
     public void Update() {
         CreateInputState();
@@ -42,6 +41,8 @@ class PlayerInput {
         
         _inputState.Actions.Clear();
         _inputDevices.ForEach(x => _inputState.Actions.UnionWith(x.GetInputActions()));
+        _inputState.AimDirection = _inputDevices.FirstOrDefault(x => x.RightStick != null)?.RightStick;
+        _inputState.MovementDirection = GetDirectionalInput();
     }
 
     /// <summary>
@@ -79,6 +80,11 @@ class PlayerInput {
     // }
 
     public Vector2? GetAimDirection(Vector2 relativeTo) {
+        var stickInput = _inputDevices.FirstOrDefault(x => x.RightStick != null)?.RightStick;
+        if(stickInput != null) {
+            return stickInput;
+        }
+        
         return (_inputDevices.FirstOrDefault(x => x.Position != null)?.Position - relativeTo)?.ToNormalizedOrZero();
     }
     
@@ -86,13 +92,17 @@ class PlayerInput {
         return _inputDevices.FirstOrDefault(x => x.Position != null)?.Position;
     }
     
-    public bool TryGetDirectionalInput(out Vector2 direction) {
+    public Vector2? GetDirectionalInput() {
         // Vector2 direction = _gamepadState.ThumbSticks.Left;
         // direction.Y *= -1;	// invert the y-axis
+        
+        var gamepadDirection = _inputDevices.FirstOrDefault(x => x.LeftStick != null)?.LeftStick;
+        if (gamepadDirection != null) {
+            return gamepadDirection;
+        }
 
         var hasInput = false;
-        
-        direction = Vector2.Zero;
+        var direction = Vector2.Zero;
 
         if (IsActionKeyDown(InputAction.MoveLeft)) {
             direction.X -= 1;
@@ -110,10 +120,8 @@ class PlayerInput {
             direction.Y += 1;
             hasInput = true;
         }
-        
-        direction = direction.ToNormalizedOrZero();
 
-        return hasInput;
+        return hasInput ? direction.ToNormalizedOrZero() : null;
     }
     
     private void ProcessPlayerActions() {
@@ -135,7 +143,12 @@ class PlayerInput {
             }
         }
     }
-    
-    private record InputState(HashSet<InputAction> Actions);
+
+    private record InputState {
+        public HashSet<InputAction> Actions { get; } = new();
+        public Vector2? AimDirection = null;
+        public Vector2? CursorPosition = null;
+        public Vector2? MovementDirection = null;
+    }
 
 }
