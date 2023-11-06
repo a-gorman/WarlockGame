@@ -13,15 +13,15 @@ public class MouseInput : IInputDevice {
     private readonly HashSet<InputAction> _actions = new();
 
     public Vector2? Position => _mouseState.Position.ToVector2();
+    public Vector2? LeftStick => null;
+    public Vector2? RightStick => null;
 
     public MouseInput() {
-        var keyMappings = new List<MouseMapping>
+        _mappings = new List<MouseMapping>
         {
             new() { DisplayValue = "Left Mouse Button", ButtonSelector = x => x.LeftButton, Action = InputAction.Select },
             new() { DisplayValue = "Right Mouse Button", ButtonSelector = x => x.RightButton, Action = InputAction.RightClick }
-        };
-
-        _mappings = keyMappings.ToDictionary(x => x.Action);
+        }.ToDictionary(x => x.Action);
     }
     
     public IReadOnlySet<InputAction> GetInputActions() {
@@ -30,7 +30,7 @@ public class MouseInput : IInputDevice {
 
     public void Update() {
         _mouseState = Mouse.GetState();
-        
+
         _actions.Clear();
         _mappings.Where(x => x.Value.ButtonSelector(_mouseState) == ButtonState.Pressed)
                  .Select(x => x.Key)
