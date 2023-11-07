@@ -10,7 +10,7 @@ using NeonShooter.Core.Game.Graphics;
 using NeonShooter.Core.Game.Graphics.UI;
 using NeonShooter.Core.Game.UX;
 using NeonShooter.Core.Game.UX.InputDevices;
-// using PS4Mono;
+using PS4Mono;
 
 namespace NeonShooter.Core
 {
@@ -58,7 +58,7 @@ namespace NeonShooter.Core
             Vector2 gridSpacing = new Vector2((float)Math.Sqrt(Viewport.Width * Viewport.Height / maxGridPoints));
             Grid = new Grid(Viewport.Bounds, gridSpacing);
 
-            // Ps4Input.Initialize(this);
+            Ps4Input.Initialize(this);
 
             base.Initialize();
         }
