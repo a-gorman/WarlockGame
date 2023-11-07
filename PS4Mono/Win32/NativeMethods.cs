@@ -37,7 +37,7 @@ namespace PS4Mono
         private static extern int GetRawInputDeviceInfoW(
             [In, Optional] IntPtr devHandle,
             [In] GetInfoCommand command,
-            [In, Out, MarshalAs(UnmanagedType.LPWStr, SizeParamIndex = 3), Optional] string data,
+            [In, MarshalAs(UnmanagedType.LPWStr, SizeParamIndex = 3), Optional] string data,
             [In, Out] ref int dataSize
         );
 
