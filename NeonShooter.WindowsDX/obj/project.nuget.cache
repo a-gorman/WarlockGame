@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "k61p5v760xi67nRslE2yoK3pREzrINUjT8kSxgmCN6bzt7agczLXbH2dkEo7fCygjpfax7zQ2pz2a504ezctUg==",
+  "dgSpecHash": "kYPtlsyvCT75Ksr16skSWqxtvNK88DYGLixDNNX6BmhxuFnmkBxy+/lCWpT6utztUut4OsDPKANlXIOb2SIp4Q==",
   "success": true,
   "projectFilePath": "C:\\Users\\Alex\\RiderProjects\\Monogame\\NeonShooter.WindowsDX\\NeonShooter.WindowsDX.csproj",
   "expectedPackageFiles": [
@@ -22,8 +22,8 @@
     "C:\\Users\\Alex\\.nuget\\packages\\microsoft.visualbasic\\10.0.1\\microsoft.visualbasic.10.0.1.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.win32.primitives\\4.0.1\\microsoft.win32.primitives.4.0.1.nupkg.sha512",
     "C:\\Users\\Alex\\.nuget\\packages\\microsoft.win32.registry\\4.0.0\\microsoft.win32.registry.4.0.0.nupkg.sha512",
-    "C:\\Users\\Alex\\.nuget\\packages\\monogame.content.builder.task\\3.8.0.1641\\monogame.content.builder.task.3.8.0.1641.nupkg.sha512",
-    "C:\\Users\\Alex\\.nuget\\packages\\monogame.framework.windowsdx\\3.8.0.1641\\monogame.framework.windowsdx.3.8.0.1641.nupkg.sha512",
+    "C:\\Users\\Alex\\.nuget\\packages\\monogame.content.builder.task\\3.8.1.303\\monogame.content.builder.task.3.8.1.303.nupkg.sha512",
+    "C:\\Users\\Alex\\.nuget\\packages\\monogame.framework.windowsdx\\3.8.1.303\\monogame.framework.windowsdx.3.8.1.303.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\netstandard.library\\1.6.0\\netstandard.library.1.6.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\runtime.native.system\\4.0.0\\runtime.native.system.4.0.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\runtime.native.system.io.compression\\4.1.0\\runtime.native.system.io.compression.4.1.0.nupkg.sha512",

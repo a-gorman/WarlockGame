@@ -4,6 +4,12 @@
     <LangVersion>11</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugType>full</DebugType>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Content\obj\**" />
     <EmbeddedResource Remove="Content\obj\**" />
@@ -13,7 +19,7 @@
     <None Remove="Content\NeonShooter.mgcb" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641">
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
   </ItemGroup>
@@ -25,4 +31,7 @@
       <_Parameter1>NeonShooter.Core.Test</_Parameter1>
     </AssemblyAttribute>
 </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PS4Mono\PS4Mono.csproj" />
+  </ItemGroup>
 </Project>
