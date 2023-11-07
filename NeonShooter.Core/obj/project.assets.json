@@ -2,17 +2,13 @@
   "version": 3,
   "targets": {
     "net7.0": {
-      "MonoGame.Framework.DesktopGL/3.8.0.1641": {
+      "MonoGame.Framework.DesktopGL/3.8.1.303": {
         "type": "package",
         "compile": {
-          "lib/netstandard2.0/MonoGame.Framework.dll": {
-            "related": ".xml"
-          }
+          "lib/net6.0/MonoGame.Framework.dll": {}
         },
         "runtime": {
-          "lib/netstandard2.0/MonoGame.Framework.dll": {
-            "related": ".xml"
-          }
+          "lib/net6.0/MonoGame.Framework.dll": {}
         },
         "build": {
           "build/MonoGame.Framework.DesktopGL.targets": {}
@@ -26,7 +22,7 @@
             "assetType": "native",
             "rid": "linux-x64"
           },
-          "runtimes/osx/native/libSDL2-2.0.0.dylib": {
+          "runtimes/osx/native/libSDL2.dylib": {
             "assetType": "native",
             "rid": "osx"
           },
@@ -51,39 +47,55 @@
             "rid": "win-x86"
           }
         }
+      },
+      "PS4Mono/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "dependencies": {
+          "MonoGame.Framework.DesktopGL": "3.8.1.303"
+        },
+        "compile": {
+          "bin/placeholder/PS4Mono.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/PS4Mono.dll": {}
+        }
       }
     }
   },
   "libraries": {
-    "MonoGame.Framework.DesktopGL/3.8.0.1641": {
-      "sha512": "rJQlrlHQbnOECYV6EcQ8GlGRQ2lzPTroXQcyyOZ0ki+BQRSJEN2zVBm9skqLiXya348aGAfTSSGTaSKjAy9NaA==",
+    "MonoGame.Framework.DesktopGL/3.8.1.303": {
+      "sha512": "eGYhqn0n1olk8MNYeE9EuBmoNNECN1T18rPMaQpkzsEQ0H3nVyFPXC+uCo78v5pi5juQpJ3PSFnSkjzZJ1U58A==",
       "type": "package",
-      "path": "monogame.framework.desktopgl/3.8.0.1641",
+      "path": "monogame.framework.desktopgl/3.8.1.303",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
         "build/MonoGame.Framework.DesktopGL.targets",
-        "lib/net452/MonoGame.Framework.dll",
-        "lib/net452/MonoGame.Framework.xml",
-        "lib/netstandard2.0/MonoGame.Framework.dll",
-        "lib/netstandard2.0/MonoGame.Framework.xml",
-        "monogame.framework.desktopgl.3.8.0.1641.nupkg.sha512",
+        "lib/net6.0/MonoGame.Framework.dll",
+        "monogame.framework.desktopgl.3.8.1.303.nupkg.sha512",
         "monogame.framework.desktopgl.nuspec",
         "runtimes/linux-x64/native/libSDL2-2.0.so.0",
         "runtimes/linux-x64/native/libopenal.so.1",
-        "runtimes/osx/native/libSDL2-2.0.0.dylib",
+        "runtimes/osx/native/libSDL2.dylib",
         "runtimes/osx/native/libopenal.1.dylib",
         "runtimes/win-x64/native/SDL2.dll",
         "runtimes/win-x64/native/soft_oal.dll",
         "runtimes/win-x86/native/SDL2.dll",
         "runtimes/win-x86/native/soft_oal.dll"
       ]
+    },
+    "PS4Mono/1.0.0": {
+      "type": "project",
+      "path": "../PS4Mono/PS4Mono.csproj",
+      "msbuildProject": "../PS4Mono/PS4Mono.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net7.0": [
-      "MonoGame.Framework.DesktopGL >= 3.8.0.1641"
+      "MonoGame.Framework.DesktopGL >= 3.8.1.303",
+      "PS4Mono >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -116,7 +128,11 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\Alex\\RiderProjects\\Monogame\\PS4Mono\\PS4Mono.csproj": {
+              "projectPath": "C:\\Users\\Alex\\RiderProjects\\Monogame\\PS4Mono\\PS4Mono.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
@@ -132,7 +148,7 @@
           "MonoGame.Framework.DesktopGL": {
             "suppressParent": "All",
             "target": "Package",
-            "version": "[3.8.0.1641, )"
+            "version": "[3.8.1.303, )"
           }
         },
         "imports": [
@@ -151,7 +167,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
       }
     }
   }
