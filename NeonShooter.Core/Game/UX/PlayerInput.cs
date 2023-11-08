@@ -15,8 +15,8 @@ class PlayerInput {
     private readonly Dictionary<InputAction, HashSet<Action<InputAction>>> _onPressedActions = new();
     private readonly Dictionary<InputAction, HashSet<Action<InputAction>>> _whilePressedActions = new();
     
-    private static InputState _inputState =  new();
-    private static InputState _lastInputState =  new();
+    private InputState _inputState =  new();
+    private InputState _lastInputState =  new();
 
     // Input devices to use for this player. For example Keyboard+Mouse or gamepad
     private readonly List<IInputDevice> _inputDevices = new();

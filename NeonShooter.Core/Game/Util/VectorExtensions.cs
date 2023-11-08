@@ -54,6 +54,10 @@ public static class VectorExtensions
     public static bool IsWithin(this Vector2 vector, Rectangle rectangle) {
         return rectangle.Contains(vector);
     }
+
+    public static Vector2 WithMaxLength(this Vector2 source, float length) {
+        return source.IsLengthGreaterThan(length) ? source.WithLength(length) : source;
+    }
     
     // Min 0
     // public static void SubtractLength(this Vector2 vector, float length) {

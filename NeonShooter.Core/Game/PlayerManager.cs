@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using NeonShooter.Core.Game.Entity;
-using NeonShooter.Core.Game.Util;
 using NeonShooter.Core.Game.UX.InputDevices;
 
 namespace NeonShooter.Core.Game; 
@@ -18,7 +15,7 @@ static class PlayerManager {
         var inputDevices = GetDevices(deviceType);
         inputDevices.ForEach(InputDeviceManager.Add);
 
-        var player = new Player(inputDevices) {Name = name};
+        var player = new Player(inputDevices) { Name = name };
         var playerShip = new PlayerShip(player);
         player.Warlock = playerShip;
 
@@ -39,12 +36,14 @@ static class PlayerManager {
         {
             DeviceType.MouseAndKeyboard => new List<IInputDevice> { new KeyboardInput(), new MouseInput() },
             DeviceType.Gamepad1 => new List<IInputDevice> { new GamepadInput(0) },
+            DeviceType.PlayStation1 => new List<IInputDevice> { new PlayStationInput(0) },
             _ => throw new ArgumentOutOfRangeException(nameof(deviceType), deviceType, null)
         };
     }
     
     public enum DeviceType {
         MouseAndKeyboard,
-        Gamepad1
+        Gamepad1,
+        PlayStation1
     }
 }
