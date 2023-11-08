@@ -7,6 +7,9 @@ using NeonShooter.Core.Game.Util;
 
 namespace NeonShooter.Core.Game.UX.InputDevices;
 
+/// <summary>
+/// Gets input from XNA's GamePad
+/// </summary>
 class GamepadInput: IInputDevice {
 
     private readonly int _playerIndex;
