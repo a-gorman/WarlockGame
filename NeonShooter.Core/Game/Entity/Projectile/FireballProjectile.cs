@@ -9,16 +9,18 @@ namespace NeonShooter.Core.Game.Entity.Projectile;
 internal class FireballProjectile : EntityBase, IProjectile
 {
     private static readonly Random _rand = new();
-    private const int Radius = 200;
     private const int Force = 100;
 
-    public FireballProjectile(Vector2 position, Vector2 velocity) : 
+    public IEntity Parent { get; }
+    
+    public FireballProjectile(Vector2 position, Vector2 velocity, IEntity parent) : 
         base(Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f)) {
-        
+
+        Parent = parent;
         Position = position;
         Velocity = velocity;
         Orientation = Velocity.ToAngle();
-        base.Radius = 8;
+        Radius = 8;
     }
 
     public override void Update()
@@ -36,7 +38,7 @@ internal class FireballProjectile : EntityBase, IProjectile
 
             for (int i = 0; i < 30; i++)
                 NeonShooterGame.ParticleManager.CreateParticle(Art.LineParticle, Position, Color.LightBlue, 50, 1,
-                    new ParticleState() { Velocity = _rand.NextVector2(0, 9), Type = ParticleType.Bullet, LengthMultiplier = 1 });
+                    new ParticleState { Velocity = _rand.NextVector2(0, 9), Type = ParticleType.Bullet, LengthMultiplier = 1 });
         }
     }
 
@@ -51,7 +53,7 @@ internal class FireballProjectile : EntityBase, IProjectile
                     enemy.WasShot();
                     break;
                 case PlayerShip player:
-                    player.Push(100, player.Position - Position);
+                    player.Push(Force, player.Position - Position);
                     break;
             }
         }

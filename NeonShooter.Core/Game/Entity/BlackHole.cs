@@ -35,10 +35,6 @@ namespace NeonShooter.Core.Game.Entity
 				{
 					case Enemy { IsActive: false }:
 						continue;
-					// bullets are repelled by black holes and everything else is attracted
-					case Bullet:
-						entity.Velocity += (entity.Position - Position).ScaleTo(0.3f);
-						break;
 					default:
 					{
 						var dPos = Position - entity.Position;

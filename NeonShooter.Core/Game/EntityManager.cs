@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NeonShooter.Core.Game.Entity;
 using NeonShooter.Core.Game.Entity.Projectile;
+using NeonShooter.Core.Game.Util;
 
 namespace NeonShooter.Core.Game
 {
@@ -72,7 +73,7 @@ namespace NeonShooter.Core.Game
 		private static void HandleCollisions()
 		{
 			HandleEnemyEnemyCollisions();
-			HandleEnemyBulletCollisions();
+			HandleBulletCollisions();
 			HandlePlayerEnemyCollisions();
 			HandleBlackHoleCollisions();
 		}
@@ -100,15 +101,16 @@ namespace NeonShooter.Core.Game
 			}
 		}
 
-		private static void HandleEnemyBulletCollisions()
+		private static void HandleBulletCollisions()
 		{
-			foreach (var enemy in _enemies)
-			{
-				foreach (var bullet in _projectiles.Where(x => IsColliding(enemy, x)))
-				{
-					// enemy.WasShot();
-					bullet.OnHit();
-				}
+
+			
+			foreach (var projectile in _projectiles) {
+				_enemies
+					.Concat<IEntity>(_entities.OfType<PlayerShip>().Where(x => x != projectile.Parent))
+					.Concat(_projectiles.Where(x => x != projectile))
+					.Where(x => IsColliding(projectile, x))
+					.ForEach(_ => projectile.OnHit());
 			}
 		}
 
@@ -148,7 +150,7 @@ namespace NeonShooter.Core.Game
 		private static bool IsColliding(IEntity a, IEntity b)
 		{
 			float radius = a.Radius + b.Radius;
-			return !a.IsExpired && !b.IsExpired && Vector2.DistanceSquared(a.Position, b.Position) < radius * radius;
+			return !a.IsExpired && !b.IsExpired && Vector2.DistanceSquared(a.Position, b.Position) < radius.Squared();
 		}
 		
 		// public static IEnumerable<EntityBase> GetEntitiesWithinRectangle(Vector2 position, int width, int height, float angle) {

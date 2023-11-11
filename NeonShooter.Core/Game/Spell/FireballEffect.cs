@@ -9,6 +9,6 @@ public class FireballEffect: ICastEffect {
     private int _speed = 5;
 
     public void OnCast(IEntity caster, Vector2 castDirection) {
-        EntityManager.Add(new FireballProjectile(caster.Position, castDirection * _speed));
+        EntityManager.Add(new FireballProjectile(caster.Position, castDirection * _speed, caster));
     }
 }
