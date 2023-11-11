@@ -34,7 +34,7 @@ public class LightningEffect: ICastEffect {
                 case PlayerShip player:
                     if (ReferenceEquals(player, caster)) { break; }
                     
-                    player.Push(20, player.Position - caster.Position);
+                    player.Push(50, player.Position - caster.Position);
                     break;
             }
         }

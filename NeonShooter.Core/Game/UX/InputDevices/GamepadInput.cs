@@ -22,10 +22,10 @@ class GamepadInput: IInputDevice {
         
         _mappings = new List<GamepadMapping>
         {
-            new() { DisplayValue = "A", Button = Buttons.A, Action = InputAction.Select },
-            new() { DisplayValue = "B", Button = Buttons.B, Action = InputAction.Cancel },
-            new() { DisplayValue = "Y", Button = Buttons.RightTrigger, Action = InputAction.Spell2 },
-            new() { DisplayValue = "Y", Button = Buttons.RightShoulder, Action = InputAction.Spell1 },
+            new() { DisplayValue = "A", Button = Buttons.RightTrigger, Action = InputAction.Select },
+            new() { DisplayValue = "B", Button = Buttons.RightShoulder, Action = InputAction.Cancel },
+            new() { DisplayValue = "Y", Button = Buttons.A, Action = InputAction.Spell1 },
+            new() { DisplayValue = "Y", Button = Buttons.B, Action = InputAction.Spell2 },
             // new() { DisplayValue = "X", Button = Buttons.X, Action = null }
         }.ToDictionary(x => x.Button);
     }
@@ -52,8 +52,8 @@ class GamepadInput: IInputDevice {
     }
     
     private struct GamepadMapping {
-        public string DisplayValue { get; set; }
-        public InputAction Action { get; set; }
-        public Buttons Button { get; set; }
+        public string DisplayValue { get; init; }
+        public InputAction Action { get; init; }
+        public Buttons Button { get; init; }
     }
 }

@@ -22,10 +22,10 @@ public class PlayStationInput : IInputDevice {
         
         _mappings = new List<GamepadMapping>
         {
-            new() { DisplayValue = "A", Button = Buttons.A, Action = InputAction.Select },
-            new() { DisplayValue = "B", Button = Buttons.B, Action = InputAction.Cancel },
-            new() { DisplayValue = "Y", Button = Buttons.RightTrigger, Action = InputAction.Spell2 },
-            new() { DisplayValue = "Y", Button = Buttons.RightShoulder, Action = InputAction.Spell1 },
+            new() { DisplayValue = "A", Button = Buttons.A, Action = InputAction.Spell1 },
+            new() { DisplayValue = "B", Button = Buttons.B, Action = InputAction.Spell2 },
+            new() { DisplayValue = "R1", Button = Buttons.RightShoulder, Action = InputAction.Cancel },
+            new() { DisplayValue = "R2", Button = Buttons.RightTrigger, Action = InputAction.Select },
             // new() { DisplayValue = "X", Button = Buttons.X, Action = null }
         }.ToDictionary(x => x.Button);
     }
