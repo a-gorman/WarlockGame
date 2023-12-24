@@ -20,6 +20,12 @@ namespace NeonShooter.Core.Game.Entity
     {
         public const float Speed = 8;
 
+        public const float MaxHealth = 100;
+
+        public float Health { get; private set; } = MaxHealth;
+
+        public event Action<PlayerShip> Destroyed;
+        
         public Vector2? Direction { get; set; }
 
         public List<WarlockSpell> Spells { get; } = new() { SpellFactory.Fireball(), SpellFactory.Lightning() };
@@ -42,16 +48,16 @@ namespace NeonShooter.Core.Game.Entity
         }
 
         public override void Update() {
-            if (IsDead) {
-                if (--_framesUntilRespawn == 0) {
-                    if (Player.Status.Lives == 0) {
-                        Player.Status.Reset();
-                        Position = NeonShooterGame.ScreenSize / 2;
-                    }
-                    NeonShooterGame.Grid.ApplyDirectedForce(new Vector3(0, 0, 5000), new Vector3(Position, 0), 50);
-                }
-                return;
-            }
+            // if (IsDead) {
+            //     if (--_framesUntilRespawn == 0) {
+            //         if (Player.Status.Lives == 0) {
+            //             Player.Status.Reset();
+            //             Position = NeonShooterGame.ScreenSize / 2;
+            //         }
+            //         NeonShooterGame.Grid.ApplyDirectedForce(new Vector3(0, 0, 5000), new Vector3(Position, 0), 50);
+            //     }
+            //     return;
+            // }
 
             Orders.FirstOrDefault()?.Update();
 
@@ -171,6 +177,7 @@ namespace NeonShooter.Core.Game.Entity
         {
             if (!IsDead)
                 base.Draw(spriteBatch);
+                Debug.Visualize(Health.ToString(), Position);
         }
 
         public void Kill()
@@ -198,6 +205,19 @@ namespace NeonShooter.Core.Game.Entity
         public void Push(int force, Vector2 direction)
         {
             Velocity += force * direction.ToNormalized();
+        }
+
+        public void Damage(float damage, IEntity source) {
+            Health -= damage;
+
+            if (Health <= 0) {
+                Destroy(source);
+            }
+        }
+
+        private void Destroy(IEntity source) {
+            IsExpired = true;
+            // source.
         }
     }
 }
