@@ -1,3 +1,6 @@
+**/obj/**
+**/bin/**
+
 /NeonShooter.Core/bin/Debug/net6.0-windows/NeonShooter.Core.dll
 /NeonShooter.Core/bin/Debug/net6.0-windows/ref/NeonShooter.Core.dll
 /NeonShooter.Core/obj/Debug/net6.0-windows/ref/NeonShooter.Core.dll
