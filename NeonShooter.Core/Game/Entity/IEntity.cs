@@ -8,10 +8,10 @@ public interface IEntity
     void Update();
     void Draw(SpriteBatch spriteBatch);
 
-    public Vector2 Position { get; set; }
-    public Vector2 Velocity { get; set; }
-    public float Orientation { get; set; }
-    public float Radius { get; init; }	// used for circular collision detection
+    Vector2 Position { get; set; }
+    Vector2 Velocity { get; set; }
+    float Orientation { get; set; }
+    float Radius { get; init; }	// used for circular collision detection
     bool IsExpired { get; set; }
     
 }

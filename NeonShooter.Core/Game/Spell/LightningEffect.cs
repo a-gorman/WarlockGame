@@ -28,13 +28,11 @@ public class LightningEffect: ICastEffect {
             
             switch (entity)
             {
-                case Enemy enemy:
-                    enemy.WasShot();
-                    break;
                 case PlayerShip player:
                     if (ReferenceEquals(player, caster)) { break; }
                     
                     player.Push(50, player.Position - caster.Position);
+                    player.Damage(30, caster);
                     break;
             }
         }

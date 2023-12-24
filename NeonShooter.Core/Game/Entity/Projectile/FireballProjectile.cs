@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using NeonShooter.Core.Game.Display;
 using NeonShooter.Core.Game.Graphics;
+using NeonShooter.Core.Game.Spell;
 using NeonShooter.Core.Game.Util;
 
 namespace NeonShooter.Core.Game.Entity.Projectile;
@@ -10,6 +12,7 @@ internal class FireballProjectile : EntityBase, IProjectile
 {
     private static readonly Random _rand = new();
     private const int Force = 100;
+    private IReadOnlyList<IProjectileEffect> Effects = new [] { new Explosion { Force = Force, Damage = 10, Radius = 30, Falloff = 0 } };
 
     public IEntity Parent { get; }
     
@@ -45,17 +48,8 @@ internal class FireballProjectile : EntityBase, IProjectile
     public void OnHit()
     {
         IsExpired = true;
-        foreach (var entity in EntityManager.GetNearbyEntities(Position, Radius))
-        {
-            switch (entity)
-            {
-                case Enemy enemy:
-                    enemy.WasShot();
-                    break;
-                case PlayerShip player:
-                    player.Push(Force, player.Position - Position);
-                    break;
-            }
+        foreach (var effect in Effects) {
+            effect.OnImpact(this);
         }
     }
 }
