@@ -177,7 +177,6 @@ namespace NeonShooter.Core.Game.Entity
         {
             if (!IsDead)
                 base.Draw(spriteBatch);
-                Debug.Visualize(Health.ToString(), Position);
         }
 
         public void Kill()

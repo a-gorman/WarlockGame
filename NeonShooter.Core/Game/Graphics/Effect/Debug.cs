@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 
 namespace NeonShooter.Core.Game.Graphics.Effect; 
 
@@ -88,5 +89,30 @@ public class StringEffect : IEffect {
 
     public void Draw(SpriteBatch spriteBatch) {
         spriteBatch.DrawString(Art.Font, _displayString, _position, _color);
+    }
+}
+
+public class CircleEffect : IEffect {
+    private readonly CircleF _circle;
+    private readonly Vector2 _position;
+    private readonly Color _color;
+
+    private readonly GameTimer _timer;
+
+    public bool IsExpired => _timer.IsExpired;
+
+    public CircleEffect(float radius, Vector2 position, Color color, int duration = 1) {
+        _circle = new CircleF(position.ToPoint(), radius);
+        _position = position;
+        _color = color;
+        _timer = GameTimer.FromFrames(duration+1);
+    }
+
+    public void Update() {
+        _timer.Update();
+    }
+
+    public void Draw(SpriteBatch spriteBatch) {
+        spriteBatch.DrawCircle(_circle, 30, _color);
     }
 }

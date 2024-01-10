@@ -8,6 +8,9 @@ using NeonShooter.Core.Game;
 using NeonShooter.Core.Game.Display;
 using NeonShooter.Core.Game.Graphics;
 using NeonShooter.Core.Game.Graphics.UI;
+using NeonShooter.Core.Game.Log;
+using NeonShooter.Core.Game.Networking;
+using NeonShooter.Core.Game.Util;
 using NeonShooter.Core.Game.UX;
 using NeonShooter.Core.Game.UX.InputDevices;
 using PS4Mono;
@@ -105,7 +108,15 @@ namespace NeonShooter.Core
 
             if (StaticKeyboardInput.WasKeyPressed(Keys.P))
                 _paused = !_paused;
+            
+            if (StaticKeyboardInput.WasKeyPressed(Keys.C))
+                NetworkManager.ConnectToServer();
+            
+            if (StaticKeyboardInput.WasKeyPressed(Keys.V))
+                NetworkManager.StartServer();
 
+            Debug.Visualize(Logger.Log.TakeLast(5), Vector2.Zero);
+            
             if (!_paused)
             {
                 InputDeviceManager.Update();
@@ -117,6 +128,9 @@ namespace NeonShooter.Core
                 
                 Grid.Update();
             }
+            
+            NetworkManager.Update();
+            
             base.Update(gameTime);
         }
 
@@ -147,7 +161,7 @@ namespace NeonShooter.Core
 
             var activePlayer = PlayerManager.Players.First();
             
-            DrawTitleSafeAlignedString("Lives: " + activePlayer.Status.Lives, 5);
+            // DrawTitleSafeAlignedString("Lives: " + activePlayer.Status.Lives, 5);
             DrawTitleSafeRightAlignedString("Score: " + activePlayer.Status.Score, 5);
             DrawTitleSafeRightAlignedString("Multiplier: " + activePlayer.Status.Multiplier, 35);
             // draw the custom mouse cursor
