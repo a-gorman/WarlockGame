@@ -12,11 +12,10 @@ using NeonShooter.Core.Game.Entity.Order;
 using NeonShooter.Core.Game.Graphics;
 using NeonShooter.Core.Game.Spell;
 using NeonShooter.Core.Game.Util;
-using NeonShooter.Core.Game.UX;
 
 namespace NeonShooter.Core.Game.Entity
 {
-    class PlayerShip : EntityBase
+    class Warlock : EntityBase
     {
         public const float Speed = 8;
 
@@ -24,13 +23,13 @@ namespace NeonShooter.Core.Game.Entity
 
         public float Health { get; private set; } = MaxHealth;
 
-        public event Action<PlayerShip> Destroyed;
+        public event Action<Warlock>? Destroyed;
         
         public Vector2? Direction { get; set; }
 
         public List<WarlockSpell> Spells { get; } = new() { SpellFactory.Fireball(), SpellFactory.Lightning() };
         
-        public Player Player { get; }
+        public int PlayerId { get; }
 
         private int _framesUntilRespawn = 0;
         public bool IsDead => _framesUntilRespawn > 0;
@@ -39,12 +38,12 @@ namespace NeonShooter.Core.Game.Entity
 
         private LinkedList<IOrder> Orders { get; } = new();
 
-        public PlayerShip(Player player) :
-            base(new Sprite(Art.Player))
-        {
-            Player = player;
+        public Warlock(int id, int playerId) :
+            base(new Sprite(Art.Player)) {
+            Id = id;
+            PlayerId = playerId;
             Position = NeonShooterGame.ScreenSize / 2;
-            Radius = 10;
+            Radius = 20;
         }
 
         public override void Update() {
@@ -63,7 +62,7 @@ namespace NeonShooter.Core.Game.Entity
 
             Move();
             
-            Debug.Visualize(Position.ToString(), new Vector2(100,100));
+            // Debug.Visualize(Position.ToString(), new Vector2(100,100));
             
             MakeExhaustFire();
 
@@ -82,7 +81,7 @@ namespace NeonShooter.Core.Game.Entity
                 CastSpell(Spells[spellIndex], castDirection);
         }
 
-        public void GiveOrder(Func<PlayerShip, IOrder> order) {
+        public void GiveOrder(Func<Warlock, IOrder> order) {
             GiveOrder(order(this));
         }
         
@@ -181,7 +180,7 @@ namespace NeonShooter.Core.Game.Entity
 
         public void Kill()
         {
-            Player.Status.RemoveLife();
+            // Player.Status.RemoveLife();
             _framesUntilRespawn = GameStatus.IsGameOver ? 300 : 120;
 
             Color explosionColor = new Color(0.8f, 0.8f, 0.4f); // yellow

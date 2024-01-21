@@ -93,8 +93,8 @@ namespace NeonShooter.Core.Game.Entity
         public void WasShot()
         {
             IsExpired = true;
-            PlayerManager.ActivePlayer.Status.AddPoints(PointValue);
-            PlayerManager.ActivePlayer.Status.IncreaseMultiplier();
+            // PlayerManager.ActivePlayer.Status.AddPoints(PointValue);
+            // PlayerManager.ActivePlayer.Status.IncreaseMultiplier();
 
             float hue1 = Rand.NextFloat(0, 6);
             float hue2 = (hue1 + Rand.NextFloat(0, 2)) % 6f;

@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NeonShooter.Core.Game.UX;
@@ -17,6 +18,8 @@ public static class SpellDisplay {
     public static void Draw(SpriteBatch spriteBatch) {
         DrawHollowRectangle(spriteBatch, new Rectangle(20, 925, 1880, 90), Color.White);
 
+        if(!PlayerManager.Players.Any()) return;
+        
         for (var i = 0; i < PlayerManager.ActivePlayer.Warlock.Spells.Count; i++) {
             var spell = PlayerManager.ActivePlayer.Warlock.Spells[i];
             spriteBatch.Draw(

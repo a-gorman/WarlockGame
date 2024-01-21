@@ -9,13 +9,16 @@ using NeonShooter.Core.Game.UX.InputDevices;
 namespace NeonShooter.Core.Game; 
 
 class Player {
-    public required string Name { get; init; }
+    public string Name { get; }
+    
+    public int Id { get; }
 
     public PlayerInput Input { get; }
 
     public PlayerStatus Status { get; }
 
-    public PlayerShip Warlock { get; set; } = null!;
+    // LATE INIT due to bidirectional reference. This will be set up by player factory
+    public Warlock Warlock { get; set; } = null!;
     
     public WarlockSpell? SelectedSpell { get; private set; }
 
@@ -23,9 +26,11 @@ class Player {
 
     private bool _initialized;
 
-    public Player(IEnumerable<IInputDevice> inputDevices) {
+    public Player(string name, int id, IEnumerable<IInputDevice> inputDevices) {
         Status = new(this);
         Input = new(inputDevices);
+        Name = name;
+        Id = id;
     }
 
     public void Initialize() {

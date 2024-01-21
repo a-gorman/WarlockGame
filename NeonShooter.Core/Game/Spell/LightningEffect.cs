@@ -29,7 +29,7 @@ public class LightningEffect: ICastEffect {
             
             switch (entity)
             {
-                case PlayerShip player:
+                case Warlock player:
                     if (ReferenceEquals(player, caster)) { break; }
                     
                     player.Push(50, player.Position - caster.Position);

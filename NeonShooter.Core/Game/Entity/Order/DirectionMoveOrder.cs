@@ -4,25 +4,25 @@ namespace NeonShooter.Core.Game.Entity.Order;
 
 class DirectionMoveOrder : IOrder {
 
-    private readonly PlayerShip _player;
+    private readonly Warlock _player;
     private bool _active;
 
     public bool Finished { get; private set; }
 
-    public DirectionMoveOrder(PlayerShip player) {
+    public DirectionMoveOrder(Warlock player) {
         _player = player;
     }
 
     public void Update() {
-        var directionalInput = _player.Player.Input.GetDirectionalInput();
-        if (directionalInput.HasValue) {
-            _player.Direction = directionalInput.Value.HasLength() ? directionalInput : null;
-        }
-        else {
-            Finished = true;
-        }
-        
-        _active = true;
+        // var directionalInput = _player.Player.Input.GetDirectionalInput();
+        // if (directionalInput.HasValue) {
+        //     _player.Direction = directionalInput.Value.HasLength() ? directionalInput : null;
+        // }
+        // else {
+        //     Finished = true;
+        // }
+        //
+        // _active = true;
     }
 
     public void OnCancel() {

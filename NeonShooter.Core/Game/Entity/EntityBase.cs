@@ -14,6 +14,8 @@ namespace NeonShooter.Core.Game.Entity
 	{
 		protected readonly Sprite _sprite;
 		
+		public int Id { get; init; }
+		
 		public Vector2 Position { get; set; }
 		public Vector2 Velocity { get; set; }
 		public float Orientation { get; set; }

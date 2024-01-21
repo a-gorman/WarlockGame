@@ -18,17 +18,14 @@ namespace NeonShooter.Core.Game
 		private static List<EntityBase> _entities = new();
 		private static List<Enemy> _enemies = new();
 		private static List<IProjectile> _projectiles = new();
-		private static List<BlackHole> _blackHoles = new();
 
-		public static IEnumerable<BlackHole> BlackHoles => _blackHoles;
 
 		private static bool _isUpdating;
-		private static readonly List<Entity.EntityBase> _addedEntities = new();
+		private static readonly List<EntityBase> _addedEntities = new();
 
 		public static int Count => _entities.Count;
-		public static int BlackHoleCount => _blackHoles.Count;
 
-		private static PlayerShip PlayerInstance => PlayerManager.Players.First().Warlock;
+		private static Warlock PlayerInstance => PlayerManager.Players.First().Warlock;
 		
 		public static void Add(EntityBase entity)
 		{
@@ -45,8 +42,6 @@ namespace NeonShooter.Core.Game
 				_projectiles.Add(projectile);
 			else if (entity is Enemy enemy)
 				_enemies.Add(enemy);
-			else if (entity is BlackHole hole)
-				_blackHoles.Add(hole);
 		}
 
 		public static void Update()
@@ -67,7 +62,6 @@ namespace NeonShooter.Core.Game
 			_entities = _entities.Where(x => !x.IsExpired).ToList();
 			_projectiles = _projectiles.Where(x => !x.IsExpired).ToList();
 			_enemies = _enemies.Where(x => !x.IsExpired).ToList();
-			_blackHoles = _blackHoles.Where(x => !x.IsExpired).ToList();
 		}
 
 		private static void HandleCollisions()
@@ -75,7 +69,6 @@ namespace NeonShooter.Core.Game
 			HandleEnemyEnemyCollisions();
 			HandleBulletCollisions();
 			HandlePlayerEnemyCollisions();
-			HandleBlackHoleCollisions();
 		}
 
 		private static void HandleEnemyEnemyCollisions()
@@ -107,35 +100,10 @@ namespace NeonShooter.Core.Game
 			
 			foreach (var projectile in _projectiles) {
 				_enemies
-					.Concat<IEntity>(_entities.OfType<PlayerShip>().Where(x => x != projectile.Parent))
+					.Concat<IEntity>(_entities.OfType<Warlock>().Where(x => x != projectile.Parent))
 					.Concat(_projectiles.Where(x => x != projectile))
 					.Where(x => IsColliding(projectile, x))
 					.ForEach(_ => projectile.OnHit());
-			}
-		}
-
-		private static void HandleBlackHoleCollisions()
-		{
-			foreach (var blackHole in _blackHoles)
-			{
-				foreach (var enemy in _enemies)
-					if (enemy.IsActive && IsColliding(blackHole, enemy))
-						enemy.WasShot();
-
-				foreach (var bullet in _projectiles)
-				{
-					if (IsColliding(blackHole, bullet))
-					{
-						bullet.IsExpired = true;
-						blackHole.WasShot();
-					}
-				}
-
-				if (IsColliding(PlayerInstance, blackHole))
-				{
-					KillPlayer();
-					break;
-				}
 			}
 		}
 
@@ -143,7 +111,6 @@ namespace NeonShooter.Core.Game
 		{
 			PlayerInstance.Kill();
 			_enemies.ForEach(x => x.WasShot());
-			_blackHoles.ForEach(x => x.Kill());
 			EnemySpawner.Reset();
 		}
 

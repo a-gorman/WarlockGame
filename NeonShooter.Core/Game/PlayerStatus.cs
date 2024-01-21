@@ -49,15 +49,15 @@ class PlayerStatus
 
 	public void Update()
 	{
-		if (Multiplier > 1)
-		{
-			// update the multiplier timer
-			if ((_multiplierTimeLeft -= (float)NeonShooterGame.GameTime.ElapsedGameTime.TotalSeconds) <= 0)
-			{
-				_multiplierTimeLeft = MultiplierExpiryTime;
-				ResetMultiplier();
-			}
-		}
+		// if (Multiplier > 1)
+		// {
+		// 	// update the multiplier timer
+		// 	if ((_multiplierTimeLeft -= (float)NeonShooterGame.GameTime.ElapsedGameTime.TotalSeconds) <= 0)
+		// 	{
+		// 		_multiplierTimeLeft = MultiplierExpiryTime;
+		// 		ResetMultiplier();
+		// 	}
+		// }
 	}
 
 	public void AddPoints(int basePoints)
