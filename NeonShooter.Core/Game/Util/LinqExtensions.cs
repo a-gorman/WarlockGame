@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace NeonShooter.Core.Game.Util; 
@@ -24,17 +26,16 @@ public static class LinqExtensions {
     /// <remarks>Similar to ForEach, but allows method chaining</remarks>
     /// <param name="source">The source enumerable</param>
     /// <param name="action">The action to perform on each element</param>
-    /// <typeparam name="TCollection">The type of enumerable</typeparam>
     /// <typeparam name="T">The type of element</typeparam>
     /// <returns>The unmodified source enumerable</returns>
-    public static TCollection OnEach<TCollection, T>(this TCollection source, Action<T> action) where TCollection: IEnumerable<T> {
+    public static IEnumerable<T> OnEach<T>(this IEnumerable<T> source, Action<T> action) {
         foreach (var item in source) {
             action(item);
         }
 
         return source;
     }
-    
+
     /// <summary>
     /// Returns the given object
     /// </summary>

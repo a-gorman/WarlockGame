@@ -16,7 +16,7 @@ namespace NeonShooter.Core.Game
 		private static float _inverseSpawnChance = 90;
 		private static readonly float _inverseBlackHoleChance = 600;
 
-		private static PlayerShip PlayerInstance => PlayerManager.Players.First().Warlock;
+		private static Warlock PlayerInstance => PlayerManager.Players.First().Warlock;
 
 		
 		public static void Update()
@@ -28,9 +28,6 @@ namespace NeonShooter.Core.Game
 				
 				if (_rand.Next((int)_inverseSpawnChance) == 0)
 					EntityManager.Add(Enemy.CreateWanderer(GetSpawnPosition()));
-				
-				if (EntityManager.BlackHoleCount < 2 && _rand.Next((int)_inverseBlackHoleChance) == 0)
-					EntityManager.Add(new BlackHole(GetSpawnPosition()));
 			}
 			
 			// slowly increase the spawn rate as time progresses

@@ -11,18 +11,23 @@ static class PlayerManager {
 
     public static Player ActivePlayer => Players.First();
 
-    public static void AddPlayer(string name, DeviceType deviceType) {
+    public static void AddPlayer(string name, int id, DeviceType deviceType) {
         var inputDevices = GetDevices(deviceType);
         inputDevices.ForEach(InputDeviceManager.Add);
 
-        var player = new Player(inputDevices) { Name = name };
-        var playerShip = new PlayerShip(player);
-        player.Warlock = playerShip;
+        var player = new Player(name, id, inputDevices);
+        var warlock = new Warlock(player.Id, player.Id);
+        player.Warlock = warlock;
 
         Players.Add(player);
-        EntityManager.Add(playerShip);
+        EntityManager.Add(warlock);
 
         player.Initialize();
+    }
+
+    public static void AddPlayer(Player player) {
+        Players.Add(player);
+        EntityManager.Add(player.Warlock);
     }
 
     public static void Update() {

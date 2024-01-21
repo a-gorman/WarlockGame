@@ -18,7 +18,7 @@ class Explosion : IProjectileEffect {
         {
             switch (entity)
             {
-                case PlayerShip player:
+                case Warlock player:
                     var falloffFactor = Radius / (player.Position - source.Position).Length();
                     player.Push( (int)(Force * falloffFactor), player.Position - source.Position);
                     player.Damage(Damage * falloffFactor, source);

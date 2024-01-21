@@ -76,9 +76,6 @@ namespace NeonShooter.Core
 			Art.Load(Content);
 			Sound.Load(Content);
 
-            PlayerManager.AddPlayer("Alex", PlayerManager.DeviceType.MouseAndKeyboard);
-            PlayerManager.AddPlayer("John", PlayerManager.DeviceType.PlayStation1);
- 
             //Known issue that you get exceptions if you use Media PLayer while connected to your PC
             //See http://social.msdn.microsoft.com/Forums/en/windowsphone7series/thread/c8a243d2-d360-46b1-96bd-62b1ef268c66
             //Which means its impossible to test this from VS.
@@ -99,6 +96,8 @@ namespace NeonShooter.Core
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            Debug.Visualize($"Is active: {IsActive}", new Vector2(1500, 0));
+            
             GameTime = gameTime;
             Input.Update();
 
@@ -108,12 +107,17 @@ namespace NeonShooter.Core
 
             if (StaticKeyboardInput.WasKeyPressed(Keys.P))
                 _paused = !_paused;
-            
-            if (StaticKeyboardInput.WasKeyPressed(Keys.C))
+
+            if (StaticKeyboardInput.WasKeyPressed(Keys.C) && !NetworkManager.IsConnected) {
                 NetworkManager.ConnectToServer();
+                // NetworkManager.GetGameState();
+            }
             
-            if (StaticKeyboardInput.WasKeyPressed(Keys.V))
+            if (StaticKeyboardInput.WasKeyPressed(Keys.V) && !NetworkManager.IsConnected) {
+                PlayerManager.AddPlayer("Alex", 1, PlayerManager.DeviceType.MouseAndKeyboard);
+                PlayerManager.AddPlayer("John", 2, PlayerManager.DeviceType.PlayStation1);
                 NetworkManager.StartServer();
+            }
 
             Debug.Visualize(Logger.Log.TakeLast(5), Vector2.Zero);
             
@@ -159,11 +163,11 @@ namespace NeonShooter.Core
             // Draw the user interface without bloom
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
 
-            var activePlayer = PlayerManager.Players.First();
+            // var activePlayer = PlayerManager.Players.First();
             
             // DrawTitleSafeAlignedString("Lives: " + activePlayer.Status.Lives, 5);
-            DrawTitleSafeRightAlignedString("Score: " + activePlayer.Status.Score, 5);
-            DrawTitleSafeRightAlignedString("Multiplier: " + activePlayer.Status.Multiplier, 35);
+            // DrawTitleSafeRightAlignedString("Score: " + activePlayer.Status.Score, 5);
+            // DrawTitleSafeRightAlignedString("Multiplier: " + activePlayer.Status.Multiplier, 35);
             // draw the custom mouse cursor
             _spriteBatch.Draw(Art.Pointer, Input.MousePosition, Color.White);
             
@@ -171,15 +175,15 @@ namespace NeonShooter.Core
 
             DrawDebugInfo();
             
-            if (GameStatus.IsGameOver)
-            {
-                string text = "Game Over\n" +
-                    "Your Score: " + activePlayer.Status.Score + "\n" +
-                    "High Score: " + activePlayer.Status.HighScore;
-
-                Vector2 textSize = Art.Font.MeasureString(text);
-                _spriteBatch.DrawString(Art.Font, text, ScreenSize / 2 - textSize / 2, Color.White);
-            }
+            // if (GameStatus.IsGameOver)
+            // {
+            //     // string text = "Game Over\n" +
+            //     //     "Your Score: " + activePlayer.Status.Score + "\n" +
+            //     //     "High Score: " + activePlayer.Status.HighScore;
+            //
+            //     // Vector2 textSize = Art.Font.MeasureString(text);
+            //     // _spriteBatch.DrawString(Art.Font, text, ScreenSize / 2 - textSize / 2, Color.White);
+            // }
 
             _spriteBatch.End();
         }

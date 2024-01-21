@@ -1,8 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using LiteNetLib;
 using LiteNetLib.Utils;
+using Microsoft.Xna.Framework;
+using NeonShooter.Core.Game.Entity.Factory;
 using NeonShooter.Core.Game.Log;
 
 namespace NeonShooter.Core.Game.Networking;
@@ -25,6 +28,24 @@ public class Server : INetEventListener {
         Logger.Info("Starting server");
         var connected = _server.Start(12345);
         Logger.Info($"Server stated: {connected}");
+        
+        packetProcessor.RegisterNestedType<Vector2>((w, v) => w.Put(v), reader => reader.GetVector2());
+        packetProcessor.RegisterNestedType<Warlock>(() => new Warlock());
+        packetProcessor.RegisterNestedType<Player>(() => new Player());
+        
+        packetProcessor.Subscribe<RequestGameState>(OnRequestGameState, () => new RequestGameState());
+    }
+
+    public void OnRequestGameState(RequestGameState _) {
+        Logger.Info("Game state request received");
+        
+        var gameState = new GameState
+        {
+            Players = PlayerManager.Players.Select(x => new Networking.Player { Name = x.Name, Id = x.Id, WarlockId = x.Warlock.Id }).ToArray(),
+            Warlocks = PlayerManager.Players.Select(x => WarlockFactory.ToPacket(x.Warlock)).ToArray()
+        };
+        
+        SendToAll(gameState, DeliveryMethod.ReliableOrdered);
     }
     
     public void OnConnectionRequest(ConnectionRequest request) {
