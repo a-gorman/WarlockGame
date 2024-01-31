@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Data;
 using LiteNetLib;
+using LiteNetLib.Utils;
 using NeonShooter.Core.Game.Log;
 
 namespace NeonShooter.Core.Game.Networking; 
@@ -13,7 +15,15 @@ static class NetworkManager {
     public static bool IsConnected => IsClient || IsServer;
     public static bool IsClient => _client != null;
     public static bool IsServer => _server != null;
+    
+    // private static Dictionary<int, RemotePlayerInput> _remotePlayerInputs = new();
+    //
+    // public static IReadOnlyDictionary<int, RemotePlayerInput> RemotePlayerInputs => _remotePlayerInputs;
 
+    // public static Player? GetRemotePlayerInput(int playerId) {
+    //     return Players.FirstOrDefault(x => x.Id == playerId);
+    // }
+    
     public static void StartServer() {
         if (IsConnected) return;
         
@@ -39,7 +49,7 @@ static class NetworkManager {
         }
     }
 
-    public static void GetGameState() {
+    public static void RequestGameState() {
         if(!IsClient) throw new ConstraintException("Can't get game state when not connected to server");
 
         Logger.Info("Getting game state");
@@ -50,5 +60,11 @@ static class NetworkManager {
     public static void Disconnect() {
         _server = null;
         _client = null;
+    }
+
+    public static void SendPacket<T>(T packet) where T : INetSerializable {
+        if (IsServer) {
+            _server!.SendSerializableToAll(packet, DeliveryMethod.ReliableOrdered);
+        }
     }
 }

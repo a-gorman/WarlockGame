@@ -63,6 +63,12 @@ public class Server : INetEventListener {
         _server.SendToAll(_writer, deliveryMethod);
     }
     
+    public void SendSerializableToAll<T>(T packet, DeliveryMethod deliveryMethod) where T : INetSerializable {
+        _writer.Reset();
+        packetProcessor.WriteNetSerializable(_writer, ref packet);
+        _server.SendToAll(_writer, deliveryMethod);
+    }
+    
     public void OnPeerConnected(NetPeer peer) {
         Logger.Info($"Peer connected: {peer.Id}");
         _clients.Add(peer.Id, peer);

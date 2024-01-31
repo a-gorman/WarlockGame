@@ -38,7 +38,11 @@ public sealed class Client : INetEventListener {
         
         packetProcessor.SubscribeReusable<Heartbeat>(x => Logger.Info($"Heartbeat received: Frame: {x.Frame} Checksum: {x.Checksum}"));
         packetProcessor.SubscribeReusable<GameState>(OnGameStateReceived);
+        packetProcessor.SubscribeNetSerializable<MoveAction>(OnMoveCommandReceived, () => new MoveAction());
+    }
 
+    private void OnMoveCommandReceived(MoveAction moveAction) {
+        InputManager.AddMoveAction(moveAction);
     }
 
     private void OnGameStateReceived(GameState gameState) {
@@ -66,7 +70,7 @@ public sealed class Client : INetEventListener {
         Logger.Info("Connected to server");
         _server = peer;
         
-        NetworkManager.GetGameState();
+        NetworkManager.RequestGameState();
     }
 
     public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo) {

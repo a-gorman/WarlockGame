@@ -99,10 +99,10 @@ namespace NeonShooter.Core
             Debug.Visualize($"Is active: {IsActive}", new Vector2(1500, 0));
             
             GameTime = gameTime;
-            Input.Update();
+            StaticInput.Update();
 
             // Allows the game to exit
-            if (Input.WasButtonPressed(Buttons.Back) || StaticKeyboardInput.WasKeyPressed(Keys.Escape))
+            if (StaticInput.WasButtonPressed(Buttons.Back) || StaticKeyboardInput.WasKeyPressed(Keys.Escape))
                 Exit();
 
             if (StaticKeyboardInput.WasKeyPressed(Keys.P))
@@ -121,9 +121,12 @@ namespace NeonShooter.Core
 
             Debug.Visualize(Logger.Log.TakeLast(5), Vector2.Zero);
             
+            NetworkManager.Update();
+
             if (!_paused)
             {
                 InputDeviceManager.Update();
+                InputManager.Update(0);
                 PlayerManager.Update();
                 EntityManager.Update();
                 EffectManager.Update();
@@ -132,8 +135,6 @@ namespace NeonShooter.Core
                 
                 Grid.Update();
             }
-            
-            NetworkManager.Update();
             
             base.Update(gameTime);
         }
@@ -169,7 +170,7 @@ namespace NeonShooter.Core
             // DrawTitleSafeRightAlignedString("Score: " + activePlayer.Status.Score, 5);
             // DrawTitleSafeRightAlignedString("Multiplier: " + activePlayer.Status.Multiplier, 35);
             // draw the custom mouse cursor
-            _spriteBatch.Draw(Art.Pointer, Input.MousePosition, Color.White);
+            _spriteBatch.Draw(Art.Pointer, StaticInput.MousePosition, Color.White);
             
             SpellDisplay.Draw(_spriteBatch);
 
@@ -206,7 +207,7 @@ namespace NeonShooter.Core
         }
 
         private void DrawDebugInfo() {
-            DrawRightAlignedString($"Mouse POS: {Input.MousePosition}", 65);
+            DrawRightAlignedString($"Mouse POS: {StaticInput.MousePosition}", 65);
         }
         
         public void DrawDebugString(string text, Vector2 position) {

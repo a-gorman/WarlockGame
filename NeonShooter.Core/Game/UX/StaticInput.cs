@@ -3,6 +3,7 @@
 // Find the full tutorial at: http://gamedev.tutsplus.com/series/vector-shooter-xna/
 //----------------------------------------------------------------------------------
 
+using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -10,7 +11,8 @@ using NeonShooter.Core.Game.UX.InputDevices;
 
 namespace NeonShooter.Core.Game.UX; 
 
-static class Input
+[Obsolete]
+static class StaticInput
 {
 	private static MouseState _mouseState, _lastMouseState;
 	private static GamePadState _gamepadState, _lastGamepadState;

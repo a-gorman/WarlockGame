@@ -1,19 +1,20 @@
 using System.Collections.Generic;
 using System.Linq;
-using NeonShooter.Core.Game.Entity;
 using NeonShooter.Core.Game.Entity.Order;
+using NeonShooter.Core.Game.Networking;
 using NeonShooter.Core.Game.Spell;
 using NeonShooter.Core.Game.UX;
 using NeonShooter.Core.Game.UX.InputDevices;
+using Warlock = NeonShooter.Core.Game.Entity.Warlock;
 
-namespace NeonShooter.Core.Game; 
+namespace NeonShooter.Core.Game;
 
 class Player {
     public string Name { get; }
     
     public int Id { get; }
 
-    public PlayerInput Input { get; }
+    public LocalPlayerInput Input { get; }
 
     public PlayerStatus Status { get; }
 
@@ -77,8 +78,11 @@ class Player {
     }
 
     private void OnRightClick(InputAction inputAction) {
-        Warlock.GiveOrder(x => new DestinationMoveOrder(Input.GetAimPosition()!.Value, x));
+        var aimPosition = Input.GetAimPosition()!.Value;
+        Warlock.GiveOrder(x => new DestinationMoveOrder(aimPosition, x));
         SelectedSpell = null;
+        
+        NetworkManager.SendPacket(new MoveAction {PlayerId = Id, TargetFrame = 0, Location = aimPosition});
     }
 }
 
