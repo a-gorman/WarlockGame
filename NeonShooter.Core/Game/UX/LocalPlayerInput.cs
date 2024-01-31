@@ -10,7 +10,7 @@ namespace NeonShooter.Core.Game.UX;
 /// <summary>
 /// Handles input from a particular player
 /// </summary>
-class PlayerInput {
+class LocalPlayerInput {
 
     private readonly Dictionary<InputAction, HashSet<Action<InputAction>>> _onPressedActions = new();
     private readonly Dictionary<InputAction, HashSet<Action<InputAction>>> _whilePressedActions = new();
@@ -21,7 +21,7 @@ class PlayerInput {
     // Input devices to use for this player. For example Keyboard+Mouse or gamepad
     private readonly List<IInputDevice> _inputDevices = new();
 
-    public PlayerInput(IEnumerable<IInputDevice> inputDevices) {
+    public LocalPlayerInput(IEnumerable<IInputDevice> inputDevices) {
         _inputDevices.AddRange(inputDevices);
     }
 

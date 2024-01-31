@@ -29,8 +29,8 @@ public class Warlock : INetSerializable {
 }
 
 public class Player : INetSerializable {
-    public string Name { get; set; }
     public int Id { get; set; }
+    public string Name { get; set; }
     public int WarlockId { get; set; }
 
     public void Serialize(NetDataWriter writer) {
@@ -43,6 +43,27 @@ public class Player : INetSerializable {
         Id = reader.GetInt();
         Name = reader.GetString();
         WarlockId = reader.GetInt();
+    }
+}
+
+public class MoveAction : INetSerializable {
+    
+    public int PlayerId { get; set; }
+    
+    public Vector2 Location { get; set; }
+    
+    public int TargetFrame { get; set; }
+    
+    public void Serialize(NetDataWriter writer) {
+        writer.Put(PlayerId);
+        writer.Put(Location);
+        writer.Put(TargetFrame);
+    }
+
+    public void Deserialize(NetDataReader reader) {
+        PlayerId = reader.GetInt();
+        Location = reader.GetVector2();
+        TargetFrame = reader.GetInt();
     }
 }
 
