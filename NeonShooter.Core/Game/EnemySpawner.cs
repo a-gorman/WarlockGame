@@ -40,7 +40,7 @@ namespace NeonShooter.Core.Game
 			Vector2 pos;
 			do
 			{
-				pos = new Vector2(_rand.Next((int)NeonShooterGame.ScreenSize.X), _rand.Next((int)NeonShooterGame.ScreenSize.Y));
+				pos = new Vector2(_rand.Next((int)WarlockGame.ScreenSize.X), _rand.Next((int)WarlockGame.ScreenSize.Y));
 			} 
 			while (Vector2.DistanceSquared(pos, PlayerInstance.Position) < 250 * 250);
 

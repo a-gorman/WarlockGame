@@ -15,8 +15,8 @@ class LocalPlayerInput {
     private readonly Dictionary<InputAction, HashSet<Action<InputAction>>> _onPressedActions = new();
     private readonly Dictionary<InputAction, HashSet<Action<InputAction>>> _whilePressedActions = new();
     
-    private InputState _inputState =  new();
-    private InputState _lastInputState =  new();
+    private InputState _inputState = new();
+    private InputState _lastInputState = new();
 
     // Input devices to use for this player. For example Keyboard+Mouse or gamepad
     private readonly List<IInputDevice> _inputDevices = new();
@@ -32,8 +32,14 @@ class LocalPlayerInput {
     public bool WasDirectionalInputAdded() => _inputState.MovementDirection != null && _lastInputState.MovementDirection == null;
     
     public void Update() {
-        CreateInputState();
-        ProcessPlayerActions();
+        if (WarlockGame.Instance.IsActive) {
+            CreateInputState();
+            ProcessPlayerActions();
+        }
+        else {
+            _inputState.Clear();
+            _lastInputState.Clear();
+        }
     }
 
     private void CreateInputState() {
@@ -149,6 +155,13 @@ class LocalPlayerInput {
         public Vector2? AimDirection = null;
         public Vector2? CursorPosition = null;
         public Vector2? MovementDirection = null;
+
+        public void Clear() {
+            Actions.Clear();
+            AimDirection = null;
+            CursorPosition = null;
+            MovementDirection = null;
+        }
     }
 
 }

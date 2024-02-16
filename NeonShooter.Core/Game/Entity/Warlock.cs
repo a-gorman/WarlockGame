@@ -42,7 +42,7 @@ namespace NeonShooter.Core.Game.Entity
             base(new Sprite(Art.Player)) {
             Id = id;
             PlayerId = playerId;
-            Position = NeonShooterGame.ScreenSize / 2;
+            Position = WarlockGame.ScreenSize / 2;
             Radius = 20;
         }
 
@@ -110,7 +110,7 @@ namespace NeonShooter.Core.Game.Entity
             }
 
             Position += Velocity;
-            Position = Vector2.Clamp(Position, _sprite.Size / 2, NeonShooterGame.ScreenSize - _sprite.Size / 2);
+            Position = Vector2.Clamp(Position, _sprite.Size / 2, WarlockGame.ScreenSize - _sprite.Size / 2);
 
             if (Velocity.HasLength())
                 Orientation = Velocity.ToAngle();
@@ -132,7 +132,7 @@ namespace NeonShooter.Core.Game.Entity
                 // set up some variables
                 Quaternion rot = Quaternion.CreateFromYawPitchRoll(0f, 0f, Orientation);
 
-                double t = NeonShooterGame.GameTime.TotalGameTime.TotalSeconds;
+                double t = WarlockGame.GameTime.TotalGameTime.TotalSeconds;
                 // The primary velocity of the particles is 3 pixels/frame in the direction opposite to which the ship is travelling.
                 Vector2 baseVel = Extensions.ScaleTo(Velocity, -3);
                 // Calculate the sideways velocity for the two side streams. The direction is perpendicular to the ship's velocity and the
@@ -146,27 +146,27 @@ namespace NeonShooter.Core.Game.Entity
 
                 // middle particle stream
                 Vector2 velMid = baseVel + _rand.NextVector2(0, 1);
-                NeonShooterGame.ParticleManager.CreateParticle(Art.LineParticle, pos, Color.White * alpha, 60f,
+                WarlockGame.ParticleManager.CreateParticle(Art.LineParticle, pos, Color.White * alpha, 60f,
                     new Vector2(0.5f, 1),
                     new ParticleState(velMid, ParticleType.Enemy));
-                NeonShooterGame.ParticleManager.CreateParticle(Art.Glow, pos, midColor * alpha, 60f,
+                WarlockGame.ParticleManager.CreateParticle(Art.Glow, pos, midColor * alpha, 60f,
                     new Vector2(0.5f, 1),
                     new ParticleState(velMid, ParticleType.Enemy));
 
                 // side particle streams
                 Vector2 vel1 = baseVel + perpVel + _rand.NextVector2(0, 0.3f);
                 Vector2 vel2 = baseVel - perpVel + _rand.NextVector2(0, 0.3f);
-                NeonShooterGame.ParticleManager.CreateParticle(Art.LineParticle, pos, Color.White * alpha, 60f,
+                WarlockGame.ParticleManager.CreateParticle(Art.LineParticle, pos, Color.White * alpha, 60f,
                     new Vector2(0.5f, 1),
                     new ParticleState(vel1, ParticleType.Enemy));
-                NeonShooterGame.ParticleManager.CreateParticle(Art.LineParticle, pos, Color.White * alpha, 60f,
+                WarlockGame.ParticleManager.CreateParticle(Art.LineParticle, pos, Color.White * alpha, 60f,
                     new Vector2(0.5f, 1),
                     new ParticleState(vel2, ParticleType.Enemy));
 
-                NeonShooterGame.ParticleManager.CreateParticle(Art.Glow, pos, sideColor * alpha, 60f,
+                WarlockGame.ParticleManager.CreateParticle(Art.Glow, pos, sideColor * alpha, 60f,
                     new Vector2(0.5f, 1),
                     new ParticleState(vel1, ParticleType.Enemy));
-                NeonShooterGame.ParticleManager.CreateParticle(Art.Glow, pos, sideColor * alpha, 60f,
+                WarlockGame.ParticleManager.CreateParticle(Art.Glow, pos, sideColor * alpha, 60f,
                     new Vector2(0.5f, 1),
                     new ParticleState(vel2, ParticleType.Enemy));
             }
@@ -196,7 +196,7 @@ namespace NeonShooter.Core.Game.Entity
                     LengthMultiplier = 1
                 };
 
-                NeonShooterGame.ParticleManager.CreateParticle(Art.LineParticle, Position, color, 190, 1.5f, state);
+                WarlockGame.ParticleManager.CreateParticle(Art.LineParticle, Position, color, 190, 1.5f, state);
             }
         }
 

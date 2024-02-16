@@ -20,15 +20,17 @@ namespace NeonShooter.Core
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class NeonShooterGame: Microsoft.Xna.Framework.Game
+    public class WarlockGame: Microsoft.Xna.Framework.Game
     {
 		// some helpful static properties
-		public static NeonShooterGame Instance { get; private set; }  = null!;
+		public static WarlockGame Instance { get; private set; }  = null!;
 		public static Viewport Viewport => Instance.GraphicsDevice.Viewport;
         public static Vector2 ScreenSize => new Vector2(Viewport.Width, Viewport.Height);
         public static GameTime GameTime { get; private set; } = null!;
+        public static int Frame { get; set; }
 		public static ParticleManager<ParticleState> ParticleManager { get; private set; } = null!;
 		public static Grid Grid { get; private set; } = null!;
+        public static bool IsLocal => !NetworkManager.IsConnected;
 
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -37,7 +39,7 @@ namespace NeonShooter.Core
         private bool _paused = false;
 
         
-        public NeonShooterGame()
+        public WarlockGame()
         {
 			Instance = this;
 			_graphics = new GraphicsDeviceManager(this);
@@ -97,7 +99,8 @@ namespace NeonShooter.Core
         protected override void Update(GameTime gameTime)
         {
             Debug.Visualize($"Is active: {IsActive}", new Vector2(1500, 0));
-            
+
+            Frame++;
             GameTime = gameTime;
             StaticInput.Update();
 
@@ -126,7 +129,7 @@ namespace NeonShooter.Core
             if (!_paused)
             {
                 InputDeviceManager.Update();
-                InputManager.Update(0);
+                InputManager.Update(Frame);
                 PlayerManager.Update();
                 EntityManager.Update();
                 EffectManager.Update();

@@ -60,8 +60,8 @@ namespace NeonShooter.Core.Game
 			particle.Orientation = vel.ToAngle();
 
 			var pos = particle.Position;
-			int width = (int)NeonShooterGame.ScreenSize.X;
-			int height = (int)NeonShooterGame.ScreenSize.Y;
+			int width = (int)WarlockGame.ScreenSize.X;
+			int height = (int)WarlockGame.ScreenSize.Y;
 
 			// collide with the edges of the screen
 			if (pos.X < 0)

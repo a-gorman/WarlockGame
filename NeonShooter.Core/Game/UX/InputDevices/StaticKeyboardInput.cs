@@ -29,7 +29,7 @@ public static class StaticKeyboardInput {
 
     // Checks if a key was just pressed down
     public static bool WasKeyPressed(Keys key) {
-        return NeonShooterGame.Instance.IsActive && _lastKeyboardState.IsKeyUp(key) && _keyboardState.IsKeyDown(key);
+        return WarlockGame.Instance.IsActive && _lastKeyboardState.IsKeyUp(key) && _keyboardState.IsKeyDown(key);
     }
 
     public static void Update() {

@@ -53,7 +53,7 @@ namespace NeonShooter.Core.Game
 		
 		public static Texture2D LoadTexture(string assetName)
 		{
-			var texture = Texture2D.FromFile(NeonShooterGame.Instance.GraphicsDevice, assetName);
+			var texture = Texture2D.FromFile(WarlockGame.Instance.GraphicsDevice, assetName);
 			return texture;
 		}
 	}
