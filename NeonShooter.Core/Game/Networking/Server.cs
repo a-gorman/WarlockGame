@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -17,6 +18,7 @@ public class Server : INetEventListener {
     private NetPacketProcessor packetProcessor = new();
     
     private readonly Dictionary<int, NetPeer> _clients = new();
+    private readonly Dictionary<int, int> _clientLatency = new();
 
     public int Latency { get; private set; }
 
@@ -29,20 +31,32 @@ public class Server : INetEventListener {
         var connected = _server.Start(12345);
         Logger.Info($"Server stated: {connected}");
         
-        packetProcessor.RegisterNestedType<Vector2>((w, v) => w.Put(v), reader => reader.GetVector2());
-        packetProcessor.RegisterNestedType<Warlock>(() => new Warlock());
-        packetProcessor.RegisterNestedType<Player>(() => new Player());
+        packetProcessor.RegisterWarlockNestedTypes();
         
         packetProcessor.Subscribe<RequestGameState>(OnRequestGameState, () => new RequestGameState());
+        packetProcessor.Subscribe<MoveAction>(OnMoveCommandReceived, () => new MoveAction());
     }
 
-    public void OnRequestGameState(RequestGameState _) {
+    private void OnMoveCommandReceived(MoveAction request) {
+        var targetFrame = WarlockGame.Frame + NetworkManager.FrameDelay;
+        
+        var moveAction = new PlayerInputResponse<MoveAction>()
+        {
+            Command = request,
+            TargetFrame = targetFrame
+        };
+        InputManager.AddMoveAction(request, targetFrame);
+        SendToAll(moveAction, DeliveryMethod.ReliableOrdered);
+    }
+
+    private void OnRequestGameState(RequestGameState _) {
         Logger.Info("Game state request received");
         
         var gameState = new GameState
         {
-            Players = PlayerManager.Players.Select(x => new Networking.Player { Name = x.Name, Id = x.Id, WarlockId = x.Warlock.Id }).ToArray(),
-            Warlocks = PlayerManager.Players.Select(x => WarlockFactory.ToPacket(x.Warlock)).ToArray()
+            Players = PlayerManager.Players.Select(x => new Player { Name = x.Name, Id = x.Id, WarlockId = x.Warlock.Id }).ToArray(),
+            Warlocks = PlayerManager.Players.Select(x => WarlockFactory.ToPacket(x.Warlock)).ToArray(),
+            Frame = WarlockGame.Frame
         };
         
         SendToAll(gameState, DeliveryMethod.ReliableOrdered);
@@ -77,6 +91,8 @@ public class Server : INetEventListener {
     public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo) {
         Logger.Info($"Peer disconnected: {peer.Id}");
         _clients.Remove(peer.Id);
+        _clientLatency.Remove(peer.Id);
+        Latency = CalculateLatency();
     }
 
     public void OnNetworkError(IPEndPoint endPoint, SocketError socketError) {
@@ -92,6 +108,11 @@ public class Server : INetEventListener {
     }
 
     public void OnNetworkLatencyUpdate(NetPeer peer, int latency) {
-        Latency = latency;
+        _clientLatency[peer.Id] = latency;
+        Latency = CalculateLatency();
+    }
+
+    private int CalculateLatency() {
+        return _clientLatency.Count > 0 ? _clientLatency.Values.Max() : 0;
     }
 }

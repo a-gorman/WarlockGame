@@ -1,0 +1,13 @@
+using LiteNetLib.Utils;
+using Microsoft.Xna.Framework;
+
+namespace NeonShooter.Core.Game.Networking; 
+
+public static class NetworkExtensions {
+    public static void RegisterWarlockNestedTypes(this NetPacketProcessor processor) {
+        processor.RegisterNestedType<Vector2>((w, v) => w.Put(v), reader => reader.GetVector2());
+        processor.RegisterNestedType<Warlock>(() => new Warlock());
+        processor.RegisterNestedType<Player>(() => new Player());
+        processor.RegisterNestedType<MoveAction>(() => new MoveAction());
+    }
+}

@@ -79,10 +79,8 @@ class Player {
 
     private void OnRightClick(InputAction inputAction) {
         var aimPosition = Input.GetAimPosition()!.Value;
-        Warlock.GiveOrder(x => new DestinationMoveOrder(aimPosition, x));
+        InputManager.InputMoveAction(Id, aimPosition);
         SelectedSpell = null;
-        
-        NetworkManager.SendPacket(new MoveAction {PlayerId = Id, TargetFrame = 0, Location = aimPosition});
     }
 }
 

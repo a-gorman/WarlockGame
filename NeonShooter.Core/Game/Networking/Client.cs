@@ -22,6 +22,7 @@ public sealed class Client : INetEventListener {
     private NetPacketProcessor packetProcessor = new();
 
     public bool IsConnected => _server?.ConnectionState == ConnectionState.Connected;
+    public int Latency { get; private set; }
 
     public void Connect() {
         _client = new NetManager(this) {
@@ -32,17 +33,15 @@ public sealed class Client : INetEventListener {
         Logger.Info("Connecting to localhost");
         _client.Connect("localhost", 12345, "");
         
-        packetProcessor.RegisterNestedType<Vector2>((w, v) => w.Put(v), reader => reader.GetVector2());
-        packetProcessor.RegisterNestedType<Warlock>(() => new Warlock());
-        packetProcessor.RegisterNestedType<Player>(() => new Player());
+        packetProcessor.RegisterWarlockNestedTypes();
         
         packetProcessor.SubscribeReusable<Heartbeat>(x => Logger.Info($"Heartbeat received: Frame: {x.Frame} Checksum: {x.Checksum}"));
         packetProcessor.SubscribeReusable<GameState>(OnGameStateReceived);
-        packetProcessor.SubscribeNetSerializable<MoveAction>(OnMoveCommandReceived, () => new MoveAction());
+        packetProcessor.Subscribe<PlayerInputResponse<MoveAction>>(OnMoveCommandReceived, () => new PlayerInputResponse<MoveAction>());
     }
 
-    private void OnMoveCommandReceived(MoveAction moveAction) {
-        InputManager.AddMoveAction(moveAction);
+    private void OnMoveCommandReceived(PlayerInputResponse<MoveAction> response) {
+        InputManager.AddMoveAction(response.Command, response.TargetFrame);
     }
 
     private void OnGameStateReceived(GameState gameState) {
@@ -52,6 +51,7 @@ public sealed class Client : INetEventListener {
         
         var warlocks = gameState.Warlocks.Select(x => WarlockFactory.FromPacket(x, players[gameState.Players.First(y => y.WarlockId == x.Id).Id])).ToArray();
         players.Values.OnEach(x => x.Warlock = warlocks.First(y => y.PlayerId == x.Id)).ForEach(PlayerManager.AddPlayer);
+        WarlockGame.Frame = gameState.Frame;
     }
 
     public void Update(float delta) {
@@ -66,6 +66,14 @@ public sealed class Client : INetEventListener {
         _server!.Send(_writer, deliveryMethod);
     }
 
+    public void SendSerializable<T>(T packet, DeliveryMethod deliveryMethod) where T : INetSerializable {
+        if(!IsConnected) return;
+        
+        _writer.Reset();
+        packetProcessor.WriteNetSerializable(_writer, ref packet);
+        _server!.Send(_writer, deliveryMethod);
+    }
+    
     public void OnPeerConnected(NetPeer peer) {
         Logger.Info("Connected to server");
         _server = peer;
@@ -91,7 +99,7 @@ public sealed class Client : INetEventListener {
     }
 
     public void OnNetworkLatencyUpdate(NetPeer peer, int latency) {
-        // throw new System.NotImplementedException();
+        Latency = latency;
     }
 
     public void OnConnectionRequest(ConnectionRequest request) {

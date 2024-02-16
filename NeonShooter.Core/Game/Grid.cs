@@ -194,7 +194,7 @@ namespace NeonShooter.Core.Game
 
 		public void Draw(SpriteBatch spriteBatch)
 		{
-			_screenSize = NeonShooterGame.ScreenSize;
+			_screenSize = WarlockGame.ScreenSize;
 
 			int width = _points.GetLength(0);
 			int height = _points.GetLength(1);

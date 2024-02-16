@@ -57,7 +57,7 @@ namespace NeonShooter.Core.Game.Entity
             }
 
             Position += Velocity;
-            Position = Vector2.Clamp(Position, _sprite.Size / 2, NeonShooterGame.ScreenSize - _sprite.Size / 2);
+            Position = Vector2.Clamp(Position, _sprite.Size / 2, WarlockGame.ScreenSize - _sprite.Size / 2);
 
             Velocity *= 0.8f;
         }
@@ -112,7 +112,7 @@ namespace NeonShooter.Core.Game.Entity
                 };
 
                 Color color = Color.Lerp(color1, color2, Rand.NextFloat(0, 1));
-                NeonShooterGame.ParticleManager.CreateParticle(Art.LineParticle, Position, color, 190, 1.5f, state);
+                WarlockGame.ParticleManager.CreateParticle(Art.LineParticle, Position, color, 190, 1.5f, state);
             }
 
             Sound.Explosion.Play(0.5f, Rand.NextFloat(-0.2f, 0.2f), 0);
@@ -148,12 +148,12 @@ namespace NeonShooter.Core.Game.Entity
                     Velocity += MathUtil.FromPolar(direction, 0.4f);
                     Orientation -= 0.05f;
 
-                    var bounds = NeonShooterGame.Viewport.Bounds;
+                    var bounds = WarlockGame.Viewport.Bounds;
                     bounds.Inflate(-_sprite.Size.X / 2 - 1, -_sprite.Size.Y / 2 - 1);
 
                     // if the enemy is outside the bounds, make it move away from the edge
                     if (!bounds.Contains(Position.ToPoint()))
-                        direction = (NeonShooterGame.ScreenSize / 2 - Position).ToAngle() +
+                        direction = (WarlockGame.ScreenSize / 2 - Position).ToAngle() +
                                     Rand.NextFloat(-MathHelper.PiOver2, MathHelper.PiOver2);
 
                     yield return 0;

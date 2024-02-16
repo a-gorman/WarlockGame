@@ -8,7 +8,7 @@ namespace NeonShooter.WindowsDX
         [STAThread]
         private static void Main()
         {
-            using (var game = new NeonShooterGame())
+            using (var game = new WarlockGame())
                 game.Run();
         }
     }

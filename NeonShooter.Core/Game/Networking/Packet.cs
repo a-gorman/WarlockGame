@@ -6,6 +6,7 @@ namespace NeonShooter.Core.Game.Networking;
 public class GameState {
     public Player[] Players { get; init; }
     public Warlock[] Warlocks { get; init; }
+    public int Frame { get; init; }
 }
 
 public class Warlock : INetSerializable {
@@ -52,20 +53,22 @@ public class MoveAction : INetSerializable {
     
     public Vector2 Location { get; set; }
     
-    public int TargetFrame { get; set; }
-    
     public void Serialize(NetDataWriter writer) {
         writer.Put(PlayerId);
         writer.Put(Location);
-        writer.Put(TargetFrame);
     }
 
     public void Deserialize(NetDataReader reader) {
         PlayerId = reader.GetInt();
         Location = reader.GetVector2();
-        TargetFrame = reader.GetInt();
     }
 }
+
+public class PlayerInputResponse<T> where T : notnull {
+    public int TargetFrame { get; set; }
+    
+    public T Command { get; set; }
+} 
 
 public class RequestGameState { }
 
