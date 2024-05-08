@@ -14,73 +14,16 @@ class Player {
     
     public int Id { get; }
 
-    public LocalPlayerInput Input { get; }
-
-    public PlayerStatus Status { get; }
-
-    // LATE INIT due to bidirectional reference. This will be set up by player factory
-    public Warlock Warlock { get; set; } = null!;
+    public Warlock Warlock { get; }
     
-    public WarlockSpell? SelectedSpell { get; private set; }
-
-    private static readonly List<InputAction> SpellSelections = new() { InputAction.Spell1, InputAction.Spell2, InputAction.Spell3, InputAction.Spell4 };
-
-    private bool _initialized;
-
-    public Player(string name, int id, IEnumerable<IInputDevice> inputDevices) {
-        Status = new(this);
-        Input = new(inputDevices);
+    public bool IsActive { get; } = true;
+    
+    public Player(string name, int id, Warlock warlock) {
         Name = name;
         Id = id;
+        Warlock = warlock;
     }
 
-    public void Initialize() {
-        if (_initialized) {
-            return;
-        }
-        
-        SetupInputActions();
-        _initialized = true;
-    }
-    
     public void Update() {
-        Status.Update();
-        Input.Update();
-
-        if (Input.WasDirectionalInputAdded()) {
-            Warlock.GiveOrder(x => new DirectionMoveOrder(x));
-        }
-    }
-
-    private void SetupInputActions() {
-        // foreach (var inputAction in new[] { InputAction.MoveLeft, InputAction.MoveRight, InputAction.MoveUp, InputAction.MoveDown }) {
-        //     Input.SubscribeOnPressed(inputAction, (_) => );
-        // }
-        
-        foreach (var inputAction in SpellSelections) {
-            Input.SubscribeOnPressed(inputAction, OnSpellSelected);
-        }
-        
-        Input.SubscribeOnPressed(InputAction.Select, OnSelect);
-        Input.SubscribeOnPressed(InputAction.RightClick, OnRightClick);
-    }
-
-    private void OnSpellSelected(InputAction inputAction) {
-        SelectedSpell = Warlock.Spells.ElementAtOrDefault(SpellSelections.IndexOf(inputAction));
-    }
-
-    private void OnSelect(InputAction inputAction) {
-        var inputDirection = Input.GetAimDirection(Warlock.Position);
-        if (inputDirection != null && SelectedSpell != null) {
-            Warlock.GiveOrder(x => new CastOrder(SelectedSpell, inputDirection.Value, x));
-        }
-        SelectedSpell = null;
-    }
-
-    private void OnRightClick(InputAction inputAction) {
-        var aimPosition = Input.GetAimPosition()!.Value;
-        InputManager.InputMoveAction(Id, aimPosition);
-        SelectedSpell = null;
     }
 }
-

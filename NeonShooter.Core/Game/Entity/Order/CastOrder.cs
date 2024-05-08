@@ -5,21 +5,21 @@ namespace NeonShooter.Core.Game.Entity.Order;
 
 class CastOrder: IOrder {
     private readonly Warlock _player;
-    private readonly WarlockSpell _spell;
+    private readonly int _spellId;
     private readonly Vector2 _castDirection;
     
-    private bool _active;
+    // private bool _active;
 
     public bool Finished { get; private set; }
     
-    public CastOrder(WarlockSpell spell, Vector2 castDirection, Warlock player) {
-        _spell = spell;
+    public CastOrder(int spellId, Vector2 castDirection, Warlock player) {
+        _spellId = spellId;
         _castDirection = castDirection;
         _player = player;
     }
 
     public void Update() {
-        _player.CastSpell(_spell, _castDirection);
+        _player.CastSpell(_spellId, _castDirection);
         Finished = true;
     }
 

@@ -36,7 +36,7 @@ namespace NeonShooter.Core
         private SpriteBatch _spriteBatch;
         private readonly BloomComponent _bloom;
 
-        private bool _paused = false;
+        public static bool Paused = false;
 
         
         public WarlockGame()
@@ -109,7 +109,7 @@ namespace NeonShooter.Core
                 Exit();
 
             if (StaticKeyboardInput.WasKeyPressed(Keys.P))
-                _paused = !_paused;
+                Paused = !Paused;
 
             if (StaticKeyboardInput.WasKeyPressed(Keys.C) && !NetworkManager.IsConnected) {
                 NetworkManager.ConnectToServer();
@@ -117,8 +117,8 @@ namespace NeonShooter.Core
             }
             
             if (StaticKeyboardInput.WasKeyPressed(Keys.V) && !NetworkManager.IsConnected) {
-                PlayerManager.AddPlayer("Alex", 1, PlayerManager.DeviceType.MouseAndKeyboard);
-                PlayerManager.AddPlayer("John", 2, PlayerManager.DeviceType.PlayStation1);
+                PlayerManager.AddLocalPlayer("Alex", 1, InputManager.DeviceType.MouseAndKeyboard);
+                PlayerManager.AddLocalPlayer("John", 2, InputManager.DeviceType.PlayStation1);
                 NetworkManager.StartServer();
             }
 
@@ -126,10 +126,10 @@ namespace NeonShooter.Core
             
             NetworkManager.Update();
 
-            if (!_paused)
+            if (!Paused)
             {
-                InputDeviceManager.Update();
-                InputManager.Update(Frame);
+                InputManager.Update();
+                CommandManager.Update(Frame);
                 PlayerManager.Update();
                 EntityManager.Update();
                 EffectManager.Update();

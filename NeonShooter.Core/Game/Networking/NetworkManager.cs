@@ -73,7 +73,7 @@ static class NetworkManager {
 
     public static void SendPlayerCommand<T>(T command) where T : INetSerializable {
         if (IsServer) {
-            var packet = new PlayerInputResponse<T>
+            var packet = new PlayerInputServerResponse<T>
             {
                 TargetFrame = WarlockGame.Frame + FrameDelay,
                 Command = command

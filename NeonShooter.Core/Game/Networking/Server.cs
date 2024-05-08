@@ -34,18 +34,18 @@ public class Server : INetEventListener {
         packetProcessor.RegisterWarlockNestedTypes();
         
         packetProcessor.Subscribe<RequestGameState>(OnRequestGameState, () => new RequestGameState());
-        packetProcessor.Subscribe<MoveAction>(OnMoveCommandReceived, () => new MoveAction());
+        packetProcessor.Subscribe<MoveCommand>(OnMoveCommandReceived, () => new MoveCommand());
     }
 
-    private void OnMoveCommandReceived(MoveAction request) {
+    private void OnMoveCommandReceived(MoveCommand request) {
         var targetFrame = WarlockGame.Frame + NetworkManager.FrameDelay;
         
-        var moveAction = new PlayerInputResponse<MoveAction>()
+        var moveAction = new PlayerInputServerResponse<MoveCommand>()
         {
             Command = request,
             TargetFrame = targetFrame
         };
-        InputManager.AddMoveAction(request, targetFrame);
+        CommandManager.AddDelayedGameCommand(request, targetFrame);
         SendToAll(moveAction, DeliveryMethod.ReliableOrdered);
     }
 

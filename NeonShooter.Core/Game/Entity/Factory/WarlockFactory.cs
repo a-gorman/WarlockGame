@@ -3,8 +3,8 @@ using Microsoft.Xna.Framework;
 namespace NeonShooter.Core.Game.Entity.Factory; 
 
 static class WarlockFactory {
-    public static Warlock FromPacket(Networking.Warlock warlock, Player player) {
-        return new Warlock(warlock.Id, player.Id)
+    public static Warlock FromPacket(Networking.Warlock warlock, int playerId) {
+        return new Warlock(warlock.Id, playerId)
         {
             Position = warlock.Position,
             Velocity = warlock.Velocity,

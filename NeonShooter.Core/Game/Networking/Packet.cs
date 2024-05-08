@@ -47,7 +47,7 @@ public class Player : INetSerializable {
     }
 }
 
-public class MoveAction : INetSerializable {
+public class MoveCommand : IGameCommand, INetSerializable {
     
     public int PlayerId { get; set; }
     
@@ -64,7 +64,26 @@ public class MoveAction : INetSerializable {
     }
 }
 
-public class PlayerInputResponse<T> where T : notnull {
+public class CastCommand : IGameCommand, INetSerializable {
+    
+    public int PlayerId { get; set; }
+    
+    public Vector2 Location { get; set; }
+    
+    public int SpellId { get; set; }
+    
+    public void Serialize(NetDataWriter writer) {
+        writer.Put(PlayerId);
+        writer.Put(Location);
+    }
+
+    public void Deserialize(NetDataReader reader) {
+        PlayerId = reader.GetInt();
+        Location = reader.GetVector2();
+    }
+}
+
+public class PlayerInputServerResponse<T> where T : notnull {
     public int TargetFrame { get; set; }
     
     public T Command { get; set; }
@@ -75,4 +94,12 @@ public class RequestGameState { }
 public class Heartbeat {
     public uint Frame { get; set; }
     public uint Checksum { get; set; }
+}
+
+/// <summary>
+/// A player issued command that has an effect on the game.
+/// For example, issuing orders to a warlock or pausing the game.
+/// </summary>
+public interface IGameCommand {
+    int PlayerId { get; set; }
 }

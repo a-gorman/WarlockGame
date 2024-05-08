@@ -7,9 +7,6 @@ interface IInputDevice {
     public IReadOnlySet<InputAction> GetInputActions();
 
     public Vector2? Position { get; }
-
-    public Vector2? LeftStick { get; }
-    public Vector2? RightStick { get; }
     
     public void Update();
 }

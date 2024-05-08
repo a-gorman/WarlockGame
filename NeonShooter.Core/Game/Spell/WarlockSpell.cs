@@ -8,6 +8,8 @@ namespace NeonShooter.Core.Game.Spell;
 
 class WarlockSpell
 {
+    public required int SpellId { get; init; }
+    
     public required int ManaCost { get; init; }
     
     public required int CooldownTime { get; init; }
@@ -25,13 +27,8 @@ class WarlockSpell
 
     public bool OnCooldown => !Cooldown.IsExpired;
     
-    public void Cast(IEntity caster, Vector2 direction)
+    public void DoCast(IEntity caster, Vector2 direction)
     {
-        if (OnCooldown)
-        {
-            throw new Exception("Cast spell on cooldown");
-        }
-
         Cooldown = GameTimer.FromSeconds(CooldownTime);
         Effects.ForEach(x => x.OnCast(caster, direction));
     }
