@@ -76,11 +76,6 @@ namespace NeonShooter.Core.Game.Entity
             }
         }
 
-        public void CastSpell(int spellIndex, Vector2 castDirection) {
-            if(spellIndex < Spells.Count)
-                CastSpell(Spells[spellIndex], castDirection);
-        }
-
         public void GiveOrder(Func<Warlock, IOrder> order) {
             GiveOrder(order(this));
         }
@@ -115,12 +110,13 @@ namespace NeonShooter.Core.Game.Entity
             if (Velocity.HasLength())
                 Orientation = Velocity.ToAngle();
         }
-
-        public void CastSpell(WarlockSpell spell, Vector2 castDirection)
-        {
-            if (!spell.OnCooldown && castDirection.HasLength())
+        
+        public void CastSpell(int spellId, Vector2 castDirection) {
+            var spell = Spells.Find(x => spellId == x.SpellId);
+            
+            if (spell is not null && !spell.OnCooldown && castDirection.HasLength())
             {
-                spell.Cast(this, castDirection);
+                spell.DoCast(this, castDirection);
             }
         }
 

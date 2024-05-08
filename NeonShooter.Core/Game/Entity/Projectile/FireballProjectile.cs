@@ -28,7 +28,7 @@ internal class FireballProjectile : EntityBase, IProjectile
 
     public override void Update()
     {
-        if (!Velocity.IsZeroVector())
+        if (Velocity.HasLength())
             Orientation = Velocity.ToAngle();
 
         Position += Velocity;

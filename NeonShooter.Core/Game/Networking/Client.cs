@@ -37,20 +37,22 @@ public sealed class Client : INetEventListener {
         
         packetProcessor.SubscribeReusable<Heartbeat>(x => Logger.Info($"Heartbeat received: Frame: {x.Frame} Checksum: {x.Checksum}"));
         packetProcessor.SubscribeReusable<GameState>(OnGameStateReceived);
-        packetProcessor.Subscribe<PlayerInputResponse<MoveAction>>(OnMoveCommandReceived, () => new PlayerInputResponse<MoveAction>());
+        packetProcessor.Subscribe<PlayerInputServerResponse<MoveCommand>>(OnMoveCommandReceived, () => new PlayerInputServerResponse<MoveCommand>());
     }
 
-    private void OnMoveCommandReceived(PlayerInputResponse<MoveAction> response) {
-        InputManager.AddMoveAction(response.Command, response.TargetFrame);
+    private void OnMoveCommandReceived(PlayerInputServerResponse<MoveCommand> serverResponse) {
+        CommandManager.AddDelayedGameCommand(serverResponse.Command, serverResponse.TargetFrame);
     }
 
     private void OnGameStateReceived(GameState gameState) {
         Logger.Info("Game state received");
-        
-        var players = gameState.Players.Select(x => new Game.Player(x.Name, x.Id, Array.Empty<IInputDevice>())).ToDictionary(x => x.Id);
-        
-        var warlocks = gameState.Warlocks.Select(x => WarlockFactory.FromPacket(x, players[gameState.Players.First(y => y.WarlockId == x.Id).Id])).ToArray();
-        players.Values.OnEach(x => x.Warlock = warlocks.First(y => y.PlayerId == x.Id)).ForEach(PlayerManager.AddPlayer);
+
+        foreach (var player in gameState.Players) {
+            var warlock = WarlockFactory.FromPacket(gameState.Warlocks.First(x => x.Id == player.WarlockId), player.Id);
+
+            PlayerManager.AddRemotePlayer(new Game.Player(player.Name, player.Id, warlock));
+        }
+
         WarlockGame.Frame = gameState.Frame;
     }
 

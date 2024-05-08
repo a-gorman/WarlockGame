@@ -8,6 +8,7 @@ static class SpellFactory
     {
         return new WarlockSpell
         {
+            SpellId = 1,
             ManaCost = 10, 
             CooldownTime = 1,
             SpellIcon = Art.FireballIcon,
@@ -22,6 +23,7 @@ static class SpellFactory
     {
         return new WarlockSpell
         {
+            SpellId = 2,
             ManaCost = 10, 
             CooldownTime = 1,
             SpellIcon = Art.LightningIcon,

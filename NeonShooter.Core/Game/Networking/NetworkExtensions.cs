@@ -8,6 +8,7 @@ public static class NetworkExtensions {
         processor.RegisterNestedType<Vector2>((w, v) => w.Put(v), reader => reader.GetVector2());
         processor.RegisterNestedType<Warlock>(() => new Warlock());
         processor.RegisterNestedType<Player>(() => new Player());
-        processor.RegisterNestedType<MoveAction>(() => new MoveAction());
+        processor.RegisterNestedType<MoveCommand>(() => new MoveCommand());
+        processor.RegisterNestedType<CastCommand>(() => new CastCommand());
     }
 }
