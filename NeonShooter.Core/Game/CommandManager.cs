@@ -20,6 +20,8 @@ static class CommandManager {
 
                 IssueGameCommand(action);
             }
+
+            _commands.Remove(frame);
         }
     }
 
@@ -40,7 +42,9 @@ static class CommandManager {
     /// <param name="moveCommand">The command to issue later</param>
     /// <param name="targetFrame">The frame to issue the command on</param>
     public static void AddDelayedGameCommand(IGameCommand moveCommand, int targetFrame) {
-        if(!_commands.ContainsKey(targetFrame)) _commands.Add(targetFrame, new List<IGameCommand>());
+        if (!_commands.ContainsKey(targetFrame)) {
+            _commands.Add(targetFrame, new List<IGameCommand>());
+        }
         _commands[targetFrame].Add(moveCommand);
     }
 

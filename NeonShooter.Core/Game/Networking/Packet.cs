@@ -1,3 +1,4 @@
+using System.Linq;
 using LiteNetLib.Utils;
 using Microsoft.Xna.Framework;
 
@@ -14,11 +15,19 @@ public class Warlock : INetSerializable {
     public Vector2 Position { get; set; }
     public Vector2 Velocity { get; set; }
     public float Orientation { get; set; }
+    public int[] SpellIds { get; set; }
+    /// <summary>
+    /// Cooldown remaining in frames
+    /// Has same length as SpellIds
+    /// </summary>
+    public int[] SpellCooldowns { get; set; }
     public void Serialize(NetDataWriter writer) {
         writer.Put(Id);
         writer.Put(Position);
         writer.Put(Velocity);
         writer.Put(Orientation);
+        writer.PutArray(SpellIds);
+        writer.PutArray(SpellCooldowns);
     }
 
     public void Deserialize(NetDataReader reader) {
@@ -26,6 +35,8 @@ public class Warlock : INetSerializable {
         Position = reader.GetVector2();
         Velocity = reader.GetVector2();
         Orientation = reader.GetFloat();
+        SpellIds = reader.GetIntArray();
+        SpellCooldowns = reader.GetIntArray();
     }
 }
 
@@ -75,11 +86,13 @@ public class CastCommand : IGameCommand, INetSerializable {
     public void Serialize(NetDataWriter writer) {
         writer.Put(PlayerId);
         writer.Put(Location);
+        writer.Put(SpellId);
     }
 
     public void Deserialize(NetDataReader reader) {
         PlayerId = reader.GetInt();
         Location = reader.GetVector2();
+        SpellId = reader.GetInt();
     }
 }
 

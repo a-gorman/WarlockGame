@@ -37,10 +37,11 @@ public sealed class Client : INetEventListener {
         
         packetProcessor.SubscribeReusable<Heartbeat>(x => Logger.Info($"Heartbeat received: Frame: {x.Frame} Checksum: {x.Checksum}"));
         packetProcessor.SubscribeReusable<GameState>(OnGameStateReceived);
-        packetProcessor.Subscribe<PlayerInputServerResponse<MoveCommand>>(OnMoveCommandReceived, () => new PlayerInputServerResponse<MoveCommand>());
+        packetProcessor.Subscribe<PlayerInputServerResponse<MoveCommand>>(OnGameCommandReceived, () => new PlayerInputServerResponse<MoveCommand>());
+        packetProcessor.Subscribe<PlayerInputServerResponse<CastCommand>>(OnGameCommandReceived, () => new PlayerInputServerResponse<CastCommand>());
     }
 
-    private void OnMoveCommandReceived(PlayerInputServerResponse<MoveCommand> serverResponse) {
+    private void OnGameCommandReceived<T>(PlayerInputServerResponse<T> serverResponse) where T:IGameCommand{
         CommandManager.AddDelayedGameCommand(serverResponse.Command, serverResponse.TargetFrame);
     }
 

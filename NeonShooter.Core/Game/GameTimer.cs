@@ -4,7 +4,7 @@ namespace NeonShooter.Core.Game;
 
 public class GameTimer
 {
-    public int FramesRemaining { get; private set; }
+    public int FramesRemaining { get; set; }
     
     private const float FramesPerSecond = 60;
 

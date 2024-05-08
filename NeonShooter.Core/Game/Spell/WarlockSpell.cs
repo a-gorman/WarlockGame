@@ -29,7 +29,7 @@ class WarlockSpell
     
     public void DoCast(IEntity caster, Vector2 direction)
     {
-        Cooldown = GameTimer.FromSeconds(CooldownTime);
+        Cooldown.FramesRemaining = CooldownTime;
         Effects.ForEach(x => x.OnCast(caster, direction));
     }
 }
