@@ -98,7 +98,7 @@ namespace NeonShooter.Core
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            Debug.Visualize($"Is active: {IsActive}", new Vector2(1500, 0));
+            Debug.Visualize($"Frame: {Frame}", new Vector2(1500, 0));
 
             Frame++;
             GameTime = gameTime;

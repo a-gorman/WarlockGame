@@ -13,7 +13,7 @@ static class NetworkManager {
     /// <summary>
     /// Extra padding to the estimated lag to make sure we don't stutter
     /// </summary>
-    private const int LagPadding = 1;
+    private const int LagPadding = 5;
     
     private static Client? _client;
     private static Server? _server;
