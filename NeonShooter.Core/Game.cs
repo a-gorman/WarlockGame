@@ -22,7 +22,6 @@ namespace NeonShooter.Core
     /// </summary>
     public class WarlockGame: Microsoft.Xna.Framework.Game
     {
-		// some helpful static properties
 		public static WarlockGame Instance { get; private set; }  = null!;
 		public static Viewport Viewport => Instance.GraphicsDevice.Viewport;
         public static Vector2 ScreenSize => new Vector2(Viewport.Width, Viewport.Height);
@@ -100,7 +99,9 @@ namespace NeonShooter.Core
         {
             Debug.Visualize($"Frame: {Frame}", new Vector2(1500, 0));
 
-            Frame++;
+            if (!NetworkManager.StutterRequired) {
+                Frame++;
+            }
             GameTime = gameTime;
             StaticInput.Update();
 
@@ -126,10 +127,10 @@ namespace NeonShooter.Core
             
             NetworkManager.Update();
 
-            if (!Paused)
+            if (!Paused && !NetworkManager.StutterRequired)
             {
                 InputManager.Update();
-                CommandManager.Update(Frame);
+                CommandProcessor.Update(Frame);
                 PlayerManager.Update();
                 EntityManager.Update();
                 EffectManager.Update();
@@ -211,12 +212,6 @@ namespace NeonShooter.Core
 
         private void DrawDebugInfo() {
             DrawRightAlignedString($"Mouse POS: {StaticInput.MousePosition}", 65);
-        }
-        
-        public void DrawDebugString(string text, Vector2 position) {
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
-            _spriteBatch.DrawString(Art.Font, text, position, Color.White);
-            _spriteBatch.End();
         }
     }
 }

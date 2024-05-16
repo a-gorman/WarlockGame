@@ -1,15 +1,10 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using LiteNetLib;
 using LiteNetLib.Utils;
-using Microsoft.Xna.Framework;
 using NeonShooter.Core.Game.Entity.Factory;
 using NeonShooter.Core.Game.Log;
-using NeonShooter.Core.Game.Util;
-using NeonShooter.Core.Game.UX.InputDevices;
 
 namespace NeonShooter.Core.Game.Networking; 
 
@@ -23,7 +18,10 @@ public sealed class Client : INetEventListener {
 
     public bool IsConnected => _server?.ConnectionState == ConnectionState.Connected;
     public int Latency { get; private set; }
+    public bool StutterRequired => WarlockGame.Frame >= _maxFrameAllowed;
+    public bool ClientDropping => false;
 
+    private int _maxFrameAllowed;
     public void Connect() {
         _client = new NetManager(this) {
             AutoRecycle = true,
@@ -35,14 +33,18 @@ public sealed class Client : INetEventListener {
         
         packetProcessor.RegisterWarlockNestedTypes();
         
-        packetProcessor.SubscribeReusable<Heartbeat>(x => Logger.Info($"Heartbeat received: Frame: {x.Frame} Checksum: {x.Checksum}"));
+        packetProcessor.SubscribeReusable<Heartbeat>(OnHeartbeatReceived);
         packetProcessor.SubscribeReusable<GameState>(OnGameStateReceived);
         packetProcessor.Subscribe<PlayerInputServerResponse<MoveCommand>>(OnGameCommandReceived, () => new PlayerInputServerResponse<MoveCommand>());
         packetProcessor.Subscribe<PlayerInputServerResponse<CastCommand>>(OnGameCommandReceived, () => new PlayerInputServerResponse<CastCommand>());
     }
 
-    private void OnGameCommandReceived<T>(PlayerInputServerResponse<T> serverResponse) where T:IGameCommand{
-        CommandManager.AddDelayedGameCommand(serverResponse.Command, serverResponse.TargetFrame);
+    private void OnHeartbeatReceived(Heartbeat heartbeat) {
+        _maxFrameAllowed = heartbeat.Frame;
+    }
+
+    private void OnGameCommandReceived<T>(PlayerInputServerResponse<T> serverResponse) where T:IGameCommand {
+        CommandProcessor.AddDelayedGameCommand(serverResponse.Command, serverResponse.TargetFrame);
     }
 
     private void OnGameStateReceived(GameState gameState) {
@@ -57,7 +59,7 @@ public sealed class Client : INetEventListener {
         WarlockGame.Frame = gameState.Frame;
     }
 
-    public void Update(float delta) {
+    public void Update() {
         _client.PollEvents();
     }
 

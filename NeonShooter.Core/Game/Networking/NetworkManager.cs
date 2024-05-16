@@ -21,9 +21,12 @@ static class NetworkManager {
     public static bool IsConnected => IsClient || IsServer;
     public static bool IsClient => _client != null;
     public static bool IsServer => _server != null;
+    public static bool StutterRequired => IsConnected && (IsClient ? _client!.StutterRequired: _server!.StutterRequired);
+    public static int FrameDelay => IsConnected ? Latency!.Value * WarlockGame.Instance.TargetElapsedTime.Milliseconds + LagPadding : 0;
+    /// <summary>
+    /// Latency in milliseconds
+    /// </summary>
     private static int? Latency => IsClient ? _client!.Latency : _server?.Latency;
-    public static int FrameDelay => IsConnected ? (int)Latency! + LagPadding : 0;
-
     
     public static void StartServer() {
         if (IsConnected) return;
@@ -41,12 +44,13 @@ static class NetworkManager {
 
     public static void Update() {
         if (_server != null) {
-            _server.Update(1);
-            // _server.SendToAll(new Heartbeat { Frame = _frame++, Checksum = 100}, DeliveryMethod.ReliableOrdered);
+            _server.Update();
+            _server.SendToAll(new Heartbeat { Frame = WarlockGame.Frame }, DeliveryMethod.ReliableSequenced);
         }
 
         if (_client != null) {
-            _client.Update(1);
+            _client.Update();
+            _client.Send(new Heartbeat { Frame = WarlockGame.Frame }, DeliveryMethod.ReliableSequenced);
         }
         
         Debug.Visualize($"Latency: {Latency}", new Vector2(800, 50));
