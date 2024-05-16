@@ -6,7 +6,7 @@ using NeonShooter.Core.Game.Networking;
 
 namespace NeonShooter.Core.Game; 
 
-static class CommandManager {
+static class CommandProcessor {
 
     private static readonly Dictionary<int, List<IGameCommand>> _commands = new();
     

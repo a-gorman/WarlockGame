@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using NeonShooter.Core.Game.Entity.Order;
 using NeonShooter.Core.Game.Networking;
 using NeonShooter.Core.Game.Util;
@@ -110,13 +109,13 @@ class LocalPlayerGameInput {
         var inputDirection = GetAimDirection(_player.Warlock.Position);
         if (inputDirection != null && SelectedSpellId != null) {
             if (WarlockGame.IsLocal) {
-                CommandManager.IssueCastCommand(_player.Id, inputDirection.Value, SelectedSpellId.Value);
+                CommandProcessor.IssueCastCommand(_player.Id, inputDirection.Value, SelectedSpellId.Value);
             }
             else {
                 var moveAction = new CastCommand { PlayerId = _player.Id, Location = inputDirection.Value, SpellId = SelectedSpellId.Value};
                 NetworkManager.SendPlayerCommand(moveAction);
                 if(NetworkManager.IsServer) {
-                    CommandManager.AddDelayedGameCommand(moveAction, WarlockGame.Frame + NetworkManager.FrameDelay);
+                    CommandProcessor.AddDelayedGameCommand(moveAction, WarlockGame.Frame + NetworkManager.FrameDelay);
                 }
             }
         }
@@ -125,13 +124,13 @@ class LocalPlayerGameInput {
     private void OnRightClick() {
         var aimPosition = GetAimPosition()!.Value;
         if (WarlockGame.IsLocal) {
-            CommandManager.IssueMoveCommand(_player.Id, aimPosition);
+            CommandProcessor.IssueMoveCommand(_player.Id, aimPosition);
         }
         else {
             var moveAction = new MoveCommand { PlayerId = _player.Id, Location = aimPosition };
             NetworkManager.SendPlayerCommand(moveAction);
             if(NetworkManager.IsServer) {
-                CommandManager.AddDelayedGameCommand(moveAction, WarlockGame.Frame + NetworkManager.FrameDelay);
+                CommandProcessor.AddDelayedGameCommand(moveAction, WarlockGame.Frame + NetworkManager.FrameDelay);
             }
         }
         SelectedSpellId = null;

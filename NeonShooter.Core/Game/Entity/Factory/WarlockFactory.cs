@@ -12,6 +12,7 @@ static class WarlockFactory {
             Position = packet.Position,
             Velocity = packet.Velocity,
             Orientation = packet.Orientation,
+            Health = packet.Health
         };
         
         warlock.Spells.Clear();
@@ -36,7 +37,7 @@ static class WarlockFactory {
             {
                 1 => SpellFactory.Fireball(),
                 2 => SpellFactory.Lightning(),
-                _ => throw new ArgumentOutOfRangeException("spellId")
+                _ => throw new ArgumentException("Tried to deserialize unknown spell id")
             };
 
             spell.Cooldown.FramesRemaining = warlock.SpellCooldowns[index];

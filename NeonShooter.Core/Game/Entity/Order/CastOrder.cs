@@ -8,8 +8,6 @@ class CastOrder: IOrder {
     private readonly int _spellId;
     private readonly Vector2 _castDirection;
     
-    // private bool _active;
-
     public bool Finished { get; private set; }
     
     public CastOrder(int spellId, Vector2 castDirection, Warlock player) {

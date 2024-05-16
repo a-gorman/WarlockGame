@@ -3,6 +3,8 @@ using LiteNetLib.Utils;
 using Microsoft.Xna.Framework;
 
 namespace NeonShooter.Core.Game.Networking;
+// Disable nullability complaints. A bunch of stuff here is initialized late by deserialization
+#pragma warning disable CS8618
 
 public class GameState {
     public Player[] Players { get; init; }
@@ -15,6 +17,7 @@ public class Warlock : INetSerializable {
     public Vector2 Position { get; set; }
     public Vector2 Velocity { get; set; }
     public float Orientation { get; set; }
+    public int Health { get; set; }
     public int[] SpellIds { get; set; }
     /// <summary>
     /// Cooldown remaining in frames
@@ -26,6 +29,7 @@ public class Warlock : INetSerializable {
         writer.Put(Position);
         writer.Put(Velocity);
         writer.Put(Orientation);
+        writer.Put(Health);
         writer.PutArray(SpellIds);
         writer.PutArray(SpellCooldowns);
     }
@@ -35,6 +39,7 @@ public class Warlock : INetSerializable {
         Position = reader.GetVector2();
         Velocity = reader.GetVector2();
         Orientation = reader.GetFloat();
+        Health = reader.GetInt();
         SpellIds = reader.GetIntArray();
         SpellCooldowns = reader.GetIntArray();
     }
@@ -104,9 +109,13 @@ public class PlayerInputServerResponse<T> where T : notnull {
 
 public class RequestGameState { }
 
+// public class ClientHeartbeat {
+//     public int PlayerId { get; set; }
+//     public int Frame { get; set; }
+// }
+
 public class Heartbeat {
-    public uint Frame { get; set; }
-    public uint Checksum { get; set; }
+    public int Frame { get; set; }
 }
 
 /// <summary>
@@ -116,3 +125,4 @@ public class Heartbeat {
 public interface IGameCommand {
     int PlayerId { get; set; }
 }
+#pragma warning restore CS8618

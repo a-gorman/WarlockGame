@@ -21,7 +21,7 @@ namespace NeonShooter.Core.Game.Entity
 
         public const float MaxHealth = 100;
 
-        public float Health { get; private set; } = MaxHealth;
+        public float Health { get; set; } = MaxHealth;
 
         public event Action<Warlock>? Destroyed;
         
