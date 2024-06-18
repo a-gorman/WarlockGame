@@ -13,7 +13,7 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin NeonShooter.Core/Content/Art/Air_07_Call_Lightning.png
+#begin WarlockGame.Core/Content/Art/Air_07_Call_Lightning.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -23,9 +23,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:NeonShooter.Core/Content/Art/Air_07_Call_Lightning.png
+/build:WarlockGame.Core/Content/Art/Air_07_Call_Lightning.png
 
-#begin NeonShooter.Core/Content/Art/Black Hole.png
+#begin WarlockGame.Core/Content/Art/Black Hole.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -35,9 +35,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:NeonShooter.Core/Content/Art/Black Hole.png
+/build:WarlockGame.Core/Content/Art/Black Hole.png
 
-#begin NeonShooter.Core/Content/Art/Bullet.png
+#begin WarlockGame.Core/Content/Art/Bullet.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -47,9 +47,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:NeonShooter.Core/Content/Art/Bullet.png
+/build:WarlockGame.Core/Content/Art/Bullet.png
 
-#begin NeonShooter.Core/Content/Art/Fire_03_Meteor.png
+#begin WarlockGame.Core/Content/Art/Fire_03_Meteor.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -59,9 +59,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:NeonShooter.Core/Content/Art/Fire_03_Meteor.png
+/build:WarlockGame.Core/Content/Art/Fire_03_Meteor.png
 
-#begin NeonShooter.Core/Content/Art/Fireball.png
+#begin WarlockGame.Core/Content/Art/Fireball.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -71,9 +71,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:NeonShooter.Core/Content/Art/Fireball.png
+/build:WarlockGame.Core/Content/Art/Fireball.png
 
-#begin NeonShooter.Core/Content/Art/FireballIcon.png
+#begin WarlockGame.Core/Content/Art/FireballIcon.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -83,9 +83,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:NeonShooter.Core/Content/Art/FireballIcon.png
+/build:WarlockGame.Core/Content/Art/FireballIcon.png
 
-#begin NeonShooter.Core/Content/Art/Glow.png
+#begin WarlockGame.Core/Content/Art/Glow.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -95,9 +95,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:NeonShooter.Core/Content/Art/Glow.png
+/build:WarlockGame.Core/Content/Art/Glow.png
 
-#begin NeonShooter.Core/Content/Art/Laser.png
+#begin WarlockGame.Core/Content/Art/Laser.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -107,9 +107,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:NeonShooter.Core/Content/Art/Laser.png
+/build:WarlockGame.Core/Content/Art/Laser.png
 
-#begin NeonShooter.Core/Content/Art/Lightning.png
+#begin WarlockGame.Core/Content/Art/Lightning.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -119,9 +119,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:NeonShooter.Core/Content/Art/Lightning.png
+/build:WarlockGame.Core/Content/Art/Lightning.png
 
-#begin NeonShooter.Core/Content/Art/Player.png
+#begin WarlockGame.Core/Content/Art/Player.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -131,9 +131,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:NeonShooter.Core/Content/Art/Player.png
+/build:WarlockGame.Core/Content/Art/Player.png
 
-#begin NeonShooter.Core/Content/Art/Pointer.png
+#begin WarlockGame.Core/Content/Art/Pointer.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -143,9 +143,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:NeonShooter.Core/Content/Art/Pointer.png
+/build:WarlockGame.Core/Content/Art/Pointer.png
 
-#begin NeonShooter.Core/Content/Art/Seeker.png
+#begin WarlockGame.Core/Content/Art/Seeker.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -155,9 +155,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:NeonShooter.Core/Content/Art/Seeker.png
+/build:WarlockGame.Core/Content/Art/Seeker.png
 
-#begin NeonShooter.Core/Content/Art/Wanderer.png
+#begin WarlockGame.Core/Content/Art/Wanderer.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -167,54 +167,5 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:NeonShooter.Core/Content/Art/Wanderer.png
-
-#begin NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Black Hole.xnb
-/importer:
-/processor:
-/build:NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Black Hole.xnb
-
-#begin NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Bullet.xnb
-/importer:
-/processor:
-/build:NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Bullet.xnb
-
-#begin NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Fireball.xnb
-/importer:
-/processor:
-/build:NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Fireball.xnb
-
-#begin NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/fireball_0.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/fireball_0.png
-
-#begin NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Glow.xnb
-/importer:
-/processor:
-/build:NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Glow.xnb
-
-#begin NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Laser.xnb
-/importer:
-/processor:
-/build:NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Laser.xnb
-
-#begin NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Lightning.jpg
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:NeonShooter.Core/Content/bin/Windows/NeonShooter/Art/Lightning.jpg
+/build:WarlockGame.Core/Content/Art/Wanderer.png
 
