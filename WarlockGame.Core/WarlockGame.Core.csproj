@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <LangVersion>11</LangVersion>
+    <Nullable>enable</Nullable>
+    <RootNamespace>WarlockGame.Core</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Content\obj\**" />
+    <EmbeddedResource Remove="Content\obj\**" />
+    <None Remove="Content\obj\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="LiteNetLib" Version="1.2.0" />
+    <PackageReference Include="MonoGame.Extended.Graphics" Version="3.8.0" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Content\bin\Windows" />
+    <Folder Include="Game\" />
+  </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>WarlockGame.Core.Test</_Parameter1>
+    </AssemblyAttribute>
+</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PS4Mono\PS4Mono.csproj" />
+  </ItemGroup>
+</Project>
