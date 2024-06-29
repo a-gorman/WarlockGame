@@ -10,7 +10,7 @@ namespace WarlockGame.Core.Game.Spell;
 
 public class LightningEffect: ICastEffect {
 
-    private Texture2D _art = Art.Lightning;
+    private readonly Texture2D _art = Art.Lightning;
 
     private const int Length = 800;
     

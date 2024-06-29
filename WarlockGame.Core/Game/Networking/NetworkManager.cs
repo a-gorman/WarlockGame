@@ -35,11 +35,11 @@ static class NetworkManager {
         _server.Start();
     }
 
-    public static void ConnectToServer() {
+    public static void ConnectToServer(string address) {
         if (IsConnected) return;
         
         _client = new Client();
-        _client.Connect();
+        _client.Connect(address);
     }
 
     public static void Update() {

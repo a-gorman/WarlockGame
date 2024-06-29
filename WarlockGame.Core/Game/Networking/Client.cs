@@ -22,14 +22,14 @@ public sealed class Client : INetEventListener {
     public bool ClientDropping => false;
 
     private int _maxFrameAllowed;
-    public void Connect() {
+    public void Connect(string address) {
         _client = new NetManager(this) {
             AutoRecycle = true,
         };
 
         _client.Start();
-        Logger.Info("Connecting to localhost");
-        _client.Connect("localhost", 12345, "");
+        Logger.Info($"Connecting to {address}");
+        _client.Connect(address, 12345, "");
         
         packetProcessor.RegisterWarlockNestedTypes();
         

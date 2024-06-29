@@ -14,6 +14,7 @@ static class CommandProcessor {
         if (_commands.TryGetValue(frame, out var actions)) {
             foreach (var action in actions) {
                 // Prevent disconnected players from have buffered pause commands and such
+                // This might cause desyncs if disconnections are not themselves synchronized
                 if (!PlayerManager.GetPlayer(action.PlayerId)?.IsActive ?? false) {
                     continue;
                 }
