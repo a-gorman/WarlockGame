@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -34,12 +37,12 @@ namespace WarlockGame.Core
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private readonly BloomComponent _bloom;
-
+ 
         public static bool Paused = false;
 
+        public static string IpAddress => GetIpAddress();
         
-        public WarlockGame()
-        {
+        public WarlockGame() {
 			Instance = this;
 			_graphics = new GraphicsDeviceManager(this);
 
@@ -113,7 +116,7 @@ namespace WarlockGame.Core
                 Paused = !Paused;
 
             if (StaticKeyboardInput.WasKeyPressed(Keys.C) && !NetworkManager.IsConnected) {
-                NetworkManager.ConnectToServer();
+                NetworkManager.ConnectToServer(GetIpAddress());
                 // NetworkManager.GetGameState();
             }
             
@@ -212,6 +215,11 @@ namespace WarlockGame.Core
 
         private void DrawDebugInfo() {
             DrawRightAlignedString($"Mouse POS: {StaticInput.MousePosition}", 65);
+        }
+
+        private static string GetIpAddress() {
+            var dict = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText("config.json"))!;
+            return dict["ipAddress"];
         }
     }
 }

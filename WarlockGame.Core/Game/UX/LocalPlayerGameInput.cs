@@ -105,6 +105,7 @@ class LocalPlayerGameInput {
         }
     }
 
+    // TODO: Find a way to dedup this logic
     private void OnSelect() {
         var inputDirection = GetAimDirection(_player.Warlock.Position);
         if (inputDirection != null && SelectedSpellId != null) {
