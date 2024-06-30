@@ -8,11 +8,11 @@ using PS4Mono;
 using WarlockGame.Core.Game;
 using WarlockGame.Core.Game.Display;
 using WarlockGame.Core.Game.Graphics;
-using WarlockGame.Core.Game.Graphics.UI;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Input.Devices;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
+using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core
@@ -61,6 +61,7 @@ namespace WarlockGame.Core
             Grid = new Grid(Viewport.Bounds, gridSpacing);
 
             Ps4Input.Initialize(this);
+            UIManager.AddComponent(new SpellDisplay());
 
             base.Initialize();
         }
@@ -111,9 +112,14 @@ namespace WarlockGame.Core
                 Paused = !Paused;
 
             if (StaticKeyboardInput.WasKeyPressed(Keys.C) && !NetworkManager.IsConnected) {
-                TextPrompt.Open("Enter IP Address", (text, accepted) => {
+                UIManager.OpenTextPrompt("Enter name", (name, accepted) => {
                     if (accepted) {
-                        NetworkManager.ConnectToServer(text);
+                        UIManager.OpenTextPrompt("Enter IP Address", (ipAddress, accepted) => {
+                            if (accepted) {
+                                NetworkManager.ConnectToServer(ipAddress);
+                                // TODO: Make a player character with the name
+                            }
+                        });
                     }
                 });
                 
@@ -171,6 +177,7 @@ namespace WarlockGame.Core
 
             // Draw the user interface without bloom
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
+            UIManager.Draw(_spriteBatch);
 
             // var activePlayer = PlayerManager.Players.First();
             
@@ -180,8 +187,6 @@ namespace WarlockGame.Core
             // draw the custom mouse cursor
             _spriteBatch.Draw(Art.Pointer, StaticInput.MousePosition, Color.White);
             
-            SpellDisplay.Draw(_spriteBatch);
-
             DrawDebugInfo();
             
             // if (GameStatus.IsGameOver)
