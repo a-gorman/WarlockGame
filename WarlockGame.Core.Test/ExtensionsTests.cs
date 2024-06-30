@@ -4,6 +4,7 @@ using FluentAssertions;
 using Xunit;
 using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game;
+using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Test;
 

@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
+using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Graphics.Effect; 
 
@@ -34,7 +35,7 @@ public class VectorEffect : IEffect
             var pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
             pointTexture.SetData(new[] { Color.White });
             
-            spriteBatch.DrawLine(_start, _end, _color);
+            Extensions.DrawLine(spriteBatch, _start, _end, _color);
         }
     }
 
