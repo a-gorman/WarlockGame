@@ -1,9 +1,4 @@
-﻿//---------------------------------------------------------------------------------
-// Written by Michael Hoffman
-// Find the full tutorial at: http://gamedev.tutsplus.com/series/vector-shooter-xna/
-//----------------------------------------------------------------------------------
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Display;
 using WarlockGame.Core.Game.Graphics;

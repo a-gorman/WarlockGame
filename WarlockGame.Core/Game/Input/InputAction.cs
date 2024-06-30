@@ -1,4 +1,4 @@
-namespace WarlockGame.Core.Game.UX; 
+namespace WarlockGame.Core.Game.Input; 
 
 public enum InputAction {
     None,

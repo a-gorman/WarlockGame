@@ -1,9 +1,4 @@
-﻿//---------------------------------------------------------------------------------
-// Written by Michael Hoffman
-// Find the full tutorial at: http://gamedev.tutsplus.com/series/vector-shooter-xna/
-//----------------------------------------------------------------------------------
-
-using System.IO;
+﻿using System.IO;
 using WarlockGame.Core.Game.Entity;
 
 namespace WarlockGame.Core.Game;

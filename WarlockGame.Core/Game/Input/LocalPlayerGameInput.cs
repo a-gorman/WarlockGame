@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using WarlockGame.Core.Game.Util;
 using WarlockGame.Core.Game.Entity.Order;
+using WarlockGame.Core.Game.Input.Devices;
 using WarlockGame.Core.Game.Networking;
-using WarlockGame.Core.Game.UX.InputDevices;
+using WarlockGame.Core.Game.Util;
 
-namespace WarlockGame.Core.Game.UX; 
+namespace WarlockGame.Core.Game.Input; 
 
 /// <summary>
 /// Handles game input from a particular player

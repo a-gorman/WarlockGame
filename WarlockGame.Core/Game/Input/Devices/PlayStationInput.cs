@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using WarlockGame.Core.Game.Util;
 using PS4Mono;
+using WarlockGame.Core.Game.Util;
 
-namespace WarlockGame.Core.Game.UX.InputDevices; 
+namespace WarlockGame.Core.Game.Input.Devices; 
 
 public class PlayStationInput : IInputDevice {
     private readonly int _controllerIndex;

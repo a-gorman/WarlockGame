@@ -3,8 +3,6 @@ using System.Linq;
 using WarlockGame.Core.Game.Entity.Order;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Spell;
-using WarlockGame.Core.Game.UX;
-using WarlockGame.Core.Game.UX.InputDevices;
 using Warlock = WarlockGame.Core.Game.Entity.Warlock;
 
 namespace WarlockGame.Core.Game;
