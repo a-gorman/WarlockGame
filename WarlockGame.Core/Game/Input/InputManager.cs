@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework.Input;
 using PS4Mono;
-using WarlockGame.Core.Game.UX.InputDevices;
+using WarlockGame.Core.Game.Input.Devices;
 
-namespace WarlockGame.Core.Game.UX; 
+namespace WarlockGame.Core.Game.Input; 
 
 static class InputManager {
     private static List<IInputDevice> _devices = new();

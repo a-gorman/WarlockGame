@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework.Input;
 
-namespace WarlockGame.Core.Game.UX.InputDevices;
+namespace WarlockGame.Core.Game.Input.Devices;
 
 [Obsolete]
 public static class StaticKeyboardInput {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using WarlockGame.Core.Game.Entity;
-using WarlockGame.Core.Game.UX;
+using WarlockGame.Core.Game.Input;
 
 namespace WarlockGame.Core.Game; 
 

@@ -1,15 +1,9 @@
-﻿//---------------------------------------------------------------------------------
-// Written by Michael Hoffman
-// Find the full tutorial at: http://gamedev.tutsplus.com/series/vector-shooter-xna/
-//----------------------------------------------------------------------------------
-
-using System;
-using System.Linq;
+﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using WarlockGame.Core.Game.UX.InputDevices;
+using WarlockGame.Core.Game.Input.Devices;
 
-namespace WarlockGame.Core.Game.UX; 
+namespace WarlockGame.Core.Game.Input; 
 
 [Obsolete]
 static class StaticInput

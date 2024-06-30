@@ -15,9 +15,6 @@
     <Compile Remove="Content\obj\**" />
     <EmbeddedResource Remove="Content\obj\**" />
     <None Remove="Content\obj\**" />
-    <None Update="Config.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LiteNetLib" Version="1.2.0" />

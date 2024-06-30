@@ -1,8 +1,8 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using WarlockGame.Core.Game.UX;
-using WarlockGame.Core.Game.UX.InputDevices;
+using WarlockGame.Core.Game.Input;
+using WarlockGame.Core.Game.Input.Devices;
 
 namespace WarlockGame.Core.Game.Graphics.UI; 
 

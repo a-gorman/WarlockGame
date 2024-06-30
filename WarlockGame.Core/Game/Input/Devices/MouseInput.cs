@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using WarlockGame.Core.Game.Util;
 
-namespace WarlockGame.Core.Game.UX.InputDevices; 
+namespace WarlockGame.Core.Game.Input.Devices; 
 
 public class MouseInput : IInputDevice {
     private readonly Dictionary<InputAction, MouseMapping> _mappings;
