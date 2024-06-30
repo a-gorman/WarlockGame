@@ -3,20 +3,28 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Input.Devices;
+using WarlockGame.Core.Game.Log;
 
-namespace WarlockGame.Core.Game.Graphics.UI; 
+namespace WarlockGame.Core.Game.UI; 
 
 /// <summary>
 /// Assumes single active player (No local coop)
 /// </summary>
-public static class SpellDisplay {
+public class SpellDisplay : IUIComponent {
     
     private const int spellSpacing = 100;
 
     private static InputAction[] _actions = { InputAction.Spell1, InputAction.Spell2, InputAction.Spell3, InputAction.Spell4 };
 
-    public static void Draw(SpriteBatch spriteBatch) {
-        DrawHollowRectangle(spriteBatch, new Rectangle(20, 925, 1880, 90), Color.White);
+    public int Layer => 2;
+    public Rectangle BoundingBox { get; } = new Rectangle(20, 925, 1880, 90);
+
+    public void OnClick(Vector2 location) {
+        Logger.Info("Click the spell display!");
+    }
+    
+    public void Draw(SpriteBatch spriteBatch) {
+        DrawHollowRectangle(spriteBatch, BoundingBox, Color.White);
 
         if(!PlayerManager.Players.Any()) return;
         

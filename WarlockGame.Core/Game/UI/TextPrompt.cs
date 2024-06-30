@@ -2,33 +2,30 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using WarlockGame.Core.Game.Graphics.Effect;
+using WarlockGame.Core.Game.Log;
 
-namespace WarlockGame.Core.Game.Input;
+namespace WarlockGame.Core.Game.UI;
 
 // This probably should not be an effect. Probably make some UI components thing
-class TextPrompt: IEffect {
+class TextPrompt: IUIComponent {
     public string Prompt { get; set; }
 
     public string Text { get; set; } = string.Empty;
 
-    public Vector2 Position { get; } = new Vector2(800, 800);
+    public int Layer { get; } = 1;
+    public Rectangle BoundingBox { get; }
     
     public bool IsExpired { get; set; }
     
-    private Action<string, bool> OnClose { get; }
+    private Vector2 Position { get; }
+    private Action<string, bool> OnCloseCallback { get; }
     
-    private TextPrompt(string prompt, Action<string, bool> onClose) {
+    public TextPrompt(string prompt, Action<string, bool> onCloseCallback) {
+        Position = new Vector2(800, 800);
+        BoundingBox = new Rectangle(Position.ToPoint(), new Point(300, 35));
+        
         Prompt = prompt;
-        OnClose = onClose;
-        WarlockGame.Instance.Window.TextInput += AddText;
-    }
-
-    // TODO: This needs to block keyboard input from the game. Should be handled elsewhere
-    public static TextPrompt Open(string prompt, Action<string, bool> onClose) {
-        var textPrompt = new TextPrompt(prompt, onClose);
-        EffectManager.Add(textPrompt);
-        return textPrompt;
+        OnCloseCallback = onCloseCallback;
     }
 
     private void AddText(object? source, TextInputEventArgs textEvent) {
@@ -51,18 +48,22 @@ class TextPrompt: IEffect {
     }
 
     public void Update() {}
-
+    
     public void Draw(SpriteBatch spriteBatch) {
         var pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
         pointTexture.SetData(new[] { Color.DarkSlateGray });
+        spriteBatch.Draw(pointTexture, BoundingBox, Color.White);
 
         spriteBatch.DrawString(Art.Font, Text, Position, Color.White);
-        spriteBatch.Draw(pointTexture, new Rectangle(Position.ToPoint(), new Point(300,35)), Color.White);
+    }
+
+    public void OnClick(Vector2 location) {
+        Logger.Info("Click on text prompt");
+        // TODO: Move a cursor to the click location
     }
 
     public void Close(bool accepted) {
-        WarlockGame.Instance.Window.TextInput -= AddText;
-        OnClose.Invoke(Text, accepted);
+        OnCloseCallback.Invoke(Text, accepted);
         IsExpired = true;
     }
 }
