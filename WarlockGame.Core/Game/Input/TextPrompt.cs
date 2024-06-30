@@ -41,7 +41,7 @@ class TextPrompt: IEffect {
                 break;
             case Keys.Back:
                 if (Text.Length > 0) {
-                    Text.Remove(Text.Length - 1);
+                    Text = Text.Remove(Text.Length - 1);
                 }
                 break;
             default:
@@ -57,7 +57,7 @@ class TextPrompt: IEffect {
         pointTexture.SetData(new[] { Color.DarkSlateGray });
 
         spriteBatch.DrawString(Art.Font, Text, Position, Color.White);
-        spriteBatch.Draw(pointTexture, new Rectangle((int)Position.X-2, (int)Position.Y-2, (int)Position.X+50, (int)Position.Y+2), Color.Black);
+        spriteBatch.Draw(pointTexture, new Rectangle(Position.ToPoint(), new Point(300,35)), Color.White);
     }
 
     public void Close(bool accepted) {
