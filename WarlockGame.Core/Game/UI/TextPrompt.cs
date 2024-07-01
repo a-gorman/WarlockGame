@@ -7,7 +7,7 @@ using WarlockGame.Core.Game.Log;
 namespace WarlockGame.Core.Game.UI;
 
 // This probably should not be an effect. Probably make some UI components thing
-class TextPrompt: IUIComponent {
+class TextPrompt: ITextInputComponent {
     public string Prompt { get; set; }
 
     public string Text { get; set; } = string.Empty;
@@ -19,6 +19,7 @@ class TextPrompt: IUIComponent {
     
     private Vector2 Position { get; }
     private Action<string, bool> OnCloseCallback { get; }
+    public event EventHandler? OnClose;
     
     public TextPrompt(string prompt, Action<string, bool> onCloseCallback) {
         Position = new Vector2(800, 800);
@@ -28,7 +29,7 @@ class TextPrompt: IUIComponent {
         OnCloseCallback = onCloseCallback;
     }
 
-    private void AddText(object? source, TextInputEventArgs textEvent) {
+    public void OnTextInput(TextInputEventArgs textEvent) {
         switch (textEvent.Key) {
             case Keys.Enter:
                 Close(true);
@@ -56,7 +57,7 @@ class TextPrompt: IUIComponent {
 
         spriteBatch.DrawString(Art.Font, Text, Position, Color.White);
     }
-
+    
     public void OnClick(Vector2 location) {
         Logger.Info("Click on text prompt");
         // TODO: Move a cursor to the click location
@@ -64,6 +65,6 @@ class TextPrompt: IUIComponent {
 
     public void Close(bool accepted) {
         OnCloseCallback.Invoke(Text, accepted);
-        IsExpired = true;
+        OnClose?.Invoke(this, EventArgs.Empty);
     }
 }

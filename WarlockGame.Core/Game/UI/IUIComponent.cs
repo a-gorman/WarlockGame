@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -16,4 +17,5 @@ public interface IUIComponent {
     public Rectangle BoundingBox { get; }
     public void OnClick(Vector2 location);
     public void Draw(SpriteBatch spriteBatch);
+    public event EventHandler OnClose;
 }

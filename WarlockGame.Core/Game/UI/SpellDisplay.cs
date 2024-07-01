@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,6 +19,7 @@ public class SpellDisplay : IUIComponent {
 
     public int Layer => 2;
     public Rectangle BoundingBox { get; } = new Rectangle(20, 925, 1880, 90);
+    public event EventHandler? OnClose;
 
     public void OnClick(Vector2 location) {
         Logger.Info("Click the spell display!");
@@ -37,7 +39,7 @@ public class SpellDisplay : IUIComponent {
             spriteBatch.DrawString(Art.Font, StaticKeyboardInput._mappings[_actions[i]].DisplayValue, new Vector2(55 + spellSpacing * i, 950-9), Color.White);
         }
     }
-
+    
     private static void DrawHollowRectangle(SpriteBatch spriteBatch, Rectangle rectangle, Color color, int width = 1) {
         var pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 2, 2);
         pointTexture.SetData(new[] { Color.Red, Color.Blue, Color.White, Color.Green });

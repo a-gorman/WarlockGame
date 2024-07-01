@@ -2,7 +2,10 @@ using System;
 
 namespace WarlockGame.Core.Game.Util; 
 
-static class MiscExtensions {
+/// <summary>
+/// Kotlin-like scope extensions
+/// </summary>
+static class ScopeExtensions {
 
     public static TOut Let<TIn, TOut>(this TIn source, Func<TIn, TOut> func) => func(source);
     
