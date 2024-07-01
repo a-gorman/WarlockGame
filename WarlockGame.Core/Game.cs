@@ -111,9 +111,9 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
             Paused = !Paused;
 
         if (StaticKeyboardInput.WasKeyPressed(Keys.C) && !NetworkManager.IsConnected) {
-            UIManager.OpenTextPrompt("Enter name", (name, accepted) => {
+            UIManager.OpenTextPrompt("Enter name:", (name, accepted) => {
                 if (accepted) {
-                    UIManager.OpenTextPrompt("Enter IP Address", (ipAddress, accepted) => {
+                    UIManager.OpenTextPrompt("Enter Host IP Address:", (ipAddress, accepted) => {
                         if (accepted) {
                             NetworkManager.ConnectToServer(ipAddress);
                             // TODO: Make a player character with the name

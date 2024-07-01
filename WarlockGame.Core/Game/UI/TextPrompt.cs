@@ -2,7 +2,9 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 using WarlockGame.Core.Game.Log;
+using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.UI;
 
@@ -14,12 +16,10 @@ class TextPrompt: ITextInputComponent {
 
     public int Layer { get; } = 1;
     public Rectangle BoundingBox { get; }
-    
-    public bool IsExpired { get; set; }
-    
+    public event EventHandler? OnClose;
+
     private Vector2 Position { get; }
     private Action<string, bool> OnCloseCallback { get; }
-    public event EventHandler? OnClose;
     
     public TextPrompt(string prompt, Action<string, bool> onCloseCallback) {
         Position = new Vector2(800, 800);
@@ -56,6 +56,7 @@ class TextPrompt: ITextInputComponent {
         spriteBatch.Draw(pointTexture, BoundingBox, Color.White);
 
         spriteBatch.DrawString(Art.Font, Text, Position, Color.White);
+        spriteBatch.DrawString(Art.Font, Prompt, Position.Translate(0, -24), Color.White);
     }
     
     public void OnClick(Vector2 location) {
