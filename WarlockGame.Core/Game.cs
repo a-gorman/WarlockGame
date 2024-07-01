@@ -60,6 +60,8 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         Ps4Input.Initialize(this);
         UIManager.AddComponent(new SpellDisplay());
 
+        Window.TextInput += (_, textArgs) => UIManager.OnTextInput(textArgs);
+        
         base.Initialize();
     }
 
