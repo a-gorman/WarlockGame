@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.UI;
@@ -12,20 +12,12 @@ namespace WarlockGame.Core.Game.UI;
 /// </summary>
 static class UIManager {
     private static readonly SortedDictionary<int, List<IUIComponent>> Components = new();
-    private static readonly SortedDictionary<int, List<ITextInputComponent>> TextInputComponents = new();
     
     public static void Draw(SpriteBatch spriteBatch) {
         // Favor newer items
         foreach (var component in Components.Values.SelectMany(x => x.AsEnumerable().Reverse())) {
             component.Draw(spriteBatch);
         }
-    }
-
-    public static void OnTextInput(TextInputEventArgs args) {
-        // Favor newer items
-        TextInputComponents.Values.SelectMany(x => x.AsEnumerable().Reverse())
-                           .FirstOrDefault()
-                           ?.OnTextInput(args);
     }
     
     /// <summary>
@@ -42,14 +34,11 @@ static class UIManager {
     public static void OpenTextPrompt(string promptText, Action<string, bool> onCloseCallback) {
         var prompt = new TextPrompt(promptText, onCloseCallback);
         AddComponent(prompt);
+        InputManager.AddTextConsumer(prompt);
     }
 
     public static void AddComponent(IUIComponent component) {
         Components.AddItemToNestedList(component.Layer, component);
-
-        if (component is ITextInputComponent textInput) {
-            TextInputComponents.AddItemToNestedList(component.Layer, textInput);
-        }
         
         component.OnClose += RemoveComponent;
     }
@@ -60,12 +49,6 @@ static class UIManager {
         
         if (Components.TryGetValue(component.Layer, out var components)) {
             components.Remove(component);
-        }
-            
-        if (component is ITextInputComponent textInput) {
-            if (TextInputComponents.TryGetValue(component.Layer, out var textInputs)) {
-                textInputs.Remove(textInput);
-            }
         }
     }
 }

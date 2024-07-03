@@ -91,11 +91,16 @@ class LocalPlayerGameInput {
     }
     
     private void ProcessPlayerActions() {
-        foreach (var actionType in SpellSelectionActions) {
-            if (WasActionKeyPressed(actionType)) {
-                SelectedSpellId = _player.Warlock.Spells.ElementAtOrDefault(SpellSelectionActions.IndexOf(actionType))?.SpellId;
+        if (!InputManager.HasTextConsumers) {
+            // HandleGameFunctions();
+
+            foreach (var actionType in SpellSelectionActions) {
+                if (WasActionKeyPressed(actionType)) {
+                    SelectedSpellId = _player.Warlock.Spells.ElementAtOrDefault(SpellSelectionActions.IndexOf(actionType))?.SpellId;
+                }
             }
         }
+
         
         if(WasActionKeyPressed(InputAction.Select)) OnSelect();
         if(WasActionKeyPressed(InputAction.RightClick)) OnRightClick();
@@ -104,6 +109,32 @@ class LocalPlayerGameInput {
             _player.Warlock.GiveOrder(x => new DirectionMoveOrder(x));
         }
     }
+
+    // TODO: This should eventually get ported to UI Components
+    // private void HandleGameFunctions() {
+    //     // Allows the game to exit
+    //     if (WasActionKeyPressed(InputAction.Exit))
+    //         WarlockGame.Instance.Exit();
+    //
+    //     if (WasActionKeyPressed(InputAction.Pause))
+    //         WarlockGame.Paused = !WarlockGame.Paused;
+    //
+    //     if (WasActionKeyPressed(InputAction.Connect) && !NetworkManager.IsConnected) {
+    //         UIManager.OpenTextPrompt("Enter player name:", (name, accepted) => {
+    //             if (accepted) {
+    //                 UIManager.OpenTextPrompt("Enter Host IP Address:", (ipAddress, accepted) => {
+    //                     if (accepted) {
+    //                         NetworkManager.ConnectToServer(ipAddress, name);
+    //                     }
+    //                 });
+    //             }
+    //         });
+    //     }
+    //         
+    //     if (WasActionKeyPressed(InputAction.Host) && !NetworkManager.IsConnected) {
+    //         NetworkManager.StartServer();
+    //     }
+    // }
 
     // TODO: Find a way to dedup this logic
     private void OnSelect() {

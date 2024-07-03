@@ -22,7 +22,11 @@ public class KeyboardInput: IInputDevice {
             new() { DisplayValue = "Q", Key = Keys.Q, InputAction = InputAction.Spell1 },
             new() { DisplayValue = "E", Key = Keys.E, InputAction = InputAction.Spell2 },
             new() { DisplayValue = "R", Key = Keys.R, InputAction = InputAction.Spell3 },
-            new() { DisplayValue = "F", Key = Keys.F, InputAction = InputAction.Spell4 }
+            new() { DisplayValue = "F", Key = Keys.F, InputAction = InputAction.Spell4 },
+            new() { DisplayValue = "Escape", Key = Keys.Escape, InputAction = InputAction.Exit },
+            new() { DisplayValue = "P", Key = Keys.P, InputAction = InputAction.Pause },
+            new() { DisplayValue = "C", Key = Keys.C, InputAction = InputAction.Connect },
+            new() { DisplayValue = "H", Key = Keys.H, InputAction = InputAction.Host },
         }.ToDictionary(x => x.Key);
     }
 

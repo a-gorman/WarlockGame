@@ -35,7 +35,7 @@ static class NetworkManager {
         _server.Start();
     }
 
-    public static void ConnectToServer(string address) {
+    public static void ConnectToServer(string address, string playerName) {
         if (IsConnected) return;
         
         _client = new Client();
@@ -51,6 +51,7 @@ static class NetworkManager {
         if (_client != null) {
             _client.Update();
             // TODO: client can be null here if the client was disconnected during update.
+            // This causes a crash if we fail to connect too.
             _client.Send(new Heartbeat { Frame = WarlockGame.Frame }, DeliveryMethod.ReliableSequenced);
         }
         
