@@ -29,7 +29,7 @@ public sealed class Client : INetEventListener {
 
         _client.Start();
         Logger.Info($"Connecting to {address}");
-        _client.Connect(address, 12345, "");
+        _client.Connect(address, 6112, "");
         
         packetProcessor.RegisterWarlockNestedTypes();
         
