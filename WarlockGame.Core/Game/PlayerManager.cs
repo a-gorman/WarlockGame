@@ -21,6 +21,12 @@ static class PlayerManager {
         InputManager.AttachLocalInput(player, deviceType);
     }
 
+    public static void AddLocalPlayer(Player player) {
+        Players.Add(player);
+        EntityManager.Add(player.Warlock);
+        InputManager.AttachLocalInput(player, InputManager.DeviceType.MouseAndKeyboard);
+    }
+    
     public static void AddRemotePlayer(Player player) {
         Players.Add(player);
         EntityManager.Add(player.Warlock);

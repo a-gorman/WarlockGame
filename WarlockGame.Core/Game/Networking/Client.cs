@@ -47,13 +47,19 @@ public sealed class Client : INetEventListener {
         CommandProcessor.AddDelayedGameCommand(serverResponse.Command, serverResponse.TargetFrame);
     }
 
+    // TODO: Wipe existing state first
     private void OnGameStateReceived(GameState gameState) {
         Logger.Info("Game state received");
 
         foreach (var player in gameState.Players) {
             var warlock = WarlockFactory.FromPacket(gameState.Warlocks.First(x => x.Id == player.WarlockId), player.Id);
 
-            PlayerManager.AddRemotePlayer(new Game.Player(player.Name, player.Id, warlock));
+            if (player.Id == 1) {
+                PlayerManager.AddRemotePlayer(new Game.Player(player.Name, player.Id, warlock));
+            }
+            else {
+                PlayerManager.AddLocalPlayer(new Game.Player(player.Name, player.Id, warlock));
+            }
         }
 
         WarlockGame.Frame = gameState.Frame;

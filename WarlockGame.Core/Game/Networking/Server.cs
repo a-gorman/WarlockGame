@@ -97,7 +97,6 @@ public class Server : INetEventListener {
                 ClientDropping = true;
             }
         }
-
     }
 
     public void SendToAll<T>(T packet, DeliveryMethod deliveryMethod) where T : class, new() {
