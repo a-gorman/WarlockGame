@@ -117,7 +117,6 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
                         UIManager.OpenTextPrompt("Enter Host IP Address:", (ipAddress, accepted) => {
                             if (accepted) {
                                 NetworkManager.ConnectToServer(ipAddress, name);
-                                // TODO: Make a player character with the name
                             }
                         });
                     }
