@@ -60,7 +60,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         Ps4Input.Initialize(this);
         UIManager.AddComponent(new SpellDisplay());
 
-        Window.TextInput += (_, textArgs) => UIManager.OnTextInput(textArgs);
+        Window.TextInput += (_, textArgs) => InputManager.OnTextInput(textArgs);
         
         base.Initialize();
     }
@@ -102,35 +102,35 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         }
         GameTime = gameTime;
         StaticInput.Update();
-
+        
         // Allows the game to exit
-        if (StaticInput.WasButtonPressed(Buttons.Back) || StaticKeyboardInput.WasKeyPressed(Keys.Escape))
-            Exit();
+        if (!InputManager.HasTextConsumers) {
+            if (StaticInput.WasButtonPressed(Buttons.Back) || StaticKeyboardInput.WasKeyPressed(Keys.Escape))
+                Exit();
 
-        if (StaticKeyboardInput.WasKeyPressed(Keys.P))
-            Paused = !Paused;
+            if (StaticKeyboardInput.WasKeyPressed(Keys.P))
+                Paused = !Paused;
 
-        if (StaticKeyboardInput.WasKeyPressed(Keys.C) && !NetworkManager.IsConnected) {
-            UIManager.OpenTextPrompt("Enter name:", (name, accepted) => {
-                if (accepted) {
-                    UIManager.OpenTextPrompt("Enter Host IP Address:", (ipAddress, accepted) => {
-                        if (accepted) {
-                            NetworkManager.ConnectToServer(ipAddress);
-                            // TODO: Make a player character with the name
-                        }
-                    });
-                }
-            });
-                
-            // NetworkManager.ConnectToServer(GetIpAddress());
-            // NetworkManager.GetGameState();
-        }
+            if (StaticKeyboardInput.WasKeyPressed(Keys.C) && !NetworkManager.IsConnected) {
+                UIManager.OpenTextPrompt("Enter name:", (name, accepted) => {
+                    if (accepted) {
+                        UIManager.OpenTextPrompt("Enter Host IP Address:", (ipAddress, accepted) => {
+                            if (accepted) {
+                                NetworkManager.ConnectToServer(ipAddress, name);
+                                // TODO: Make a player character with the name
+                            }
+                        });
+                    }
+                });
+            }
             
-        if (StaticKeyboardInput.WasKeyPressed(Keys.V) && !NetworkManager.IsConnected) {
-            PlayerManager.AddLocalPlayer("Alex", 1, InputManager.DeviceType.MouseAndKeyboard);
-            PlayerManager.AddLocalPlayer("John", 2, InputManager.DeviceType.PlayStation1);
-            NetworkManager.StartServer();
+            if (StaticKeyboardInput.WasKeyPressed(Keys.V) && !NetworkManager.IsConnected) {
+                PlayerManager.AddLocalPlayer("Alex", 1, InputManager.DeviceType.MouseAndKeyboard);
+                PlayerManager.AddLocalPlayer("John", 2, InputManager.DeviceType.PlayStation1);
+                NetworkManager.StartServer();
+            }
         }
+
 
         Debug.Visualize(Logger.Log.TakeLast(5), Vector2.Zero);
             

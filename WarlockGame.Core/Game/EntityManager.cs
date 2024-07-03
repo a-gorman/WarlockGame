@@ -106,7 +106,6 @@ namespace WarlockGame.Core.Game
 		{
 			PlayerInstance.Kill();
 			_enemies.ForEach(x => x.WasShot());
-			EnemySpawner.Reset();
 		}
 
 		private static bool IsColliding(IEntity a, IEntity b)

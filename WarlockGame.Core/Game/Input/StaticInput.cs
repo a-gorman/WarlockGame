@@ -5,7 +5,7 @@ using WarlockGame.Core.Game.Input.Devices;
 
 namespace WarlockGame.Core.Game.Input; 
 
-[Obsolete]
+[Obsolete("This should be replaced with something better")]
 static class StaticInput
 {
 	private static MouseState _mouseState, _lastMouseState;

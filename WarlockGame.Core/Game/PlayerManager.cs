@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using WarlockGame.Core.Game.Entity;
@@ -8,6 +9,7 @@ namespace WarlockGame.Core.Game;
 static class PlayerManager {
     public static List<Player> Players { get; } = new();
 
+    [Obsolete("This is a hack for development. Either make this game not support local mutliplayer or make everything work on all local players")]
     public static Player ActivePlayer => Players.First();
 
     public static void AddLocalPlayer(string name, int id, InputManager.DeviceType deviceType) {

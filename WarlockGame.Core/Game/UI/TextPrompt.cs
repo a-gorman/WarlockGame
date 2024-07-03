@@ -4,12 +4,13 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Log;
+using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.UI;
 
 // This probably should not be an effect. Probably make some UI components thing
-class TextPrompt: ITextInputComponent {
+class TextPrompt: ITextInputConsumer, IUIComponent {
     public string Prompt { get; set; }
 
     public string Text { get; set; } = string.Empty;
@@ -17,6 +18,7 @@ class TextPrompt: ITextInputComponent {
     public int Layer { get; } = 1;
     public Rectangle BoundingBox { get; }
     public event EventHandler? OnClose;
+    public int TextConsumerPriority { get; } = 1;
 
     private Vector2 Position { get; }
     private Action<string, bool> OnCloseCallback { get; }
