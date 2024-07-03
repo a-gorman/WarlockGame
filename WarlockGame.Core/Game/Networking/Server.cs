@@ -30,7 +30,7 @@ public class Server : INetEventListener {
         };
 
         Logger.Info("Starting server");
-        var connected = _server.Start(12345);
+        var connected = _server.Start(6112);
         Logger.Info($"Server stated: {connected}");
 
         packetProcessor.RegisterWarlockNestedTypes();
