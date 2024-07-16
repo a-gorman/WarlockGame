@@ -6,8 +6,8 @@ using WarlockGame.Core.Game.Spell;
 namespace WarlockGame.Core.Game.Entity.Factory; 
 
 static class WarlockFactory {
-    public static Warlock FromPacket(Networking.Warlock packet, int playerId) {
-        var warlock = new Warlock(packet.Id, playerId)
+    public static Warlock FromPacket(Networking.Warlock packet) {
+        var warlock = new Warlock(packet.PlayerId)
         {
             Position = packet.Position,
             Velocity = packet.Velocity,
@@ -16,32 +16,29 @@ static class WarlockFactory {
         };
         
         warlock.Spells.Clear();
-        warlock.Spells.AddRange(CreateSpells(packet));
+        warlock.Spells.AddRange(packet.Spells.Select(CreateSpell));
         return warlock;
     }
 
     public static Networking.Warlock ToPacket(Warlock warlock) {
         return new Networking.Warlock {
-            Id = warlock.Id,
+            PlayerId = warlock.PlayerId,
             Position = warlock.Position,
             Velocity = warlock.Velocity,
             Orientation = warlock.Orientation,
-            SpellIds = warlock.Spells.Select(x => x.SpellId).ToArray(),
-            SpellCooldowns = warlock.Spells.Select(x => x.Cooldown.FramesRemaining).ToArray(),
+            Spells = warlock.Spells.Select(x => new Networking.Spell { SpellId = x.SpellId, CooldownRemaining = x.Cooldown.FramesRemaining }).ToList()
         };
     }
 
-    private static IEnumerable<WarlockSpell> CreateSpells(Networking.Warlock warlock) {
-        for (var index = 0; index < warlock.SpellIds.Length; index++) {
-            var spell = warlock.SpellIds[index] switch
-            {
-                1 => SpellFactory.Fireball(),
-                2 => SpellFactory.Lightning(),
-                _ => throw new ArgumentException("Tried to deserialize unknown spell id")
-            };
+    private static WarlockSpell CreateSpell(Networking.Spell packet) {
+        var spell = packet.SpellId switch
+        {
+            1 => SpellFactory.Fireball(),
+            2 => SpellFactory.Lightning(),
+            _ => throw new ArgumentException("Tried to deserialize unknown spell id")
+        };
 
-            spell.Cooldown.FramesRemaining = warlock.SpellCooldowns[index];
-            yield return spell;
-        }
+        spell.Cooldown.FramesRemaining = packet.CooldownRemaining;
+        return spell;
     }
 }

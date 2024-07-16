@@ -10,7 +10,7 @@ public enum InputAction {
     MoveRight,
     MoveUp,
     MoveDown,
-    Select,
+    LeftClick,
     RightClick,
     Cancel,
     Exit,

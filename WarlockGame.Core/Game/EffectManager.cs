@@ -49,5 +49,10 @@ namespace WarlockGame.Core.Game
 			foreach (var effect in _effects)
 				effect.Draw(spriteBatch);
 		}
+
+		public static void Clear() {
+			_effects.Clear();
+			_addedEffects.Clear();
+		}
 	}
 }

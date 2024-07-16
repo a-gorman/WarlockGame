@@ -56,8 +56,8 @@ static class InputManager {
         return deviceType switch
         {
             DeviceType.MouseAndKeyboard => new List<IInputDevice> { new KeyboardInput(), new MouseInput() },
-            DeviceType.Gamepad1 => new List<IInputDevice> { new GamepadInput(0) },
-            DeviceType.PlayStation1 => new List<IInputDevice> { new PlayStationInput(0) },
+            // DeviceType.Gamepad => new List<IInputDevice> { new GamepadInput(0) },
+            // DeviceType.PlayStation => new List<IInputDevice> { new PlayStationInput(0) },
             _ => throw new ArgumentOutOfRangeException(nameof(deviceType), deviceType, null)
         };
     }
@@ -71,7 +71,7 @@ static class InputManager {
     
     public enum DeviceType {
         MouseAndKeyboard,
-        Gamepad1,
-        PlayStation1
+        // Gamepad,
+        // PlayStation
     }
 }

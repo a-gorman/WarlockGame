@@ -41,4 +41,8 @@ public static class LinqExtensions {
     /// </summary>
     /// <remarks>Convenience method for "x => x"</remarks>
     public static T Identity<T>(T self) => self;
+
+    public static string JoinToString(this IEnumerable<string> stringCollection, string separator = ", ") {
+        return string.Join(separator, stringCollection);
+    }
 }

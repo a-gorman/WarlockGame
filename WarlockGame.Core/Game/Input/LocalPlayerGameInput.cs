@@ -34,7 +34,6 @@ class LocalPlayerGameInput {
     
     public bool WasActionKeyPressed(InputAction action) => _inputState.Actions.Contains(action) && !_lastInputState.Actions.Contains(action);
 
-    public bool WasDirectionalInputAdded() => _inputState.MovementDirection != null && _lastInputState.MovementDirection == null;
 
     public void Update() {
         if (WarlockGame.Instance.IsActive) {
@@ -91,23 +90,21 @@ class LocalPlayerGameInput {
     }
     
     private void ProcessPlayerActions() {
+        var warlock = EntityManager.GetWarlockByPlayerId(_player.Id);
+        if (warlock is null) return;
+        
         if (!InputManager.HasTextConsumers) {
             // HandleGameFunctions();
 
             foreach (var actionType in SpellSelectionActions) {
                 if (WasActionKeyPressed(actionType)) {
-                    SelectedSpellId = _player.Warlock.Spells.ElementAtOrDefault(SpellSelectionActions.IndexOf(actionType))?.SpellId;
+                    SelectedSpellId = warlock.Spells.ElementAtOrDefault(SpellSelectionActions.IndexOf(actionType))?.SpellId;
                 }
             }
         }
-
         
-        if(WasActionKeyPressed(InputAction.Select)) OnSelect();
+        if(WasActionKeyPressed(InputAction.LeftClick)) OnLeftClick(warlock.Position);
         if(WasActionKeyPressed(InputAction.RightClick)) OnRightClick();
-        
-        if (WasDirectionalInputAdded()) {
-            _player.Warlock.GiveOrder(x => new DirectionMoveOrder(x));
-        }
     }
 
     // TODO: This should eventually get ported to UI Components
@@ -137,8 +134,8 @@ class LocalPlayerGameInput {
     // }
 
     // TODO: Find a way to dedup this logic
-    private void OnSelect() {
-        var inputDirection = GetAimDirection(_player.Warlock.Position);
+    private void OnLeftClick(Vector2 warlockPosition) {
+        var inputDirection = GetAimDirection(warlockPosition);
         if (inputDirection != null && SelectedSpellId != null) {
             if (WarlockGame.IsLocal) {
                 CommandProcessor.IssueCastCommand(_player.Id, inputDirection.Value, SelectedSpellId.Value);

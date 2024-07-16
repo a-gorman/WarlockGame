@@ -3,18 +3,17 @@ using Warlock = WarlockGame.Core.Game.Entity.Warlock;
 namespace WarlockGame.Core.Game;
 
 class Player {
-    public string Name { get; }
-    
     public int Id { get; }
 
-    public Warlock Warlock { get; }
-    
+    public string Name { get; }
+
     public bool IsActive { get; } = true;
+    public bool IsLocal { get; }
     
-    public Player(string name, int id, Entity.Warlock warlock) {
+    public Player(string name, int id, bool isLocal) {
         Name = name;
         Id = id;
-        Warlock = warlock;
+        IsLocal = isLocal;
     }
 
     public void Update() {

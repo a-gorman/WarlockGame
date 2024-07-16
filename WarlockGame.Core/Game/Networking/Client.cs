@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -5,14 +6,15 @@ using LiteNetLib;
 using LiteNetLib.Utils;
 using WarlockGame.Core.Game.Entity.Factory;
 using WarlockGame.Core.Game.Log;
+using WarlockGame.Core.Game.Util;
 
-namespace WarlockGame.Core.Game.Networking; 
+namespace WarlockGame.Core.Game.Networking;
 
 public sealed class Client : INetEventListener {
     // LATE INIT
     private NetManager _client = null!;
     private NetPeer? _server;
-    
+
     private NetDataWriter _writer = new();
     private NetPacketProcessor packetProcessor = new();
 
@@ -22,8 +24,17 @@ public sealed class Client : INetEventListener {
     public bool ClientDropping => false;
 
     private int _maxFrameAllowed;
-    public void Connect(string address) {
-        _client = new NetManager(this) {
+    
+    private Action? _clientConnectedCallback = null;
+
+    public void Connect(string address, Action clientConnectedCallback) {
+        if (_clientConnectedCallback != null) {
+            Logger.Warning("Tried connecting to server while already trying to connect");
+            return;
+        }
+        
+        _client = new NetManager(this)
+        {
             AutoRecycle = true,
         };
 
@@ -31,38 +42,50 @@ public sealed class Client : INetEventListener {
         Logger.Info($"Connecting to {address}");
         _client.Connect(address, 6112, "");
         
-        packetProcessor.RegisterWarlockNestedTypes();
-        
+        packetProcessor.RegisterCustomNestedTypes();
+
         packetProcessor.SubscribeReusable<Heartbeat>(OnHeartbeatReceived);
-        packetProcessor.SubscribeReusable<GameState>(OnGameStateReceived);
-        packetProcessor.Subscribe<PlayerInputServerResponse<MoveCommand>>(OnGameCommandReceived, () => new PlayerInputServerResponse<MoveCommand>());
-        packetProcessor.Subscribe<PlayerInputServerResponse<CastCommand>>(OnGameCommandReceived, () => new PlayerInputServerResponse<CastCommand>());
+        packetProcessor.SubscribeNetSerializable<PlayerInputServerResponse<MoveCommand>>(OnGameCommandReceived);
+        packetProcessor.SubscribeNetSerializable<PlayerInputServerResponse<CastCommand>>(OnGameCommandReceived);
+        packetProcessor.SubscribeNetSerializable<PlayerInputServerResponse<CreateWarlock>>(OnGameCommandReceived);
+        packetProcessor.SubscribeNetSerializable<JoinGameResponse>(OnJoinResponse);
+        packetProcessor.SubscribeNetSerializable<PlayerJoined>(OnPlayerJoined);
+        
+        _clientConnectedCallback = clientConnectedCallback;
     }
 
     private void OnHeartbeatReceived(Heartbeat heartbeat) {
         _maxFrameAllowed = heartbeat.Frame;
     }
 
-    private void OnGameCommandReceived<T>(PlayerInputServerResponse<T> serverResponse) where T:IGameCommand {
+    private void OnGameCommandReceived<T>(PlayerInputServerResponse<T> serverResponse) where T : IGameCommand, INetSerializable, new() {
         CommandProcessor.AddDelayedGameCommand(serverResponse.Command, serverResponse.TargetFrame);
     }
 
-    // TODO: Wipe existing state first
-    private void OnGameStateReceived(GameState gameState) {
-        Logger.Info("Game state received");
-
-        foreach (var player in gameState.Players) {
-            var warlock = WarlockFactory.FromPacket(gameState.Warlocks.First(x => x.Id == player.WarlockId), player.Id);
-
-            if (player.Id == 1) {
-                PlayerManager.AddRemotePlayer(new Game.Player(player.Name, player.Id, warlock));
+    private void OnPlayerJoined(PlayerJoined joinInfo) {
+        PlayerManager.AddRemotePlayer(joinInfo.PlayerName);
+    }
+    
+    private void OnJoinResponse(JoinGameResponse response) {
+        Logger.Info("Joining game");
+        
+        foreach (var player in response.GameState.Players) {
+            if (player.Id == response.PlayerId) {
+                PlayerManager.AddLocalPlayer(player.Name);
             }
             else {
-                PlayerManager.AddLocalPlayer(new Game.Player(player.Name, player.Id, warlock));
+                PlayerManager.AddRemotePlayer(player.Name);
             }
         }
 
-        WarlockGame.Frame = gameState.Frame;
+        response.GameState.Warlocks.Select(WarlockFactory.FromPacket).ForEach(EntityManager.Add);
+        
+        WarlockGame.Frame = response.GameState.Frame;
+
+        // This part is a bit silly right now, but will make more sense when players don't create a warlock immediately
+        // ex. waiting for games to finish, selecting stuff, delayed spawn-in, etc.
+        var localPlayerId = PlayerManager.LocalPlayer!.Id;
+        NetworkManager.SendPlayerCommand(new CreateWarlock { PlayerId = localPlayerId, Warlock = new Entity.Warlock(localPlayerId).Let(WarlockFactory.ToPacket)});
     }
 
     public void Update() {
@@ -70,26 +93,26 @@ public sealed class Client : INetEventListener {
     }
 
     public void Send<T>(T packet, DeliveryMethod deliveryMethod) where T : class, new() {
-        if(!IsConnected) return;
-        
+        if (!IsConnected) return;
+
         _writer.Reset();
         packetProcessor.Write(_writer, packet);
         _server!.Send(_writer, deliveryMethod);
     }
 
     public void SendSerializable<T>(T packet, DeliveryMethod deliveryMethod) where T : INetSerializable {
-        if(!IsConnected) return;
-        
+        if (!IsConnected) return;
+
         _writer.Reset();
         packetProcessor.WriteNetSerializable(_writer, ref packet);
         _server!.Send(_writer, deliveryMethod);
     }
-    
+
     public void OnPeerConnected(NetPeer peer) {
         Logger.Info("Connected to server");
         _server = peer;
-        
-        NetworkManager.RequestGameState();
+
+        _clientConnectedCallback?.Invoke();
     }
 
     public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo) {
@@ -101,11 +124,13 @@ public sealed class Client : INetEventListener {
         throw new System.NotImplementedException();
     }
 
-    public void OnNetworkReceive(NetPeer peer, NetPacketReader reader, byte channelNumber, DeliveryMethod deliveryMethod) {
+    public void OnNetworkReceive(NetPeer peer, NetPacketReader reader, byte channelNumber,
+        DeliveryMethod deliveryMethod) {
         packetProcessor.ReadAllPackets(reader, peer);
     }
 
-    public void OnNetworkReceiveUnconnected(IPEndPoint remoteEndPoint, NetPacketReader reader, UnconnectedMessageType messageType) {
+    public void OnNetworkReceiveUnconnected(IPEndPoint remoteEndPoint, NetPacketReader reader,
+        UnconnectedMessageType messageType) {
         throw new System.NotImplementedException();
     }
 

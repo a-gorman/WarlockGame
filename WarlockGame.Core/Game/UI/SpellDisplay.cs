@@ -2,9 +2,11 @@ using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using WarlockGame.Core.Game.Entity;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Input.Devices;
 using WarlockGame.Core.Game.Log;
+using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.UI; 
 
@@ -28,10 +30,11 @@ public class SpellDisplay : IUIComponent {
     public void Draw(SpriteBatch spriteBatch) {
         DrawHollowRectangle(spriteBatch, BoundingBox, Color.White);
 
-        if(!PlayerManager.Players.Any()) return;
+        var localWarlock = PlayerManager.LocalPlayer?.Id.Let(EntityManager.GetWarlockByPlayerId);
+        if(localWarlock is null) return;
         
-        for (var i = 0; i < PlayerManager.ActivePlayer.Warlock.Spells.Count; i++) {
-            var spell = PlayerManager.ActivePlayer.Warlock.Spells[i];
+        for (var i = 0; i < localWarlock.Spells.Count; i++) {
+            var spell = localWarlock.Spells[i];
             spriteBatch.Draw(
                 spell.SpellIcon,
                 new Rectangle(60 + spellSpacing * i, 950, 50, 50),
