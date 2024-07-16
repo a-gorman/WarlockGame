@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using WarlockGame.Core.Game.Entity.Factory;
 using WarlockGame.Core.Game.Entity.Order;
 using WarlockGame.Core.Game.Networking;
+using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game; 
 
@@ -30,10 +32,13 @@ static class CommandProcessor {
         switch (action) {
             case MoveCommand move:
                 IssueMoveCommand(move.PlayerId, move.Location);
-                return;
+                break;
             case CastCommand cast:
                 IssueCastCommand(cast.PlayerId, cast.Location, cast.SpellId);
-                return;
+                break;
+            case CreateWarlock create:
+                EntityManager.Add(create.Warlock.Let(WarlockFactory.FromPacket));
+                break;
         }
     }
 
@@ -50,14 +55,14 @@ static class CommandProcessor {
     }
 
     public static void IssueMoveCommand(int playerId, Vector2 location) {
-        PlayerManager.Players.First(x => x.Id == playerId)
-                     .Warlock
-                     .GiveOrder(x => new DestinationMoveOrder(location, x));
+        EntityManager.GetWarlockByPlayerId(playerId)?.GiveOrder(x => new DestinationMoveOrder(location, x));
     }
     
     public static void IssueCastCommand(int playerId, Vector2 location, int spellId) {
-        PlayerManager.Players.First(x => x.Id == playerId)
-                     .Warlock
-                     .GiveOrder(x => new CastOrder(spellId, location, x));
+        EntityManager.GetWarlockByPlayerId(playerId)?.GiveOrder(x => new CastOrder(spellId, location, x));
+    }
+
+    public static void Clear() {
+        _commands.Clear();
     }
 }

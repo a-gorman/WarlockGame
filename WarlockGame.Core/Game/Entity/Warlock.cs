@@ -33,9 +33,8 @@ namespace WarlockGame.Core.Game.Entity
 
         private LinkedList<IOrder> Orders { get; } = new();
 
-        public Warlock(int id, int playerId) :
+        public Warlock(int playerId) :
             base(new Sprite(Art.Player)) {
-            Id = id;
             PlayerId = playerId;
             Position = WarlockGame.ScreenSize / 2;
             Radius = 20;

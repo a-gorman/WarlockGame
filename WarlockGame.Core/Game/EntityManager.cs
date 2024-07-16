@@ -11,17 +11,18 @@ namespace WarlockGame.Core.Game
 	internal static class EntityManager
 	{
 		private static List<EntityBase> _entities = new();
-		private static List<Enemy> _enemies = new();
 		private static List<IProjectile> _projectiles = new();
-
+		/// <summary>
+		/// Map between player Ids and warlocks
+		/// </summary>
+		private static Dictionary<int, Warlock> _warlocks = new();
 
 		private static bool _isUpdating;
 		private static readonly List<EntityBase> _addedEntities = new();
 
 		public static int Count => _entities.Count;
+		public static IReadOnlyCollection<Warlock> Warlocks => _warlocks.Values;
 
-		private static Warlock PlayerInstance => PlayerManager.Players.First().Warlock;
-		
 		public static void Add(EntityBase entity)
 		{
 			if (!_isUpdating)
@@ -33,10 +34,14 @@ namespace WarlockGame.Core.Game
 		private static void AddEntity(EntityBase entity)
 		{
 			_entities.Add(entity);
-			if (entity is IProjectile projectile)
-				_projectiles.Add(projectile);
-			else if (entity is Enemy enemy)
-				_enemies.Add(enemy);
+			switch (entity) {
+				case IProjectile projectile:
+					_projectiles.Add(projectile);
+					break;
+				case Warlock warlock:
+					_warlocks.TryAdd(warlock.PlayerId, warlock);
+					break;
+			}
 		}
 
 		public static void Update()
@@ -56,56 +61,25 @@ namespace WarlockGame.Core.Game
 
 			_entities = _entities.Where(x => !x.IsExpired).ToList();
 			_projectiles = _projectiles.Where(x => !x.IsExpired).ToList();
-			_enemies = _enemies.Where(x => !x.IsExpired).ToList();
+		}
+
+		public static Warlock? GetWarlockByPlayerId(int id) {
+			_warlocks.TryGetValue(id, out var warlock);
+			return warlock;
 		}
 
 		private static void HandleCollisions()
 		{
-			HandleEnemyEnemyCollisions();
 			HandleBulletCollisions();
-			HandlePlayerEnemyCollisions();
 		}
 
-		private static void HandleEnemyEnemyCollisions()
-		{
-			for (int i = 0; i < _enemies.Count; i++)
-			{
-				for (int j = i + 1; j < _enemies.Count; j++)
-				{
-					if (IsColliding(_enemies[i], _enemies[j]))
-					{
-						_enemies[i].HandleCollision(_enemies[j]);
-						_enemies[j].HandleCollision(_enemies[i]);
-					}
-				}
-			}
-		}
-
-		private static void HandlePlayerEnemyCollisions()
-		{
-			if (_enemies.Any(x => x.IsActive && IsColliding(x, PlayerInstance)))
-			{
-				KillPlayer();
-			}
-		}
-
-		private static void HandleBulletCollisions()
-		{
-
-			
+		private static void HandleBulletCollisions() {
 			foreach (var projectile in _projectiles) {
-				_enemies
-					.Concat<IEntity>(_entities.OfType<Warlock>().Where(x => x != projectile.Parent))
-					.Concat(_projectiles.Where(x => x != projectile))
-					.Where(x => IsColliding(projectile, x))
-					.ForEach(_ => projectile.OnHit());
+				_entities.OfType<Warlock>().Where(x => x != projectile.Parent)
+				         .Concat<IEntity>(_projectiles.Where(x => x != projectile))
+				         .Where(x => IsColliding(projectile, x))
+				         .ForEach(_ => projectile.OnHit());
 			}
-		}
-
-		private static void KillPlayer()
-		{
-			PlayerInstance.Kill();
-			_enemies.ForEach(x => x.WasShot());
 		}
 
 		private static bool IsColliding(IEntity a, IEntity b)
@@ -114,14 +88,6 @@ namespace WarlockGame.Core.Game
 			return !a.IsExpired && !b.IsExpired && Vector2.DistanceSquared(a.Position, b.Position) < radius.Squared();
 		}
 		
-		// public static IEnumerable<EntityBase> GetEntitiesWithinRectangle(Vector2 position, int width, int height, float angle) {
-		// 	var lineSegment = new LineSegment(position, new Vector2((position.X + width) * Single.Sin(angle), (position.Y + height) * Single.Sin(angle)));
-		//
-		// 	return _entities
-		// 		// Reject
-		// 		.Where(x => x.Position.IsWithin(lineSegment.BoundingBox) && ;
-		// }
-
 		/// <summary>
 		/// Get's entities the given rectangle. Does not check for exact collision
 		/// </summary>
@@ -145,6 +111,12 @@ namespace WarlockGame.Core.Game
 		{
 			foreach (var entity in _entities)
 				entity.Draw(spriteBatch);
+		}
+
+		public static void Clear() {
+			_entities.Clear();
+			_projectiles.Clear();
+			_addedEntities.Clear();
 		}
 	}
 }

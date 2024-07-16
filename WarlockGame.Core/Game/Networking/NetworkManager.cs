@@ -1,3 +1,4 @@
+using System;
 using System.Data;
 using LiteNetLib;
 using LiteNetLib.Utils;
@@ -34,11 +35,11 @@ static class NetworkManager {
         _server.Start();
     }
 
-    public static void ConnectToServer(string address, string playerName) {
+    public static void ConnectToServer(string address, Action clientConnectedCallback) {
         if (IsConnected) return;
         
         _client = new Client();
-        _client.Connect(address);
+        _client.Connect(address, clientConnectedCallback);
     }
 
     public static void Update() {
@@ -64,26 +65,28 @@ static class NetworkManager {
         
         _client!.Send(new RequestGameState(), DeliveryMethod.ReliableOrdered);
     }
+    
+    public static void JoinGame(string playerName) {
+        if(!IsClient) throw new ConstraintException("Can't get join game when not connected to server");
+
+        Logger.Info("Joining game");
+        
+        _client!.SendSerializable(new JoinGameRequest { PlayerName = playerName }, DeliveryMethod.ReliableOrdered);
+    }
 
     public static void Disconnect() {
         _server = null;
         _client = null;
     }
 
-    public static void SendPacket<T>(T packet) where T : INetSerializable {
-        if (IsServer) {
-            _server!.SendSerializableToAll(packet, DeliveryMethod.ReliableOrdered);
-        }
-    }
-
-    public static void SendPlayerCommand<T>(T command) where T : INetSerializable {
+    public static void SendPlayerCommand<T>(T command) where T : INetSerializable, new() {
         if (IsServer) {
             var packet = new PlayerInputServerResponse<T>
             {
                 TargetFrame = WarlockGame.Frame + FrameDelay,
                 Command = command
             };
-            _server!.SendToAll(packet, DeliveryMethod.ReliableOrdered);
+            _server!.SendSerializableToAll(packet, DeliveryMethod.ReliableOrdered);
         }
         else {
             _client!.SendSerializable(command, DeliveryMethod.ReliableOrdered);

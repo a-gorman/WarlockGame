@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -7,6 +8,7 @@ using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Input.Devices; 
 
+[Obsolete("Don't support this yet. Keep it simple with keyboard and mouse")]
 public class PlayStationInput : IInputDevice {
     private readonly int _controllerIndex;
     private readonly Dictionary<Buttons,GamepadMapping> _mappings;
@@ -25,7 +27,7 @@ public class PlayStationInput : IInputDevice {
             new() { DisplayValue = "A", Button = Buttons.A, Action = InputAction.Spell1 },
             new() { DisplayValue = "B", Button = Buttons.B, Action = InputAction.Spell2 },
             new() { DisplayValue = "R1", Button = Buttons.RightShoulder, Action = InputAction.Cancel },
-            new() { DisplayValue = "R2", Button = Buttons.RightTrigger, Action = InputAction.Select },
+            new() { DisplayValue = "R2", Button = Buttons.RightTrigger, Action = InputAction.LeftClick },
             // new() { DisplayValue = "X", Button = Buttons.X, Action = null }
         }.ToDictionary(x => x.Button);
     }

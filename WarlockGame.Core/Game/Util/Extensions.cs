@@ -63,4 +63,14 @@ internal static class Extensions
             dict[key] = new List<TValue> { value };
         }
     }
+
+    /// <summary>
+    /// Coalesces null and empty strings to a default value
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="coalescedValue"></param>
+    /// <returns></returns>
+    public static string NullOrEmptyTo(this string? source, string coalescedValue) {
+        return string.IsNullOrEmpty(source) ? coalescedValue : source;
+    }
 }

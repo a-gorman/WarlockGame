@@ -9,27 +9,29 @@ namespace WarlockGame.Core.Game;
 static class PlayerManager {
     public static List<Player> Players { get; } = new();
 
-    [Obsolete("This is a hack for development. Either make this game not support local mutliplayer or make everything work on all local players")]
-    public static Player ActivePlayer => Players.First();
+    public static Player? LocalPlayer { get; private set; }
 
-    public static void AddLocalPlayer(string name, int id, InputManager.DeviceType deviceType) {
-        var warlock = new Warlock(id, id);
-        var player = new Player(name, id, warlock);
+    public static Player AddLocalPlayer(string name) {
+        if (LocalPlayer is not null) throw new InvalidOperationException("Local player already exists");
         
-        Players.Add(player);
-        EntityManager.Add(warlock);
-        InputManager.AttachLocalInput(player, deviceType);
-    }
-
-    public static void AddLocalPlayer(Player player) {
-        Players.Add(player);
-        EntityManager.Add(player.Warlock);
+        var player = CreatePlayer(name, true);
         InputManager.AttachLocalInput(player, InputManager.DeviceType.MouseAndKeyboard);
+        LocalPlayer = player;
+        return player;
     }
     
-    public static void AddRemotePlayer(Player player) {
+    public static Player AddRemotePlayer(string name) {
+        return CreatePlayer(name, false);
+    }
+
+    private static Player CreatePlayer(string name, bool isLocal) {
+        var id = Players.Select(x => x.Id).DefaultIfEmpty().Max() + 1;
+        
+        var player = new Player(name, id, isLocal);
+        
         Players.Add(player);
-        EntityManager.Add(player.Warlock);
+
+        return player;
     }
 
     public static Player? GetPlayer(int playerId) {
@@ -40,5 +42,9 @@ static class PlayerManager {
         foreach (var player in Players) {
             player.Update();
         }
+    }
+
+    public static void ClearRemotePlayers() {
+        Players.RemoveAll(x => !x.IsLocal);
     }
 }

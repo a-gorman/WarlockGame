@@ -51,9 +51,7 @@ public class ParticleManager<T>
 
 	private static void Swap(CircularParticleArray list, int index1, int index2)
 	{
-		var temp = list[index1];
-		list[index1] = list[index2];
-		list[index2] = temp;
+		(list[index1], list[index2]) = (list[index2], list[index1]);
 	}
 
 	/// <summary>

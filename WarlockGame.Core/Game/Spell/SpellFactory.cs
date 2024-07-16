@@ -10,7 +10,7 @@ static class SpellFactory
         {
             SpellId = 1,
             ManaCost = 10, 
-            CooldownTime = 1,
+            CooldownTime = 60,
             SpellIcon = Art.FireballIcon,
             Effects = new List<ICastEffect>
             {
@@ -25,7 +25,7 @@ static class SpellFactory
         {
             SpellId = 2,
             ManaCost = 10, 
-            CooldownTime = 1,
+            CooldownTime = 60,
             SpellIcon = Art.LightningIcon,
             Effects = new List<ICastEffect>
             {

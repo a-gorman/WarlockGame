@@ -1,4 +1,4 @@
-using System.Linq;
+using System.Collections.Generic;
 using LiteNetLib.Utils;
 using Microsoft.Xna.Framework;
 
@@ -6,42 +6,121 @@ namespace WarlockGame.Core.Game.Networking;
 // Disable nullability complaints. A bunch of stuff here is initialized late by deserialization
 #pragma warning disable CS8618
 
-public class GameState {
-    public Player[] Players { get; init; }
-    public Warlock[] Warlocks { get; init; }
-    public int Frame { get; init; }
+public class GameState : INetSerializable {
+    public List<Player> Players { get; set; }
+    public List<Warlock> Warlocks { get; set; }
+    public int Frame { get; set; }
+
+    public void Serialize(NetDataWriter writer) {
+        writer.PutMany(Players);
+        writer.PutMany(Warlocks);
+        writer.Put(Frame);
+    }
+
+    public void Deserialize(NetDataReader reader) {
+        Players = reader.GetMany<Player>();
+        Warlocks = reader.GetMany<Warlock>();
+        Frame = reader.GetInt();
+    }
+}
+
+public class JoinGameRequest : INetSerializable {
+    public string PlayerName { get; set; }
+    
+    public void Serialize(NetDataWriter writer) {
+        writer.Put(PlayerName);
+    }
+
+    public void Deserialize(NetDataReader reader) {
+        PlayerName = reader.GetString();
+    }
+}
+
+// Consider rejection response. For now just let anyone in
+public class JoinGameResponse : INetSerializable {
+    /// <summary>
+    /// The ID assigned to the joining player
+    /// </summary>
+    public int PlayerId { get; set; }
+    
+    public GameState GameState { get; set; }
+
+public void Serialize(NetDataWriter writer) {
+        writer.Put(PlayerId);
+        writer.Put(GameState);
+    }
+
+    public void Deserialize(NetDataReader reader) {
+        PlayerId = reader.GetInt();
+        GameState = reader.Get<GameState>();
+    }
+}
+
+public class PlayerJoined : INetSerializable {
+    public string PlayerName { get; set; }
+    
+    public void Serialize(NetDataWriter writer) {
+        writer.Put(PlayerName);
+    }
+
+    public void Deserialize(NetDataReader reader) {
+        PlayerName = reader.GetString();
+    }
+}
+
+public class CreateWarlock : IGameCommand, INetSerializable {
+    public int PlayerId { get; set; }
+    public Warlock Warlock { get; set; }
+    
+    public void Serialize(NetDataWriter writer) {
+        writer.Put(PlayerId);
+        writer.Put(Warlock);
+    }
+
+    public void Deserialize(NetDataReader reader) {
+        PlayerId = reader.GetInt();
+        Warlock = reader.Get<Warlock>();
+    }
 }
 
 public class Warlock : INetSerializable {
-    public int Id { get; set; }
+    public int PlayerId { get; set; }
     public Vector2 Position { get; set; }
     public Vector2 Velocity { get; set; }
     public float Orientation { get; set; }
     public int Health { get; set; }
-    public int[] SpellIds { get; set; }
-    /// <summary>
-    /// Cooldown remaining in frames
-    /// Has same length as SpellIds
-    /// </summary>
-    public int[] SpellCooldowns { get; set; }
+    public List<Spell> Spells { get; set; }
+
     public void Serialize(NetDataWriter writer) {
-        writer.Put(Id);
+        writer.Put(PlayerId);
         writer.Put(Position);
         writer.Put(Velocity);
         writer.Put(Orientation);
         writer.Put(Health);
-        writer.PutArray(SpellIds);
-        writer.PutArray(SpellCooldowns);
+        writer.PutMany(Spells);
     }
 
     public void Deserialize(NetDataReader reader) {
-        Id = reader.GetInt();
+        PlayerId = reader.GetInt();
         Position = reader.GetVector2();
         Velocity = reader.GetVector2();
         Orientation = reader.GetFloat();
         Health = reader.GetInt();
-        SpellIds = reader.GetIntArray();
-        SpellCooldowns = reader.GetIntArray();
+        Spells = reader.GetMany<Spell>();
+    }
+}
+
+public class Spell : INetSerializable {
+    public int SpellId { get; set; }
+    public int CooldownRemaining { get; set; }
+    public void Serialize(NetDataWriter writer) {
+        writer.Put(SpellId);
+        writer.Put(CooldownRemaining);
+    }
+
+    public void Deserialize(NetDataReader reader) {
+        SpellId = reader.GetInt();
+        CooldownRemaining = reader.GetInt();
     }
 }
 
@@ -101,18 +180,22 @@ public class CastCommand : IGameCommand, INetSerializable {
     }
 }
 
-public class PlayerInputServerResponse<T> where T : notnull {
+public class PlayerInputServerResponse<T> : INetSerializable where T : INetSerializable, new() {
     public int TargetFrame { get; set; }
     
     public T Command { get; set; }
+    public void Serialize(NetDataWriter writer) {
+        writer.Put(TargetFrame);
+        writer.Put(Command);
+    }
+
+    public void Deserialize(NetDataReader reader) {
+        TargetFrame = reader.GetInt();
+        Command = reader.Get<T>();
+    }
 } 
 
 public class RequestGameState { }
-
-// public class ClientHeartbeat {
-//     public int PlayerId { get; set; }
-//     public int Frame { get; set; }
-// }
 
 public class Heartbeat {
     public int Frame { get; set; }

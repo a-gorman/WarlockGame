@@ -19,7 +19,7 @@ public class MouseInput : IInputDevice {
     public MouseInput() {
         _mappings = new List<MouseMapping>
         {
-            new() { DisplayValue = "Left Mouse Button", ButtonSelector = x => x.LeftButton, Action = InputAction.Select },
+            new() { DisplayValue = "Left Mouse Button", ButtonSelector = x => x.LeftButton, Action = InputAction.LeftClick },
             new() { DisplayValue = "Right Mouse Button", ButtonSelector = x => x.RightButton, Action = InputAction.RightClick }
         }.ToDictionary(x => x.Action);
     }

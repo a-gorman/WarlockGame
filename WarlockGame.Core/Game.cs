@@ -14,6 +14,7 @@ using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.Util;
+using Warlock = WarlockGame.Core.Game.Entity.Warlock;
 
 namespace WarlockGame.Core;
 
@@ -103,7 +104,6 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         GameTime = gameTime;
         StaticInput.Update();
         
-        // Allows the game to exit
         if (!InputManager.HasTextConsumers) {
             if (StaticInput.WasButtonPressed(Buttons.Back) || StaticKeyboardInput.WasKeyPressed(Keys.Escape))
                 Exit();
@@ -116,7 +116,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
                     if (accepted) {
                         UIManager.OpenTextPrompt("Enter Host IP Address:", (ipAddress, accepted) => {
                             if (accepted) {
-                                NetworkManager.ConnectToServer(ipAddress, name);
+                                NetworkManager.ConnectToServer(ipAddress.NullOrEmptyTo("localhost"), () => NetworkManager.JoinGame(name));
                             }
                         });
                     }
@@ -124,8 +124,8 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
             }
             
             if (StaticKeyboardInput.WasKeyPressed(Keys.V) && !NetworkManager.IsConnected) {
-                PlayerManager.AddLocalPlayer("Alex", 1, InputManager.DeviceType.MouseAndKeyboard);
-                PlayerManager.AddLocalPlayer("John", 2, InputManager.DeviceType.PlayStation1);
+                var player = PlayerManager.AddLocalPlayer("Alex");
+                EntityManager.Add(new Warlock(player.Id));
                 NetworkManager.StartServer();
             }
         }
@@ -142,7 +142,6 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
             PlayerManager.Update();
             EntityManager.Update();
             EffectManager.Update();
-            // EnemySpawner.Update();
             ParticleManager.Update();
                 
             Grid.Update();
@@ -177,27 +176,19 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
         UIManager.Draw(_spriteBatch);
 
-        // var activePlayer = PlayerManager.Players.First();
-            
-        // DrawTitleSafeAlignedString("Lives: " + activePlayer.Status.Lives, 5);
-        // DrawTitleSafeRightAlignedString("Score: " + activePlayer.Status.Score, 5);
-        // DrawTitleSafeRightAlignedString("Multiplier: " + activePlayer.Status.Multiplier, 35);
         // draw the custom mouse cursor
         _spriteBatch.Draw(Art.Pointer, StaticInput.MousePosition, Color.White);
             
         DrawDebugInfo();
             
-        // if (GameStatus.IsGameOver)
-        // {
-        //     // string text = "Game Over\n" +
-        //     //     "Your Score: " + activePlayer.Status.Score + "\n" +
-        //     //     "High Score: " + activePlayer.Status.HighScore;
-        //
-        //     // Vector2 textSize = Art.Font.MeasureString(text);
-        //     // _spriteBatch.DrawString(Art.Font, text, ScreenSize / 2 - textSize / 2, Color.White);
-        // }
-
         _spriteBatch.End();
+    }
+
+    public void ClearGameState() {
+        CommandProcessor.Clear();
+        EntityManager.Clear();
+        EffectManager.Clear();
+        ParticleManager.Clear();
     }
 
     private void DrawRightAlignedString(string text, float y)

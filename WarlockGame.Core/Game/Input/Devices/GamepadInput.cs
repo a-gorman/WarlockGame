@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -9,6 +10,7 @@ namespace WarlockGame.Core.Game.Input.Devices;
 /// <summary>
 /// Gets input from XNA's GamePad
 /// </summary>
+[Obsolete("Don't support this yet. Keep it simple with keyboard and mouse")]
 class GamepadInput: IInputDevice {
 
     private readonly int _playerIndex;
@@ -21,7 +23,7 @@ class GamepadInput: IInputDevice {
         
         _mappings = new List<GamepadMapping>
         {
-            new() { DisplayValue = "A", Button = Buttons.RightTrigger, Action = InputAction.Select },
+            new() { DisplayValue = "A", Button = Buttons.RightTrigger, Action = InputAction.LeftClick },
             new() { DisplayValue = "B", Button = Buttons.RightShoulder, Action = InputAction.Cancel },
             new() { DisplayValue = "Y", Button = Buttons.A, Action = InputAction.Spell1 },
             new() { DisplayValue = "Y", Button = Buttons.B, Action = InputAction.Spell2 },
