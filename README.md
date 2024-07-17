@@ -1,0 +1,1 @@
+Fun game for myself and friends. Inspired by Warcaft III's custom map Warlocks.

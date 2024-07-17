@@ -1,11 +1,9 @@
-using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using LiteNetLib;
 using LiteNetLib.Utils;
-using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Entity.Factory;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Util;
@@ -137,6 +135,7 @@ public class Server : INetEventListener {
     public void OnPeerConnected(NetPeer peer) {
         Logger.Info($"Peer connected: {peer.Id}");
         _clients.Add(peer.Id, new ClientPeer { NetPeer = peer });
+        CalculateLatency();
     }
 
     public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo) {
@@ -165,7 +164,7 @@ public class Server : INetEventListener {
     }
 
     private int CalculateLatency() {
-        return _clients.Count > 0 ? _clients.Values.Max(x => x.Latency) : 0;
+        return _clients.Values.Select(x => x.Latency).DefaultIfEmpty().Max();
     }
 
     private class ClientPeer {

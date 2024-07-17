@@ -21,8 +21,6 @@ public sealed class Client : INetEventListener {
     public bool IsConnected => _server?.ConnectionState == ConnectionState.Connected;
     public int Latency { get; private set; }
     public bool StutterRequired => WarlockGame.Frame >= _maxFrameAllowed;
-    public bool ClientDropping => false;
-
     private int _maxFrameAllowed;
     
     private Action? _clientConnectedCallback = null;
