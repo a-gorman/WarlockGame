@@ -22,11 +22,11 @@ static class NetworkManager {
     public static bool IsClient => _client != null;
     public static bool IsServer => _server != null;
     public static bool StutterRequired => IsConnected && (IsClient ? _client!.StutterRequired: _server!.StutterRequired);
-    public static int FrameDelay => IsConnected ? Latency!.Value * WarlockGame.Instance.TargetElapsedTime.Milliseconds + LagPadding : 0;
+    public static int FrameDelay => IsConnected ? Latency!.Value / WarlockGame.Instance.TargetElapsedTime.Milliseconds + LagPadding : 0;
     /// <summary>
     /// Latency in milliseconds
     /// </summary>
-    private static int? Latency => IsClient ? _client!.Latency : _server?.Latency;
+    private static int? Latency => IsClient? _client!.Latency : _server?.Latency;
     
     public static void StartServer() {
         if (IsConnected) return;
