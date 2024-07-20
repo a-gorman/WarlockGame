@@ -27,6 +27,7 @@ public class KeyboardInput: IInputDevice {
             new() { DisplayValue = "P", Key = Keys.P, InputAction = InputAction.Pause },
             new() { DisplayValue = "C", Key = Keys.C, InputAction = InputAction.Connect },
             new() { DisplayValue = "H", Key = Keys.H, InputAction = InputAction.Host },
+            new() { DisplayValue = "Enter", Key = Keys.Enter, InputAction = InputAction.OpenCommandInput },
         }.ToDictionary(x => x.Key);
     }
 

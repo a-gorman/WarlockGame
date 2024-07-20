@@ -55,15 +55,6 @@ internal static class Extensions
         }
     }
 
-    public static void AddItemToNestedList<TKey, TValue>(this IDictionary<TKey, List<TValue>> dict, TKey key, TValue value) {
-        if (dict.ContainsKey(key)) {
-            dict[key].Add(value);
-        }
-        else {
-            dict[key] = new List<TValue> { value };
-        }
-    }
-
     /// <summary>
     /// Coalesces null and empty strings to a default value
     /// </summary>
@@ -72,5 +63,9 @@ internal static class Extensions
     /// <returns></returns>
     public static string NullOrEmptyTo(this string? source, string coalescedValue) {
         return string.IsNullOrEmpty(source) ? coalescedValue : source;
+    }
+
+    public static bool IsEmpty(this string source) {
+        return source == string.Empty;
     }
 }

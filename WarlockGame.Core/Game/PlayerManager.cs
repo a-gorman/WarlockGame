@@ -15,7 +15,7 @@ static class PlayerManager {
         if (LocalPlayer is not null) throw new InvalidOperationException("Local player already exists");
         
         var player = CreatePlayer(name, true);
-        InputManager.AttachLocalInput(player, InputManager.DeviceType.MouseAndKeyboard);
+        InputManager.AttachLocalGameInput(player);
         LocalPlayer = player;
         return player;
     }

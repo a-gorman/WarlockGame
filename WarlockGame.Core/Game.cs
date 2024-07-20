@@ -33,8 +33,6 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     private SpriteBatch _spriteBatch;
     private readonly BloomComponent _bloom;
  
-    public static bool Paused = false;
-
     public WarlockGame() {
         Instance = this;
         _graphics = new GraphicsDeviceManager(this);
@@ -59,6 +57,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         Grid = new Grid(Viewport.Bounds, gridSpacing);
 
         Ps4Input.Initialize(this);
+        InputManager.Initialize();
         UIManager.AddComponent(new SpellDisplay());
 
         Window.TextInput += (_, textArgs) => InputManager.OnTextInput(textArgs);
@@ -103,41 +102,15 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         }
         GameTime = gameTime;
         StaticInput.Update();
-        
-        if (!InputManager.HasTextConsumers) {
-            if (StaticInput.WasButtonPressed(Buttons.Back) || StaticKeyboardInput.WasKeyPressed(Keys.Escape))
-                Exit();
-
-            if (StaticKeyboardInput.WasKeyPressed(Keys.P))
-                Paused = !Paused;
-
-            if (StaticKeyboardInput.WasKeyPressed(Keys.C) && !NetworkManager.IsConnected) {
-                UIManager.OpenTextPrompt("Enter name:", (name, accepted) => {
-                    if (accepted) {
-                        UIManager.OpenTextPrompt("Enter Host IP Address:", (ipAddress, accepted) => {
-                            if (accepted) {
-                                NetworkManager.ConnectToServer(ipAddress.NullOrEmptyTo("localhost"), () => NetworkManager.JoinGame(name));
-                            }
-                        });
-                    }
-                });
-            }
-            
-            if (StaticKeyboardInput.WasKeyPressed(Keys.V) && !NetworkManager.IsConnected) {
-                var player = PlayerManager.AddLocalPlayer("Alex");
-                EntityManager.Add(new Warlock(player.Id));
-                NetworkManager.StartServer();
-            }
-        }
-
 
         Debug.Visualize(Logger.Log.TakeLast(5), Vector2.Zero);
             
         NetworkManager.Update();
 
-        if (!Paused && !NetworkManager.StutterRequired)
+        if (!NetworkManager.StutterRequired)
         {
             InputManager.Update();
+            UIManager.Update();
             CommandProcessor.Update(Frame);
             PlayerManager.Update();
             EntityManager.Update();
@@ -148,6 +121,20 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         }
             
         base.Update(gameTime);
+    }
+
+    public void RestartGame() {
+        ClearGameState();
+        foreach (var player in PlayerManager.Players) {
+            EntityManager.Add(new Warlock(player.Id));
+        }
+    }
+    
+    private void ClearGameState() {
+        CommandProcessor.Clear();
+        EntityManager.Clear();
+        EffectManager.Clear();
+        ParticleManager.Clear();
     }
 
     /// <summary>
@@ -184,13 +171,6 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         _spriteBatch.End();
     }
 
-    public void ClearGameState() {
-        CommandProcessor.Clear();
-        EntityManager.Clear();
-        EffectManager.Clear();
-        ParticleManager.Clear();
-    }
-
     private void DrawRightAlignedString(string text, float y)
     {
         var textWidth = Art.Font.MeasureString(text).X;
@@ -210,5 +190,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
     private void DrawDebugInfo() {
         DrawRightAlignedString($"Mouse POS: {StaticInput.MousePosition}", 65);
+
+        new Example();
     }
 }

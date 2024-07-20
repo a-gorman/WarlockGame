@@ -1,10 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using WarlockGame.Core.Game.Entity.Order;
 using WarlockGame.Core.Game.Input.Devices;
+using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
+using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.Util;
+using Warlock = WarlockGame.Core.Game.Entity.Warlock;
 
 namespace WarlockGame.Core.Game.Input; 
 
@@ -12,130 +16,35 @@ namespace WarlockGame.Core.Game.Input;
 /// Handles game input from a particular player
 /// </summary>
 class LocalPlayerGameInput {
-
-    private InputState _inputState = new();
-    private InputState _lastInputState = new();
-
-    // Input devices to use for this player. For example Keyboard+Mouse or gamepad
-    private readonly List<IInputDevice> _inputDevices = new();
-
     private static readonly List<InputAction> SpellSelectionActions = new() { InputAction.Spell1, InputAction.Spell2, InputAction.Spell3, InputAction.Spell4 };
 
     private int? SelectedSpellId { get; set; }
 
     private readonly Player _player;
-    
-    public LocalPlayerGameInput(IEnumerable<IInputDevice> inputDevices, Player player) {
-        _inputDevices.AddRange(inputDevices);
+
+    public LocalPlayerGameInput(Player player) {
         _player = player;
     }
-
-    public bool IsActionKeyDown(InputAction action) => _inputState.Actions.Contains(action);
     
-    public bool WasActionKeyPressed(InputAction action) => _inputState.Actions.Contains(action) && !_lastInputState.Actions.Contains(action);
-
-
-    public void Update() {
-        if (WarlockGame.Instance.IsActive) {
-            CreateInputState();
-            ProcessPlayerActions();
-        }
-        else {
-            _inputState.Clear();
-            _lastInputState.Clear();
-        }
-    }
-
-    private void CreateInputState() {
-        (_inputState, _lastInputState) = (_lastInputState, _inputState);
-        
-        _inputState.Actions.Clear();
-        _inputDevices.ForEach(x => _inputState.Actions.UnionWith(x.GetInputActions()));
-        _inputState.MovementDirection = GetDirectionalInput();
-    }
-
-    public Vector2? GetAimDirection(Vector2 relativeTo) {
-        return (_inputDevices.FirstOrDefault(x => x.Position != null)?.Position - relativeTo)?.ToNormalizedOrZero();
-    }
-    
-    public Vector2? GetAimPosition() {
-        return _inputDevices.FirstOrDefault(x => x.Position != null)?.Position;
-    }
-    
-    public Vector2? GetDirectionalInput() {
-        // Vector2 direction = _gamepadState.ThumbSticks.Left;
-        // direction.Y *= -1;	// invert the y-axis
-        
-        var hasInput = false;
-        var direction = Vector2.Zero;
-
-        if (IsActionKeyDown(InputAction.MoveLeft)) {
-            direction.X -= 1;
-            hasInput = true;
-        }
-        if (IsActionKeyDown(InputAction.MoveRight)) {
-            direction.X += 1;
-            hasInput = true;
-        }
-        if (IsActionKeyDown(InputAction.MoveUp)) {
-            direction.Y -= 1;
-            hasInput = true;
-        }
-        if (IsActionKeyDown(InputAction.MoveDown)) {
-            direction.Y += 1;
-            hasInput = true;
-        }
-
-        return hasInput ? direction.ToNormalizedOrZero() : null;
-    }
-    
-    private void ProcessPlayerActions() {
+    public void Update(InputManager.InputState inputState) {
         var warlock = EntityManager.GetWarlockByPlayerId(_player.Id);
         if (warlock is null) return;
         
         if (!InputManager.HasTextConsumers) {
-            // HandleGameFunctions();
-
             foreach (var actionType in SpellSelectionActions) {
-                if (WasActionKeyPressed(actionType)) {
+                if (inputState.WasActionKeyPressed(actionType)) {
                     SelectedSpellId = warlock.Spells.ElementAtOrDefault(SpellSelectionActions.IndexOf(actionType))?.SpellId;
                 }
             }
         }
         
-        if(WasActionKeyPressed(InputAction.LeftClick)) OnLeftClick(warlock.Position);
-        if(WasActionKeyPressed(InputAction.RightClick)) OnRightClick();
+        if(inputState.WasActionKeyPressed(InputAction.LeftClick)) OnLeftClick(inputState, warlock.Position);
+        if(inputState.WasActionKeyPressed(InputAction.RightClick)) OnRightClick(inputState);
     }
 
-    // TODO: This should eventually get ported to UI Components
-    // private void HandleGameFunctions() {
-    //     // Allows the game to exit
-    //     if (WasActionKeyPressed(InputAction.Exit))
-    //         WarlockGame.Instance.Exit();
-    //
-    //     if (WasActionKeyPressed(InputAction.Pause))
-    //         WarlockGame.Paused = !WarlockGame.Paused;
-    //
-    //     if (WasActionKeyPressed(InputAction.Connect) && !NetworkManager.IsConnected) {
-    //         UIManager.OpenTextPrompt("Enter player name:", (name, accepted) => {
-    //             if (accepted) {
-    //                 UIManager.OpenTextPrompt("Enter Host IP Address:", (ipAddress, accepted) => {
-    //                     if (accepted) {
-    //                         NetworkManager.ConnectToServer(ipAddress, name);
-    //                     }
-    //                 });
-    //             }
-    //         });
-    //     }
-    //         
-    //     if (WasActionKeyPressed(InputAction.Host) && !NetworkManager.IsConnected) {
-    //         NetworkManager.StartServer();
-    //     }
-    // }
-
     // TODO: Find a way to dedup this logic
-    private void OnLeftClick(Vector2 warlockPosition) {
-        var inputDirection = GetAimDirection(warlockPosition);
+    private void OnLeftClick(InputManager.InputState inputState, Vector2 warlockPosition) {
+        var inputDirection = inputState.GetAimDirection(warlockPosition);
         if (inputDirection != null && SelectedSpellId != null) {
             if (WarlockGame.IsLocal) {
                 CommandProcessor.IssueCastCommand(_player.Id, inputDirection.Value, SelectedSpellId.Value);
@@ -150,8 +59,8 @@ class LocalPlayerGameInput {
         }
     }
 
-    private void OnRightClick() {
-        var aimPosition = GetAimPosition()!.Value;
+    private void OnRightClick(InputManager.InputState inputState) {
+        var aimPosition = inputState.GetAimPosition()!.Value;
         if (WarlockGame.IsLocal) {
             CommandProcessor.IssueMoveCommand(_player.Id, aimPosition);
         }
@@ -164,15 +73,4 @@ class LocalPlayerGameInput {
         }
         SelectedSpellId = null;
     }
-
-    private record InputState {
-        public HashSet<InputAction> Actions { get; } = new();
-        public Vector2? MovementDirection = null;
-
-        public void Clear() {
-            Actions.Clear();
-            MovementDirection = null;
-        }
-    }
-
 }

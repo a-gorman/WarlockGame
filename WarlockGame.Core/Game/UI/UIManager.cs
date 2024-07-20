@@ -11,18 +11,20 @@ namespace WarlockGame.Core.Game.UI;
 /// Manager for UI elements like text boxes, menus and status displays
 /// </summary>
 static class UIManager {
-    private static readonly SortedDictionary<int, List<IUIComponent>> Components = new();
+    private static readonly List<IUIComponent> Components = new();
     
     public static void Draw(SpriteBatch spriteBatch) {
-        // Favor newer items
-        foreach (var component in Components.Values.SelectMany(x => x.AsEnumerable().Reverse())) {
+        foreach (var component in Components) {
             component.Draw(spriteBatch);
         }
+    }
+
+    public static void Update() {
+        Components.RemoveAll(x => x.IsExpired);
     }
     
     /// <summary>
     /// Opens a new text prompt, and displays it to the user
-    /// TODO: This needs to block keyboard input from the game.
     /// </summary>
     /// <param name="promptText">The text to display to the user that explains the box</param>
     /// <param name="onCloseCallback">
@@ -38,17 +40,7 @@ static class UIManager {
     }
 
     public static void AddComponent(IUIComponent component) {
-        Components.AddItemToNestedList(component.Layer, component);
-        
-        component.OnClose += RemoveComponent;
-    }
-
-    private static void RemoveComponent(object? sender, EventArgs eventArgs) {
-        if (sender is not IUIComponent component) return;
-        component.OnClose -= RemoveComponent;
-        
-        if (Components.TryGetValue(component.Layer, out var components)) {
-            components.Remove(component);
-        }
+        Components.Add(component);
+        Components.Sort((first, second) => second.Layer.CompareTo(first.Layer));
     }
 }

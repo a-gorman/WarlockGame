@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
+using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Util;
@@ -17,8 +18,8 @@ class TextPrompt: ITextInputConsumer, IUIComponent {
 
     public int Layer { get; } = 1;
     public Rectangle BoundingBox { get; }
-    public event EventHandler? OnClose;
     public int TextConsumerPriority { get; } = 1;
+    public bool IsExpired { get; private set; }
 
     private Vector2 Position { get; }
     private Action<string, bool> OnCloseCallback { get; }
@@ -68,6 +69,6 @@ class TextPrompt: ITextInputConsumer, IUIComponent {
 
     public void Close(bool accepted) {
         OnCloseCallback.Invoke(Text, accepted);
-        OnClose?.Invoke(this, EventArgs.Empty);
+        IsExpired = true;
     }
 }
