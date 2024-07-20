@@ -14,7 +14,9 @@ namespace WarlockGame.Core.Game.UI;
 /// Assumes single active player (No local coop)
 /// </summary>
 public class SpellDisplay : IUIComponent {
-    
+    // Spell display never goes away
+    public bool IsExpired => false;
+
     private const int spellSpacing = 100;
 
     private static InputAction[] _actions = { InputAction.Spell1, InputAction.Spell2, InputAction.Spell3, InputAction.Spell4 };
@@ -42,7 +44,7 @@ public class SpellDisplay : IUIComponent {
             spriteBatch.DrawString(Art.Font, StaticKeyboardInput._mappings[_actions[i]].DisplayValue, new Vector2(55 + spellSpacing * i, 950-9), Color.White);
         }
     }
-    
+
     private static void DrawHollowRectangle(SpriteBatch spriteBatch, Rectangle rectangle, Color color, int width = 1) {
         var pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 2, 2);
         pointTexture.SetData(new[] { Color.Red, Color.Blue, Color.White, Color.Green });

@@ -44,8 +44,7 @@ namespace WarlockGame.Core.Game
 			}
 		}
 
-		public static void Update()
-		{
+		public static void Update() {
 			_isUpdating = true;
 			HandleCollisions();
 
@@ -68,12 +67,7 @@ namespace WarlockGame.Core.Game
 			return warlock;
 		}
 
-		private static void HandleCollisions()
-		{
-			HandleBulletCollisions();
-		}
-
-		private static void HandleBulletCollisions() {
+		private static void HandleCollisions() {
 			foreach (var projectile in _projectiles) {
 				_entities.OfType<Warlock>().Where(x => x != projectile.Parent)
 				         .Concat<IEntity>(_projectiles.Where(x => x != projectile))

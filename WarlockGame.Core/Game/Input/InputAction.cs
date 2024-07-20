@@ -16,5 +16,6 @@ public enum InputAction {
     Exit,
     Pause,
     Connect,
-    Host
+    Host,
+    OpenCommandInput
 }
