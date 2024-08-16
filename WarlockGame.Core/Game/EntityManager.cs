@@ -111,6 +111,7 @@ namespace WarlockGame.Core.Game
 			_entities.Clear();
 			_projectiles.Clear();
 			_addedEntities.Clear();
+			_warlocks.Clear();
 		}
 	}
 }

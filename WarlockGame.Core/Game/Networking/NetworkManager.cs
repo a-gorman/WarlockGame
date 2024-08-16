@@ -79,9 +79,9 @@ static class NetworkManager {
         _client = null;
     }
 
-    public static void SendPlayerCommand<T>(T command) where T : INetSerializable, new() {
+    public static void SendPlayerCommand<T>(T command) where T : IPlayerCommand, INetSerializable, new() {
         if (IsServer) {
-            var packet = new PlayerInputServerResponse<T>
+            var packet = new PlayerCommandResponse<T>
             {
                 TargetFrame = WarlockGame.Frame + FrameDelay,
                 Command = command
@@ -90,6 +90,21 @@ static class NetworkManager {
         }
         else {
             _client!.SendSerializable(command, DeliveryMethod.ReliableOrdered);
+        }
+    }
+
+    public static void RestartGame() {
+        if (IsServer) {
+            _server!.SendSerializableToAll(new StartGame { TargetFrame = WarlockGame.Frame + FrameDelay }, DeliveryMethod.ReliableOrdered);
+        }
+    }
+
+    private static void Send<T>(T packet) where T : INetSerializable {
+        if (IsServer) {
+            _server!.SendSerializableToAll(packet, DeliveryMethod.ReliableOrdered);
+        }
+        else {
+            _client!.SendSerializable(packet, DeliveryMethod.ReliableOrdered);
         }
     }
 }

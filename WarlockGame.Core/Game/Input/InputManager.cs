@@ -45,7 +45,7 @@ static class InputManager {
     }
 
     public static void AttachLocalGameInput(Player player) {
-        _localPlayerInput = new LocalPlayerGameInput(player);
+        _localPlayerInput = new LocalPlayerGameInput(player.Id);
     }
     
     public static void AddTextConsumer(ITextInputConsumer consumer) {
@@ -100,7 +100,13 @@ static class InputManager {
                     Logger.Info("Must be server host to restart game"); 
                     return;
                 }
-                WarlockGame.Instance.RestartGame();
+                if (WarlockGame.IsLocal) {
+                    WarlockGame.Instance.RestartGame();
+                }
+                else if(NetworkManager.IsServer) {
+                    NetworkManager.RestartGame();
+                    CommandProcessor.AddDelayedGameCommand(new StartGame { TargetFrame = WarlockGame.Frame + NetworkManager.FrameDelay });
+                }
                 break;
             case "exit" or "quit" or "q":
                 WarlockGame.Instance.Exit();

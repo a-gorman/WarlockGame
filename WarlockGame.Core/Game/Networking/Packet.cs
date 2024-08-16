@@ -68,7 +68,7 @@ public class PlayerJoined : INetSerializable {
     }
 }
 
-public class CreateWarlock : IGameCommand, INetSerializable {
+public class CreateWarlock : IPlayerCommand, INetSerializable {
     public int PlayerId { get; set; }
     public Warlock Warlock { get; set; }
     
@@ -142,7 +142,7 @@ public class Player : INetSerializable {
     }
 }
 
-public class MoveCommand : IGameCommand, INetSerializable {
+public class MoveCommand : IPlayerCommand, INetSerializable {
     
     public int PlayerId { get; set; }
     
@@ -159,7 +159,7 @@ public class MoveCommand : IGameCommand, INetSerializable {
     }
 }
 
-public class CastCommand : IGameCommand, INetSerializable {
+public class CastCommand : IPlayerCommand, INetSerializable {
     
     public int PlayerId { get; set; }
     
@@ -180,10 +180,11 @@ public class CastCommand : IGameCommand, INetSerializable {
     }
 }
 
-public class PlayerInputServerResponse<T> : INetSerializable where T : INetSerializable, new() {
+public class PlayerCommandResponse<T> : INetSerializable, ISynchronizedCommand where T : INetSerializable, IPlayerCommand, new() {
     public int TargetFrame { get; set; }
     
     public T Command { get; set; }
+
     public void Serialize(NetDataWriter writer) {
         writer.Put(TargetFrame);
         writer.Put(Command);
@@ -193,9 +194,23 @@ public class PlayerInputServerResponse<T> : INetSerializable where T : INetSeria
         TargetFrame = reader.GetInt();
         Command = reader.Get<T>();
     }
-} 
+}
 
-public class RequestGameState { }
+public class StartGame : ISynchronizedCommand, INetSerializable {
+    public int TargetFrame { get; set; }
+    
+    public void Serialize(NetDataWriter writer) {
+        writer.Put(TargetFrame);
+    }
+
+    public void Deserialize(NetDataReader reader) {
+        TargetFrame = reader.GetInt();
+    }
+}
+
+public class RequestGameState {
+    public int Frame { get; set; }
+}
 
 public class Heartbeat {
     public int Frame { get; set; }
@@ -205,7 +220,15 @@ public class Heartbeat {
 /// A player issued command that has an effect on the game.
 /// For example, issuing orders to a warlock or pausing the game.
 /// </summary>
-public interface IGameCommand {
-    int PlayerId { get; set; }
+public interface IPlayerCommand {
+    int PlayerId { get; }
 }
+
+/// <summary>
+/// Server commands that need to be synchronized to a game frame
+/// </summary>
+public interface ISynchronizedCommand {
+    int TargetFrame { get; }
+}
+
 #pragma warning restore CS8618
