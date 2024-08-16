@@ -22,14 +22,16 @@ class TextPrompt: ITextInputConsumer, IUIComponent {
     public bool IsExpired { get; private set; }
 
     private Vector2 Position { get; }
-    private Action<string, bool> OnCloseCallback { get; }
+    private Action<string> AcceptedCallback { get; }
+    private Action<string>? CancelledCallback { get; }
     
-    public TextPrompt(string prompt, Action<string, bool> onCloseCallback) {
+    public TextPrompt(string prompt, Action<string> acceptedCallback, Action<string>? cancelledCallback) {
         Position = new Vector2(800, 800);
         BoundingBox = new Rectangle(Position.ToPoint(), new Point(300, 35));
         
         Prompt = prompt;
-        OnCloseCallback = onCloseCallback;
+        AcceptedCallback = acceptedCallback;
+        CancelledCallback = cancelledCallback;
     }
 
     public void OnTextInput(TextInputEventArgs textEvent) {
@@ -68,7 +70,12 @@ class TextPrompt: ITextInputConsumer, IUIComponent {
     }
 
     public void Close(bool accepted) {
-        OnCloseCallback.Invoke(Text, accepted);
+        if (accepted) {
+            AcceptedCallback.Invoke(Text);
+        }
+        else {
+            CancelledCallback?.Invoke(Text);
+        }
         IsExpired = true;
     }
 }

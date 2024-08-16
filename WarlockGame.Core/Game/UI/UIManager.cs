@@ -22,19 +22,15 @@ static class UIManager {
     public static void Update() {
         Components.RemoveAll(x => x.IsExpired);
     }
-    
+
     /// <summary>
     /// Opens a new text prompt, and displays it to the user
     /// </summary>
     /// <param name="promptText">The text to display to the user that explains the box</param>
-    /// <param name="onCloseCallback">
-    /// Callback called when text box is closed <br/>
-    /// String param is the user entered text <br/>
-    /// Boolean param indicates if the user closed accepted the input (with the enter key). False if the box was exited
-    /// in any way that indicates the prompt was canceled (such as clicking away or pressing escape)
-    /// </param>
-    public static void OpenTextPrompt(string promptText, Action<string, bool> onCloseCallback) {
-        var prompt = new TextPrompt(promptText, onCloseCallback);
+    /// <param name="acceptedCallback"> Callback with entered text called when text box is closed normally (with enter key)  </param>
+    /// <param name="cancelledCallback"> Callback called when text box is closed in a way that does not indicate acceptance (such as clicking away) </param>
+    public static void OpenTextPrompt(string promptText, Action<string> acceptedCallback, Action<string>? cancelledCallback = null) {
+        var prompt = new TextPrompt(promptText, acceptedCallback, cancelledCallback);
         AddComponent(prompt);
         InputManager.AddTextConsumer(prompt);
     }

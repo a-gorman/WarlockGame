@@ -63,32 +63,12 @@ static class InputManager {
     /// Handle game functions like exiting, opening the command box and joining a server
     /// </summary>
     private static void HandleGameFunctions(InputState inputState) {
-        if (inputState.WasActionKeyPressed(InputAction.Exit))
+        if (inputState.WasActionKeyPressed(InputAction.Exit)) {
             WarlockGame.Instance.Exit();
-
-        if (inputState.WasActionKeyPressed(InputAction.Connect) && !NetworkManager.IsConnected) {
-            UIManager.OpenTextPrompt("Enter name:", (name, accepted) => {
-                if (accepted) {
-                    UIManager.OpenTextPrompt("Enter Host IP Address:", (ipAddress, accepted) => {
-                        if (accepted && !ipAddress.IsEmpty()) {
-                            NetworkManager.ConnectToServer(ipAddress.NullOrEmptyTo("localhost"),
-                                () => NetworkManager.JoinGame(name));
-                        }
-                    });
-                }
-            });
         }
-
-        if (inputState.WasActionKeyPressed(InputAction.Host) && !NetworkManager.IsConnected) {
-            var player = PlayerManager.AddLocalPlayer("Alex");
-            EntityManager.Add(new Warlock(player.Id));
-            NetworkManager.StartServer();
-        }
-
+        
         if (inputState.WasActionKeyPressed(InputAction.OpenCommandInput)) {
-            UIManager.OpenTextPrompt("", (input, accepted) => {
-                if (accepted) HandleTextCommand(input);
-            });
+            UIManager.OpenTextPrompt("", HandleTextCommand);
         }
     }
     
@@ -108,9 +88,44 @@ static class InputManager {
                     CommandProcessor.AddDelayedGameCommand(new StartGame { TargetFrame = WarlockGame.Frame + NetworkManager.FrameDelay });
                 }
                 break;
+            
             case "exit" or "quit" or "q":
                 WarlockGame.Instance.Exit();
                 break;
+            
+            case "host":
+                if (NetworkManager.IsConnected) {
+                    Logger.Info("Already in game!");
+                    return;
+                }
+                
+                UIManager.OpenTextPrompt("Enter name:", name => {
+                    var player = PlayerManager.AddLocalPlayer(name);
+                    EntityManager.Add(new Warlock(player.Id));
+                    NetworkManager.StartServer();
+                });
+                break;
+            
+            case "join":
+                if (NetworkManager.IsConnected) {
+                    Logger.Info("Already in game!");
+                    return;
+                }
+                UIManager.OpenTextPrompt("Enter name:", name => {
+                    UIManager.OpenTextPrompt("Enter Host IP Address:", ipAddress => {
+                        NetworkManager.ConnectToServer(ipAddress.NullOrEmptyTo("localhost"), () => NetworkManager.JoinGame(name));
+                    });
+                });
+                break;
+            
+            case "h" or "help":
+                Logger.Info("Commands:");
+                Logger.Info("exit");
+                Logger.Info("join");
+                Logger.Info("host");
+                Logger.Info("restart");
+                break;
+            
             default:
                 Logger.Info($"\"{input}\" not recognized as valid command");
                 break;
