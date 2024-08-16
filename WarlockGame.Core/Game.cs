@@ -166,7 +166,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         // draw the custom mouse cursor
         _spriteBatch.Draw(Art.Pointer, StaticInput.MousePosition, Color.White);
             
-        DrawDebugInfo();
+        // DrawDebugInfo();
             
         _spriteBatch.End();
     }
@@ -177,20 +177,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         _spriteBatch.DrawString(Art.Font, text, new Vector2(ScreenSize.X - textWidth - 5, y), Color.White);
     }
 
-    private void DrawTitleSafeAlignedString(string text, int pos)
-    {
-        _spriteBatch.DrawString(Art.Font, text, new Vector2(Viewport.TitleSafeArea.X + pos), Color.White);
-    }
-
-    private void DrawTitleSafeRightAlignedString(string text, float y)
-    {
-        var textWidth = Art.Font.MeasureString(text).X;
-        _spriteBatch.DrawString(Art.Font, text, new Vector2(ScreenSize.X - textWidth - 5 - Viewport.TitleSafeArea.X, Viewport.TitleSafeArea.Y + y), Color.White);
-    }
-
     private void DrawDebugInfo() {
         DrawRightAlignedString($"Mouse POS: {StaticInput.MousePosition}", 65);
-
-        new Example();
     }
 }

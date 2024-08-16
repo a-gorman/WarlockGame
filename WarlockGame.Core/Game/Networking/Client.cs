@@ -43,9 +43,10 @@ public sealed class Client : INetEventListener {
         packetProcessor.RegisterCustomNestedTypes();
 
         packetProcessor.SubscribeReusable<Heartbeat>(OnHeartbeatReceived);
-        packetProcessor.SubscribeNetSerializable<PlayerInputServerResponse<MoveCommand>>(OnGameCommandReceived);
-        packetProcessor.SubscribeNetSerializable<PlayerInputServerResponse<CastCommand>>(OnGameCommandReceived);
-        packetProcessor.SubscribeNetSerializable<PlayerInputServerResponse<CreateWarlock>>(OnGameCommandReceived);
+        packetProcessor.SubscribeNetSerializable<StartGame>(CommandProcessor.AddDelayedGameCommand);
+        packetProcessor.SubscribeNetSerializable<PlayerCommandResponse<MoveCommand>>(OnPlayerCommandReceived);
+        packetProcessor.SubscribeNetSerializable<PlayerCommandResponse<CastCommand>>(OnPlayerCommandReceived);
+        packetProcessor.SubscribeNetSerializable<PlayerCommandResponse<CreateWarlock>>(OnPlayerCommandReceived);
         packetProcessor.SubscribeNetSerializable<JoinGameResponse>(OnJoinResponse);
         packetProcessor.SubscribeNetSerializable<PlayerJoined>(OnPlayerJoined);
         
@@ -56,8 +57,8 @@ public sealed class Client : INetEventListener {
         _maxFrameAllowed = heartbeat.Frame;
     }
 
-    private void OnGameCommandReceived<T>(PlayerInputServerResponse<T> serverResponse) where T : IGameCommand, INetSerializable, new() {
-        CommandProcessor.AddDelayedGameCommand(serverResponse.Command, serverResponse.TargetFrame);
+    private void OnPlayerCommandReceived<T>(PlayerCommandResponse<T> response) where T : INetSerializable, IPlayerCommand, new() {
+        CommandProcessor.AddDelayedPlayerCommand(response.Command, response.TargetFrame);
     }
 
     private void OnPlayerJoined(PlayerJoined joinInfo) {

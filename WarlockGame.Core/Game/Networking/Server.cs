@@ -55,15 +55,15 @@ public class Server : INetEventListener {
         SendToPeer(new JoinGameResponse { PlayerId = player.Id, GameState = CreateGameState() }, sender, DeliveryMethod.ReliableOrdered);
     }
     
-    private void OnGameCommandReceived<T>(T request) where T : IGameCommand, INetSerializable, new() {
+    private void OnGameCommandReceived<T>(T request) where T : IPlayerCommand, INetSerializable, new() {
         var targetFrame = WarlockGame.Frame + NetworkManager.FrameDelay;
 
-        var action = new PlayerInputServerResponse<T>
+        var action = new PlayerCommandResponse<T>
         {
             Command = request,
             TargetFrame = targetFrame
         };
-        CommandProcessor.AddDelayedGameCommand(request, targetFrame);
+        CommandProcessor.AddDelayedPlayerCommand(request, targetFrame);
         SendSerializableToAll(action, DeliveryMethod.ReliableOrdered);
     }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -10,25 +11,33 @@ namespace WarlockGame.Core.Game;
 
 static class CommandProcessor {
 
-    private static readonly Dictionary<int, List<IGameCommand>> _commands = new();
+    private static readonly PriorityQueue<IPlayerCommand, int> _playerCommands = new();
+    private static readonly PriorityQueue<ISynchronizedCommand, int> _serverCommands = new();
     
-    public static void Update(int frame) {
-        if (_commands.TryGetValue(frame, out var actions)) {
-            foreach (var action in actions) {
-                // Prevent disconnected players from have buffered pause commands and such
-                // This might cause desyncs if disconnections are not themselves synchronized
-                if (!PlayerManager.GetPlayer(action.PlayerId)?.IsActive ?? false) {
-                    continue;
-                }
-
-                IssueGameCommand(action);
+    public static void Update(int currentFrame) {
+        while (_serverCommands.TryPeek(out var command, out var frame) && frame == currentFrame) {
+            _serverCommands.Dequeue();
+            IssueServerCommand(command);
+        }
+        
+        while (_playerCommands.TryPeek(out var command, out var frame) && frame == currentFrame) {
+            _playerCommands.Dequeue();
+            
+            if (PlayerManager.GetPlayer(command.PlayerId)?.IsActive ?? true) {
+                IssuePlayerCommand(command);
             }
-
-            _commands.Remove(frame);
         }
     }
 
-    private static void IssueGameCommand(IGameCommand action) {
+    private static void IssueServerCommand(ISynchronizedCommand command) {
+        switch (command) {
+            case StartGame:
+                WarlockGame.Instance.RestartGame();
+                break;
+        }
+    }
+    
+    private static void IssuePlayerCommand(IPlayerCommand action) {
         switch (action) {
             case MoveCommand move:
                 IssueMoveCommand(move.PlayerId, move.Location);
@@ -45,15 +54,16 @@ static class CommandProcessor {
     /// <summary>
     /// Issues a command to be executed on a future frame. Necessary to handle network delay
     /// </summary>
-    /// <param name="moveCommand">The command to issue later</param>
+    /// <param name="command">The command to issue later</param>
     /// <param name="targetFrame">The frame to issue the command on</param>
-    public static void AddDelayedGameCommand(IGameCommand moveCommand, int targetFrame) {
-        if (!_commands.ContainsKey(targetFrame)) {
-            _commands.Add(targetFrame, new List<IGameCommand>());
-        }
-        _commands[targetFrame].Add(moveCommand);
+    public static void AddDelayedPlayerCommand(IPlayerCommand command, int targetFrame) {
+        _playerCommands.Enqueue(command, targetFrame);
     }
 
+    public static void AddDelayedGameCommand(ISynchronizedCommand command) {
+        _serverCommands.Enqueue(command, command.TargetFrame);
+    }
+    
     public static void IssueMoveCommand(int playerId, Vector2 location) {
         EntityManager.GetWarlockByPlayerId(playerId)?.GiveOrder(x => new DestinationMoveOrder(location, x));
     }
@@ -63,6 +73,7 @@ static class CommandProcessor {
     }
 
     public static void Clear() {
-        _commands.Clear();
+        _serverCommands.Clear();
+        _playerCommands.Clear();
     }
 }
