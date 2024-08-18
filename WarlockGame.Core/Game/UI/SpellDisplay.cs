@@ -13,7 +13,7 @@ namespace WarlockGame.Core.Game.UI;
 /// <summary>
 /// Assumes single active player (No local coop)
 /// </summary>
-public class SpellDisplay : IUIComponent {
+public class SpellDisplay : IClickableComponent {
     // Spell display never goes away
     public bool IsExpired => false;
 

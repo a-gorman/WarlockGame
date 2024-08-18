@@ -14,9 +14,9 @@ namespace WarlockGame.Core.Game.Entity
     {
         public const float Speed = 8;
 
-        public const float MaxHealth = 100;
+        public float MaxHealth { get; private set; } = 100;
 
-        public float Health { get; set; } = MaxHealth;
+        public float Health { get; set; }
 
         public event Action<Warlock>? Destroyed;
         
@@ -35,6 +35,7 @@ namespace WarlockGame.Core.Game.Entity
 
         public Warlock(int playerId) :
             base(new Sprite(Art.Player)) {
+            Health = MaxHealth;
             PlayerId = playerId;
             Position = WarlockGame.ScreenSize / 2;
             Radius = 20;

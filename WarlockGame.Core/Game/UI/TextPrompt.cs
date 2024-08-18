@@ -11,7 +11,7 @@ using WarlockGame.Core.Game.Util;
 namespace WarlockGame.Core.Game.UI;
 
 // This probably should not be an effect. Probably make some UI components thing
-class TextPrompt: ITextInputConsumer, IUIComponent {
+class TextPrompt: ITextInputConsumer, IInterfaceComponent {
     public string Prompt { get; set; }
 
     public string Text { get; set; } = string.Empty;
