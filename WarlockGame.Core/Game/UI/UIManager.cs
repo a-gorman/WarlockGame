@@ -11,7 +11,7 @@ namespace WarlockGame.Core.Game.UI;
 /// Manager for UI elements like text boxes, menus and status displays
 /// </summary>
 static class UIManager {
-    private static readonly List<IUIComponent> Components = new();
+    private static readonly List<IInterfaceComponent> Components = new();
     
     public static void Draw(SpriteBatch spriteBatch) {
         foreach (var component in Components) {
@@ -35,7 +35,7 @@ static class UIManager {
         InputManager.AddTextConsumer(prompt);
     }
 
-    public static void AddComponent(IUIComponent component) {
+    public static void AddComponent(IInterfaceComponent component) {
         Components.Add(component);
         Components.Sort((first, second) => second.Layer.CompareTo(first.Layer));
     }
