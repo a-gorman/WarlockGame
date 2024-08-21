@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Entity;
 
-namespace WarlockGame.Core.Game.Spell; 
+namespace WarlockGame.Core.Game.Spell.Effect; 
 
 class Explosion : ILocationSpellEffect {
   

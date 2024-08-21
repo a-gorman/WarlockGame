@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using OneOf;
 using WarlockGame.Core.Game.Graphics;
+using WarlockGame.Core.Game.Spell.Effect;
 
 namespace WarlockGame.Core.Game.Spell;
 
