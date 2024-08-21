@@ -15,7 +15,7 @@ public class GameTimer
         FramesRemaining = frames;
     }
 
-    public static GameTimer FromFrames(int frames)
+    public static GameTimer FromTicks(int frames)
     {
         return new GameTimer(frames);
     }

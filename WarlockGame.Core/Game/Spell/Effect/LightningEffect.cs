@@ -8,13 +8,14 @@ using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Spell.Effect; 
 
-public class LightningEffect: IDirectionalSpellEffect {
+// TODO: Make this a more generic line effect
+class LightningEffect: IDirectionalSpellEffect {
 
     private readonly Texture2D _art = Art.Lightning;
 
     private const int Length = 800;
     
-    public void Invoke(IEntity caster, Vector2 castLocation, Vector2 castDirection) {
+    public void Invoke(Warlock caster, Vector2 castLocation, Vector2 castDirection) {
         // DebugVisualize(caster, castDirection);
 
         var startPoint = castLocation + caster.Radius * castDirection.ToNormalized();
@@ -44,7 +45,7 @@ public class LightningEffect: IDirectionalSpellEffect {
     /// <summary>
     /// For debugging
     /// </summary>
-    private void DebugVisualize(IEntity caster, Vector2 castDirection) {
+    private void DebugVisualize(Warlock caster, Vector2 castDirection) {
         int duration = 100;
         
         var startPoint = caster.Position + caster.Radius * castDirection.ToNormalized();

@@ -15,16 +15,16 @@ class Explosion : ILocationSpellEffect {
     
     public required float Falloff { get; init; }
 
-    public void Invoke(IEntity caster, Vector2 castLocation) {
-        foreach (var entity in EntityManager.GetNearbyEntities(castLocation, Radius))
+    public void Invoke(Warlock caster, Vector2 invokeLocation) {
+        foreach (var entity in EntityManager.GetNearbyEntities(invokeLocation, Radius))
         {
             switch (entity)
             {
                 case Warlock player:
                     if(IgnoreCaster && player == caster) { continue; }
                     
-                    var falloffFactor = Radius / (player.Position - castLocation).Length();
-                    player.Push( (int)(Force * falloffFactor), player.Position - castLocation);
+                    var falloffFactor = Radius / (player.Position - invokeLocation).Length();
+                    player.Push( (int)(Force * falloffFactor), player.Position - invokeLocation);
                     player.Damage(Damage * falloffFactor, caster);
                     break;
             }

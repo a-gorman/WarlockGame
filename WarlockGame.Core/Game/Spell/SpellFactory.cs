@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using OneOf;
+using WarlockGame.Core.Game.Buff;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Spell.Effect;
 
@@ -42,6 +43,26 @@ static class SpellFactory {
             Effects = new List<OneOf<IDirectionalSpellEffect, ILocationSpellEffect, ISelfSpellEffect>>
             {
                 new LightningEffect()
+            }
+        };
+    }
+
+    public static WarlockSpell Poison() {
+        return new WarlockSpell
+        {
+            SpellId = 3,
+            ManaCost = 10,
+            CooldownTime = 60,
+            SpellIcon = Art.LightningIcon,
+            Effects = new List<OneOf<IDirectionalSpellEffect, ILocationSpellEffect, ISelfSpellEffect>>
+            {
+                new ProjectileEffect(
+                    sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f),
+                    new[]
+                    {
+                        new ApplyBuffArea(10, caster => new DamageOverTime(caster, 120, 5f/60))
+                    }
+                )
             }
         };
     }

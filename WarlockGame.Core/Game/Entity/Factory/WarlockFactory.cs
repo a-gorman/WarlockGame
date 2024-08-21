@@ -30,11 +30,13 @@ static class WarlockFactory {
         };
     }
 
+    // TODO: Make dynamic
     private static WarlockSpell CreateSpell(Networking.Spell packet) {
         var spell = packet.SpellId switch
         {
             1 => SpellFactory.Fireball(),
             2 => SpellFactory.Lightning(),
+            3 => SpellFactory.Poison(),
             _ => throw new ArgumentException("Tried to deserialize unknown spell id")
         };
 

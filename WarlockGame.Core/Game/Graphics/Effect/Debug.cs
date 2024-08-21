@@ -20,7 +20,7 @@ public class VectorEffect : IEffect
         _start = start;
         _end = end;
         _color = color;
-        _timer = GameTimer.FromFrames(duration+1);
+        _timer = GameTimer.FromTicks(duration+1);
     }
 
     public void Update()
@@ -50,7 +50,7 @@ public class VectorEffect : IEffect
         public PointEffect(Vector2 position, Color color, int duration = 1) {
             _position = position;
             _color = color;
-            _timer = GameTimer.FromFrames(duration+1);
+            _timer = GameTimer.FromTicks(duration+1);
         }
 
         public void Update() {
@@ -81,7 +81,7 @@ public class StringEffect : IEffect {
         _displayString = displayString;
         _position = position;
         _color = color;
-        _timer = GameTimer.FromFrames(duration+1);
+        _timer = GameTimer.FromTicks(duration+1);
     }
 
     public void Update() {
@@ -106,7 +106,7 @@ public class CircleEffect : IEffect {
         _circle = new CircleF(position.ToPoint(), radius);
         _position = position;
         _color = color;
-        _timer = GameTimer.FromFrames(duration+1);
+        _timer = GameTimer.FromTicks(duration+1);
     }
 
     public void Update() {
