@@ -19,11 +19,11 @@ class WarlockSpell {
         Cooldown.Update();
     }
 
-    public GameTimer Cooldown { get; private set; } = GameTimer.FromFrames(0);
+    public GameTimer Cooldown { get; private set; } = GameTimer.FromTicks(0);
 
     public bool OnCooldown => !Cooldown.IsExpired;
 
-    public void DoCast(IEntity caster, Vector2 direction) {
+    public void DoCast(Warlock caster, Vector2 direction) {
         Cooldown.FramesRemaining = CooldownTime;
         foreach (var effect in Effects)
             effect.Switch(

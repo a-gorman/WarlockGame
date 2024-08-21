@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using WarlockGame.Core.Game.Buff;
 using WarlockGame.Core.Game.Util;
 using WarlockGame.Core.Game.Entity.Order;
 using WarlockGame.Core.Game.Graphics;
@@ -22,7 +23,8 @@ namespace WarlockGame.Core.Game.Entity
         
         public Vector2? Direction { get; set; }
 
-        public List<WarlockSpell> Spells { get; } = new() { SpellFactory.Fireball(), SpellFactory.Lightning() };
+        public List<WarlockSpell> Spells { get; } = new() { SpellFactory.Fireball(), SpellFactory.Lightning(), SpellFactory.Poison() };
+        public List<IBuff> Buffs { get; } = new();
         
         public int PlayerId { get; }
 
@@ -53,6 +55,11 @@ namespace WarlockGame.Core.Game.Entity
             foreach (var spell in Spells) {
                 spell.Update();
             }
+
+            foreach (var buff in Buffs) {
+                buff.Update(this);
+            }
+            Buffs.RemoveAll(x => x.IsExpired);
 
             if (Orders.FirstOrDefault()?.Finished ?? false) {
                 Orders.First!.Value.OnFinish();
@@ -102,6 +109,10 @@ namespace WarlockGame.Core.Game.Entity
             {
                 spell.DoCast(this, castDirection);
             }
+        }
+
+        public void AddBuff(IBuff buff) {
+            Buffs.Add(buff);
         }
 
         // Also secretly rotates the ship

@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Graphics;
-using WarlockGame.Core.Game.Spell;
 using WarlockGame.Core.Game.Spell.Effect;
 using WarlockGame.Core.Game.Util;
 
@@ -12,9 +10,9 @@ namespace WarlockGame.Core.Game.Entity;
 class Projectile : EntityBase{
     private static readonly Random _rand = new();
     private readonly IReadOnlyList<ILocationSpellEffect> _effects;
-    public IEntity Caster { get; }
+    public Warlock Caster { get; }
     
-    public Projectile(Vector2 position, Vector2 velocity, IEntity caster, Sprite sprite, IReadOnlyList<ILocationSpellEffect> effects) : 
+    public Projectile(Vector2 position, Vector2 velocity, Warlock caster, Sprite sprite, IReadOnlyList<ILocationSpellEffect> effects) : 
         base(sprite) {
         Caster = caster;
         Position = position;
