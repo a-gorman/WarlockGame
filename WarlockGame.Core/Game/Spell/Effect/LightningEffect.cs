@@ -6,7 +6,7 @@ using WarlockGame.Core.Game.Geometry;
 using WarlockGame.Core.Game.Graphics.Effect;
 using WarlockGame.Core.Game.Util;
 
-namespace WarlockGame.Core.Game.Spell; 
+namespace WarlockGame.Core.Game.Spell.Effect; 
 
 public class LightningEffect: IDirectionalSpellEffect {
 

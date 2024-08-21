@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using OneOf;
 using WarlockGame.Core.Game.Entity;
+using WarlockGame.Core.Game.Spell.Effect;
 
 namespace WarlockGame.Core.Game.Spell;
 

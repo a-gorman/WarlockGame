@@ -5,7 +5,7 @@ using WarlockGame.Core.Game.Entity;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Util;
 
-namespace WarlockGame.Core.Game.Spell; 
+namespace WarlockGame.Core.Game.Spell.Effect; 
 
 class ProjectileEffect: IDirectionalSpellEffect {
     
