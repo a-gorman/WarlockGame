@@ -1,29 +1,26 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
-using WarlockGame.Core.Game.Display;
-using WarlockGame.Core.Game.Util;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Spell;
+using WarlockGame.Core.Game.Util;
 
-namespace WarlockGame.Core.Game.Entity.Projectile;
+namespace WarlockGame.Core.Game.Entity;
 
-internal class FireballProjectile : EntityBase, IProjectile
-{
+class Projectile : EntityBase{
     private static readonly Random _rand = new();
-    private const int Force = 100;
-    private IReadOnlyList<IProjectileEffect> Effects = new [] { new Explosion { Force = Force, Damage = 10, Radius = 30, Falloff = 0 } };
-
-    public IEntity Parent { get; }
+    private readonly IReadOnlyList<ILocationSpellEffect> _effects;
+    public IEntity Caster { get; }
     
-    public FireballProjectile(Vector2 position, Vector2 velocity, IEntity parent) : 
-        base(Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f)) {
-
-        Parent = parent;
+    public Projectile(Vector2 position, Vector2 velocity, IEntity caster, Sprite sprite, IReadOnlyList<ILocationSpellEffect> effects) : 
+        base(sprite) {
+        Caster = caster;
         Position = position;
         Velocity = velocity;
         Orientation = Velocity.ToAngle();
         Radius = 8;
+        _effects = effects;
     }
 
     public override void Update()
@@ -45,11 +42,11 @@ internal class FireballProjectile : EntityBase, IProjectile
         }
     }
 
-    public void OnHit()
+    public void OnCollision()
     {
         IsExpired = true;
-        foreach (var effect in Effects) {
-            effect.OnImpact(this);
+        foreach (var effect in _effects) {
+            effect.Invoke(Caster, Position);
         }
     }
 }
