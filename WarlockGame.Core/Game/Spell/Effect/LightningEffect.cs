@@ -8,16 +8,16 @@ using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Spell; 
 
-public class LightningEffect: ICastEffect {
+public class LightningEffect: IDirectionalSpellEffect {
 
     private readonly Texture2D _art = Art.Lightning;
 
     private const int Length = 800;
     
-    public void OnCast(IEntity caster, Vector2 castDirection) {
+    public void Invoke(IEntity caster, Vector2 castLocation, Vector2 castDirection) {
         // DebugVisualize(caster, castDirection);
 
-        var startPoint = caster.Position + caster.Radius * castDirection.ToNormalized();
+        var startPoint = castLocation + caster.Radius * castDirection.ToNormalized();
         var endPoint = startPoint + castDirection * Length;
 
         var lineSegment = new LineSegment(startPoint, endPoint);
@@ -32,7 +32,7 @@ public class LightningEffect: ICastEffect {
                 case Warlock player:
                     if (ReferenceEquals(player, caster)) { break; }
                     
-                    player.Push(50, player.Position - caster.Position);
+                    player.Push(50, player.Position - castLocation);
                     player.Damage(30, caster);
                     break;
             }

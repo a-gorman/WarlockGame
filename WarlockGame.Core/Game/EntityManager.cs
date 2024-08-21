@@ -4,14 +4,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Util;
 using WarlockGame.Core.Game.Entity;
-using WarlockGame.Core.Game.Entity.Projectile;
 
 namespace WarlockGame.Core.Game
 {
 	internal static class EntityManager
 	{
 		private static List<EntityBase> _entities = new();
-		private static List<IProjectile> _projectiles = new();
+		private static List<Projectile> _projectiles = new();
 		/// <summary>
 		/// Map between player Ids and warlocks
 		/// </summary>
@@ -35,7 +34,7 @@ namespace WarlockGame.Core.Game
 		{
 			_entities.Add(entity);
 			switch (entity) {
-				case IProjectile projectile:
+				case Projectile projectile:
 					_projectiles.Add(projectile);
 					break;
 				case Warlock warlock:
@@ -69,10 +68,10 @@ namespace WarlockGame.Core.Game
 
 		private static void HandleCollisions() {
 			foreach (var projectile in _projectiles) {
-				_entities.OfType<Warlock>().Where(x => x != projectile.Parent)
+				_entities.OfType<Warlock>().Where(x => x != projectile.Caster)
 				         .Concat<IEntity>(_projectiles.Where(x => x != projectile))
 				         .Where(x => IsColliding(projectile, x))
-				         .ForEach(_ => projectile.OnHit());
+				         .ForEach(_ => projectile.OnCollision());
 			}
 		}
 
