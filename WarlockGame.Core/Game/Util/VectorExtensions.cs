@@ -42,10 +42,10 @@ public static class VectorExtensions
         return vector.ToNormalized() * length;
     }
 
-    public static Vector2 ProjectedOnto(this Vector2 sourceVector, Vector2 other) {
-        // (a*b/b*b)b
-        return other * (Vector2.Dot(sourceVector, other) / other.LengthSquared());
-    }
+    // public static Vector2 ProjectedOnto(this Vector2 sourceVector, Vector2 other) {
+    //     // (a*b/b*b)b
+    //     return other * (Vector2.Dot(sourceVector, other) / other.LengthSquared());
+    // }
     
     public static float DistanceSquaredTo(this Vector2 sourceVector, Vector2 other) {
         return (sourceVector - other).LengthSquared();

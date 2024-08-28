@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Entity;
+using WarlockGame.Core.Game.Spell.AreaOfEffect;
 
 namespace WarlockGame.Core.Game.Spell.Effect;
 
@@ -7,7 +9,7 @@ namespace WarlockGame.Core.Game.Spell.Effect;
 /// Effect that is applied towards a direction, such as spawning a fireball
 /// </summary>
 interface IDirectionalSpellEffect {
-    public void Invoke(Warlock caster, Vector2 castLocation, Vector2 castDirection);
+    public void Invoke(Warlock caster, Vector2 castLocation, Vector2 invokeDirection);
 }
 
 /// <summary>
@@ -22,4 +24,8 @@ interface ILocationSpellEffect {
 /// </summary>
 interface ISelfSpellEffect {
     public void Invoke(Warlock caster);
+}
+
+interface IWarlockEffect {
+    void Invoke(Warlock caster, IReadOnlyCollection<TargetInfo> targets);
 }
