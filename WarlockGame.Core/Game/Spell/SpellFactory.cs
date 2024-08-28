@@ -1,7 +1,6 @@
-using System.Collections.Generic;
-using OneOf;
 using WarlockGame.Core.Game.Buff;
 using WarlockGame.Core.Game.Graphics;
+using WarlockGame.Core.Game.Spell.AreaOfEffect;
 using WarlockGame.Core.Game.Spell.Effect;
 
 namespace WarlockGame.Core.Game.Spell;
@@ -11,25 +10,23 @@ static class SpellFactory {
         return new WarlockSpell
         {
             SpellId = 1,
-            ManaCost = 10,
             CooldownTime = 60,
             SpellIcon = Art.FireballIcon,
-            Effects = new List<OneOf<IDirectionalSpellEffect, ILocationSpellEffect, ISelfSpellEffect>>
-            {
-                new ProjectileEffect(
-                    sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f),
-                    new[]
+            Effect = new ProjectileEffect(
+                sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f),
+                new[]
+                {
+                    new LocationAreaOfEffect
                     {
-                        new Explosion
+                        Shape = new CircleTarget { Radius = 30 },
+                        Effects = new IWarlockEffect[]
                         {
-                            Force = 100,
-                            Damage = 10,
-                            Radius = 30,
-                            Falloff = 0
+                            new DamageEffect { Damage = 10 },
+                            new PushEffect { Force = 100 }
                         }
                     }
-                )
-            }
+                }
+            )
         };
     }
 
@@ -37,12 +34,22 @@ static class SpellFactory {
         return new WarlockSpell
         {
             SpellId = 2,
-            ManaCost = 10,
             CooldownTime = 60,
             SpellIcon = Art.LightningIcon,
-            Effects = new List<OneOf<IDirectionalSpellEffect, ILocationSpellEffect, ISelfSpellEffect>>
+            Effect = new DirectionalAreaOfEffect
             {
-                new LightningEffect()
+                Shape = new LineTarget { Length = 600 },
+                Effects = new IWarlockEffect[]
+                {
+                    new DamageEffect
+                    {
+                        Damage = 15
+                    },
+                    new PushEffect
+                    {
+                        Force = 10
+                    }
+                }
             }
         };
     }
@@ -51,18 +58,44 @@ static class SpellFactory {
         return new WarlockSpell
         {
             SpellId = 3,
-            ManaCost = 10,
             CooldownTime = 60,
             SpellIcon = Art.LightningIcon,
-            Effects = new List<OneOf<IDirectionalSpellEffect, ILocationSpellEffect, ISelfSpellEffect>>
-            {
-                new ProjectileEffect(
-                    sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f),
-                    new[]
+            Effect = new ProjectileEffect(
+                sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f),
+                new[]
+                {
+                    new LocationAreaOfEffect
                     {
-                        new ApplyBuffArea(10, caster => new DamageOverTime(caster, 120, 5f/60))
+                        Shape = new CircleTarget { Radius = 20 },
+                        Effects = new[] { new ApplyBuff(10, caster => new DamageOverTime(caster, 120, 5f / 60)) }
                     }
-                )
+                }
+            )
+        };
+    }
+
+    public static WarlockSpell Burst() {
+        return new WarlockSpell
+        {
+            SpellId = 4,
+            CooldownTime = 60,
+            SpellIcon = Art.FireballIcon,
+            Effect = new SelfAreaOfEffect
+            {
+                Shape = new CircleTarget { Radius = 200 },
+                Effects = new IWarlockEffect[]
+                {
+                    new DamageEffect
+                    {
+                        Damage = 10,
+                        SelfFactor = 0.25f
+                    },
+                    new PushEffect
+                    {
+                        Force = 10,
+                        SelfFactor = 0
+                    }
+                }
             }
         };
     }

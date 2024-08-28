@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Geometry; 
@@ -30,7 +31,7 @@ public class LineSegment {
         var AB = End - Start;
 
         // Get point D by taking the projection of AC onto AB then adding the offset of A
-        var D = AC.ProjectedOnto(AB) + Start;
+        var D = AC.ProjectOnto(AB) + Start;
 
         var AD = D - Start;
 
@@ -40,7 +41,7 @@ public class LineSegment {
 
         // Check if D is off either end of the line segment
         if (k <= 0.0) {
-            return End;
+            return Start;
         } if (k >= 1.0) {
             return End;
         }

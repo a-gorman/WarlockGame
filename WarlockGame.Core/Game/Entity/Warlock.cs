@@ -23,7 +23,7 @@ namespace WarlockGame.Core.Game.Entity
         
         public Vector2? Direction { get; set; }
 
-        public List<WarlockSpell> Spells { get; } = new() { SpellFactory.Fireball(), SpellFactory.Lightning(), SpellFactory.Poison() };
+        public List<WarlockSpell> Spells { get; } = new() { SpellFactory.Fireball(), SpellFactory.Lightning(), SpellFactory.Poison(), SpellFactory.Burst() };
         public List<IBuff> Buffs { get; } = new();
         
         public int PlayerId { get; }
@@ -191,9 +191,9 @@ namespace WarlockGame.Core.Game.Entity
             }
         }
 
-        public void Push(int force, Vector2 direction)
+        public void Push(float force, Vector2 direction)
         {
-            Velocity += force * direction.ToNormalized();
+            Velocity += force * direction.ToNormalizedOrZero();
         }
 
         public void Damage(float damage, IEntity source) {

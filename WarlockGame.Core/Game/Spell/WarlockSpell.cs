@@ -10,26 +10,22 @@ namespace WarlockGame.Core.Game.Spell;
 
 class WarlockSpell {
     public required int SpellId { get; init; }
-    public required int ManaCost { get; init; }
     public required int CooldownTime { get; init; }
     public required Texture2D SpellIcon { get; init; }
-    public required List<OneOf<IDirectionalSpellEffect, ILocationSpellEffect, ISelfSpellEffect>> Effects { get; init; }
-
+    public required OneOf<IDirectionalSpellEffect, ILocationSpellEffect, ISelfSpellEffect> Effect { get; init; }
+    public GameTimer Cooldown { get; } = GameTimer.FromTicks(0);
+    public bool OnCooldown => !Cooldown.IsExpired;
+    
     public void Update() {
         Cooldown.Update();
     }
 
-    public GameTimer Cooldown { get; private set; } = GameTimer.FromTicks(0);
-
-    public bool OnCooldown => !Cooldown.IsExpired;
-
     public void DoCast(Warlock caster, Vector2 direction) {
         Cooldown.FramesRemaining = CooldownTime;
-        foreach (var effect in Effects)
-            effect.Switch(
-                x => x.Invoke(caster, caster.Position, direction),
-                x => x.Invoke(caster, direction),
-                x => x.Invoke(caster)
-            );
+        Effect.Switch(
+            directionalEffect => directionalEffect.Invoke(caster, caster.Position, direction),
+            locationEffect => locationEffect.Invoke(caster, direction),
+            selfEffect => selfEffect.Invoke(caster)
+        );
     }
 }
