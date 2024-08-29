@@ -38,17 +38,11 @@ static class SpellFactory {
             SpellIcon = Art.LightningIcon,
             Effect = new DirectionalAreaOfEffect
             {
-                Shape = new LineTarget { Length = 600 },
+                Shape = new LineTarget { Length = 600, IgnoreCaster = true, Texture = Art.Lightning },
                 Effects = new IWarlockEffect[]
                 {
-                    new DamageEffect
-                    {
-                        Damage = 15
-                    },
-                    new PushEffect
-                    {
-                        Force = 10
-                    }
+                    new DamageEffect { Damage = 15 },
+                    new PushEffect { Force = 100 }
                 }
             }
         };
@@ -92,7 +86,7 @@ static class SpellFactory {
                     },
                     new PushEffect
                     {
-                        Force = 10,
+                        Force = 150,
                         SelfFactor = 0
                     }
                 }
