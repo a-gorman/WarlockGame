@@ -1,40 +1,50 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Entity;
 using WarlockGame.Core.Game.Geometry;
+using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Graphics.Effect;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Spell.AreaOfEffect;
 
 class LineTarget : IDirectionalShape {
-
     public required int Length { get; init; }
-    
-    public IEffect? Animation { get; init; }
-    
-    public List<TargetInfo> GatherTargets(Warlock caster, Vector2 castLocation, Vector2 invokeDirection) {
+    public int Width { get; init; } = 0;
+    public bool IgnoreCaster { get; init; } = false;
+    public Texture2D? Texture { get; init; }
+    public Falloff.FalloffFactor2Axis FalloffFactor { get; init; } = Falloff.None;
+
+public List<TargetInfo> GatherTargets(Warlock caster, Vector2 castLocation, Vector2 invokeDirection) {
         var startPoint = castLocation + caster.Radius * invokeDirection.ToNormalized();
         var endPoint = startPoint + invokeDirection * Length;
+        
+        Texture?.Run(x => EffectManager.Add(new Lightning(x, castLocation, invokeDirection.ToAngle())));
 
         var lineSegment = new LineSegment(startPoint, endPoint);
-
-        return GatherTargets(lineSegment).ToList();
+        
+        return GatherTargets(lineSegment, caster).ToList();
     }
         
-    private IEnumerable<TargetInfo> GatherTargets(LineSegment lineSegment) {
+    private IEnumerable<TargetInfo> GatherTargets(LineSegment lineSegment, Warlock caster) {
         foreach (var entity in EntityManager.GetNearbyEntities(lineSegment.BoundingBox)) {
+            if(IgnoreCaster && entity == caster) { continue; }
+            
             var closetLinePoint = lineSegment.GetClosetPointTo(entity.Position);
 
             if (closetLinePoint.DistanceSquaredTo(entity.Position) > entity.Radius.Squared()) { continue; }
 
-            var displacement = closetLinePoint - entity.Position;
+            var displacement1 = entity.Position - lineSegment.Start;
+            var displacement2 = entity.Position - closetLinePoint;
             yield return new TargetInfo
             {
                 Entity = entity,
-                Displacement = displacement,
-                FalloffFactor = 0 // How do we calculate this if we have non-zero width?
+                DisplacementAxis1 = displacement1,
+                DisplacementAxis2 = displacement2,
+                FalloffFactor = FalloffFactor.Invoke((displacement1, Length), (displacement2, Width), entity.Radius)
             };
         }
     }

@@ -9,7 +9,7 @@ namespace WarlockGame.Core.Game.Spell.Effect;
 class PushEffect : IWarlockEffect {
     public required int Force { get; init; }
     public float SelfFactor { get; init; } = 1;
-    public Func<Vector2, Vector2> DisplacementTransform { get; init; } = x => x;
+    public Func<Vector2, Vector2?, Vector2> DisplacementTransform { get; init; } = (x, _) => x;
 
     public void Invoke(Warlock caster, IReadOnlyCollection<TargetInfo> targets) {
         foreach (var target in targets) {
@@ -19,7 +19,7 @@ class PushEffect : IWarlockEffect {
                     forceToUse *= SelfFactor;
                 }
 
-                warlock.Push(forceToUse, DisplacementTransform.Invoke(target.Displacement));
+                warlock.Push(forceToUse, DisplacementTransform.Invoke(target.DisplacementAxis1, target.DisplacementAxis2));
             }
         }
     }
