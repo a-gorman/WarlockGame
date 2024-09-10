@@ -110,24 +110,26 @@ static class SpellFactory {
                         Caster = caster,
                         Location = location,
                         RepeatEvery = 5,
-                        Timer = GameTimer.FromSeconds(10),
+                        Timer = GameTimer.FromSeconds(4),
                         Components = new[]
                         {
                             new LocationAreaOfEffect
                             {
                                 Shape = new Doughnut
                                 {
-                                    Radius = 200,
-                                    Width = 30
+                                    Radius = 202,
+                                    Width = 30,
+                                    IgnoreCaster = true,
+                                    FalloffFactor = Falloff.None
                                 },
                                 Effects = new[]
                                 {
                                     new PushComponent
                                     {
-                                        Force = 10,
+                                        Force = 1.5f,
                                         SelfFactor = 0,
                                         ProjectileFactor = 1,
-                                        DisplacementTransform = (axis1, axis2) => axis2!.Value.PerpendicularClockwise()
+                                        DisplacementTransform = (axis1, axis2) => axis1.PerpendicularClockwise()
                                     }
                                 }
                             }

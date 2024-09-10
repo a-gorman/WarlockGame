@@ -18,7 +18,7 @@ class ContinuousSpellEffect : IEffect {
     
     public void Update() {
         Timer.Update();
-        IsExpired &= Timer.IsExpired;
+        IsExpired |= Timer.IsExpired;
 
         // TODO: This Doesn't consistently start on the first from
         if (Timer.FramesRemaining % RepeatEvery == 0) {
