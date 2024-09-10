@@ -6,6 +6,7 @@ public enum InputAction {
     Spell2,
     Spell3,
     Spell4,
+    Spell5,
     MoveLeft,
     MoveRight,
     MoveUp,
@@ -15,5 +16,5 @@ public enum InputAction {
     Cancel,
     Exit,
     Pause,
-    OpenCommandInput
+    OpenCommandInput,
 }

@@ -4,9 +4,9 @@ using WarlockGame.Core.Game.Buff;
 using WarlockGame.Core.Game.Entity;
 using WarlockGame.Core.Game.Spell.AreaOfEffect;
 
-namespace WarlockGame.Core.Game.Spell.Effect;
+namespace WarlockGame.Core.Game.Spell.Component;
 
-class ApplyBuff : IWarlockEffect {
+class ApplyBuff : IWarlockComponent {
     private readonly int _radius;
     private readonly Func<Warlock,IBuff> _buffConstructor;
     public bool IgnoreCaster { get; init; } = false;

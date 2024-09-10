@@ -3,12 +3,12 @@ using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Entity;
 using WarlockGame.Core.Game.Spell.AreaOfEffect;
 
-namespace WarlockGame.Core.Game.Spell.Effect;
+namespace WarlockGame.Core.Game.Spell.Component;
 
-class LocationAreaOfEffect: ILocationSpellEffect {
+class LocationAreaOfEffect: ILocationSpellComponent {
 
     public required ILocationShape Shape { get; init; } 
-    public required IReadOnlyCollection<IWarlockEffect> Effects { get; init; }
+    public required IReadOnlyCollection<IWarlockComponent> Effects { get; init; }
 
     public void Invoke(Warlock caster, Vector2 invokeLocation) {
         foreach (var effect in Effects) {
@@ -17,10 +17,10 @@ class LocationAreaOfEffect: ILocationSpellEffect {
     }
 }
 
-class DirectionalAreaOfEffect: IDirectionalSpellEffect {
+class DirectionalAreaOfEffect: IDirectionalSpellComponent {
 
     public required IDirectionalShape Shape { get; init; } 
-    public required IReadOnlyCollection<IWarlockEffect> Effects { get; init; }
+    public required IReadOnlyCollection<IWarlockComponent> Effects { get; init; }
 
     public void Invoke(Warlock caster, Vector2 castLocation, Vector2 invokeDirection) {
         foreach (var effect in Effects) {
@@ -29,13 +29,13 @@ class DirectionalAreaOfEffect: IDirectionalSpellEffect {
     }
 }
 
-class SelfAreaOfEffect: ISelfSpellEffect {
+class SelfAreaOfEffect: ISelfSpellComponent {
 
     public required ILocationShape Shape { get; init; } 
-    public required IReadOnlyCollection<IWarlockEffect> Effects { get; init; }
+    public required IReadOnlyCollection<IWarlockComponent> Components { get; init; }
 
     public void Invoke(Warlock caster) {
-        foreach (var effect in Effects) {
+        foreach (var effect in Components) {
             effect.Invoke(caster, Shape.GatherTargets(caster, caster.Position));
         }
     }

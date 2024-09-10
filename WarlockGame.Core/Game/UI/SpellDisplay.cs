@@ -19,7 +19,7 @@ public class SpellDisplay : IClickableComponent {
 
     private const int spellSpacing = 100;
 
-    private static InputAction[] _actions = { InputAction.Spell1, InputAction.Spell2, InputAction.Spell3, InputAction.Spell4 };
+    private static InputAction[] _actions = { InputAction.Spell1, InputAction.Spell2, InputAction.Spell3, InputAction.Spell4, InputAction.Spell5 };
 
     public int Layer => 2;
     public Rectangle BoundingBox { get; } = new Rectangle(20, 925, 1880, 90);

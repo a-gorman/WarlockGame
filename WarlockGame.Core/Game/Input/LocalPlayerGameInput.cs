@@ -9,7 +9,7 @@ namespace WarlockGame.Core.Game.Input;
 /// Handles game input from a particular player
 /// </summary>
 class LocalPlayerGameInput {
-    private static readonly List<InputAction> SpellSelectionActions = new() { InputAction.Spell1, InputAction.Spell2, InputAction.Spell3, InputAction.Spell4 };
+    private static readonly List<InputAction> SpellSelectionActions = new() { InputAction.Spell1, InputAction.Spell2, InputAction.Spell3, InputAction.Spell4, InputAction.Spell5 };
 
     private int? SelectedSpellId { get; set; }
 

@@ -17,6 +17,10 @@ static class Falloff {
         return 1;
     }
     
+    public static float Axis1Linear((Vector2 displacement, float max) axis1, (Vector2 displacement, float max) _, float targetRadius) {
+        return Linear(axis1.displacement, axis1.max, targetRadius);
+    }
+    
     public static float None((Vector2 displacement, float max) axis1, (Vector2 displacement, float max) axis2, float targetRadius) {
         return 1;
     }

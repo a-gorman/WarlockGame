@@ -38,6 +38,7 @@ static class WarlockFactory {
             2 => SpellFactory.Lightning(),
             3 => SpellFactory.Poison(),
             4 => SpellFactory.Burst(),
+            5 => SpellFactory.WindShield(),
             _ => throw new ArgumentException("Tried to deserialize unknown spell id")
         };
 

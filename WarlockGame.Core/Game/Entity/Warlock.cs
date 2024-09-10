@@ -23,7 +23,7 @@ namespace WarlockGame.Core.Game.Entity
         
         public Vector2? Direction { get; set; }
 
-        public List<WarlockSpell> Spells { get; } = new() { SpellFactory.Fireball(), SpellFactory.Lightning(), SpellFactory.Poison(), SpellFactory.Burst() };
+        public List<WarlockSpell> Spells { get; } = new() { SpellFactory.Fireball(), SpellFactory.Lightning(), SpellFactory.Poison(), SpellFactory.Burst(), SpellFactory.WindShield() };
         public List<IBuff> Buffs { get; } = new();
         
         public int PlayerId { get; }
