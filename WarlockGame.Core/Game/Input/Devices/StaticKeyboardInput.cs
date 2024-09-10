@@ -21,7 +21,8 @@ public static class StaticKeyboardInput {
             new() { DisplayValue = "Q", Key = Keys.Q, InputAction = InputAction.Spell1 },
             new() { DisplayValue = "E", Key = Keys.E, InputAction = InputAction.Spell2 },
             new() { DisplayValue = "R", Key = Keys.R, InputAction = InputAction.Spell3 },
-            new() { DisplayValue = "F", Key = Keys.F, InputAction = InputAction.Spell4 }
+            new() { DisplayValue = "F", Key = Keys.F, InputAction = InputAction.Spell4 },
+            new() { DisplayValue = "G", Key = Keys.G, InputAction = InputAction.Spell5 }
         };
 
         _mappings = keyMappings.ToDictionary(x => x.InputAction);

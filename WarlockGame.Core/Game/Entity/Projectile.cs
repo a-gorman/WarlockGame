@@ -2,17 +2,17 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Graphics;
-using WarlockGame.Core.Game.Spell.Effect;
+using WarlockGame.Core.Game.Spell.Component;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Entity;
 
-class Projectile : EntityBase{
+class Projectile : EntityBase {
     private static readonly Random _rand = new();
-    private readonly IReadOnlyList<ILocationSpellEffect> _effects;
+    private readonly IReadOnlyList<ILocationSpellComponent> _effects;
     public Warlock Caster { get; }
     
-    public Projectile(Vector2 position, Vector2 velocity, Warlock caster, Sprite sprite, IReadOnlyList<ILocationSpellEffect> effects) : 
+    public Projectile(Vector2 position, Vector2 velocity, Warlock caster, Sprite sprite, IReadOnlyList<ILocationSpellComponent> effects) : 
         base(sprite) {
         Caster = caster;
         Position = position;
@@ -47,5 +47,9 @@ class Projectile : EntityBase{
         foreach (var effect in _effects) {
             effect.Invoke(Caster, Position);
         }
+    }
+
+    public void Push(float force, Vector2 direction) {
+        Velocity += force * direction.ToNormalizedOrZero();
     }
 }

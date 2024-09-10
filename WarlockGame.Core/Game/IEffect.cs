@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework.Graphics;
 
-namespace WarlockGame.Core.Game.Graphics.Effect;
+namespace WarlockGame.Core.Game;
 
 public interface IEffect
 {

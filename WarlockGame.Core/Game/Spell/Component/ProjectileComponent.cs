@@ -5,15 +5,15 @@ using WarlockGame.Core.Game.Entity;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Util;
 
-namespace WarlockGame.Core.Game.Spell.Effect; 
+namespace WarlockGame.Core.Game.Spell.Component; 
 
-class ProjectileEffect: IDirectionalSpellEffect {
+class ProjectileComponent: IDirectionalSpellComponent {
     
     private int _speed = 5;
     private readonly Sprite _sprite;
-    private readonly IReadOnlyList<ILocationSpellEffect> _effects;
+    private readonly IReadOnlyList<ILocationSpellComponent> _effects;
 
-    public ProjectileEffect(Sprite sprite, IEnumerable<ILocationSpellEffect> effects) {
+    public ProjectileComponent(Sprite sprite, IEnumerable<ILocationSpellComponent> effects) {
         _sprite = sprite;
         _effects = effects.ToList();
     }

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using OneOf;
 using WarlockGame.Core.Game.Entity;
-using WarlockGame.Core.Game.Spell.Effect;
+using WarlockGame.Core.Game.Spell.Component;
 
 namespace WarlockGame.Core.Game.Spell;
 
@@ -12,7 +12,7 @@ class WarlockSpell {
     public required int SpellId { get; init; }
     public required int CooldownTime { get; init; }
     public required Texture2D SpellIcon { get; init; }
-    public required OneOf<IDirectionalSpellEffect, ILocationSpellEffect, ISelfSpellEffect> Effect { get; init; }
+    public required OneOf<IDirectionalSpellComponent, ILocationSpellComponent, ISelfSpellComponent> Effect { get; init; }
     public GameTimer Cooldown { get; } = GameTimer.FromTicks(0);
     public bool OnCooldown => !Cooldown.IsExpired;
     

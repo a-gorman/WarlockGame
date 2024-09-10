@@ -1,6 +1,8 @@
+using MonoGame.Extended;
 using WarlockGame.Core.Game.Buff;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Spell.AreaOfEffect;
+using WarlockGame.Core.Game.Spell.Component;
 using WarlockGame.Core.Game.Spell.Effect;
 
 namespace WarlockGame.Core.Game.Spell;
@@ -12,17 +14,17 @@ static class SpellFactory {
             SpellId = 1,
             CooldownTime = 60,
             SpellIcon = Art.FireballIcon,
-            Effect = new ProjectileEffect(
+            Effect = new ProjectileComponent(
                 sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f),
                 new[]
                 {
                     new LocationAreaOfEffect
                     {
                         Shape = new CircleTarget { Radius = 30 },
-                        Effects = new IWarlockEffect[]
+                        Effects = new IWarlockComponent[]
                         {
-                            new DamageEffect { Damage = 10 },
-                            new PushEffect { Force = 100 }
+                            new DamageComponent { Damage = 10 },
+                            new PushComponent { Force = 100 }
                         }
                     }
                 }
@@ -39,10 +41,10 @@ static class SpellFactory {
             Effect = new DirectionalAreaOfEffect
             {
                 Shape = new LineTarget { Length = 600, IgnoreCaster = true, Texture = Art.Lightning },
-                Effects = new IWarlockEffect[]
+                Effects = new IWarlockComponent[]
                 {
-                    new DamageEffect { Damage = 15 },
-                    new PushEffect { Force = 100 }
+                    new DamageComponent { Damage = 15 },
+                    new PushComponent { Force = 100 }
                 }
             }
         };
@@ -54,7 +56,7 @@ static class SpellFactory {
             SpellId = 3,
             CooldownTime = 60,
             SpellIcon = Art.LightningIcon,
-            Effect = new ProjectileEffect(
+            Effect = new ProjectileComponent(
                 sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f),
                 new[]
                 {
@@ -77,17 +79,59 @@ static class SpellFactory {
             Effect = new SelfAreaOfEffect
             {
                 Shape = new CircleTarget { Radius = 200 },
-                Effects = new IWarlockEffect[]
+                Components = new IWarlockComponent[]
                 {
-                    new DamageEffect
+                    new DamageComponent
                     {
                         Damage = 10,
                         SelfFactor = 0.25f
                     },
-                    new PushEffect
+                    new PushComponent
                     {
                         Force = 150,
                         SelfFactor = 0
+                    }
+                }
+            }
+        };
+    }
+
+    public static WarlockSpell WindShield() {
+        return new WarlockSpell
+        {
+            SpellId = 5,
+            CooldownTime = 60,
+            SpellIcon = Art.FireballIcon,
+            Effect = new SelfCastPositionComponent
+            {
+                Component = new EffectComponent {
+                    EffectConstructor = (caster, location) => new ContinuousSpellEffect
+                    {
+                        Caster = caster,
+                        Location = location,
+                        RepeatEvery = 5,
+                        Timer = GameTimer.FromSeconds(10),
+                        Components = new[]
+                        {
+                            new LocationAreaOfEffect
+                            {
+                                Shape = new Doughnut
+                                {
+                                    Radius = 200,
+                                    Width = 30
+                                },
+                                Effects = new[]
+                                {
+                                    new PushComponent
+                                    {
+                                        Force = 10,
+                                        SelfFactor = 0,
+                                        ProjectileFactor = 1,
+                                        DisplacementTransform = (axis1, axis2) => axis2!.Value.PerpendicularClockwise()
+                                    }
+                                }
+                            }
+                        },
                     }
                 }
             }

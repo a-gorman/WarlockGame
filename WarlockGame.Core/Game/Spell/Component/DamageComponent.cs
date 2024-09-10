@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using WarlockGame.Core.Game.Entity;
 using WarlockGame.Core.Game.Spell.AreaOfEffect;
 
-namespace WarlockGame.Core.Game.Spell.Effect;
+namespace WarlockGame.Core.Game.Spell.Component;
 
-class DamageEffect : IWarlockEffect {
+class DamageComponent : IWarlockComponent {
     public required float Damage { get; init; }
 
     public float SelfFactor { get; init; } = 1;

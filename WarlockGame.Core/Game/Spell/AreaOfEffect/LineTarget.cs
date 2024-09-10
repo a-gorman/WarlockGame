@@ -22,6 +22,7 @@ public List<TargetInfo> GatherTargets(Warlock caster, Vector2 castLocation, Vect
         var startPoint = castLocation + caster.Radius * invokeDirection.ToNormalized();
         var endPoint = startPoint + invokeDirection * Length;
         
+        // TODO: Make this scale in size
         Texture?.Run(x => EffectManager.Add(new Lightning(x, castLocation, invokeDirection.ToAngle())));
 
         var lineSegment = new LineSegment(startPoint, endPoint);
