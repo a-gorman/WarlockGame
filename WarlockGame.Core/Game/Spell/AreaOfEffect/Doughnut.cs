@@ -18,9 +18,13 @@ class Doughnut : ILocationShape {
     public Falloff.FalloffFactor2Axis FalloffFactor { get; init; } = Falloff.Axis1Linear;
 
     public List<TargetInfo> GatherTargets(Warlock caster, Vector2 invokeLocation) {
+        
+        Debug.VisualizeCircle(Radius, invokeLocation, Color.Bisque, 5);
+        
         return EntityManager.GetNearbyEntities(invokeLocation, Radius + Width)
                             .Where(x => !IgnoreCaster || x != caster)
                             .Select(x => CreateTargetInfo(x, invokeLocation))
+                            .Where(x => x.DisplacementAxis2!.Value.IsLengthLessThan(Width))
                             .ToList();
     }
 
