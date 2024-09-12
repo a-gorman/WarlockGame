@@ -15,15 +15,11 @@ public class KeyboardInput: IInputDevice {
     public KeyboardInput() {
         _mappings = new List<KeyMapping>()
         {
-            new() { DisplayValue = "W", Key = Keys.W, InputAction = InputAction.MoveUp },
-            new() { DisplayValue = "S", Key = Keys.S, InputAction = InputAction.MoveDown },
-            new() { DisplayValue = "A", Key = Keys.A, InputAction = InputAction.MoveLeft },
-            new() { DisplayValue = "D", Key = Keys.D, InputAction = InputAction.MoveRight },
             new() { DisplayValue = "Q", Key = Keys.Q, InputAction = InputAction.Spell1 },
-            new() { DisplayValue = "E", Key = Keys.E, InputAction = InputAction.Spell2 },
-            new() { DisplayValue = "R", Key = Keys.R, InputAction = InputAction.Spell3 },
-            new() { DisplayValue = "F", Key = Keys.F, InputAction = InputAction.Spell4 },
-            new() { DisplayValue = "G", Key = Keys.G, InputAction = InputAction.Spell5 },
+            new() { DisplayValue = "W", Key = Keys.W, InputAction = InputAction.Spell2 },
+            new() { DisplayValue = "E", Key = Keys.E, InputAction = InputAction.Spell3 },
+            new() { DisplayValue = "R", Key = Keys.R, InputAction = InputAction.Spell4 },
+            new() { DisplayValue = "F", Key = Keys.F, InputAction = InputAction.Spell5 },
             new() { DisplayValue = "Escape", Key = Keys.Escape, InputAction = InputAction.Exit },
             new() { DisplayValue = "P", Key = Keys.P, InputAction = InputAction.Pause },
             new() { DisplayValue = "Enter", Key = Keys.Enter, InputAction = InputAction.OpenCommandInput },
