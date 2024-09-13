@@ -55,7 +55,7 @@ static class SpellFactory {
         {
             SpellId = 3,
             CooldownTime = 60,
-            SpellIcon = Art.LightningIcon,
+            SpellIcon = Art.PoisonIcon,
             Effect = new ProjectileComponent(
                 sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f),
                 new[]
@@ -75,7 +75,7 @@ static class SpellFactory {
         {
             SpellId = 4,
             CooldownTime = 60,
-            SpellIcon = Art.FireballIcon,
+            SpellIcon = Art.BurstIcon,
             Effect = new SelfAreaOfEffect
             {
                 Shape = new CircleTarget { Radius = 200 },
@@ -101,7 +101,7 @@ static class SpellFactory {
         {
             SpellId = 5,
             CooldownTime = 60,
-            SpellIcon = Art.FireballIcon,
+            SpellIcon = Art.WindWallIcon,
             Effect = new SelfCastPositionComponent
             {
                 Component = new EffectComponent {
