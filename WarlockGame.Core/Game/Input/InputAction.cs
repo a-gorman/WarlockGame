@@ -7,6 +7,7 @@ public enum InputAction {
     Spell3,
     Spell4,
     Spell5,
+    Spell6,
     LeftClick,
     RightClick,
     Cancel,

@@ -12,9 +12,7 @@ namespace WarlockGame.Core.Game
 		public static Texture2D Bullet { get; private set; } = null!;
 
 		public static Texture2D Lightning { get; private set; } = null!;
-		public static Texture2D LightningIcon { get; private set; } = null!;
 		public static Texture2D Fireball { get; private set; } = null!;
-		public static Texture2D FireballIcon { get; private set; } = null!;
 		public static Texture2D Pointer { get; private set; } = null!;
 		public static Texture2D BlackHole { get; private set; } = null!;
 
@@ -23,6 +21,13 @@ namespace WarlockGame.Core.Game
 		public static Texture2D Pixel { get; private set; } = null!;		// a single white pixel
 
 		public static SpriteFont Font { get; private set; } = null!;
+		
+		public static Texture2D FireballIcon { get; private set; } = null!;
+		public static Texture2D LightningIcon { get; private set; } = null!;
+		public static Texture2D PoisonIcon { get; private set; } = null!;
+		public static Texture2D BurstIcon { get; private set; } = null!;
+		public static Texture2D WindWallIcon { get; private set; } = null!;
+
 
 		public static void Load(ContentManager content)
 		{
@@ -31,9 +36,7 @@ namespace WarlockGame.Core.Game
 			Wanderer = content.Load<Texture2D>("Art/Wanderer");
 			Bullet = content.Load<Texture2D>("Art/Bullet");
 			Lightning = content.Load<Texture2D>("Art/Lightning");
-			LightningIcon = content.Load<Texture2D>("Art/Air_07_Call_Lightning");
 			Fireball = content.Load<Texture2D>("Art/Fireball");
-			FireballIcon = content.Load<Texture2D>("Art/Fire_03_Meteor");
 			Pointer = content.Load<Texture2D>("Art/Pointer");
 			BlackHole = content.Load<Texture2D>("Art/Black Hole");
 
@@ -44,6 +47,16 @@ namespace WarlockGame.Core.Game
 			Pixel.SetData(new[] { Color.White });
 
 			Font = content.Load<SpriteFont>("Font");
+			
+			LoadIcons(content);
+		}
+
+		private static void LoadIcons(ContentManager content) {
+			LightningIcon = content.Load<Texture2D>("Art/Icons/Air_07_Call_Lightning");
+			FireballIcon = content.Load<Texture2D>("Art/Icons/Fire_03_Meteor");
+			PoisonIcon = content.Load<Texture2D>("Art/Icons/Nature_01_Missile");
+			BurstIcon = content.Load<Texture2D>("Art/Icons/Light_08_Divine_Body");
+			WindWallIcon = content.Load<Texture2D>("Art/Icons/Water_10_Aura_Of_Cold");
 		}
 		
 		public static Texture2D LoadTexture(string assetName)
