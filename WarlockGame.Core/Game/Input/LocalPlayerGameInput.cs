@@ -3,8 +3,6 @@ using System.Linq;
 using LiteNetLib.Utils;
 using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Networking;
-using WarlockGame.Core.Game.Spell;
-using Warlock = WarlockGame.Core.Game.Entity.Warlock;
 
 namespace WarlockGame.Core.Game.Input; 
 
@@ -14,7 +12,7 @@ namespace WarlockGame.Core.Game.Input;
 class LocalPlayerGameInput {
     private static readonly List<InputAction> SpellSelectionActions = new() { InputAction.Spell1, InputAction.Spell2, InputAction.Spell3, InputAction.Spell4, InputAction.Spell5 };
 
-    private int? SelectedSpellId { get; set; }
+    public int? SelectedSpellId { get; private set; }
 
     private readonly int _playerId;
 
@@ -34,7 +32,7 @@ class LocalPlayerGameInput {
                         _ => SelectedSpellId = selectedSpell.SpellId,
                         _ => SelectedSpellId = selectedSpell.SpellId,
                         _ => IssueCommand(new CastCommand { PlayerId = _playerId, CastVector = Vector2.Zero, SpellId = selectedSpell.SpellId })
-                        );
+                    );
                 }
             }
         }

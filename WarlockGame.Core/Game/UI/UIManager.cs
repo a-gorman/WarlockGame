@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Util;
@@ -14,9 +15,19 @@ static class UIManager {
     private static readonly List<IInterfaceComponent> Components = new();
     
     public static void Draw(SpriteBatch spriteBatch) {
+        
+        spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
         foreach (var component in Components) {
             component.Draw(spriteBatch);
         }
+        spriteBatch.End();
+
+        // draw the custom mouse cursor
+        spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
+        var color = InputManager.LocalPlayerInput?.SelectedSpellId is null ? Color.White : Color.Red;
+        spriteBatch.Draw(Art.Pointer, StaticInput.MousePosition,  color);
+        spriteBatch.End();
     }
 
     public static void Update() {

@@ -159,17 +159,9 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         base.Draw(gameTime);
 
         // Draw the user interface without bloom
-        _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
         UIManager.Draw(_spriteBatch);
-        _spriteBatch.End();
         
-        // draw the custom mouse cursor
-        _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
-        _spriteBatch.Draw(Art.Pointer, StaticInput.MousePosition, Color.White);
-            
         // DrawDebugInfo();
-            
-        _spriteBatch.End();
     }
 
     private void DrawRightAlignedString(string text, float y)
