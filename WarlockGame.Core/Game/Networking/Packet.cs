@@ -163,19 +163,19 @@ public class CastCommand : IPlayerCommand, INetSerializable {
     
     public int PlayerId { get; set; }
     
-    public Vector2 Location { get; set; }
+    public Vector2 CastVector { get; set; }
     
     public int SpellId { get; set; }
     
     public void Serialize(NetDataWriter writer) {
         writer.Put(PlayerId);
-        writer.Put(Location);
+        writer.Put(CastVector);
         writer.Put(SpellId);
     }
 
     public void Deserialize(NetDataReader reader) {
         PlayerId = reader.GetInt();
-        Location = reader.GetVector2();
+        CastVector = reader.GetVector2();
         SpellId = reader.GetInt();
     }
 }

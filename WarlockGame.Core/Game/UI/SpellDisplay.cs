@@ -23,7 +23,6 @@ public class SpellDisplay : IClickableComponent {
 
     public int Layer => 2;
     public Rectangle BoundingBox { get; } = new Rectangle(20, 925, 1880, 90);
-    public event EventHandler? OnClose;
 
     public void OnClick(Vector2 location) {
         Logger.Info("Click the spell display!");

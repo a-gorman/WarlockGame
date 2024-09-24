@@ -1,7 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using LiteNetLib.Utils;
 using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Networking;
+using WarlockGame.Core.Game.Spell;
+using Warlock = WarlockGame.Core.Game.Entity.Warlock;
 
 namespace WarlockGame.Core.Game.Input; 
 
@@ -26,7 +29,12 @@ class LocalPlayerGameInput {
         if (!InputManager.HasTextConsumers) {
             foreach (var actionType in SpellSelectionActions) {
                 if (inputState.WasActionKeyPressed(actionType)) {
-                    SelectedSpellId = warlock.Spells.ElementAtOrDefault(SpellSelectionActions.IndexOf(actionType))?.SpellId;
+                    var selectedSpell = warlock.Spells.ElementAtOrDefault(SpellSelectionActions.IndexOf(actionType));
+                    selectedSpell?.Effect.Switch(
+                        _ => SelectedSpellId = selectedSpell.SpellId,
+                        _ => SelectedSpellId = selectedSpell.SpellId,
+                        _ => IssueCommand(new CastCommand { PlayerId = _playerId, CastVector = Vector2.Zero, SpellId = selectedSpell.SpellId })
+                        );
                 }
             }
         }
@@ -35,35 +43,40 @@ class LocalPlayerGameInput {
         if(inputState.WasActionKeyPressed(InputAction.RightClick)) OnRightClick(inputState);
     }
 
-    // TODO: Find a way to dedup this logic
     private void OnLeftClick(InputManager.InputState inputState, Vector2 warlockPosition) {
-        var inputDirection = inputState.GetAimDirection(warlockPosition);
-        if (inputDirection != null && SelectedSpellId != null) {
-            if (WarlockGame.IsLocal) {
-                CommandProcessor.IssueCastCommand(_playerId, inputDirection.Value, SelectedSpellId.Value);
-            }
-            else {
-                var moveAction = new CastCommand { PlayerId = _playerId, Location = inputDirection.Value, SpellId = SelectedSpellId.Value};
-                NetworkManager.SendPlayerCommand(moveAction);
-                if(NetworkManager.IsServer) {
-                    CommandProcessor.AddDelayedPlayerCommand(moveAction, WarlockGame.Frame + NetworkManager.FrameDelay);
-                }
+        if (SelectedSpellId != null) {
+            Vector2? castVector = EntityManager.GetWarlockByPlayerId(_playerId)
+                       !.Spells
+                       .Find(x => x.SpellId == SelectedSpellId)
+                       ?.Effect
+                       .Match(
+                           _ => inputState.GetAimDirection(warlockPosition),
+                           _ => inputState.GetAimPosition(),
+                           _ => null
+                       );
+            if (castVector is not null) {
+                IssueCommand(new CastCommand { PlayerId = _playerId, CastVector = castVector.Value, SpellId = SelectedSpellId.Value });
             }
         }
+
+        SelectedSpellId = null;
     }
 
     private void OnRightClick(InputManager.InputState inputState) {
         var aimPosition = inputState.GetAimPosition()!.Value;
+        IssueCommand(new MoveCommand { PlayerId = _playerId, Location = aimPosition });
+        SelectedSpellId = null;
+    }
+
+    private void IssueCommand<T>(T command)  where T : IPlayerCommand, INetSerializable, new(){
         if (WarlockGame.IsLocal) {
-            CommandProcessor.IssueMoveCommand(_playerId, aimPosition);
+            CommandProcessor.IssuePlayerCommand(command);
         }
         else {
-            var moveAction = new MoveCommand { PlayerId = _playerId, Location = aimPosition };
-            NetworkManager.SendPlayerCommand(moveAction);
+            NetworkManager.SendPlayerCommand(command);
             if(NetworkManager.IsServer) {
-                CommandProcessor.AddDelayedPlayerCommand(moveAction, WarlockGame.Frame + NetworkManager.FrameDelay);
+                CommandProcessor.AddDelayedPlayerCommand(command, WarlockGame.Frame + NetworkManager.FrameDelay);
             }
         }
-        SelectedSpellId = null;
     }
 }
