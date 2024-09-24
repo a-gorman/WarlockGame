@@ -18,7 +18,7 @@ static class InputManager {
     private static readonly List<ITextInputConsumer> _textInputConsumers = new();
     private static readonly InputState _inputState = new();
     
-    private static LocalPlayerGameInput? _localPlayerInput;
+    public static LocalPlayerGameInput? LocalPlayerInput { get; private set; }
 
     public static bool HasTextConsumers => _textInputConsumers.Any();
 
@@ -38,14 +38,14 @@ static class InputManager {
         
         if (!HasTextConsumers) {
             HandleGameFunctions(_inputState);
-            _localPlayerInput?.Update(_inputState);
+            LocalPlayerInput?.Update(_inputState);
         }
 
         _textInputConsumers.RemoveAll(x => x.IsExpired);
     }
 
     public static void AttachLocalGameInput(Player player) {
-        _localPlayerInput = new LocalPlayerGameInput(player.Id);
+        LocalPlayerInput = new LocalPlayerGameInput(player.Id);
     }
     
     public static void AddTextConsumer(ITextInputConsumer consumer) {
