@@ -105,7 +105,7 @@ namespace WarlockGame.Core.Game.Entity
         public void CastSpell(int spellId, Vector2 castDirection) {
             var spell = Spells.Find(x => spellId == x.SpellId);
             
-            if (spell is not null && !spell.OnCooldown && castDirection.HasLength())
+            if (spell is not null && !spell.OnCooldown)
             {
                 spell.DoCast(this, castDirection);
             }

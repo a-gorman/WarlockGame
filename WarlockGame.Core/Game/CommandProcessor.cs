@@ -37,13 +37,13 @@ static class CommandProcessor {
         }
     }
     
-    private static void IssuePlayerCommand(IPlayerCommand action) {
+    public static void IssuePlayerCommand(IPlayerCommand action) {
         switch (action) {
             case MoveCommand move:
                 IssueMoveCommand(move.PlayerId, move.Location);
                 break;
             case CastCommand cast:
-                IssueCastCommand(cast.PlayerId, cast.Location, cast.SpellId);
+                IssueCastCommand(cast.PlayerId, cast.CastVector, cast.SpellId);
                 break;
             case CreateWarlock create:
                 EntityManager.Add(create.Warlock.Let(WarlockFactory.FromPacket));
@@ -64,11 +64,11 @@ static class CommandProcessor {
         _serverCommands.Enqueue(command, command.TargetFrame);
     }
     
-    public static void IssueMoveCommand(int playerId, Vector2 location) {
+    private static void IssueMoveCommand(int playerId, Vector2 location) {
         EntityManager.GetWarlockByPlayerId(playerId)?.GiveOrder(x => new DestinationMoveOrder(location, x));
     }
     
-    public static void IssueCastCommand(int playerId, Vector2 location, int spellId) {
+    private static void IssueCastCommand(int playerId, Vector2 location, int spellId) {
         EntityManager.GetWarlockByPlayerId(playerId)?.GiveOrder(x => new CastOrder(spellId, location, x));
     }
 
