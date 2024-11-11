@@ -24,7 +24,7 @@ class Doughnut : ILocationShape {
         return EntityManager.GetNearbyEntities(invokeLocation, Radius + Width)
                             .Where(x => !IgnoreCaster || x != caster)
                             .Select(x => CreateTargetInfo(x, invokeLocation))
-                            .Where(x => x.DisplacementAxis2!.Value.IsLengthLessThan(Width))
+                            .Where(x => x.DisplacementAxis2.IsLengthLessThan(Width))
                             .ToList();
     }
 
