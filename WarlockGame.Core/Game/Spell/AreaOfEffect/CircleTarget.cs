@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Entity;
-using WarlockGame.Core.Game.Graphics.Effect;
-using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Spell.AreaOfEffect;
 
@@ -24,6 +21,7 @@ class CircleTarget : ILocationShape {
                             {
                                 Entity = x,
                                 DisplacementAxis1 = x.Position - origin,
+                                DisplacementAxis2 = x.Position - origin,
                                 FalloffFactor = FalloffFactor.Invoke(x.Position - origin, Radius, x.Radius)
                             })
                             .ToList();
