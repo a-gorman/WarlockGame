@@ -5,23 +5,32 @@ using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Entity.Factory;
 using WarlockGame.Core.Game.Entity.Order;
 using WarlockGame.Core.Game.Networking;
+using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game; 
 
 static class CommandProcessor {
 
+    private static readonly PriorityQueue<IServerCommand, int> _serverCommands = new();
+    private static List<IServerCommand> _processedServerCommands = new();
+    public static IReadOnlyList<IServerCommand> ProcessedServerCommands => _processedServerCommands;
+    
     private static readonly PriorityQueue<IPlayerCommand, int> _playerCommands = new();
-    private static readonly PriorityQueue<ISynchronizedCommand, int> _serverCommands = new();
+    private static List<IPlayerCommand> _processedPlayerCommands = new();
+    public static IReadOnlyList<IPlayerCommand> ProcessedPlayerCommands => _processedPlayerCommands;
     
     public static void Update(int currentFrame) {
+        _processedServerCommands.Clear();
+        _processedPlayerCommands.Clear();
+        
         while (_serverCommands.TryPeek(out var command, out var frame) && frame == currentFrame) {
-            _serverCommands.Dequeue();
+            _processedServerCommands.Add(_serverCommands.Dequeue());
             IssueServerCommand(command);
         }
         
         while (_playerCommands.TryPeek(out var command, out var frame) && frame == currentFrame) {
-            _playerCommands.Dequeue();
+            _processedPlayerCommands.Add(_playerCommands.Dequeue());
             
             if (PlayerManager.GetPlayer(command.PlayerId)?.IsActive ?? true) {
                 IssuePlayerCommand(command);
@@ -29,15 +38,18 @@ static class CommandProcessor {
         }
     }
 
-    private static void IssueServerCommand(ISynchronizedCommand command) {
+    private static void IssueServerCommand(IServerCommand command) {
         switch (command) {
             case StartGame:
                 WarlockGame.Instance.RestartGame();
                 break;
+            case PlayerRemoved rm:
+                PlayerManager.RemovePlayer(rm.PlayerId);
+                break;
         }
     }
     
-    public static void IssuePlayerCommand(IPlayerCommand action) {
+    private static void IssuePlayerCommand(IPlayerCommand action) {
         switch (action) {
             case MoveCommand move:
                 IssueMoveCommand(move.PlayerId, move.Location);
@@ -60,8 +72,8 @@ static class CommandProcessor {
         _playerCommands.Enqueue(command, targetFrame);
     }
 
-    public static void AddDelayedGameCommand(ISynchronizedCommand command) {
-        _serverCommands.Enqueue(command, command.TargetFrame);
+    public static void AddDelayedServerCommand(IServerCommand command, int targetFrame) {
+        _serverCommands.Enqueue(command, targetFrame);
     }
     
     private static void IssueMoveCommand(int playerId, Vector2 location) {

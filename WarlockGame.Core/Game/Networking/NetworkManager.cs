@@ -1,9 +1,11 @@
 using System;
 using System.Data;
+using System.Linq;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Log;
+using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Networking; 
@@ -22,7 +24,8 @@ static class NetworkManager {
     public static bool IsClient => _client != null;
     public static bool IsServer => _server != null;
     public static bool StutterRequired => IsConnected && (IsClient ? _client!.StutterRequired: _server!.StutterRequired);
-    public static int FrameDelay => IsConnected ? Latency!.Value / WarlockGame.Instance.TargetElapsedTime.Milliseconds + LagPadding : 0;
+    // public static int FrameDelay => IsConnected ? Latency!.Value / WarlockGame.Instance.TargetElapsedTime.Milliseconds + LagPadding : 0;
+    public static int FrameDelay => 1;
     /// <summary>
     /// Latency in milliseconds
     /// </summary>
@@ -45,14 +48,10 @@ static class NetworkManager {
     public static void Update() {
         if (_server != null) {
             _server.Update();
-            _server.SendToAll(new Heartbeat { Frame = WarlockGame.Frame }, DeliveryMethod.ReliableSequenced);
         }
 
         if (_client != null) {
             _client.Update();
-            // TODO: client can be null here if the client was disconnected during update.
-            // This causes a crash if we fail to connect too.
-            _client.Send(new Heartbeat { Frame = WarlockGame.Frame }, DeliveryMethod.ReliableSequenced);
         }
         
         Debug.Visualize($"Latency: {Latency}", new Vector2(800, 50));
@@ -79,32 +78,27 @@ static class NetworkManager {
         _client = null;
     }
 
-    public static void SendPlayerCommand<T>(T command) where T : IPlayerCommand, INetSerializable, new() {
-        if (IsServer) {
-            var packet = new PlayerCommandResponse<T>
-            {
-                TargetFrame = WarlockGame.Frame + FrameDelay,
-                Command = command
-            };
-            _server!.SendSerializableToAll(packet, DeliveryMethod.ReliableOrdered);
-        }
-        else {
-            _client!.SendSerializable(command, DeliveryMethod.ReliableOrdered);
-        }
-    }
-
     public static void RestartGame() {
         if (IsServer) {
-            _server!.SendSerializableToAll(new StartGame { TargetFrame = WarlockGame.Frame + FrameDelay }, DeliveryMethod.ReliableOrdered);
+            _server!.SendSerializableToAll(new StartGame(), DeliveryMethod.ReliableOrdered);
         }
     }
 
-    private static void Send<T>(T packet) where T : INetSerializable {
+    public static void Send<T>(T packet) where T : INetSerializable {
         if (IsServer) {
             _server!.SendSerializableToAll(packet, DeliveryMethod.ReliableOrdered);
         }
         else {
             _client!.SendSerializable(packet, DeliveryMethod.ReliableOrdered);
+        }
+    }
+    
+    public static void SendReusable<T>(T packet) where T : class, new() {
+        if (IsServer) {
+            _server!.SendToAll(packet, DeliveryMethod.ReliableOrdered);
+        }
+        else {
+            _client!.Send(packet, DeliveryMethod.ReliableOrdered);
         }
     }
 }

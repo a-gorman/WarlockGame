@@ -6,6 +6,7 @@ using LiteNetLib;
 using LiteNetLib.Utils;
 using WarlockGame.Core.Game.Entity.Factory;
 using WarlockGame.Core.Game.Log;
+using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Networking;
@@ -17,6 +18,7 @@ public class Server : INetEventListener {
     private readonly NetPacketProcessor _packetProcessor = new();
 
     private readonly Dictionary<int, ClientPeer> _clients = new();
+    private readonly Dictionary<int, int> _clientToPlayerMap = new();
 
     public bool StutterRequired { get; private set; }
     public bool ClientDropping { get; private set; }
@@ -38,45 +40,46 @@ public class Server : INetEventListener {
         _packetProcessor.SubscribeNetSerializable<MoveCommand>(OnGameCommandReceived);
         _packetProcessor.SubscribeNetSerializable<CastCommand>(OnGameCommandReceived);
         _packetProcessor.SubscribeNetSerializable<CreateWarlock>(OnGameCommandReceived);
-        _packetProcessor.SubscribeReusable<Heartbeat, NetPeer>(OnHeartbeatReceived);
+        _packetProcessor.SubscribeReusable<ClientHeartbeat, NetPeer>(OnHeartbeatReceived);
         _packetProcessor.SubscribeReusable<JoinGameRequest, NetPeer>(OnJoinGameRequest);
     }
 
-    private void OnHeartbeatReceived(Heartbeat heartbeat, NetPeer sender) {
+    private void OnHeartbeatReceived(ClientHeartbeat serverHeartbeat, NetPeer sender) {
         if (_clients.TryGetValue(sender.Id, out var peer)) {
-            peer.Frame = heartbeat.Frame;
+            peer.Frame = serverHeartbeat.Frame;
         }
     }
 
     private void OnJoinGameRequest(JoinGameRequest request, NetPeer sender) {
         var player = PlayerManager.AddRemotePlayer(request.PlayerName);
         
-        SendToAllExcept(new PlayerJoined { PlayerName = request.PlayerName }, sender, DeliveryMethod.ReliableOrdered);
-        SendToPeer(new JoinGameResponse { PlayerId = player.Id, GameState = CreateGameState() }, sender, DeliveryMethod.ReliableOrdered);
+        _clientToPlayerMap.Add(sender.Id, player.Id);
+        SendToAllExcept(new PlayerJoined { PlayerName = request.PlayerName }, sender);
+        SendToPeer(new JoinGameResponse { PlayerId = player.Id, GameState = CreateGameState() }, sender);
     }
     
     private void OnGameCommandReceived<T>(T request) where T : IPlayerCommand, INetSerializable, new() {
         var targetFrame = WarlockGame.Frame + NetworkManager.FrameDelay;
 
-        var action = new PlayerCommandResponse<T>
-        {
-            Command = request,
-            TargetFrame = targetFrame
-        };
+        // var action = new PlayerCommandResponse<T>
+        // {
+        //     Command = request,
+        //     TargetFrame = targetFrame
+        // };
         CommandProcessor.AddDelayedPlayerCommand(request, targetFrame);
-        SendSerializableToAll(action, DeliveryMethod.ReliableOrdered);
+        // SendSerializableToAll(action, DeliveryMethod.ReliableOrdered);
     }
 
     private void OnRequestGameState(RequestGameState _, NetPeer peer) {
         Logger.Info("Game state request received");
-        SendToPeer(CreateGameState(), peer, DeliveryMethod.ReliableOrdered);
+        SendToPeer(CreateGameState(), peer);
     }
 
     private static GameState CreateGameState() {
         var gameState = new GameState
         {
             Players = PlayerManager.Players
-                                   .Select(x => new Player { Name = x.Name, Id = x.Id })
+                                   .Select(x => new Packet.Player { Name = x.Name, Id = x.Id })
                                    .ToList(),
             Warlocks = EntityManager.Warlocks.Select(WarlockFactory.ToPacket).ToList(),
             Frame = WarlockGame.Frame
@@ -108,25 +111,25 @@ public class Server : INetEventListener {
         }
     }
 
-    public void SendToAll<T>(T packet, DeliveryMethod deliveryMethod) where T : class, new() {
+    public void SendToAll<T>(T packet, DeliveryMethod deliveryMethod = DeliveryMethod.ReliableOrdered) where T : class, new() {
         _writer.Reset();
         _packetProcessor.Write(_writer, packet);
         _server.SendToAll(_writer, deliveryMethod);
     }
     
-    public void SendToAllExcept<T>(T packet, NetPeer excluded, DeliveryMethod deliveryMethod) where T : class, new() {
+    public void SendToAllExcept<T>(T packet, NetPeer excluded, DeliveryMethod deliveryMethod = DeliveryMethod.ReliableOrdered) where T : class, new() {
         _writer.Reset();
         _packetProcessor.Write(_writer, packet);
         _server.SendToAll(_writer, deliveryMethod, excluded);
     }
     
-    public void SendToPeer<T>(T packet, NetPeer peer, DeliveryMethod deliveryMethod) where T : class, new() {
+    public void SendToPeer<T>(T packet, NetPeer peer, DeliveryMethod deliveryMethod = DeliveryMethod.ReliableOrdered) where T : class, new() {
         _writer.Reset();
         _packetProcessor.Write(_writer, packet);
         peer.Send(_writer, deliveryMethod);
     }
 
-    public void SendSerializableToAll<T>(T packet, DeliveryMethod deliveryMethod) where T : INetSerializable {
+    public void SendSerializableToAll<T>(T packet, DeliveryMethod deliveryMethod = DeliveryMethod.ReliableOrdered) where T : INetSerializable {
         _writer.Reset();
         _packetProcessor.WriteNetSerializable(_writer, ref packet);
         _server.SendToAll(_writer, deliveryMethod);
@@ -142,6 +145,9 @@ public class Server : INetEventListener {
         Logger.Info($"Peer disconnected: {peer.Id}");
         _clients.Remove(peer.Id);
         Latency = CalculateLatency();
+
+        var packet = new PlayerRemoved { PlayerId = _clientToPlayerMap[peer.Id] };
+        SendToAll(packet);
     }
 
     public void OnNetworkError(IPEndPoint endPoint, SocketError socketError) {

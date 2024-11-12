@@ -1,10 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Input.Devices;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
+using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.Util;
 using Warlock = WarlockGame.Core.Game.Entity.Warlock;
@@ -76,7 +76,7 @@ static class InputManager {
         switch (input.ToLowerInvariant())
         {
             case "restart" or "rm":
-                if (!NetworkManager.IsServer) {
+                if (NetworkManager.IsClient) {
                     Logger.Info("Must be server host to restart game"); 
                     return;
                 }
@@ -84,8 +84,7 @@ static class InputManager {
                     WarlockGame.Instance.RestartGame();
                 }
                 else if(NetworkManager.IsServer) {
-                    NetworkManager.RestartGame();
-                    CommandProcessor.AddDelayedGameCommand(new StartGame { TargetFrame = WarlockGame.Frame + NetworkManager.FrameDelay });
+                    CommandProcessor.AddDelayedServerCommand(new StartGame(), WarlockGame.Frame + NetworkManager.FrameDelay);
                 }
                 break;
             

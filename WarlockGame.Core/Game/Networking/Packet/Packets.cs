@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
 using LiteNetLib.Utils;
 using Microsoft.Xna.Framework;
 
-namespace WarlockGame.Core.Game.Networking;
+namespace WarlockGame.Core.Game.Networking.Packet;
 // Disable nullability complaints. A bunch of stuff here is initialized late by deserialization
 #pragma warning disable CS8618
 
@@ -26,7 +27,7 @@ public class GameState : INetSerializable {
 
 public class JoinGameRequest : INetSerializable {
     public string PlayerName { get; set; }
-    
+
     public void Serialize(NetDataWriter writer) {
         writer.Put(PlayerName);
     }
@@ -42,10 +43,10 @@ public class JoinGameResponse : INetSerializable {
     /// The ID assigned to the joining player
     /// </summary>
     public int PlayerId { get; set; }
-    
+
     public GameState GameState { get; set; }
 
-public void Serialize(NetDataWriter writer) {
+    public void Serialize(NetDataWriter writer) {
         writer.Put(PlayerId);
         writer.Put(GameState);
     }
@@ -58,28 +59,13 @@ public void Serialize(NetDataWriter writer) {
 
 public class PlayerJoined : INetSerializable {
     public string PlayerName { get; set; }
-    
+
     public void Serialize(NetDataWriter writer) {
         writer.Put(PlayerName);
     }
 
     public void Deserialize(NetDataReader reader) {
         PlayerName = reader.GetString();
-    }
-}
-
-public class CreateWarlock : IPlayerCommand, INetSerializable {
-    public int PlayerId { get; set; }
-    public Warlock Warlock { get; set; }
-    
-    public void Serialize(NetDataWriter writer) {
-        writer.Put(PlayerId);
-        writer.Put(Warlock);
-    }
-
-    public void Deserialize(NetDataReader reader) {
-        PlayerId = reader.GetInt();
-        Warlock = reader.Get<Warlock>();
     }
 }
 
@@ -113,6 +99,7 @@ public class Warlock : INetSerializable {
 public class Spell : INetSerializable {
     public int SpellId { get; set; }
     public int CooldownRemaining { get; set; }
+
     public void Serialize(NetDataWriter writer) {
         writer.Put(SpellId);
         writer.Put(CooldownRemaining);
@@ -142,93 +129,94 @@ public class Player : INetSerializable {
     }
 }
 
-public class MoveCommand : IPlayerCommand, INetSerializable {
-    
-    public int PlayerId { get; set; }
-    
-    public Vector2 Location { get; set; }
-    
-    public void Serialize(NetDataWriter writer) {
-        writer.Put(PlayerId);
-        writer.Put(Location);
-    }
-
-    public void Deserialize(NetDataReader reader) {
-        PlayerId = reader.GetInt();
-        Location = reader.GetVector2();
-    }
-}
-
-public class CastCommand : IPlayerCommand, INetSerializable {
-    
-    public int PlayerId { get; set; }
-    
-    public Vector2 CastVector { get; set; }
-    
-    public int SpellId { get; set; }
-    
-    public void Serialize(NetDataWriter writer) {
-        writer.Put(PlayerId);
-        writer.Put(CastVector);
-        writer.Put(SpellId);
-    }
-
-    public void Deserialize(NetDataReader reader) {
-        PlayerId = reader.GetInt();
-        CastVector = reader.GetVector2();
-        SpellId = reader.GetInt();
-    }
-}
-
-public class PlayerCommandResponse<T> : INetSerializable, ISynchronizedCommand where T : INetSerializable, IPlayerCommand, new() {
-    public int TargetFrame { get; set; }
-    
-    public T Command { get; set; }
-
-    public void Serialize(NetDataWriter writer) {
-        writer.Put(TargetFrame);
-        writer.Put(Command);
-    }
-
-    public void Deserialize(NetDataReader reader) {
-        TargetFrame = reader.GetInt();
-        Command = reader.Get<T>();
-    }
-}
-
-public class StartGame : ISynchronizedCommand, INetSerializable {
-    public int TargetFrame { get; set; }
-    
-    public void Serialize(NetDataWriter writer) {
-        writer.Put(TargetFrame);
-    }
-
-    public void Deserialize(NetDataReader reader) {
-        TargetFrame = reader.GetInt();
-    }
-}
-
 public class RequestGameState {
     public int Frame { get; set; }
 }
 
-public class Heartbeat {
+public class ServerHeartbeat : INetSerializable {
+    public int Tick { get; set; }
+    public int Checksum { get; set; }
+
+    public List<IPlayerCommand> PlayerCommands { get; set; } = null!;
+    public List<IServerCommand> ServerCommands { get; set; } = null!;
+
+    public void Serialize(NetDataWriter writer) {
+        writer.Put(Tick);
+        writer.Put(Checksum);
+        PutManySeverCommands(writer, ServerCommands);
+        PutManyPlayerCommands(writer, PlayerCommands);
+    }
+
+    public void Deserialize(NetDataReader reader) {
+        Tick = reader.GetInt();
+        Checksum = reader.GetInt();
+        ServerCommands = GetManyServerCommands(reader);
+        PlayerCommands = GetManyPlayerCommands(reader);
+    }
+
+    private static void PutManyPlayerCommands(NetDataWriter writer, IReadOnlyCollection<IPlayerCommand> commands) {
+        writer.Put(commands.Count);
+        foreach (var command in commands) {
+            writer.Put((byte) command.GetSerializerType());
+            writer.Put(command);
+        }
+    }
+
+    private static void PutManySeverCommands(NetDataWriter writer, IReadOnlyCollection<IServerCommand> commands) {
+        writer.Put(commands.Count);
+        foreach (var command in commands) {
+            writer.Put((byte) command.GetSerializerType());
+            writer.Put(command);
+        }
+    }
+
+    private static List<IPlayerCommand> GetManyPlayerCommands(NetDataReader reader) {
+        var count = reader.GetInt();
+        var list = new List<IPlayerCommand>(count);
+        for (int i = 0; i < count; i++) {
+            var classType = (IPlayerCommand.Type)reader.GetByte();
+            switch (classType) {
+                case IPlayerCommand.Type.CastCommand:
+                    list.Add(reader.Get<CastCommand>());
+                    break;
+                case IPlayerCommand.Type.MoveCommand:
+                    list.Add(reader.Get<MoveCommand>());
+                    break;
+                case IPlayerCommand.Type.CreateWarlock:
+                    list.Add(reader.Get<CreateWarlock>());
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        return list;
+    }
+
+    private static List<IServerCommand> GetManyServerCommands(NetDataReader reader) {
+        var count = reader.GetInt();
+        var list = new List<IServerCommand>(count);
+        for (int i = 0; i < count; i++) {
+            var classType = (IServerCommand.Type)reader.GetByte();
+            switch (classType) {
+                case IServerCommand.Type.StartGame:
+                    list.Add(reader.Get<StartGame>());
+                    break;
+                case IServerCommand.Type.PlayerRemoved:
+                    list.Add(reader.Get<PlayerRemoved>());
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        return list;
+    }
+}
+
+public class ClientHeartbeat {
     public int Frame { get; set; }
 }
 
-/// <summary>
-/// A player issued command that has an effect on the game.
-/// For example, issuing orders to a warlock or pausing the game.
-/// </summary>
-public interface IPlayerCommand {
-    int PlayerId { get; }
-}
-
-/// <summary>
-/// Server commands that need to be synchronized to a game frame
-/// </summary>
-public interface ISynchronizedCommand {
-    int TargetFrame { get; }
-}
 
 #pragma warning restore CS8618

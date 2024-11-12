@@ -6,7 +6,7 @@ using WarlockGame.Core.Game.Spell;
 namespace WarlockGame.Core.Game.Entity.Factory; 
 
 static class WarlockFactory {
-    public static Warlock FromPacket(Networking.Warlock packet) {
+    public static Warlock FromPacket(Networking.Packet.Warlock packet) {
         var warlock = new Warlock(packet.PlayerId)
         {
             Position = packet.Position,
@@ -20,18 +20,18 @@ static class WarlockFactory {
         return warlock;
     }
 
-    public static Networking.Warlock ToPacket(Warlock warlock) {
-        return new Networking.Warlock {
+    public static Networking.Packet.Warlock ToPacket(Warlock warlock) {
+        return new Networking.Packet.Warlock {
             PlayerId = warlock.PlayerId,
             Position = warlock.Position,
             Velocity = warlock.Velocity,
             Orientation = warlock.Orientation,
-            Spells = warlock.Spells.Select(x => new Networking.Spell { SpellId = x.SpellId, CooldownRemaining = x.Cooldown.FramesRemaining }).ToList()
+            Spells = warlock.Spells.Select(x => new Networking.Packet.Spell { SpellId = x.SpellId, CooldownRemaining = x.Cooldown.FramesRemaining }).ToList()
         };
     }
 
     // TODO: Make dynamic
-    private static WarlockSpell CreateSpell(Networking.Spell packet) {
+    private static WarlockSpell CreateSpell(Networking.Packet.Spell packet) {
         var spell = packet.SpellId switch
         {
             1 => SpellFactory.Fireball(),

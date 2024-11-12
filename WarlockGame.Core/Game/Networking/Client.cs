@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -6,6 +7,7 @@ using LiteNetLib;
 using LiteNetLib.Utils;
 using WarlockGame.Core.Game.Entity.Factory;
 using WarlockGame.Core.Game.Log;
+using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Networking;
@@ -15,8 +17,9 @@ public sealed class Client : INetEventListener {
     private NetManager _client = null!;
     private NetPeer? _server;
 
-    private NetDataWriter _writer = new();
-    private NetPacketProcessor packetProcessor = new();
+    private readonly NetDataWriter _writer = new();
+    private readonly NetPacketProcessor _packetProcessor = new();
+    private readonly Dictionary<int, int> _checksums = new();
 
     public bool IsConnected => _server?.ConnectionState == ConnectionState.Connected;
     public int Latency { get; private set; }
@@ -40,25 +43,24 @@ public sealed class Client : INetEventListener {
         Logger.Info($"Connecting to {address}");
         _client.Connect(address, 6112, "");
         
-        packetProcessor.RegisterCustomNestedTypes();
+        _packetProcessor.RegisterCustomNestedTypes();
 
-        packetProcessor.SubscribeReusable<Heartbeat>(OnHeartbeatReceived);
-        packetProcessor.SubscribeNetSerializable<StartGame>(CommandProcessor.AddDelayedGameCommand);
-        packetProcessor.SubscribeNetSerializable<PlayerCommandResponse<MoveCommand>>(OnPlayerCommandReceived);
-        packetProcessor.SubscribeNetSerializable<PlayerCommandResponse<CastCommand>>(OnPlayerCommandReceived);
-        packetProcessor.SubscribeNetSerializable<PlayerCommandResponse<CreateWarlock>>(OnPlayerCommandReceived);
-        packetProcessor.SubscribeNetSerializable<JoinGameResponse>(OnJoinResponse);
-        packetProcessor.SubscribeNetSerializable<PlayerJoined>(OnPlayerJoined);
+        _packetProcessor.SubscribeNetSerializable<ServerHeartbeat>(OnHeartbeatReceived);
+        _packetProcessor.SubscribeNetSerializable<JoinGameResponse>(OnJoinResponse);
+        _packetProcessor.SubscribeNetSerializable<PlayerJoined>(OnPlayerJoined);
         
         _clientConnectedCallback = clientConnectedCallback;
     }
 
-    private void OnHeartbeatReceived(Heartbeat heartbeat) {
-        _maxFrameAllowed = heartbeat.Frame;
-    }
-
-    private void OnPlayerCommandReceived<T>(PlayerCommandResponse<T> response) where T : INetSerializable, IPlayerCommand, new() {
-        CommandProcessor.AddDelayedPlayerCommand(response.Command, response.TargetFrame);
+    private void OnHeartbeatReceived(ServerHeartbeat serverHeartbeat) {
+        _maxFrameAllowed = serverHeartbeat.Tick;
+        _checksums[serverHeartbeat.Tick] = serverHeartbeat.Checksum;
+        foreach (var serverCommand in serverHeartbeat.ServerCommands) {
+            CommandProcessor.AddDelayedServerCommand(serverCommand, serverHeartbeat.Tick);
+        }
+        foreach (var playerCommand in serverHeartbeat.PlayerCommands) {
+            CommandProcessor.AddDelayedPlayerCommand(playerCommand, serverHeartbeat.Tick);
+        }
     }
 
     private void OnPlayerJoined(PlayerJoined joinInfo) {
@@ -84,26 +86,37 @@ public sealed class Client : INetEventListener {
         // This part is a bit silly right now, but will make more sense when players don't create a warlock immediately
         // ex. waiting for games to finish, selecting stuff, delayed spawn-in, etc.
         var localPlayerId = PlayerManager.LocalPlayer!.Id;
-        NetworkManager.SendPlayerCommand(new CreateWarlock { PlayerId = localPlayerId, Warlock = new Entity.Warlock(localPlayerId).Let(WarlockFactory.ToPacket) });
+        NetworkManager.Send(new CreateWarlock { PlayerId = localPlayerId, Warlock = new Entity.Warlock(localPlayerId).Let(WarlockFactory.ToPacket) });
     }
 
     public void Update() {
         _client.PollEvents();
+
+        if (_checksums.TryGetValue(WarlockGame.Frame - 1, out var expectedChecksum)) {
+            var actual = (int)EntityManager.Warlocks.Sum(x => x.Position.X + x.Position.Y);
+            
+            if (expectedChecksum != actual) {
+                Logger.Warning($"Checksum does not match. Actual: '{actual}' Expected: '{expectedChecksum}'");
+            }
+
+            _checksums.Remove(WarlockGame.Frame);
+        }
+
     }
 
-    public void Send<T>(T packet, DeliveryMethod deliveryMethod) where T : class, new() {
+    public void Send<T>(T packet, DeliveryMethod deliveryMethod = DeliveryMethod.ReliableOrdered) where T : class, new() {
         if (!IsConnected) return;
 
         _writer.Reset();
-        packetProcessor.Write(_writer, packet);
+        _packetProcessor.Write(_writer, packet);
         _server!.Send(_writer, deliveryMethod);
     }
 
-    public void SendSerializable<T>(T packet, DeliveryMethod deliveryMethod) where T : INetSerializable {
+    public void SendSerializable<T>(T packet, DeliveryMethod deliveryMethod = DeliveryMethod.ReliableOrdered) where T : INetSerializable {
         if (!IsConnected) return;
 
         _writer.Reset();
-        packetProcessor.WriteNetSerializable(_writer, ref packet);
+        _packetProcessor.WriteNetSerializable(_writer, ref packet);
         _server!.Send(_writer, deliveryMethod);
     }
 
@@ -125,7 +138,7 @@ public sealed class Client : INetEventListener {
 
     public void OnNetworkReceive(NetPeer peer, NetPacketReader reader, byte channelNumber,
         DeliveryMethod deliveryMethod) {
-        packetProcessor.ReadAllPackets(reader, peer);
+        _packetProcessor.ReadAllPackets(reader, peer);
     }
 
     public void OnNetworkReceiveUnconnected(IPEndPoint remoteEndPoint, NetPacketReader reader,
