@@ -89,7 +89,7 @@ namespace WarlockGame.Core.Game.Util
         /// Maximum capacity of the buffer. Elements pushed into the buffer after
         /// maximum capacity is reached (IsFull = true), will remove an element.
         /// </summary>
-        public int Capacity { get { return _buffer.Length; } }
+        public int Capacity => _buffer.Length;
 
         /// <summary>
         /// Boolean indicating if Circular is at full capacity.
@@ -97,29 +97,17 @@ namespace WarlockGame.Core.Game.Util
         /// cause elements to be removed from the other end
         /// of the buffer.
         /// </summary>
-        public bool IsFull
-        {
-            get
-            {
-                return Size == Capacity;
-            }
-        }
+        public bool IsFull => Size == Capacity;
 
         /// <summary>
         /// True if has no elements.
         /// </summary>
-        public bool IsEmpty
-        {
-            get
-            {
-                return Size == 0;
-            }
-        }
+        public bool IsEmpty => Size == 0;
 
         /// <summary>
         /// Current buffer size (the number of elements that the buffer has).
         /// </summary>
-        public int Size { get { return _size; } }
+        public int Size => _size;
 
         /// <summary>
         /// Element at the front of the buffer - this[0].

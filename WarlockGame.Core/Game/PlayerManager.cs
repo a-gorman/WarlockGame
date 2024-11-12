@@ -44,7 +44,11 @@ static class PlayerManager {
         }
     }
 
-    public static void ClearRemotePlayers() {
-        Players.RemoveAll(x => !x.IsLocal);
+    public static void RemovePlayer(int playerId) {
+        var playerToRemove = Players.FirstOrDefault(x => x.Id == playerId);
+        if(playerToRemove == null || playerToRemove.IsLocal) { return; }
+
+        Players.Remove(playerToRemove);
+        EntityManager.GetWarlockByPlayerId(playerToRemove.Id)!.IsExpired = true;
     }
 }

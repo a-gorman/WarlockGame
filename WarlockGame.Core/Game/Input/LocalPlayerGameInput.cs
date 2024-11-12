@@ -3,6 +3,7 @@ using System.Linq;
 using LiteNetLib.Utils;
 using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Networking;
+using WarlockGame.Core.Game.Networking.Packet;
 
 namespace WarlockGame.Core.Game.Input; 
 
@@ -66,15 +67,12 @@ class LocalPlayerGameInput {
         SelectedSpellId = null;
     }
 
-    private void IssueCommand<T>(T command)  where T : IPlayerCommand, INetSerializable, new(){
-        if (WarlockGame.IsLocal) {
-            CommandProcessor.IssuePlayerCommand(command);
+    private void IssueCommand<T>(T command)  where T : IPlayerCommand, new() {
+        if (NetworkManager.IsClient) {
+            NetworkManager.Send(command);
         }
         else {
-            NetworkManager.SendPlayerCommand(command);
-            if(NetworkManager.IsServer) {
-                CommandProcessor.AddDelayedPlayerCommand(command, WarlockGame.Frame + NetworkManager.FrameDelay);
-            }
+            CommandProcessor.AddDelayedPlayerCommand(command, WarlockGame.Frame + NetworkManager.FrameDelay);
         }
     }
 }

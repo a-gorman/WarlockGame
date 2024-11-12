@@ -10,6 +10,7 @@ using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
+using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.Util;
 using Warlock = WarlockGame.Core.Game.Entity.Warlock;
@@ -21,6 +22,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     public static WarlockGame Instance { get; private set; }  = null!;
     public static Viewport Viewport => Instance.GraphicsDevice.Viewport;
     public static Vector2 ScreenSize => new Vector2(Viewport.Width, Viewport.Height);
+    public static Vector2 ArenaSize => new Vector2(1900, 1000);
     public static GameTime GameTime { get; private set; } = null!;
     public static int Frame { get; set; }
     public static ParticleManager<ParticleState> ParticleManager { get; private set; } = null!;
@@ -74,24 +76,10 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         Art.Load(Content);
         Sound.Load(Content);
 
-        //Known issue that you get exceptions if you use Media PLayer while connected to your PC
-        //See http://social.msdn.microsoft.com/Forums/en/windowsphone7series/thread/c8a243d2-d360-46b1-96bd-62b1ef268c66
-        //Which means its impossible to test this from VS.
-        //So we have to catch the exception and throw it away
-        try
-        {
-            MediaPlayer.IsRepeating = true;
-            // MediaPlayer.Play(Sound.Music);
-        }
-        catch { }
-
+        MediaPlayer.IsRepeating = true;
+        // MediaPlayer.Play(Sound.Music);
     }
 
-    /// <summary>
-    /// Allows the game to run logic such as updating the world,
-    /// checking for collisions, gathering input, and playing audio.
-    /// </summary>
-    /// <param name="gameTime">Provides a snapshot of timing values.</param>
     protected override void Update(GameTime gameTime)
     {
         Debug.Visualize($"Frame: {Frame}", new Vector2(1500, 0));
@@ -102,7 +90,8 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         GameTime = gameTime;
         StaticInput.Update();
 
-        Debug.Visualize(Logger.Log.TakeLast(5), Vector2.Zero);
+        var logs = Logger.Logs.Select(x => String.Join(": ", x.LevelString(), x.Tick, x.Message)).Take(5);
+        Debug.Visualize(logs, Vector2.Zero);
             
         NetworkManager.Update();
 
@@ -117,6 +106,20 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
             ParticleManager.Update();
                 
             Grid.Update();
+        }
+
+        if (NetworkManager.IsServer) {
+            NetworkManager.Send(new ServerHeartbeat
+            {
+                Tick = Frame, 
+                Checksum = (int) EntityManager.Warlocks.Sum(x => x.Position.X + x.Position.Y),
+                ServerCommands = CommandProcessor.ProcessedServerCommands.ToList(),
+                PlayerCommands = CommandProcessor.ProcessedPlayerCommands.ToList()
+            });
+        }
+        else if (NetworkManager.IsClient)
+        {
+            NetworkManager.SendReusable(new ClientHeartbeat { Frame = Frame });
         }
             
         base.Update(gameTime);
