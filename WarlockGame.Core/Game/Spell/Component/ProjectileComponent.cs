@@ -9,7 +9,7 @@ namespace WarlockGame.Core.Game.Spell.Component;
 
 class ProjectileComponent: IDirectionalSpellComponent {
     
-    private int _speed = 5;
+    private int _speed = 8;
     private readonly Sprite _sprite;
     private readonly IReadOnlyList<ILocationSpellComponent> _effects;
 
