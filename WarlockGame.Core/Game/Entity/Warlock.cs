@@ -14,7 +14,7 @@ namespace WarlockGame.Core.Game.Entity
 {
     class Warlock : EntityBase
     {
-        public const float Speed = 8;
+        public const float Speed = 4;
 
         public float MaxHealth { get; private set; } = 100;
 

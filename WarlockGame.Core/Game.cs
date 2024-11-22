@@ -161,7 +161,6 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
         base.Draw(gameTime);
 
-        // Draw the user interface without bloom
         UIManager.Draw(_spriteBatch);
         
         // DrawDebugInfo();
