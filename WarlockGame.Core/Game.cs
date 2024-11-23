@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
+using MonoGame.Extended;
 using PS4Mono;
 using WarlockGame.Core.Game;
 using WarlockGame.Core.Game.Display;
@@ -127,8 +128,11 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
     public void RestartGame() {
         ClearGameState();
-        foreach (var player in PlayerManager.Players) {
-            EntityManager.Add(new Warlock(player.Id));
+        var radiansPerPlayer = (float)(2 * Math.PI / PlayerManager.Players.Count);
+        var warlocks = PlayerManager.Players.Select((x, i) => new Warlock(x.Id)
+            { Position = ArenaSize / 2 + new Vector2(0, 250).Rotate(radiansPerPlayer * i) });
+        foreach (var warlock in warlocks) {
+            EntityManager.Add(warlock);
         }
     }
     
