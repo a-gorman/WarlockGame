@@ -82,11 +82,6 @@ public sealed class Client : INetEventListener {
         response.GameState.Warlocks.Select(WarlockFactory.FromPacket).ForEach(EntityManager.Add);
         
         WarlockGame.Frame = response.GameState.Frame;
-
-        // This part is a bit silly right now, but will make more sense when players don't create a warlock immediately
-        // ex. waiting for games to finish, selecting stuff, delayed spawn-in, etc.
-        var localPlayerId = PlayerManager.LocalPlayer!.Id;
-        NetworkManager.Send(new CreateWarlock { PlayerId = localPlayerId, Warlock = new Entity.Warlock(localPlayerId).Let(WarlockFactory.ToPacket) });
     }
 
     public void Update() {
