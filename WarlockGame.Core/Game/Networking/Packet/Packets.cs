@@ -74,7 +74,7 @@ public class Warlock : INetSerializable {
     public Vector2 Position { get; set; }
     public Vector2 Velocity { get; set; }
     public float Orientation { get; set; }
-    public int Health { get; set; }
+    public float Health { get; set; }
     public List<Spell> Spells { get; set; }
 
     public void Serialize(NetDataWriter writer) {
@@ -91,7 +91,7 @@ public class Warlock : INetSerializable {
         Position = reader.GetVector2();
         Velocity = reader.GetVector2();
         Orientation = reader.GetFloat();
-        Health = reader.GetInt();
+        Health = reader.GetFloat();
         Spells = reader.GetMany<Spell>();
     }
 }

@@ -26,6 +26,7 @@ static class WarlockFactory {
             Position = warlock.Position,
             Velocity = warlock.Velocity,
             Orientation = warlock.Orientation,
+            Health = warlock.Health,
             Spells = warlock.Spells.Select(x => new Networking.Packet.Spell { SpellId = x.SpellId, CooldownRemaining = x.Cooldown.FramesRemaining }).ToList()
         };
     }
