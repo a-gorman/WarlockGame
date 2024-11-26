@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
-using WarlockGame.Core.Game.Graphics.Effect;
 
-namespace WarlockGame.Core.Game
+namespace WarlockGame.Core.Game.Effect
 {
 	internal static class EffectManager
 	{
@@ -12,8 +12,10 @@ namespace WarlockGame.Core.Game
 		private static bool _isUpdating;
 		private static readonly List<IEffect> _addedEffects = new();
 
-		public static int Count => _effects.Count;
-
+		public static void AddDelayedEffect(Action action, GameTimer timer) {
+			AddEffect(new DelayedEffect { Action = action, Timer = timer});
+		}
+		
 		public static void Add(IEffect effect)
 		{
 			if (!_isUpdating)
@@ -53,6 +55,19 @@ namespace WarlockGame.Core.Game
 		public static void Clear() {
 			_effects.Clear();
 			_addedEffects.Clear();
+		}
+
+		private class DelayedEffect : IEffect {
+			public required GameTimer Timer { get; init; }
+			public required Action Action { get; init; }
+			public bool IsExpired => Timer.IsExpired;
+			public void Update() {
+				if (Timer.Update()) {
+					Action.Invoke();
+				}
+			}
+
+			public void Draw(SpriteBatch spriteBatch) { }
 		}
 	}
 }

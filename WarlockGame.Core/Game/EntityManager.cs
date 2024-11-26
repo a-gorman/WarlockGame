@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -19,8 +20,9 @@ namespace WarlockGame.Core.Game
 		private static bool _isUpdating;
 		private static readonly List<EntityBase> _addedEntities = new();
 
-		public static int Count => _entities.Count;
 		public static IReadOnlyCollection<Warlock> Warlocks => _warlocks.Values;
+
+		public static event Action<Warlock>? WarlockDestroyed;
 
 		public static void Add(EntityBase entity)
 		{
@@ -39,6 +41,7 @@ namespace WarlockGame.Core.Game
 					break;
 				case Warlock warlock:
 					_warlocks.TryAdd(warlock.PlayerId, warlock);
+					warlock.Destroyed += x => WarlockDestroyed?.Invoke(x);
 					break;
 			}
 		}
@@ -57,8 +60,9 @@ namespace WarlockGame.Core.Game
 
 			_addedEntities.Clear();
 
-			_entities = _entities.Where(x => !x.IsExpired).ToList();
-			_projectiles = _projectiles.Where(x => !x.IsExpired).ToList();
+			_entities.RemoveAll(x => x.IsExpired);
+			_projectiles.RemoveAll(x => x.IsExpired);
+			_warlocks.RemoveAll((_, v) => v.IsExpired);
 		}
 
 		public static Warlock? GetWarlockByPlayerId(int id) {

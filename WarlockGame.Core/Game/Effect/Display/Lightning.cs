@@ -1,7 +1,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using WarlockGame.Core.Game.Graphics;
 
-namespace WarlockGame.Core.Game.Graphics.Effect;
+namespace WarlockGame.Core.Game.Effect.Display;
 
 public class Lightning : IEffect
 {

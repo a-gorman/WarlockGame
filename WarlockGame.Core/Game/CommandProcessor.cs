@@ -40,8 +40,8 @@ static class CommandProcessor {
 
     private static void IssueServerCommand(IServerCommand command) {
         switch (command) {
-            case StartGame:
-                WarlockGame.Instance.RestartGame();
+            case StartGame sg:
+                WarlockGame.Instance.RestartGame(sg.Seed);
                 break;
             case PlayerRemoved rm:
                 PlayerManager.RemovePlayer(rm.PlayerId);

@@ -12,9 +12,15 @@ public interface IServerCommand : INetSerializable {
 }
 
 class StartGame : IServerCommand {
-    public void Serialize(NetDataWriter writer) { }
+    public int Seed { get; set; }
 
-    public void Deserialize(NetDataReader reader) { }
+    public void Serialize(NetDataWriter writer) {
+        writer.Put(Seed);
+    }
+
+    public void Deserialize(NetDataReader reader) {
+        Seed = reader.GetInt();
+    }
     public IServerCommand.Type GetSerializerType() => IServerCommand.Type.StartGame;
 }
 

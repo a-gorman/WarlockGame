@@ -12,11 +12,10 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using WarlockGame.Core.Game.Graphics;
 
 #endregion
 
-namespace WarlockGame.Core.Game.Display
+namespace WarlockGame.Core.Game.Graphics
 {
     public class BloomComponent : DrawableGameComponent
     {

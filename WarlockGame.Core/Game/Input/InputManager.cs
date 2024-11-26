@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -81,10 +82,10 @@ static class InputManager {
                     return;
                 }
                 if (WarlockGame.IsLocal) {
-                    WarlockGame.Instance.RestartGame();
+                    WarlockGame.Instance.RestartGame(Random.Shared.Next());
                 }
                 else if(NetworkManager.IsServer) {
-                    CommandProcessor.AddDelayedServerCommand(new StartGame(), WarlockGame.Frame + NetworkManager.FrameDelay);
+                    CommandProcessor.AddDelayedServerCommand(new StartGame { Seed = Random.Shared.Next() }, WarlockGame.Frame + NetworkManager.FrameDelay);
                 }
                 break;
             

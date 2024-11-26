@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using WarlockGame.Core.Game.Graphics;
 
 namespace WarlockGame.Core.Game.Util;
 
@@ -67,5 +69,15 @@ internal static class Extensions
 
     public static bool IsEmpty(this string source) {
         return source == string.Empty;
+    }
+
+    public static void RemoveAll<TKey, TValue>(
+        this IDictionary<TKey, TValue> source,
+        Func<TKey, TValue, bool> predicate) {
+        foreach (var entry in source) {
+            if (predicate(entry.Key, entry.Value)) {
+                source.Remove(entry.Key);
+            }
+        }
     }
 }

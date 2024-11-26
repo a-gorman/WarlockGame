@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace WarlockGame.Core.Game
+namespace WarlockGame.Core.Game.Graphics
 {
 	internal static class Art
 	{
