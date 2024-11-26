@@ -173,28 +173,6 @@ namespace WarlockGame.Core.Game.Entity
                 base.Draw(spriteBatch);
         }
 
-        public void Kill()
-        {
-            // Player.Status.RemoveLife();
-            _framesUntilRespawn = GameStatus.IsGameOver ? 300 : 120;
-
-            Color explosionColor = new Color(0.8f, 0.8f, 0.4f); // yellow
-
-            for (int i = 0; i < 1200; i++)
-            {
-                float speed = 18f * (1f - 1 / _rand.NextFloat(1f, 10f));
-                Color color = Color.Lerp(Color.White, explosionColor, _rand.NextFloat(0, 1));
-                var state = new ParticleState()
-                {
-                    Velocity = _rand.NextVector2(speed, speed),
-                    Type = ParticleType.None,
-                    LengthMultiplier = 1
-                };
-
-                WarlockGame.ParticleManager.CreateParticle(Art.LineParticle, Position, color, 190, 1.5f, state);
-            }
-        }
-
         public void Push(float force, Vector2 direction)
         {
             Velocity += force * direction.ToNormalizedOrZero();
@@ -210,7 +188,7 @@ namespace WarlockGame.Core.Game.Entity
 
         private void Destroy(IEntity source) {
             IsExpired = true;
-            // source.
+            Destroyed?.Invoke(this);
         }
     }
 }

@@ -1,9 +1,10 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
+using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Util;
 
-namespace WarlockGame.Core.Game.Graphics.Effect; 
+namespace WarlockGame.Core.Game.Effect.Display; 
 
 public class VectorEffect : IEffect
 {

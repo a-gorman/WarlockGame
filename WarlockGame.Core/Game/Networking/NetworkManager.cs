@@ -1,6 +1,5 @@
 using System;
 using System.Data;
-using System.Linq;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using Microsoft.Xna.Framework;
@@ -76,12 +75,6 @@ static class NetworkManager {
     public static void Disconnect() {
         _server = null;
         _client = null;
-    }
-
-    public static void RestartGame() {
-        if (IsServer) {
-            _server!.SendSerializableToAll(new StartGame(), DeliveryMethod.ReliableOrdered);
-        }
     }
 
     public static void Send<T>(T packet) where T : INetSerializable {

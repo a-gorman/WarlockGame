@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 
-namespace WarlockGame.Core.Game
+namespace WarlockGame.Core.Game.Graphics
 {
 	internal static class ColorUtil
 	{

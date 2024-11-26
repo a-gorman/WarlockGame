@@ -6,12 +6,13 @@ using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
 using PS4Mono;
 using WarlockGame.Core.Game;
-using WarlockGame.Core.Game.Display;
+using WarlockGame.Core.Game.Effect;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
+using WarlockGame.Core.Game.Rule;
 using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.Util;
 using Warlock = WarlockGame.Core.Game.Entity.Warlock;
@@ -33,11 +34,14 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private readonly BloomComponent _bloom;
+
+    public static Random SynchronizedRandom { get; private set; } = new Random();
+
+    private readonly MaxLives _gameRule = new() { InitialLives = 3 };
  
     public WarlockGame() {
         Instance = this;
         _graphics = new GraphicsDeviceManager(this);
-
         _graphics.PreferredBackBufferWidth = 1920;
         _graphics.PreferredBackBufferHeight = 1080;
 
@@ -63,6 +67,8 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         UIManager.AddComponent(new HealthBarManager());
 
         Window.TextInput += (_, textArgs) => InputManager.OnTextInput(textArgs);
+
+        EntityManager.WarlockDestroyed += _gameRule.OnWarlockDestroyed;
         
         base.Initialize();
     }
@@ -126,14 +132,17 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         base.Update(gameTime);
     }
 
-    public void RestartGame() {
+    public void RestartGame(int seed) {
         ClearGameState();
+        SynchronizedRandom = new Random(seed);
         var radiansPerPlayer = (float)(2 * Math.PI / PlayerManager.Players.Count);
         var warlocks = PlayerManager.Players.Select((x, i) => new Warlock(x.Id)
             { Position = ArenaSize / 2 + new Vector2(0, 250).Rotate(radiansPerPlayer * i) });
         foreach (var warlock in warlocks) {
             EntityManager.Add(warlock);
         }
+
+        _gameRule.Reset();
     }
     
     private void ClearGameState() {

@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using WarlockGame.Core.Game.Effect;
+using WarlockGame.Core.Game.Effect.Display;
 using WarlockGame.Core.Game.Geometry;
-using WarlockGame.Core.Game.Graphics.Effect;
 
 namespace WarlockGame.Core.Game.Util; 
 
