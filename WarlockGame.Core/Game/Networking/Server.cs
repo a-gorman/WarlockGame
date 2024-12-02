@@ -7,6 +7,7 @@ using LiteNetLib.Utils;
 using WarlockGame.Core.Game.Entity.Factory;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
+using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Networking;
@@ -40,13 +41,13 @@ public class Server : INetEventListener {
         _packetProcessor.SubscribeNetSerializable<MoveCommand>(OnGameCommandReceived);
         _packetProcessor.SubscribeNetSerializable<CastCommand>(OnGameCommandReceived);
         _packetProcessor.SubscribeNetSerializable<CreateWarlock>(OnGameCommandReceived);
-        _packetProcessor.SubscribeReusable<ClientHeartbeat, NetPeer>(OnHeartbeatReceived);
+        _packetProcessor.SubscribeReusable<ClientTickProcessed, NetPeer>(OnHeartbeatReceived);
         _packetProcessor.SubscribeReusable<JoinGameRequest, NetPeer>(OnJoinGameRequest);
     }
 
-    private void OnHeartbeatReceived(ClientHeartbeat serverHeartbeat, NetPeer sender) {
+    private void OnHeartbeatReceived(ClientTickProcessed clientTickProcessed, NetPeer sender) {
         if (_clients.TryGetValue(sender.Id, out var peer)) {
-            peer.Frame = serverHeartbeat.Frame;
+            peer.Frame = clientTickProcessed.Tick;
         }
     }
 
@@ -59,7 +60,7 @@ public class Server : INetEventListener {
     }
     
     private void OnGameCommandReceived<T>(T request) where T : IPlayerCommand, INetSerializable, new() {
-        var targetFrame = WarlockGame.Frame + NetworkManager.FrameDelay;
+        var targetFrame = Simulation.Instance.Tick + NetworkManager.FrameDelay;
         CommandProcessor.AddDelayedPlayerCommand(request, targetFrame);
     }
 
@@ -75,7 +76,7 @@ public class Server : INetEventListener {
                                    .Select(x => new Packet.Player { Name = x.Name, Id = x.Id })
                                    .ToList(),
             Warlocks = EntityManager.Warlocks.Select(WarlockFactory.ToPacket).ToList(),
-            Frame = WarlockGame.Frame
+            Frame = Simulation.Instance.Tick
         };
         return gameState;
     }
@@ -91,9 +92,9 @@ public class Server : INetEventListener {
         ClientDropping = false;
         StutterRequired = false;
         foreach (var client in _clients.Values) {
-            if (client.Frame > WarlockGame.Frame) {
+            if (client.Frame > Simulation.Instance.Tick) {
                 Logger.Warning($"Client {client.NetPeer.Id} ahead of server");
-            } else if(WarlockGame.Frame - client.Frame > 10) {
+            } else if(Simulation.Instance.Tick - client.Frame > 10) {
                 Logger.Info("Lag detected");
                 StutterRequired = true;
             }

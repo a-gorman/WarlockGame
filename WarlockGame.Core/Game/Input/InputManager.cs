@@ -6,6 +6,8 @@ using WarlockGame.Core.Game.Input.Devices;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
+using WarlockGame.Core.Game.Sim;
+using WarlockGame.Core.Game.Sim.Util;
 using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.Util;
 using Warlock = WarlockGame.Core.Game.Entity.Warlock;
@@ -85,7 +87,9 @@ static class InputManager {
                     WarlockGame.Instance.RestartGame(Random.Shared.Next());
                 }
                 else if(NetworkManager.IsServer) {
-                    CommandProcessor.AddDelayedServerCommand(new StartGame { Seed = Random.Shared.Next() }, WarlockGame.Frame + NetworkManager.FrameDelay);
+                    CommandProcessor.AddDelayedServerCommand(
+                        new StartGame { Seed = Random.Shared.Next() }, 
+                        Simulation.Instance.Tick + NetworkManager.FrameDelay);
                 }
                 break;
             
@@ -116,6 +120,10 @@ static class InputManager {
                         NetworkManager.ConnectToServer(ipAddress.NullOrEmptyTo("localhost"), () => NetworkManager.JoinGame(name));
                     });
                 });
+                break;
+            
+            case "check" or "checksum":
+                Logger.Info($"Checksum is: {SimUtils.CalculateChecksum()}");
                 break;
             
             case "h" or "help":

@@ -133,7 +133,7 @@ public class RequestGameState {
     public int Frame { get; set; }
 }
 
-public class ServerHeartbeat : INetSerializable {
+public class ServerTickProcessed : INetSerializable {
     public int Tick { get; set; }
     public int Checksum { get; set; }
 
@@ -214,8 +214,8 @@ public class ServerHeartbeat : INetSerializable {
     }
 }
 
-public class ClientHeartbeat {
-    public int Frame { get; set; }
+public class ClientTickProcessed {
+    public int Tick { get; set; }
 }
 
 

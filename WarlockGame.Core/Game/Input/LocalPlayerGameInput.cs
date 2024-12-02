@@ -4,6 +4,7 @@ using LiteNetLib.Utils;
 using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
+using WarlockGame.Core.Game.Sim;
 
 namespace WarlockGame.Core.Game.Input; 
 
@@ -72,7 +73,7 @@ class LocalPlayerGameInput {
             NetworkManager.Send(command);
         }
         else {
-            CommandProcessor.AddDelayedPlayerCommand(command, WarlockGame.Frame + NetworkManager.FrameDelay);
+            CommandProcessor.AddDelayedPlayerCommand(command, Simulation.Instance.Tick + NetworkManager.FrameDelay);
         }
     }
 }

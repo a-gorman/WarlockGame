@@ -8,6 +8,8 @@ using LiteNetLib.Utils;
 using WarlockGame.Core.Game.Entity.Factory;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
+using WarlockGame.Core.Game.Sim;
+using WarlockGame.Core.Game.Sim.Util;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Networking;
@@ -23,7 +25,7 @@ public sealed class Client : INetEventListener {
 
     public bool IsConnected => _server?.ConnectionState == ConnectionState.Connected;
     public int Latency { get; private set; }
-    public bool StutterRequired => WarlockGame.Frame >= _maxFrameAllowed;
+    public bool StutterRequired => Simulation.Instance.Tick >= _maxFrameAllowed;
     private int _maxFrameAllowed;
     
     private Action? _clientConnectedCallback = null;
@@ -45,21 +47,21 @@ public sealed class Client : INetEventListener {
         
         _packetProcessor.RegisterCustomNestedTypes();
 
-        _packetProcessor.SubscribeNetSerializable<ServerHeartbeat>(OnHeartbeatReceived);
+        _packetProcessor.SubscribeNetSerializable<ServerTickProcessed>(OnHeartbeatReceived);
         _packetProcessor.SubscribeNetSerializable<JoinGameResponse>(OnJoinResponse);
         _packetProcessor.SubscribeNetSerializable<PlayerJoined>(OnPlayerJoined);
         
         _clientConnectedCallback = clientConnectedCallback;
     }
 
-    private void OnHeartbeatReceived(ServerHeartbeat serverHeartbeat) {
-        _maxFrameAllowed = serverHeartbeat.Tick;
-        _checksums[serverHeartbeat.Tick] = serverHeartbeat.Checksum;
-        foreach (var serverCommand in serverHeartbeat.ServerCommands) {
-            CommandProcessor.AddDelayedServerCommand(serverCommand, serverHeartbeat.Tick);
+    private void OnHeartbeatReceived(ServerTickProcessed serverTickProcessed) {
+        _maxFrameAllowed = serverTickProcessed.Tick;
+        _checksums[serverTickProcessed.Tick] = serverTickProcessed.Checksum;
+        foreach (var serverCommand in serverTickProcessed.ServerCommands) {
+            CommandProcessor.AddDelayedServerCommand(serverCommand, serverTickProcessed.Tick);
         }
-        foreach (var playerCommand in serverHeartbeat.PlayerCommands) {
-            CommandProcessor.AddDelayedPlayerCommand(playerCommand, serverHeartbeat.Tick);
+        foreach (var playerCommand in serverTickProcessed.PlayerCommands) {
+            CommandProcessor.AddDelayedPlayerCommand(playerCommand, serverTickProcessed.Tick);
         }
     }
 
@@ -81,20 +83,20 @@ public sealed class Client : INetEventListener {
 
         response.GameState.Warlocks.Select(WarlockFactory.FromPacket).ForEach(EntityManager.Add);
         
-        WarlockGame.Frame = response.GameState.Frame;
+        Simulation.Instance.Tick = response.GameState.Frame;
     }
 
     public void Update() {
         _client.PollEvents();
 
-        if (_checksums.TryGetValue(WarlockGame.Frame - 1, out var expectedChecksum)) {
-            var actual = (int)EntityManager.Warlocks.Sum(x => x.Position.X + x.Position.Y);
+        if (_checksums.TryGetValue(Simulation.Instance.Tick, out var expectedChecksum)) {
+            var actual = SimUtils.CalculateChecksum();
             
             if (expectedChecksum != actual) {
                 Logger.Warning($"Checksum does not match. Actual: '{actual}' Expected: '{expectedChecksum}'");
             }
 
-            _checksums.Remove(WarlockGame.Frame);
+            _checksums.Remove(Simulation.Instance.Tick);
         }
 
     }
