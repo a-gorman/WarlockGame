@@ -3,7 +3,6 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
-using MonoGame.Extended;
 using PS4Mono;
 using WarlockGame.Core.Game;
 using WarlockGame.Core.Game.Effect;
@@ -12,10 +11,10 @@ using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
-using WarlockGame.Core.Game.Rule;
+using WarlockGame.Core.Game.Sim;
+using WarlockGame.Core.Game.Sim.Util;
 using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.Util;
-using Warlock = WarlockGame.Core.Game.Entity.Warlock;
 
 namespace WarlockGame.Core;
 
@@ -24,9 +23,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     public static WarlockGame Instance { get; private set; }  = null!;
     public static Viewport Viewport => Instance.GraphicsDevice.Viewport;
     public static Vector2 ScreenSize => new Vector2(Viewport.Width, Viewport.Height);
-    public static Vector2 ArenaSize => new Vector2(1900, 1000);
     public static GameTime GameTime { get; private set; } = null!;
-    public static int Frame { get; set; }
     public static ParticleManager<ParticleState> ParticleManager { get; private set; } = null!;
     public static Grid Grid { get; private set; } = null!;
     public static bool IsLocal => !NetworkManager.IsConnected;
@@ -34,11 +31,8 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private readonly BloomComponent _bloom;
+    private Simulation _simulation = Simulation.Instance;
 
-    public static Random SynchronizedRandom { get; private set; } = new Random();
-
-    private readonly MaxLives _gameRule = new() { InitialLives = 3 };
- 
     public WarlockGame() {
         Instance = this;
         _graphics = new GraphicsDeviceManager(this);
@@ -63,12 +57,9 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
         Ps4Input.Initialize(this);
         InputManager.Initialize();
-        UIManager.AddComponent(new SpellDisplay());
-        UIManager.AddComponent(new HealthBarManager());
+        _simulation.Initialize();
 
         Window.TextInput += (_, textArgs) => InputManager.OnTextInput(textArgs);
-
-        EntityManager.WarlockDestroyed += _gameRule.OnWarlockDestroyed;
         
         base.Initialize();
     }
@@ -89,11 +80,6 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
     protected override void Update(GameTime gameTime)
     {
-        Debug.Visualize($"Frame: {Frame}", new Vector2(1500, 0));
-
-        if (!NetworkManager.StutterRequired) {
-            Frame++;
-        }
         GameTime = gameTime;
         StaticInput.Update();
 
@@ -101,55 +87,37 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         Debug.Visualize(logs, Vector2.Zero);
             
         NetworkManager.Update();
-
-        if (!NetworkManager.StutterRequired)
-        {
-            InputManager.Update();
-            UIManager.Update();
-            CommandProcessor.Update(Frame);
-            PlayerManager.Update();
-            EntityManager.Update();
-            EffectManager.Update();
-            ParticleManager.Update();
-                
-            Grid.Update();
+        InputManager.Update();
+        if (!NetworkManager.StutterRequired) {
+            _simulation.Update();
         }
+        UIManager.Update();
+        ParticleManager.Update();
+            
+        Grid.Update();
 
         if (NetworkManager.IsServer) {
-            NetworkManager.Send(new ServerHeartbeat
+            NetworkManager.Send(new ServerTickProcessed
             {
-                Tick = Frame, 
-                Checksum = (int) EntityManager.Warlocks.Sum(x => x.Position.X + x.Position.Y),
+                Tick = Simulation.Instance.Tick, 
+                Checksum = SimUtils.CalculateChecksum(),
                 ServerCommands = CommandProcessor.ProcessedServerCommands.ToList(),
                 PlayerCommands = CommandProcessor.ProcessedPlayerCommands.ToList()
             });
         }
         else if (NetworkManager.IsClient)
         {
-            NetworkManager.SendReusable(new ClientHeartbeat { Frame = Frame });
+            NetworkManager.SendReusable(new ClientTickProcessed { Tick = Simulation.Instance.Tick });
         }
             
         base.Update(gameTime);
     }
 
     public void RestartGame(int seed) {
-        ClearGameState();
-        SynchronizedRandom = new Random(seed);
-        var radiansPerPlayer = (float)(2 * Math.PI / PlayerManager.Players.Count);
-        var warlocks = PlayerManager.Players.Select((x, i) => new Warlock(x.Id)
-            { Position = ArenaSize / 2 + new Vector2(0, 250).Rotate(radiansPerPlayer * i) });
-        foreach (var warlock in warlocks) {
-            EntityManager.Add(warlock);
-        }
-
-        _gameRule.Reset();
-    }
-    
-    private void ClearGameState() {
-        CommandProcessor.Clear();
-        EntityManager.Clear();
-        EffectManager.Clear();
+        Logger.Info("Restarting game");
+        
         ParticleManager.Clear();
+        _simulation.Restart(seed);
     }
 
     /// <summary>

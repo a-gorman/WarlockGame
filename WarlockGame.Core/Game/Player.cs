@@ -1,5 +1,3 @@
-using Warlock = WarlockGame.Core.Game.Entity.Warlock;
-
 namespace WarlockGame.Core.Game;
 
 class Player {
@@ -14,8 +12,5 @@ class Player {
         Name = name;
         Id = id;
         IsLocal = isLocal;
-    }
-
-    public void Update() {
     }
 }

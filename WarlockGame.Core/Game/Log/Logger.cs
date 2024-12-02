@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Log; 
@@ -33,7 +32,7 @@ public static class Logger {
         {
             Level = level,
             Message = message,
-            Tick = WarlockGame.Frame,
+            Tick = Simulation.Instance.Tick,
             Timestamp = DateTime.Now
         });
     }

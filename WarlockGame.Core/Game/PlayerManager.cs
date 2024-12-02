@@ -38,12 +38,6 @@ static class PlayerManager {
         return Players.Find(x => x.Id == playerId);
     }
 
-    public static void Update() {
-        foreach (var player in Players) {
-            player.Update();
-        }
-    }
-
     public static void RemovePlayer(int playerId) {
         var playerToRemove = Players.FirstOrDefault(x => x.Id == playerId);
         if(playerToRemove == null || playerToRemove.IsLocal) { return; }

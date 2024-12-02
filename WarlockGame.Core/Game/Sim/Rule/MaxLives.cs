@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Effect;
 using WarlockGame.Core.Game.Entity;
 
-namespace WarlockGame.Core.Game.Rule;
+namespace WarlockGame.Core.Game.Sim.Rule;
 
 class MaxLives {
     public required int InitialLives { get; init; }
@@ -23,7 +22,7 @@ class MaxLives {
         PlayerLives[playerId] -= 1;
         if (PlayerLives[playerId] != 0) {
             EffectManager.AddDelayedEffect(() => {
-                var respawnPosition = WarlockGame.ArenaSize / 2 + new Vector2(250, 0).Rotate(WarlockGame.SynchronizedRandom.NextAngle());
+                var respawnPosition = Sim.Simulation.ArenaSize / 2 + new Vector2(250, 0).Rotate(Sim.Simulation.Instance.Random.NextAngle());
                 EntityManager.Add(new Warlock(playerId) { Position = respawnPosition });
             }, GameTimer.FromSeconds(5));
         }

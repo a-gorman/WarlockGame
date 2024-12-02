@@ -8,6 +8,7 @@ using WarlockGame.Core.Game.Util;
 using WarlockGame.Core.Game.Entity.Order;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Log;
+using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.Spell;
 
 namespace WarlockGame.Core.Game.Entity
@@ -39,11 +40,9 @@ namespace WarlockGame.Core.Game.Entity
         public Warlock(int playerId) :
             base(new Sprite(Art.Player)) {
             
-            Logger.Info($"Creating warlock at: {WarlockGame.ArenaSize / 2}");
-            
             Health = MaxHealth;
             PlayerId = playerId;
-            Position = WarlockGame.ArenaSize / 2;
+            Position = Simulation.ArenaSize / 2;
             Radius = 20;
         }
 
@@ -100,7 +99,7 @@ namespace WarlockGame.Core.Game.Entity
             }
 
             Position += Velocity;
-            Position = Vector2.Clamp(Position, _sprite.Size / 2, WarlockGame.ArenaSize - _sprite.Size / 2);
+            Position = Vector2.Clamp(Position, _sprite.Size / 2, Simulation.ArenaSize - _sprite.Size / 2);
 
             if (Velocity.HasLength())
                 Orientation = Velocity.ToAngle();
