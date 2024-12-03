@@ -186,8 +186,10 @@ namespace WarlockGame.Core.Game.Entity
         }
 
         private void Destroy(IEntity source) {
-            IsExpired = true;
-            Destroyed?.Invoke(this);
+            if (!IsExpired) {
+                IsExpired = true;
+                Destroyed?.Invoke(this);
+            }
         }
     }
 }
