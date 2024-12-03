@@ -16,7 +16,7 @@ class Simulation {
 
     public static Simulation Instance { get; private set; }  = new Simulation();
     
-    private readonly MaxLives _gameRule = new() { InitialLives = 3 };
+    private readonly MaxLives _gameRule = new() { InitialLives = 2 };
     public Random Random { get; private set; } = new Random();
     public static Vector2 ArenaSize => new Vector2(1900, 1000);
 
