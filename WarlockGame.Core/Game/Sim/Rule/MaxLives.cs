@@ -32,9 +32,10 @@ class MaxLives {
         }
         
         if (PlayerLives.Count(x => x.Value > 0) == 1) {
-            var message = PlayerLives.First(x => x.Value > 0).Key == PlayerManager.LocalPlayer.Id
+            var winningPlayerId = PlayerLives.First(x => x.Value > 0).Key;
+            var message = winningPlayerId == PlayerManager.LocalPlayer!.Id
                 ? "You Win!!"
-                : "Another player has won the game!";
+                : $"{ PlayerManager.GetPlayer(winningPlayerId)?.Name ?? "Another player" } has won the game!";
             Debug.Visualize(message, Simulation.ArenaSize / 2, 100);
         }
         else if (PlayerLives.All(x => x.Value == 0)) {
