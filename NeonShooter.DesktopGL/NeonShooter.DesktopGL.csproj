@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -18,8 +19,8 @@
     <EmbeddedResource Include="Icon.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <MonoGameContentReference Include="..\NeonShooter.Core\Content\NeonShooter.mgcb">
-      <Link>Content\NeonShooter.mgcb</Link>
+    <MonoGameContentReference Include="..\WarlockGame.Core\Content\WarlockGame.mgcb">
+      <Link>Content\WarlockGame.mgcb</Link>
     </MonoGameContentReference>
   </ItemGroup>
   <ItemGroup>
@@ -30,6 +31,6 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NeonShooter.Core\NeonShooter.Core.csproj" />
+    <ProjectReference Include="..\WarlockGame.Core\WarlockGame.Core.csproj" />
   </ItemGroup>
 </Project>
