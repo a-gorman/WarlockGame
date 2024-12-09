@@ -36,10 +36,10 @@ class MaxLives {
             var message = winningPlayerId == PlayerManager.LocalPlayer!.Id
                 ? "You Win!!"
                 : $"{ PlayerManager.GetPlayer(winningPlayerId)?.Name ?? "Another player" } has won the game!";
-            Debug.Visualize(message, Simulation.ArenaSize / 2, 100);
+            Debug.Visualize(message, Simulation.ArenaSize / 2, 500);
         }
         else if (PlayerLives.All(x => x.Value == 0)) {
-            Debug.Visualize("It's a draw!", Simulation.ArenaSize / 2, 100);
+            Debug.Visualize("It's a draw!", Simulation.ArenaSize / 2, 500);
         }
     }
 }
