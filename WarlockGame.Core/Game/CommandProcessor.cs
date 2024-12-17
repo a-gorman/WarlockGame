@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using WarlockGame.Core.Game.Entity.Factory;
-using WarlockGame.Core.Game.Entity.Order;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
+using WarlockGame.Core.Game.Sim.Entity.Factory;
+using WarlockGame.Core.Game.Sim.Entity.Order;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game; 

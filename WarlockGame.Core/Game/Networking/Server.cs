@@ -4,10 +4,10 @@ using System.Net;
 using System.Net.Sockets;
 using LiteNetLib;
 using LiteNetLib.Utils;
-using WarlockGame.Core.Game.Entity.Factory;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim;
+using WarlockGame.Core.Game.Sim.Entity.Factory;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Networking;
@@ -21,7 +21,6 @@ public class Server : INetEventListener {
     private readonly Dictionary<int, ClientPeer> _clients = new();
     private readonly Dictionary<int, int> _clientToPlayerMap = new();
 
-    public bool StutterRequired { get; private set; }
     public bool ClientDropping { get; private set; }
     public int Latency { get; private set; }
 
@@ -41,14 +40,12 @@ public class Server : INetEventListener {
         _packetProcessor.SubscribeNetSerializable<MoveCommand>(OnGameCommandReceived);
         _packetProcessor.SubscribeNetSerializable<CastCommand>(OnGameCommandReceived);
         _packetProcessor.SubscribeNetSerializable<CreateWarlock>(OnGameCommandReceived);
-        _packetProcessor.SubscribeReusable<ClientTickProcessed, NetPeer>(OnHeartbeatReceived);
+        _packetProcessor.SubscribeReusable<ClientTickProcessed, NetPeer>(OnClientTickProcessed);
         _packetProcessor.SubscribeReusable<JoinGameRequest, NetPeer>(OnJoinGameRequest);
     }
 
-    private void OnHeartbeatReceived(ClientTickProcessed clientTickProcessed, NetPeer sender) {
-        if (_clients.TryGetValue(sender.Id, out var peer)) {
-            peer.Frame = clientTickProcessed.Tick;
-        }
+    private void OnClientTickProcessed(ClientTickProcessed clientTickProcessed, NetPeer sender) {
+        WarlockGame.Instance.ClientTickProcessed(_clientToPlayerMap[sender.Id], clientTickProcessed);
     }
 
     private void OnJoinGameRequest(JoinGameRequest request, NetPeer sender) {
@@ -90,15 +87,8 @@ public class Server : INetEventListener {
         _server.PollEvents();
 
         ClientDropping = false;
-        StutterRequired = false;
         foreach (var client in _clients.Values) {
-            if (client.Frame > Simulation.Instance.Tick) {
-                Logger.Warning($"Client {client.NetPeer.Id} ahead of server");
-            } else if(Simulation.Instance.Tick - client.Frame > 10) {
-                Logger.Info("Lag detected");
-                StutterRequired = true;
-            }
-            else if(client.NetPeer.TimeSinceLastPacket > 1000) { // 1s
+            if(client.NetPeer.TimeSinceLastPacket > 1000) { // 1s
                 Logger.Info("Client is dropping");
                 ClientDropping = true;
             }
@@ -170,6 +160,5 @@ public class Server : INetEventListener {
     private class ClientPeer {
         public required NetPeer NetPeer { get; init; }
         public int Latency { get; set; }
-        public int Frame { get; set; }
     }
 }

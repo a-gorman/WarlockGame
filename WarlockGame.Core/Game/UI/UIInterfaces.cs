@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -10,9 +11,11 @@ public interface IInterfaceComponent {
     /// Higher layers are displayed on top of lower numbered layers.
     /// </summary>
     public int Layer { get; }
-
-    public void Draw(SpriteBatch spriteBatch);
     public bool IsExpired { get; }
+    public bool Visible { get; }
+    public IEnumerable<IInterfaceComponent> Components { get; }
+    
+    public void Draw(SpriteBatch spriteBatch);
 }
 
 public interface IClickableComponent : IInterfaceComponent {
@@ -22,4 +25,5 @@ public interface IClickableComponent : IInterfaceComponent {
     /// </summary>
     public Rectangle BoundingBox { get; }
     public void OnClick(Vector2 location);
+    public List<IClickableComponent> ClickableComponents { get; }
 }

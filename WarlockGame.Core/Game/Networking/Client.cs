@@ -5,11 +5,10 @@ using System.Net;
 using System.Net.Sockets;
 using LiteNetLib;
 using LiteNetLib.Utils;
-using WarlockGame.Core.Game.Entity.Factory;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim;
-using WarlockGame.Core.Game.Sim.Util;
+using WarlockGame.Core.Game.Sim.Entity.Factory;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Networking;
@@ -21,12 +20,9 @@ public sealed class Client : INetEventListener {
 
     private readonly NetDataWriter _writer = new();
     private readonly NetPacketProcessor _packetProcessor = new();
-    private readonly Dictionary<int, int> _checksums = new();
 
     public bool IsConnected => _server?.ConnectionState == ConnectionState.Connected;
     public int Latency { get; private set; }
-    public bool StutterRequired => Simulation.Instance.Tick >= _maxFrameAllowed;
-    private int _maxFrameAllowed;
     
     private Action? _clientConnectedCallback = null;
 
@@ -47,22 +43,15 @@ public sealed class Client : INetEventListener {
         
         _packetProcessor.RegisterCustomNestedTypes();
 
-        _packetProcessor.SubscribeNetSerializable<ServerTickProcessed>(OnHeartbeatReceived);
+        _packetProcessor.SubscribeNetSerializable<ServerTickProcessed>(OnServerTickProcessed);
         _packetProcessor.SubscribeNetSerializable<JoinGameResponse>(OnJoinResponse);
         _packetProcessor.SubscribeNetSerializable<PlayerJoined>(OnPlayerJoined);
         
         _clientConnectedCallback = clientConnectedCallback;
     }
 
-    private void OnHeartbeatReceived(ServerTickProcessed serverTickProcessed) {
-        _maxFrameAllowed = serverTickProcessed.Tick;
-        _checksums[serverTickProcessed.Tick] = serverTickProcessed.Checksum;
-        foreach (var serverCommand in serverTickProcessed.ServerCommands) {
-            CommandProcessor.AddDelayedServerCommand(serverCommand, serverTickProcessed.Tick);
-        }
-        foreach (var playerCommand in serverTickProcessed.PlayerCommands) {
-            CommandProcessor.AddDelayedPlayerCommand(playerCommand, serverTickProcessed.Tick);
-        }
+    private void OnServerTickProcessed(ServerTickProcessed serverTickProcessed) {
+        WarlockGame.Instance.OnServerTickProcessed(serverTickProcessed);
     }
 
     private void OnPlayerJoined(PlayerJoined joinInfo) {
@@ -88,17 +77,6 @@ public sealed class Client : INetEventListener {
 
     public void Update() {
         _client.PollEvents();
-
-        if (_checksums.TryGetValue(Simulation.Instance.Tick, out var expectedChecksum)) {
-            var actual = SimUtils.CalculateChecksum();
-            
-            if (expectedChecksum != actual) {
-                Logger.Warning($"Checksum does not match. Actual: '{actual}' Expected: '{expectedChecksum}'");
-            }
-
-            _checksums.Remove(Simulation.Instance.Tick);
-        }
-
     }
 
     public void Send<T>(T packet, DeliveryMethod deliveryMethod = DeliveryMethod.ReliableOrdered) where T : class, new() {

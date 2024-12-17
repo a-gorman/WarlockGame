@@ -7,10 +7,9 @@ using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim;
-using WarlockGame.Core.Game.Sim.Util;
 using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.Util;
-using Warlock = WarlockGame.Core.Game.Entity.Warlock;
+using Warlock = WarlockGame.Core.Game.Sim.Entity.Warlock;
 
 namespace WarlockGame.Core.Game.Input; 
 
@@ -104,8 +103,8 @@ static class InputManager {
                 }
                 
                 UIManager.OpenTextPrompt("Enter name:", name => {
-                    var player = PlayerManager.AddLocalPlayer(name);
-                    EntityManager.Add(new Warlock(player.Id));
+                    PlayerManager.AddLocalPlayer(name);
+                    // EntityManager.Add(new Warlock(player.Id));
                     NetworkManager.StartServer();
                 });
                 break;
@@ -123,7 +122,7 @@ static class InputManager {
                 break;
             
             case "check" or "checksum":
-                Logger.Info($"Checksum is: {SimUtils.CalculateChecksum()}");
+                Logger.Info($"Checksum is: {Simulation.Instance.Checksum}");
                 break;
             
             case "h" or "help":
@@ -132,6 +131,10 @@ static class InputManager {
                 Logger.Info("join");
                 Logger.Info("host");
                 Logger.Info("restart");
+                break;
+            
+            case "logs":
+                LogDisplay.Instance.Visible = !LogDisplay.Instance.Visible;
                 break;
             
             default:

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -10,7 +11,10 @@ class HealthBarManager : IInterfaceComponent {
     private const int VerticalOffset = 30;
     private const int Width = 80;
     private const int Height = 3;
-    
+
+    public bool Visible { get; set; } = true;
+    public IEnumerable<IInterfaceComponent> Components { get; } = new List<IInterfaceComponent>();
+
     public void Draw(SpriteBatch spriteBatch) {
         foreach (var warlock in EntityManager.Warlocks) {
             float filledProportion = warlock.Health / warlock.MaxHealth;

@@ -1,8 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using WarlockGame.Core.Game.Entity;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Input.Devices;
@@ -17,6 +17,8 @@ namespace WarlockGame.Core.Game.UI;
 public class SpellDisplay : IClickableComponent {
     // Spell display never goes away
     public bool IsExpired => false;
+    public bool Visible { get; set; } = true;
+    public IEnumerable<IInterfaceComponent> Components { get; } = new List<IInterfaceComponent>();
 
     private const int spellSpacing = 100;
 
@@ -28,7 +30,9 @@ public class SpellDisplay : IClickableComponent {
     public void OnClick(Vector2 location) {
         Logger.Info("Click the spell display!");
     }
-    
+
+    public List<IClickableComponent> ClickableComponents { get; set; }
+
     public void Draw(SpriteBatch spriteBatch) {
         DrawHollowRectangle(spriteBatch, BoundingBox, Color.White);
 

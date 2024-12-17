@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using static PS4Mono.NativeMethods;
+using PS4Mono.Win32;
+using static PS4Mono.Win32.NativeMethods;
 
 namespace PS4Mono
 {

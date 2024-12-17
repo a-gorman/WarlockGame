@@ -20,7 +20,7 @@ static class UIManager {
         spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
         foreach (var component in Components) {
-            component.Draw(spriteBatch);
+            DrawComponent(component, spriteBatch);
         }
         spriteBatch.End();
 
@@ -50,5 +50,14 @@ static class UIManager {
     public static void AddComponent(IInterfaceComponent component) {
         Components.Add(component);
         Components.Sort((first, second) => second.Layer.CompareTo(first.Layer));
+    }
+
+    private static void DrawComponent(IInterfaceComponent component, SpriteBatch spriteBatch) {
+        component.Draw(spriteBatch);
+        foreach (var nestedComponent in component.Components) {
+            if (component.Visible) {
+                DrawComponent(nestedComponent, spriteBatch);
+            }
+        }
     }
 }

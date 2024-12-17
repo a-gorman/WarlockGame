@@ -1,6 +1,4 @@
-using System;
-
-namespace PS4Mono
+namespace PS4Mono.Win32
 {
     internal enum InputDeviceType : int
     {
