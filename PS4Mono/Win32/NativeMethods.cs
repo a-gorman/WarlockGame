@@ -1,11 +1,9 @@
-using System;
 using System.ComponentModel;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
 using Microsoft.Win32.SafeHandles;
 
-namespace PS4Mono
+namespace PS4Mono.Win32
 {
     internal static class NativeMethods
     {

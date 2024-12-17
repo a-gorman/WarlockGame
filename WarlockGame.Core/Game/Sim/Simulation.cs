@@ -2,9 +2,9 @@ using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
-using WarlockGame.Core.Game.Effect;
-using WarlockGame.Core.Game.Entity;
 using WarlockGame.Core.Game.Log;
+using WarlockGame.Core.Game.Sim.Effect;
+using WarlockGame.Core.Game.Sim.Entity;
 using WarlockGame.Core.Game.Sim.Rule;
 using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.Util;
@@ -18,6 +18,7 @@ class Simulation {
     
     private readonly MaxLives _gameRule = new() { InitialLives = 2 };
     public Random Random { get; private set; } = new Random();
+    public int Checksum { get; private set; }
     public static Vector2 ArenaSize => new Vector2(1900, 1000);
 
     public void Initialize() {
@@ -30,11 +31,13 @@ class Simulation {
     public void Update() {
         Tick++;
 
-        Debug.Visualize($"Frame: {Tick}", new Vector2(1500, 0));
+        // Debug.Visualize($"Frame: {Tick}", new Vector2(1500, 0));
         
         CommandProcessor.Update(Tick);
         EntityManager.Update();
         EffectManager.Update();
+
+        Checksum = CalculateChecksum();
     }
     
     public void Restart(int seed) {
@@ -48,6 +51,8 @@ class Simulation {
             EntityManager.Add(warlock);
         }
 
+        Checksum = CalculateChecksum();
+
         _gameRule.Reset();
     }
     
@@ -56,5 +61,9 @@ class Simulation {
         CommandProcessor.Clear();
         EntityManager.Clear();
         EffectManager.Clear();
+    }
+    
+    private static int CalculateChecksum() {
+        return (int)EntityManager.Warlocks.Sum(x => x.Position.X + x.Position.Y);
     }
 }

@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using WarlockGame.Core.Game.Sim.Entity;
 using WarlockGame.Core.Game.Util;
-using WarlockGame.Core.Game.Entity;
 
 namespace WarlockGame.Core.Game
 {
 	internal static class EntityManager
 	{
-		private static List<EntityBase> _entities = new();
-		private static List<Projectile> _projectiles = new();
+		private static readonly List<EntityBase> _entities = new();
+		private static readonly List<Projectile> _projectiles = new();
 		/// <summary>
 		/// Map between player Ids and warlocks
 		/// </summary>
-		private static Dictionary<int, Warlock> _warlocks = new();
+		private static readonly Dictionary<int, Warlock> _warlocks = new();
 
 		private static bool _isUpdating;
 		private static readonly List<EntityBase> _addedEntities = new();

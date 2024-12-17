@@ -2,10 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
-using WarlockGame.Core.Game.Effect;
-using WarlockGame.Core.Game.Entity;
 using WarlockGame.Core.Game.Log;
-using Debug = WarlockGame.Core.Game.Util.Debug;
+using WarlockGame.Core.Game.Sim.Effect;
+using WarlockGame.Core.Game.Sim.Entity;
 
 namespace WarlockGame.Core.Game.Sim.Rule;
 
@@ -36,10 +35,10 @@ class MaxLives {
             var message = winningPlayerId == PlayerManager.LocalPlayer!.Id
                 ? "You Win!!"
                 : $"{ PlayerManager.GetPlayer(winningPlayerId)?.Name ?? "Another player" } has won the game!";
-            Debug.Visualize(message, Simulation.ArenaSize / 2, 500);
+            SimDebug.Visualize(message, Simulation.ArenaSize / 2, 500);
         }
         else if (PlayerLives.All(x => x.Value == 0)) {
-            Debug.Visualize("It's a draw!", Simulation.ArenaSize / 2, 500);
+            SimDebug.Visualize("It's a draw!", Simulation.ArenaSize / 2, 500);
         }
     }
 }

@@ -45,4 +45,8 @@ public static class LinqExtensions {
     public static string JoinToString(this IEnumerable<string> stringCollection, string separator = ", ") {
         return string.Join(separator, stringCollection);
     }
+    
+    public static string JoinToString(this IEnumerable<string> stringCollection, char separator) {
+        return string.Join(separator, stringCollection);
+    }
 }

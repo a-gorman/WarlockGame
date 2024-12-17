@@ -5,6 +5,7 @@ using LiteNetLib.Utils;
 using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
+using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Networking; 
@@ -22,8 +23,6 @@ static class NetworkManager {
     public static bool IsConnected => IsClient || IsServer;
     public static bool IsClient => _client != null;
     public static bool IsServer => _server != null;
-    public static bool StutterRequired => IsConnected && (IsClient ? _client!.StutterRequired: _server!.StutterRequired);
-    // public static int FrameDelay => IsConnected ? Latency!.Value / WarlockGame.Instance.TargetElapsedTime.Milliseconds + LagPadding : 0;
     public static int FrameDelay => 1;
     /// <summary>
     /// Latency in milliseconds
@@ -53,7 +52,7 @@ static class NetworkManager {
             _client.Update();
         }
         
-        Debug.Visualize($"Latency: {Latency}", new Vector2(800, 50));
+        // SimDebug.Visualize($"Latency: {Latency}", new Vector2(800, 50));
     }
 
     public static void RequestGameState() {

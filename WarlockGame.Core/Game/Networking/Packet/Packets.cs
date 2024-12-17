@@ -216,6 +216,7 @@ public class ServerTickProcessed : INetSerializable {
 
 public class ClientTickProcessed {
     public int Tick { get; set; }
+    public bool ChecksumMatched { get; set; }
 }
 
 

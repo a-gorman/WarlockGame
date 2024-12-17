@@ -1,18 +1,19 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using PS4Mono;
 using WarlockGame.Core.Game;
-using WarlockGame.Core.Game.Effect;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim;
-using WarlockGame.Core.Game.Sim.Util;
+using WarlockGame.Core.Game.Sim.Effect;
 using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.Util;
 
@@ -31,8 +32,14 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private readonly BloomComponent _bloom;
-    private Simulation _simulation = Simulation.Instance;
+    private readonly Simulation _simulation = Simulation.Instance;
+    private readonly Queue<ServerProcessedTick> _serverTicks = new();
+    // Map of player Ids to most recent tick processed
+    private readonly Dictionary<int, int> _clientTicksProcessed = new();
+    public enum GameState { WaitingToStart, Running }
 
+    public GameState State { get; set; } = GameState.WaitingToStart;
+    
     public WarlockGame() {
         Instance = this;
         _graphics = new GraphicsDeviceManager(this);
@@ -62,6 +69,12 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         Window.TextInput += (_, textArgs) => InputManager.OnTextInput(textArgs);
         
         base.Initialize();
+        
+        UIManager.AddComponent(LogDisplay.Instance);
+
+#if DEBUG
+        LogDisplay.Instance.Visible = true;
+#endif
     }
 
     /// <summary>
@@ -83,32 +96,39 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         GameTime = gameTime;
         StaticInput.Update();
 
-        var logs = Logger.Logs.Select(x => String.Join(": ", x.LevelString(), x.Tick, x.Message)).Take(5);
-        Debug.Visualize(logs, Vector2.Zero);
-            
         NetworkManager.Update();
         InputManager.Update();
-        if (!NetworkManager.StutterRequired) {
+        if (State == GameState.Running && !IsStutterRequired()) {
             _simulation.Update();
+            var checksum = _simulation.Checksum;
+
+            if (NetworkManager.IsServer) {
+                NetworkManager.Send(new ServerTickProcessed
+                {
+                    Tick = Simulation.Instance.Tick, 
+                    Checksum = checksum,
+                    ServerCommands = CommandProcessor.ProcessedServerCommands.ToList(),
+                    PlayerCommands = CommandProcessor.ProcessedPlayerCommands.ToList()
+                });
+            }
+            else if (NetworkManager.IsClient) {
+                var serverProcessedTick = _serverTicks.Dequeue();
+                var checksumMatched = serverProcessedTick.Checksum == checksum;
+                if (!checksumMatched) {
+                    Logger.Warning($"Checksum does not match. Actual: '{checksum}' Expected: '{serverProcessedTick.Checksum}'");
+                }
+
+                NetworkManager.SendReusable(new ClientTickProcessed
+                {
+                    Tick = Simulation.Instance.Tick, 
+                    ChecksumMatched = checksumMatched
+                });
+            }
         }
         UIManager.Update();
         ParticleManager.Update();
             
         Grid.Update();
-
-        if (NetworkManager.IsServer) {
-            NetworkManager.Send(new ServerTickProcessed
-            {
-                Tick = Simulation.Instance.Tick, 
-                Checksum = SimUtils.CalculateChecksum(),
-                ServerCommands = CommandProcessor.ProcessedServerCommands.ToList(),
-                PlayerCommands = CommandProcessor.ProcessedPlayerCommands.ToList()
-            });
-        }
-        else if (NetworkManager.IsClient)
-        {
-            NetworkManager.SendReusable(new ClientTickProcessed { Tick = Simulation.Instance.Tick });
-        }
             
         base.Update(gameTime);
     }
@@ -118,6 +138,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         
         ParticleManager.Clear();
         _simulation.Restart(seed);
+        State = GameState.Running;
     }
 
     /// <summary>
@@ -152,8 +173,40 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         var textWidth = Art.Font.MeasureString(text).X;
         _spriteBatch.DrawString(Art.Font, text, new Vector2(ScreenSize.X - textWidth - 5, y), Color.White);
     }
+    
+    public void OnServerTickProcessed(ServerTickProcessed serverTickProcessed) {
+        _serverTicks.Enqueue(new ServerProcessedTick { Tick = serverTickProcessed.Tick, Checksum = serverTickProcessed.Checksum });
+        
+        foreach (var serverCommand in serverTickProcessed.ServerCommands) {
+            CommandProcessor.AddDelayedServerCommand(serverCommand, serverTickProcessed.Tick);
+        }
+        foreach (var playerCommand in serverTickProcessed.PlayerCommands) {
+            CommandProcessor.AddDelayedPlayerCommand(playerCommand, serverTickProcessed.Tick);
+        }
+    }
+    
+    public void ClientTickProcessed(int playerId, ClientTickProcessed clientTickProcessed) {
+        _clientTicksProcessed[playerId] = clientTickProcessed.Tick;
+        if (!clientTickProcessed.ChecksumMatched) {
+            Logger.Warning($"Client {playerId} has incorrect checksum");
+        }
+    }
 
-    private void DrawDebugInfo() {
-        DrawRightAlignedString($"Mouse POS: {StaticInput.MousePosition}", 65);
+    private bool IsStutterRequired() {
+        if (NetworkManager.IsClient) {
+            return _serverTicks.Count == 0;
+        }
+
+        if(NetworkManager.IsServer && _clientTicksProcessed.Count > 0) {
+            var furthestBehindClient = _clientTicksProcessed.Max(x => x.Value);
+            return _simulation.Tick - furthestBehindClient > 50;
+        }
+
+        return false;
+    }
+    
+    private struct ServerProcessedTick {
+        public required int Tick { get; init; }
+        public required int Checksum { get; init; }
     }
 }

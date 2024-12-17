@@ -1,15 +1,11 @@
 using System;
 using System.Collections.Generic;
 using WarlockGame.Core.Game.Sim;
+using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Log; 
 
-/// <summary>
-/// Barebones simple logger.
-/// Will leak memory over time.
-/// Read with debugger
-/// </summary>
 public static class Logger {
     private static readonly CircularBuffer<Log> _logs = new CircularBuffer<Log>(1000);
 
@@ -35,6 +31,8 @@ public static class Logger {
             Tick = Simulation.Instance.Tick,
             Timestamp = DateTime.Now
         });
+
+        LogDisplay.Instance.Refresh();
     }
 
     public class Log {
@@ -47,8 +45,8 @@ public static class Logger {
         public String LevelString() {
             return Level switch
             {
-                Level.INFO => "INFO",
                 Level.DEBUG => "DEBUG",
+                Level.INFO => "INFO",
                 Level.WARNING => "WARN",
                 Level.ERROR => "ERROR",
                 _ => throw new ArgumentOutOfRangeException()

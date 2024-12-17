@@ -1,7 +1,6 @@
-using System;
 using System.Runtime.InteropServices;
 
-namespace PS4Mono
+namespace PS4Mono.Win32
 {
     [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 32)]
     internal struct DeviceInfo

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -7,28 +8,39 @@ using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
+using WarlockGame.Core.Game.UI.Basic;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.UI;
 
-// This probably should not be an effect. Probably make some UI components thing
 class TextPrompt: ITextInputConsumer, IInterfaceComponent {
     public string Prompt { get; set; }
 
-    public string Text { get; set; } = string.Empty;
+    public string Text { get => _textDisplay.Text; set => _textDisplay.Text = value; }
 
     public int Layer { get; } = 1;
-    public Rectangle BoundingBox { get; }
+    public Rectangle BoundingBox { get => _textDisplay.Bounds; set => _textDisplay.Bounds = value; }
     public int TextConsumerPriority { get; } = 1;
     public bool IsExpired { get; private set; }
-
+    public bool Visible { get; set; } = true;
+    public IEnumerable<IInterfaceComponent> Components { get; }
+    public int MaxCharacters { get; } = 300;
     private Vector2 Position { get; }
     private Action<string> AcceptedCallback { get; }
     private Action<string>? CancelledCallback { get; }
+    private readonly TextDisplay _textDisplay;
     
     public TextPrompt(string prompt, Action<string> acceptedCallback, Action<string>? cancelledCallback) {
         Position = new Vector2(800, 800);
-        BoundingBox = new Rectangle(Position.ToPoint(), new Point(300, 35));
+        var boundingBox = new Rectangle(Position.ToPoint(), new Point(300, 35));
+
+        _textDisplay = new TextDisplay
+        {
+            Bounds = boundingBox,
+            Layer = 1
+        };
+
+        Components = new List<IInterfaceComponent> { _textDisplay };
         
         Prompt = prompt;
         AcceptedCallback = acceptedCallback;
@@ -49,19 +61,18 @@ class TextPrompt: ITextInputConsumer, IInterfaceComponent {
                 }
                 break;
             default:
-                Text += textEvent.Character;
+                if (Text.Length < MaxCharacters) {
+                    Text += textEvent.Character;
+                }
                 break;
         }
     }
 
-    public void Update() {}
-    
     public void Draw(SpriteBatch spriteBatch) {
         var pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
         pointTexture.SetData(new[] { Color.DarkSlateGray });
         spriteBatch.Draw(pointTexture, BoundingBox, Color.White);
 
-        spriteBatch.DrawString(Art.Font, Text, Position, Color.White);
         spriteBatch.DrawString(Art.Font, Prompt, Position.Translate(0, -24), Color.White);
     }
     

@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.Win32.SafeHandles;
 using static Microsoft.Xna.Framework.MathHelper;
 using Microsoft.Xna.Framework.Input;
+using PS4Mono.Win32;
 
 namespace PS4Mono
 {
