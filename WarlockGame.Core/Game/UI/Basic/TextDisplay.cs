@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
@@ -52,7 +53,12 @@ class TextDisplay : IInterfaceComponent {
     }
 
     private void RecalculateWrappedText() {
-        Vector2 TextMeasurement(ReadOnlySpan<char> x) => Font.MeasureString(x.ToString());
+        var sb = new StringBuilder();
+        Vector2 TextMeasurement(ReadOnlySpan<char> x) {
+            sb.Clear();
+            return Font.MeasureString(sb.Append(x));
+        }
+
         _wrappedText = TextUtil.WrapText(_text, TextMeasurement, Bounds.Width);
     }
 }
