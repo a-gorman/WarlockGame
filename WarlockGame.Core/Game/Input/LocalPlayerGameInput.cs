@@ -73,7 +73,7 @@ class LocalPlayerGameInput {
             NetworkManager.Send(command);
         }
         else {
-            CommandProcessor.AddDelayedPlayerCommand(command, Simulation.Instance.Tick + NetworkManager.FrameDelay);
+            CommandManager.AddDelayedPlayerCommand(command, Simulation.Instance.Tick + 1);
         }
     }
 }

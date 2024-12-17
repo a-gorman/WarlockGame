@@ -57,20 +57,3 @@ public class CastCommand : IPlayerCommand {
         SpellId = reader.GetInt();
     }
 }
-
-public class CreateWarlock : IPlayerCommand {
-    public int PlayerId { get; set; }
-    public Warlock Warlock { get; set; }
-    
-    public IPlayerCommand.Type GetSerializerType() => IPlayerCommand.Type.CreateWarlock;
-
-    public void Serialize(NetDataWriter writer) {
-        writer.Put(PlayerId);
-        writer.Put(Warlock);
-    }
-
-    public void Deserialize(NetDataReader reader) {
-        PlayerId = reader.GetInt();
-        Warlock = reader.Get<Warlock>();
-    }
-}

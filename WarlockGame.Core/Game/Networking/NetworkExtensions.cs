@@ -1,5 +1,4 @@
 using LiteNetLib.Utils;
-using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Networking.Packet;
 
 namespace WarlockGame.Core.Game.Networking; 
@@ -11,7 +10,6 @@ public static class NetworkExtensions {
         processor.RegisterNestedType(() => new Packet.Player());
         processor.RegisterNestedType(() => new MoveCommand());
         processor.RegisterNestedType(() => new CastCommand());
-        processor.RegisterNestedType(() => new CreateWarlock());
         processor.RegisterNestedType(() => new StartGame());
         processor.RegisterNestedType(() => new PlayerRemoved());
         processor.RegisterNestedType(() => new GameState());

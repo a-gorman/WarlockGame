@@ -39,7 +39,6 @@ public class Server : INetEventListener {
         _packetProcessor.SubscribeReusable<RequestGameState, NetPeer>(OnRequestGameState);
         _packetProcessor.SubscribeNetSerializable<MoveCommand>(OnGameCommandReceived);
         _packetProcessor.SubscribeNetSerializable<CastCommand>(OnGameCommandReceived);
-        _packetProcessor.SubscribeNetSerializable<CreateWarlock>(OnGameCommandReceived);
         _packetProcessor.SubscribeReusable<ClientTickProcessed, NetPeer>(OnClientTickProcessed);
         _packetProcessor.SubscribeReusable<JoinGameRequest, NetPeer>(OnJoinGameRequest);
     }
@@ -57,8 +56,8 @@ public class Server : INetEventListener {
     }
     
     private void OnGameCommandReceived<T>(T request) where T : IPlayerCommand, INetSerializable, new() {
-        var targetFrame = Simulation.Instance.Tick + NetworkManager.FrameDelay;
-        CommandProcessor.AddDelayedPlayerCommand(request, targetFrame);
+        var targetFrame = Simulation.Instance.Tick + 1;
+        CommandManager.AddDelayedPlayerCommand(request, targetFrame);
     }
 
     private void OnRequestGameState(RequestGameState _, NetPeer peer) {

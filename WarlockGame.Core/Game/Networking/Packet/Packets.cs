@@ -182,9 +182,6 @@ public class ServerTickProcessed : INetSerializable {
                 case IPlayerCommand.Type.MoveCommand:
                     list.Add(reader.Get<MoveCommand>());
                     break;
-                case IPlayerCommand.Type.CreateWarlock:
-                    list.Add(reader.Get<CreateWarlock>());
-                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
