@@ -1,13 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Log;
+using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim.Effect;
-using WarlockGame.Core.Game.Sim.Entity;
+using WarlockGame.Core.Game.Sim.Entity.Order;
 using WarlockGame.Core.Game.Sim.Rule;
 using WarlockGame.Core.Game.UI;
-using WarlockGame.Core.Game.Util;
+using Warlock = WarlockGame.Core.Game.Sim.Entity.Warlock;
 
 namespace WarlockGame.Core.Game.Sim;
 
@@ -28,12 +30,15 @@ class Simulation {
         EntityManager.WarlockDestroyed += _gameRule.OnWarlockDestroyed;
     }
 
-    public void Update() {
+    public void Update(IEnumerable<IPlayerCommand> inputs) {
         Tick++;
 
         // Debug.Visualize($"Frame: {Tick}", new Vector2(1500, 0));
+
+        foreach (var command in inputs) {
+            IssuePlayerCommand(command);
+        }
         
-        CommandProcessor.Update(Tick);
         EntityManager.Update();
         EffectManager.Update();
 
@@ -57,13 +62,25 @@ class Simulation {
     }
     
     private void ClearGameState() {
-        // Tick = 0;
-        CommandProcessor.Clear();
+        Tick = 0;
         EntityManager.Clear();
         EffectManager.Clear();
     }
     
     private static int CalculateChecksum() {
         return (int)EntityManager.Warlocks.Sum(x => x.Position.X + x.Position.Y);
+    }
+    
+    private static void IssuePlayerCommand(IPlayerCommand action) {
+        switch (action) {
+            case MoveCommand move:
+                EntityManager.GetWarlockByPlayerId(move.PlayerId)
+                             ?.GiveOrder(x => new DestinationMoveOrder(move.Location, x));
+                break;
+            case CastCommand cast:
+                EntityManager.GetWarlockByPlayerId(cast.PlayerId)
+                             ?.GiveOrder(x => new CastOrder(cast.SpellId, cast.CastVector, x));
+                break;
+        }
     }
 }

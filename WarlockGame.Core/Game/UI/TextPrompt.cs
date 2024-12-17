@@ -24,7 +24,7 @@ class TextPrompt: ITextInputConsumer, IInterfaceComponent {
     public bool IsExpired { get; private set; }
     public bool Visible { get; set; } = true;
     public IEnumerable<IInterfaceComponent> Components { get; }
-    public int MaxCharacters { get; } = 300;
+    public int MaxCharacters { get; } = 30;
     private Vector2 Position { get; }
     private Action<string> AcceptedCallback { get; }
     private Action<string>? CancelledCallback { get; }

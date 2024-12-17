@@ -86,9 +86,7 @@ static class InputManager {
                     WarlockGame.Instance.RestartGame(Random.Shared.Next());
                 }
                 else if(NetworkManager.IsServer) {
-                    CommandProcessor.AddDelayedServerCommand(
-                        new StartGame { Seed = Random.Shared.Next() }, 
-                        Simulation.Instance.Tick + NetworkManager.FrameDelay);
+                    CommandManager.AddServerCommand(new StartGame { Seed = Random.Shared.Next() });
                 }
                 break;
             

@@ -22,7 +22,7 @@ class LogDisplay : IInterfaceComponent {
     private LogDisplay() {
         _textDisplay = new TextDisplay
         {
-            Bounds = new Rectangle(0,0, 1900, 100)
+            Bounds = new Rectangle(0,0, 900, 100)
         };
 
         Components = new[] { _textDisplay };

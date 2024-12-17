@@ -98,8 +98,9 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
         NetworkManager.Update();
         InputManager.Update();
+        CommandManager.Update(_simulation.Tick);
         if (State == GameState.Running && !IsStutterRequired()) {
-            _simulation.Update();
+            _simulation.Update(CommandManager.CurrentSimulationCommands);
             var checksum = _simulation.Checksum;
 
             if (NetworkManager.IsServer) {
@@ -107,8 +108,8 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
                 {
                     Tick = Simulation.Instance.Tick, 
                     Checksum = checksum,
-                    ServerCommands = CommandProcessor.ProcessedServerCommands.ToList(),
-                    PlayerCommands = CommandProcessor.ProcessedPlayerCommands.ToList()
+                    ServerCommands = CommandManager.ProcessedServerCommands.ToList(),
+                    PlayerCommands = CommandManager.CurrentSimulationCommands.ToList()
                 });
             }
             else if (NetworkManager.IsClient) {
@@ -137,6 +138,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         Logger.Info("Restarting game");
         
         ParticleManager.Clear();
+        CommandManager.ClearSimulationCommands();
         _simulation.Restart(seed);
         State = GameState.Running;
     }
@@ -178,10 +180,10 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         _serverTicks.Enqueue(new ServerProcessedTick { Tick = serverTickProcessed.Tick, Checksum = serverTickProcessed.Checksum });
         
         foreach (var serverCommand in serverTickProcessed.ServerCommands) {
-            CommandProcessor.AddDelayedServerCommand(serverCommand, serverTickProcessed.Tick);
+            CommandManager.AddServerCommand(serverCommand);
         }
         foreach (var playerCommand in serverTickProcessed.PlayerCommands) {
-            CommandProcessor.AddDelayedPlayerCommand(playerCommand, serverTickProcessed.Tick);
+            CommandManager.AddDelayedPlayerCommand(playerCommand, serverTickProcessed.Tick);
         }
     }
     
