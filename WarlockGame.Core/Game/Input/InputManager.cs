@@ -1,15 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Input.Devices;
-using WarlockGame.Core.Game.Log;
-using WarlockGame.Core.Game.Networking;
-using WarlockGame.Core.Game.Networking.Packet;
-using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.Util;
-using Warlock = WarlockGame.Core.Game.Sim.Entity.Warlock;
 
 namespace WarlockGame.Core.Game.Input; 
 
@@ -19,12 +13,14 @@ static class InputManager {
     private static readonly KeyboardInput _keyboard = new();
     private static readonly List<ITextInputConsumer> _textInputConsumers = new();
     private static readonly InputState _inputState = new();
+    private static readonly TextCommandHandler _commandHandler = new();
     
     public static LocalPlayerGameInput? LocalPlayerInput { get; private set; }
 
     public static bool HasTextConsumers => _textInputConsumers.Any();
 
     public static void Initialize() {
+        _commandHandler.Initialize();
     }
     
     public static void Update() {
@@ -70,75 +66,8 @@ static class InputManager {
         }
         
         if (inputState.WasActionKeyPressed(InputAction.OpenCommandInput)) {
-            UIManager.OpenTextPrompt("", HandleTextCommand);
+            UIManager.OpenTextPrompt("", x => _commandHandler.HandleCommand(x));
         }
-    }
-    
-    private static void HandleTextCommand(string input) {
-        switch (input.ToLowerInvariant())
-        {
-            case "restart" or "rm":
-                if (NetworkManager.IsClient) {
-                    Logger.Info("Must be server host to restart game"); 
-                    return;
-                }
-                if (WarlockGame.IsLocal) {
-                    WarlockGame.Instance.RestartGame(Random.Shared.Next());
-                }
-                else if(NetworkManager.IsServer) {
-                    CommandManager.AddServerCommand(new StartGame { Seed = Random.Shared.Next() });
-                }
-                break;
-            
-            case "exit" or "quit" or "q":
-                WarlockGame.Instance.Exit();
-                break;
-            
-            case "host":
-                if (NetworkManager.IsConnected) {
-                    Logger.Info("Already in game!");
-                    return;
-                }
-                
-                UIManager.OpenTextPrompt("Enter name:", name => {
-                    PlayerManager.AddLocalPlayer(name);
-                    // EntityManager.Add(new Warlock(player.Id));
-                    NetworkManager.StartServer();
-                });
-                break;
-            
-            case "join":
-                if (NetworkManager.IsConnected) {
-                    Logger.Info("Already in game!");
-                    return;
-                }
-                UIManager.OpenTextPrompt("Enter name:", name => {
-                    UIManager.OpenTextPrompt("Enter Host IP Address:", ipAddress => {
-                        NetworkManager.ConnectToServer(ipAddress.NullOrEmptyTo("localhost"), () => NetworkManager.JoinGame(name));
-                    });
-                });
-                break;
-            
-            case "check" or "checksum":
-                Logger.Info($"Checksum is: {Simulation.Instance.Checksum}");
-                break;
-            
-            case "h" or "help":
-                Logger.Info("Commands:");
-                Logger.Info("exit");
-                Logger.Info("join");
-                Logger.Info("host");
-                Logger.Info("restart");
-                break;
-            
-            case "logs":
-                LogDisplay.Instance.Visible = !LogDisplay.Instance.Visible;
-                break;
-            
-            default:
-                Logger.Info($"\"{input}\" not recognized as valid command");
-                break;
-        };
     }
 
     public class InputState {
