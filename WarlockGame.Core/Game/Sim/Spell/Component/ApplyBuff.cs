@@ -8,19 +8,19 @@ namespace WarlockGame.Core.Game.Sim.Spell.Component;
 
 class ApplyBuff : IWarlockComponent {
     private readonly int _radius;
-    private readonly Func<Warlock,IBuff> _buffConstructor;
+    private readonly Func<SpellContext,IBuff> _buffConstructor;
     public bool IgnoreCaster { get; init; } = false;
     
-    public ApplyBuff(int radius, Func<Warlock,IBuff> buffConstructor) {
+    public ApplyBuff(int radius, Func<SpellContext,IBuff> buffConstructor) {
         _radius = radius;
         _buffConstructor = buffConstructor;
     }
 
-    public void Invoke(Warlock caster, IReadOnlyCollection<TargetInfo> targets) {
+    public void Invoke(SpellContext context, IReadOnlyCollection<TargetInfo> targets) {
         foreach (var target in targets) {
-            if(IgnoreCaster && target.Entity == caster) { continue; }
+            if(IgnoreCaster && target.Entity == context.Caster) { continue; }
             if(target.Entity is Warlock warlock)
-                warlock.AddBuff(_buffConstructor.Invoke(caster));
+                warlock.AddBuff(_buffConstructor.Invoke(context));
         }
     }
 }

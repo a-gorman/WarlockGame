@@ -23,7 +23,7 @@ namespace WarlockGame.Core.Game.Sim.Entity
         
         public Vector2? Direction { get; set; }
 
-        public List<WarlockSpell> Spells { get; } = new() { SpellFactory.Fireball(), SpellFactory.Lightning(), SpellFactory.Poison(), SpellFactory.Burst(), SpellFactory.WindShield() };
+        public List<WarlockSpell> Spells { get; }
         public List<IBuff> Buffs { get; } = new();
         
         public int PlayerId { get; }
@@ -35,13 +35,23 @@ namespace WarlockGame.Core.Game.Sim.Entity
 
         private LinkedList<IOrder> Orders { get; } = new();
 
-        public Warlock(int playerId) :
-            base(new Sprite(Art.Player)) {
+        public Warlock(int playerId, Simulation simulation) :
+            base(new Sprite(Art.Player), simulation) {
             
             Health = MaxHealth;
+
             PlayerId = playerId;
             Position = Simulation.ArenaSize / 2;
             Radius = 20;
+            
+            Spells = new List<WarlockSpell>
+            {
+                _simulation.SpellFactory.Fireball(), 
+                _simulation.SpellFactory.Lightning(), 
+                _simulation.SpellFactory.Poison(), 
+                _simulation.SpellFactory.Burst(), 
+                _simulation.SpellFactory.WindShield()
+            };
         }
 
         public override void Update() {

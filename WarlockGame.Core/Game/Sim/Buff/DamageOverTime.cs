@@ -1,17 +1,18 @@
 using WarlockGame.Core.Game.Sim.Entity;
+using WarlockGame.Core.Game.Sim.Spell;
 
 namespace WarlockGame.Core.Game.Sim.Buff;
 
 class DamageOverTime : IBuff {
-    private readonly Warlock _caster;
+    private readonly SpellContext _spellContext;
     private readonly float _damagePerTick;
     private readonly GameTimer _gameTimer;
     
     public bool IsExpired { get; set; }
 
 
-    public DamageOverTime(Warlock caster, int durationInTicks, float damagePerTick) {
-        _caster = caster;
+    public DamageOverTime(SpellContext spellContext, int durationInTicks, float damagePerTick) {
+        _spellContext = spellContext;
         _damagePerTick = damagePerTick;
         _gameTimer = GameTimer.FromTicks(durationInTicks);
     }
@@ -22,6 +23,6 @@ class DamageOverTime : IBuff {
             IsExpired = true;
         }
         
-        target.Damage(_damagePerTick, _caster);
+        target.Damage(_damagePerTick, _spellContext.Caster);
     }
 }

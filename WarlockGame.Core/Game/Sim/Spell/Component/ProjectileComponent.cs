@@ -18,11 +18,11 @@ class ProjectileComponent: IDirectionalSpellComponent {
         _effects = effects.ToList();
     }
 
-    public void Invoke(Warlock caster, Vector2 castLocation, Vector2 invokeDirection) {
-        EntityManager.Add(new Projectile(
+    public void Invoke(SpellContext context, Vector2 castLocation, Vector2 invokeDirection) {
+        context.EntityManager.Add(new Projectile(
             position: castLocation, 
             velocity: invokeDirection.ToNormalized() * _speed,
-            caster: caster,
+            context: context,
             sprite: _sprite,
             effects: _effects));
     }

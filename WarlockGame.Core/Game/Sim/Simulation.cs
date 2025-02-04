@@ -8,6 +8,7 @@ using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim.Effect;
 using WarlockGame.Core.Game.Sim.Entity.Order;
 using WarlockGame.Core.Game.Sim.Rule;
+using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.UI;
 using Warlock = WarlockGame.Core.Game.Sim.Entity.Warlock;
 
@@ -16,24 +17,27 @@ namespace WarlockGame.Core.Game.Sim;
 class Simulation {
     public int Tick { get; set; }
 
-    public static Simulation Instance { get; private set; }  = new Simulation();
-    
-    private readonly MaxLives _gameRule = new() { InitialLives = 2 };
-    public Random Random { get; private set; } = new Random();
-    public int Checksum { get; private set; }
+    public Random Random { get; private set; } = new();
+    public EntityManager EntityManager { get; } = new();
+    public SpellFactory SpellFactory { get; }
+    public EffectManager EffectManager { get; }
+
+    private readonly MaxLives _gameRule;
+
     public static Vector2 ArenaSize => new Vector2(1900, 1000);
 
-    public void Initialize() {
+    public Simulation() {
         UIManager.AddComponent(new SpellDisplay());
         UIManager.AddComponent(new HealthBarManager());
-        
+
+        EffectManager = new EffectManager();
+        SpellFactory = new SpellFactory(this);
+        _gameRule = new MaxLives(this, 3);
         EntityManager.WarlockDestroyed += _gameRule.OnWarlockDestroyed;
     }
 
-    public void Update(IEnumerable<IPlayerCommand> inputs) {
+    public TickResult Update(IEnumerable<IPlayerCommand> inputs) {
         Tick++;
-
-        // Debug.Visualize($"Frame: {Tick}", new Vector2(1500, 0));
 
         foreach (var command in inputs) {
             IssuePlayerCommand(command);
@@ -42,22 +46,23 @@ class Simulation {
         EntityManager.Update();
         EffectManager.Update();
 
-        Checksum = CalculateChecksum();
+        return new TickResult
+        {
+            Tick = Tick,
+            Checksum = CalculateChecksum()
+        };
     }
     
     public void Restart(int seed) {
         ClearGameState();
         Random = new Random(seed);
         var radiansPerPlayer = (float)(2 * Math.PI / PlayerManager.Players.Count);
-        var warlocks = PlayerManager.Players.Select((x, i) => new Warlock(x.Id)
+        var warlocks = PlayerManager.Players.Select((x, i) => new Warlock(x.Id, this)
             { Position = ArenaSize / 2 + new Vector2(0, 250).Rotate(radiansPerPlayer * i) });
         foreach (var warlock in warlocks) {
             Logger.Info($"Creating warlock at: {warlock.Position / 2}");
             EntityManager.Add(warlock);
         }
-
-        Checksum = CalculateChecksum();
-
         _gameRule.Reset();
     }
     
@@ -67,11 +72,12 @@ class Simulation {
         EffectManager.Clear();
     }
     
-    private static int CalculateChecksum() {
+    public int CalculateChecksum() {
         return (int)EntityManager.Warlocks.Sum(x => x.Position.X + x.Position.Y);
     }
     
-    private static void IssuePlayerCommand(IPlayerCommand action) {
+    private void IssuePlayerCommand(IPlayerCommand action) {
+        Logger.Debug($"Issuing {action.GetSerializerType()} command for player {action.PlayerId}");
         switch (action) {
             case MoveCommand move:
                 EntityManager.GetWarlockByPlayerId(move.PlayerId)
@@ -82,5 +88,10 @@ class Simulation {
                              ?.GiveOrder(x => new CastOrder(cast.SpellId, cast.CastVector, x));
                 break;
         }
+    }
+
+    public ref struct TickResult {
+        public int Tick { get; init; }
+        public int Checksum { get; init; }
     }
 }

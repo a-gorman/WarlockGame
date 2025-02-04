@@ -10,7 +10,7 @@ namespace WarlockGame.Core.Game.Sim.Spell.Effect;
 
 class ContinuousSpellEffect : IEffect {
     public bool IsExpired { get; set; }
-    public required Warlock Caster { get; init; }
+    public required SpellContext Context { get; init; }
     public required OneOf<Vector2, Func<ContinuousSpellEffect, Vector2>> Location { private get; init; }
     public required IReadOnlyCollection<ILocationSpellComponent> Components { get; init; }
     public required GameTimer Timer { get; init; }
@@ -25,7 +25,7 @@ class ContinuousSpellEffect : IEffect {
             var currentLocation = Location.Match(x => x, x => x.Invoke(this));
 
             foreach (var component in Components) {
-                component.Invoke(Caster, currentLocation);
+                component.Invoke(Context, currentLocation);
             }
         }
     }

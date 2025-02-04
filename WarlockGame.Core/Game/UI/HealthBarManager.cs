@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using WarlockGame.Core.Game.Sim.Entity;
 
 namespace WarlockGame.Core.Game.UI;
 
@@ -16,7 +18,7 @@ class HealthBarManager : IInterfaceComponent {
     public IEnumerable<IInterfaceComponent> Components { get; } = new List<IInterfaceComponent>();
 
     public void Draw(SpriteBatch spriteBatch) {
-        foreach (var warlock in EntityManager.Warlocks) {
+        foreach (var warlock in WarlockGame.Instance.SimRunner?.Simulation.EntityManager.Warlocks ?? Enumerable.Empty<Warlock>()) {
             float filledProportion = warlock.Health / warlock.MaxHealth;
         
             var filledTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);

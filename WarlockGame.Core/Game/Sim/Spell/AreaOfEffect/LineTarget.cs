@@ -17,21 +17,21 @@ class LineTarget : IDirectionalShape {
     public Texture2D? Texture { get; init; }
     public Falloff.FalloffFactor2Axis FalloffFactor { get; init; } = Falloff.None;
 
-public List<TargetInfo> GatherTargets(Warlock caster, Vector2 castLocation, Vector2 invokeDirection) {
-        var startPoint = castLocation + caster.Radius * invokeDirection.ToNormalized();
+    public List<TargetInfo> GatherTargets(SpellContext context, Vector2 castLocation, Vector2 invokeDirection) {
+        var startPoint = castLocation + context.Caster.Radius * invokeDirection.ToNormalized();
         var endPoint = startPoint + invokeDirection * Length;
         
         // TODO: Make this scale in size
-        Texture?.Run(x => EffectManager.Add(new Lightning(x, castLocation, invokeDirection.ToAngle())));
+        Texture?.Run(x => context.EffectManager.Add(new Lightning(x, castLocation, invokeDirection.ToAngle())));
 
         var lineSegment = new LineSegment(startPoint, endPoint);
         
-        return GatherTargets(lineSegment, caster).ToList();
+        return GatherTargets(lineSegment, context).ToList();
     }
         
-    private IEnumerable<TargetInfo> GatherTargets(LineSegment lineSegment, Warlock caster) {
-        foreach (var entity in EntityManager.GetNearbyEntities(lineSegment.BoundingBox)) {
-            if(IgnoreCaster && entity == caster) { continue; }
+    private IEnumerable<TargetInfo> GatherTargets(LineSegment lineSegment, SpellContext context) {
+        foreach (var entity in context.EntityManager.GetNearbyEntities(lineSegment.BoundingBox)) {
+            if(IgnoreCaster && entity == context.Caster) { continue; }
             
             var closetLinePoint = lineSegment.GetClosetPointTo(entity.Position);
 
@@ -52,8 +52,9 @@ public List<TargetInfo> GatherTargets(Warlock caster, Vector2 castLocation, Vect
     /// <summary>
     /// For debugging
     /// </summary>
-    private void DebugVisualize(Warlock caster, Vector2 castDirection) {
-        int duration = 100;
+    private void DebugVisualize(SpellContext context, Vector2 castDirection) {
+        const int duration = 100;
+        var caster = context.Caster;
         
         var startPoint = caster.Position + caster.Radius * castDirection.ToNormalized();
         var endPoint = startPoint + castDirection * Length;
@@ -62,7 +63,7 @@ public List<TargetInfo> GatherTargets(Warlock caster, Vector2 castLocation, Vect
 
         SimDebug.Visualize(lineSegment, Color.Red, duration);
         
-        foreach (var entity in EntityManager.GetNearbyEntities(lineSegment.BoundingBox).Where(x => !ReferenceEquals(caster, x))) {
+        foreach (var entity in context.EntityManager.GetNearbyEntities(lineSegment.BoundingBox).Where(x => !ReferenceEquals(caster, x))) {
             var closetPointTo = lineSegment.GetClosetPointTo(entity.Position);
 
             SimDebug.VisualizeCircle(entity.Radius, entity.Position, Color.Cyan, duration);

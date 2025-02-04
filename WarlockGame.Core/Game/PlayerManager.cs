@@ -37,11 +37,11 @@ static class PlayerManager {
         return Players.Find(x => x.Id == playerId);
     }
 
-    public static void RemovePlayer(int playerId) {
-        var playerToRemove = Players.FirstOrDefault(x => x.Id == playerId);
-        if(playerToRemove == null || playerToRemove.IsLocal) { return; }
-
-        Players.Remove(playerToRemove);
-        EntityManager.GetWarlockByPlayerId(playerToRemove.Id)!.IsExpired = true;
-    }
+    // public static void RemovePlayer(int playerId) {
+    //     var playerToRemove = Players.FirstOrDefault(x => x.Id == playerId);
+    //     if(playerToRemove == null || playerToRemove.IsLocal) { return; }
+    //
+    //     Players.Remove(playerToRemove);
+    //     EntityManager.GetWarlockByPlayerId(playerToRemove.Id)!.IsExpired = true;
+    // }
 }

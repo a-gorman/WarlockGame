@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using WarlockGame.Core.Game.Sim.Entity;
 
 namespace WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
 
@@ -12,11 +11,11 @@ class CircleTarget : ILocationShape {
     public Texture2D? Texture { get; init; }
     public Falloff.FalloffFactor FalloffFactor { get; init; } = Falloff.Linear;
     
-    public List<TargetInfo> GatherTargets(Warlock caster, Vector2 origin) {
+    public List<TargetInfo> GatherTargets(SpellContext context, Vector2 origin) {
         // Texture?.Run(x => EffectManager.Add(new CircleEffect());
         
-        return EntityManager.GetNearbyEntities(origin, Radius)
-                            .Where(x => !IgnoreCaster || x != caster)
+        return context.EntityManager.GetNearbyEntities(origin, Radius)
+                            .Where(x => !IgnoreCaster || x != context.Caster)
                             .Select(x => new TargetInfo
                             {
                                 Entity = x,
