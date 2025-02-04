@@ -5,18 +5,18 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace WarlockGame.Core.Game.Sim.Effect
 {
-	internal static class EffectManager
+	internal class EffectManager
 	{
-		private static List<IEffect> _effects = new();
+		private List<IEffect> _effects = new();
 
-		private static bool _isUpdating;
-		private static readonly List<IEffect> _addedEffects = new();
+		private bool _isUpdating;
+		private readonly List<IEffect> _addedEffects = new();
 
-		public static void AddDelayedEffect(Action action, GameTimer timer) {
+		public void AddDelayedEffect(Action action, GameTimer timer) {
 			AddEffect(new DelayedEffect { Action = action, Timer = timer});
 		}
 		
-		public static void Add(IEffect effect)
+		public void Add(IEffect effect)
 		{
 			if (!_isUpdating)
 				AddEffect(effect);
@@ -24,12 +24,12 @@ namespace WarlockGame.Core.Game.Sim.Effect
 				_addedEffects.Add(effect);
 		}
 
-		private static void AddEffect(IEffect effect)
+		private void AddEffect(IEffect effect)
 		{
 			_effects.Add(effect);
 		}
 
-		public static void Update()
+		public void Update()
 		{
 			_isUpdating = true;
 
@@ -46,13 +46,13 @@ namespace WarlockGame.Core.Game.Sim.Effect
 			_effects = _effects.Where(x => !x.IsExpired).ToList();
 		}
 		
-		public static void Draw(SpriteBatch spriteBatch)
+		public void Draw(SpriteBatch spriteBatch)
 		{
 			foreach (var effect in _effects)
 				effect.Draw(spriteBatch);
 		}
 
-		public static void Clear() {
+		public void Clear() {
 			_effects.Clear();
 			_addedEffects.Clear();
 		}

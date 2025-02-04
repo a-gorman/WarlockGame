@@ -9,15 +9,15 @@ class DamageComponent : IWarlockComponent {
 
     public float SelfFactor { get; init; } = 1;
 
-    public void Invoke(Warlock caster, IReadOnlyCollection<TargetInfo> targets) {
+    public void Invoke(SpellContext context, IReadOnlyCollection<TargetInfo> targets) {
         foreach (var target in targets) {
             if (target.Entity is Warlock warlock) {
                 var damageToInflict = Damage * target.FalloffFactor;
-                if (warlock == caster) {
+                if (warlock == context.Caster) {
                     damageToInflict *= SelfFactor;
                 }
 
-                warlock.Damage(damageToInflict, caster);
+                warlock.Damage(damageToInflict, context.Caster);
             }
         }
     }

@@ -17,12 +17,12 @@ class Doughnut : ILocationShape {
     public Texture2D? Texture { get; init; }
     public Falloff.FalloffFactor2Axis FalloffFactor { get; init; } = Falloff.Axis1Linear;
 
-    public List<TargetInfo> GatherTargets(Warlock caster, Vector2 invokeLocation) {
+    public List<TargetInfo> GatherTargets(SpellContext context, Vector2 invokeLocation) {
         
         SimDebug.VisualizeCircle(Radius, invokeLocation, Color.Bisque, 5);
         
-        return EntityManager.GetNearbyEntities(invokeLocation, Radius + Width)
-                            .Where(x => !IgnoreCaster || x != caster)
+        return context.EntityManager.GetNearbyEntities(invokeLocation, Radius + Width)
+                            .Where(x => !IgnoreCaster || x != context.Caster)
                             .Select(x => CreateTargetInfo(x, invokeLocation))
                             .Where(x => x.DisplacementAxis2.IsLengthLessThan(Width))
                             .ToList();

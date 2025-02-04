@@ -13,17 +13,28 @@ class WarlockSpell {
     public required OneOf<IDirectionalSpellComponent, ILocationSpellComponent, ISelfSpellComponent> Effect { get; init; }
     public GameTimer Cooldown { get; } = GameTimer.FromTicks(0);
     public bool OnCooldown => !Cooldown.IsExpired;
+
+    private readonly Simulation _simulation;
     
+    public WarlockSpell(Simulation simulation) {
+        _simulation = simulation;
+    }
+
     public void Update() {
         Cooldown.Update();
     }
 
     public void DoCast(Warlock caster, Vector2 direction) {
         Cooldown.FramesRemaining = CooldownTime;
+        var context = new SpellContext()
+        {
+            Caster = caster,
+            Simulation = _simulation
+        };
         Effect.Switch(
-            directionalEffect => directionalEffect.Invoke(caster, caster.Position, direction),
-            locationEffect => locationEffect.Invoke(caster, direction),
-            selfEffect => selfEffect.Invoke(caster)
+            directionalEffect => directionalEffect.Invoke(context, caster.Position, direction),
+            locationEffect => locationEffect.Invoke(context, direction),
+            selfEffect => selfEffect.Invoke(context)
         );
     }
 }

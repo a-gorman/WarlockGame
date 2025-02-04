@@ -12,13 +12,13 @@ class PushComponent : IWarlockComponent {
     public float ProjectileFactor { get; init; } = 0;
     public Func<Vector2, Vector2?, Vector2> DisplacementTransform { get; init; } = (x, _) => x;
 
-    public void Invoke(Warlock caster, IReadOnlyCollection<TargetInfo> targets) {
+    public void Invoke(SpellContext context, IReadOnlyCollection<TargetInfo> targets) {
         foreach (var target in targets) {
             var forceToUse = Force * target.FalloffFactor;
             var direction = DisplacementTransform.Invoke(target.DisplacementAxis1, target.DisplacementAxis2);
             
             if (target.Entity is Warlock warlock) {
-                if (warlock == caster) {
+                if (warlock == context.Caster) {
                     forceToUse *= SelfFactor;
                 }
 

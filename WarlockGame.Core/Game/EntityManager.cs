@@ -8,23 +8,23 @@ using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game
 {
-	internal static class EntityManager
+	internal class EntityManager
 	{
-		private static readonly List<EntityBase> _entities = new();
-		private static readonly List<Projectile> _projectiles = new();
+		private readonly List<EntityBase> _entities = new();
+		private readonly List<Projectile> _projectiles = new();
 		/// <summary>
 		/// Map between player Ids and warlocks
 		/// </summary>
-		private static readonly Dictionary<int, Warlock> _warlocks = new();
+		private readonly Dictionary<int, Warlock> _warlocks = new();
 
-		private static bool _isUpdating;
-		private static readonly List<EntityBase> _addedEntities = new();
+		private bool _isUpdating;
+		private readonly List<EntityBase> _addedEntities = new();
 
-		public static IReadOnlyCollection<Warlock> Warlocks => _warlocks.Values;
+		public IReadOnlyCollection<Warlock> Warlocks => _warlocks.Values;
 
-		public static event Action<Warlock>? WarlockDestroyed;
+		public event Action<Warlock>? WarlockDestroyed;
 
-		public static void Add(EntityBase entity)
+		public void Add(EntityBase entity)
 		{
 			if (!_isUpdating)
 				AddEntity(entity);
@@ -32,7 +32,7 @@ namespace WarlockGame.Core.Game
 				_addedEntities.Add(entity);
 		}
 
-		private static void AddEntity(EntityBase entity)
+		private void AddEntity(EntityBase entity)
 		{
 			_entities.Add(entity);
 			switch (entity) {
@@ -46,7 +46,7 @@ namespace WarlockGame.Core.Game
 			}
 		}
 
-		public static void Update() {
+		public void Update() {
 			_isUpdating = true;
 			HandleCollisions();
 
@@ -65,14 +65,14 @@ namespace WarlockGame.Core.Game
 			_warlocks.RemoveAll((_, v) => v.IsExpired);
 		}
 
-		public static Warlock? GetWarlockByPlayerId(int id) {
+		public Warlock? GetWarlockByPlayerId(int id) {
 			_warlocks.TryGetValue(id, out var warlock);
 			return warlock;
 		}
 
-		private static void HandleCollisions() {
+		private void HandleCollisions() {
 			foreach (var projectile in _projectiles) {
-				_entities.OfType<Warlock>().Where(x => x != projectile.Caster)
+				_entities.OfType<Warlock>().Where(x => x != projectile.Context.Caster)
 				         .Concat<IEntity>(_projectiles.Where(x => x != projectile))
 				         .Where(x => IsColliding(projectile, x))
 				         .ForEach(_ => projectile.OnCollision());
@@ -90,7 +90,7 @@ namespace WarlockGame.Core.Game
 		/// </summary>
 		/// <param name="rectangle">The rectangle to check near</param>
 		/// <returns>Entities near the given rectangle</returns>
-		public static IEnumerable<EntityBase> GetNearbyEntities(Rectangle rectangle)
+		public IEnumerable<EntityBase> GetNearbyEntities(Rectangle rectangle)
 		{
 			// Account for radius (reject by assuming rxr rect)
 			return _entities.Where(x => {
@@ -99,18 +99,18 @@ namespace WarlockGame.Core.Game
 			});
 		}
 		
-		public static IEnumerable<EntityBase> GetNearbyEntities(Vector2 position, float radius)
+		public IEnumerable<EntityBase> GetNearbyEntities(Vector2 position, float radius)
 		{
 			return _entities.Where(x => Vector2.DistanceSquared(position, x.Position) < (x.Radius + radius) * (x.Radius + radius));
 		}
 
-		public static void Draw(SpriteBatch spriteBatch)
+		public void Draw(SpriteBatch spriteBatch)
 		{
 			foreach (var entity in _entities)
 				entity.Draw(spriteBatch);
 		}
 
-		public static void Clear() {
+		public void Clear() {
 			_entities.Clear();
 			_projectiles.Clear();
 			_addedEntities.Clear();

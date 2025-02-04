@@ -36,7 +36,7 @@ public class SpellDisplay : IClickableComponent {
     public void Draw(SpriteBatch spriteBatch) {
         DrawHollowRectangle(spriteBatch, BoundingBox, Color.White);
 
-        var localWarlock = PlayerManager.LocalPlayer?.Id.Let(EntityManager.GetWarlockByPlayerId);
+        var localWarlock = PlayerManager.LocalPlayer?.Id.Let(x => WarlockGame.Instance.SimRunner?.Simulation.EntityManager.GetWarlockByPlayerId(x));
         if(localWarlock is null) return;
         
         for (var i = 0; i < localWarlock.Spells.Count; i++) {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Graphics;
+using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.Sim.Spell.Component;
 using WarlockGame.Core.Game.Util;
 
@@ -10,11 +11,11 @@ namespace WarlockGame.Core.Game.Sim.Entity;
 class Projectile : EntityBase {
     private static readonly Random _rand = new();
     private readonly IReadOnlyList<ILocationSpellComponent> _effects;
-    public Warlock Caster { get; }
+    public SpellContext Context { get; }
     
-    public Projectile(Vector2 position, Vector2 velocity, Warlock caster, Sprite sprite, IReadOnlyList<ILocationSpellComponent> effects) : 
-        base(sprite) {
-        Caster = caster;
+    public Projectile(Vector2 position, Vector2 velocity, SpellContext context, Sprite sprite, IReadOnlyList<ILocationSpellComponent> effects) : 
+        base(sprite, context.Simulation) {
+        Context = context;
         Position = position;
         Velocity = velocity;
         Orientation = Velocity.ToAngle();
@@ -45,7 +46,7 @@ class Projectile : EntityBase {
     {
         IsExpired = true;
         foreach (var effect in _effects) {
-            effect.Invoke(Caster, Position);
+            effect.Invoke(Context, Position);
         }
     }
 

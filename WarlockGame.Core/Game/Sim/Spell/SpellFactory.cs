@@ -7,9 +7,16 @@ using WarlockGame.Core.Game.Sim.Spell.Effect;
 
 namespace WarlockGame.Core.Game.Sim.Spell;
 
-static class SpellFactory {
-    public static WarlockSpell Fireball() {
-        return new WarlockSpell
+class SpellFactory {
+
+    private readonly Simulation _simulation;
+    
+    public SpellFactory(Simulation simulation) {
+        _simulation = simulation;
+    }
+
+    public WarlockSpell Fireball() {
+        return new WarlockSpell(_simulation)
         {
             SpellId = 1,
             CooldownTime = 60,
@@ -32,8 +39,8 @@ static class SpellFactory {
         };
     }
 
-    public static WarlockSpell Lightning() {
-        return new WarlockSpell
+    public WarlockSpell Lightning() {
+        return new WarlockSpell(_simulation)
         {
             SpellId = 2,
             CooldownTime = 60,
@@ -50,8 +57,8 @@ static class SpellFactory {
         };
     }
 
-    public static WarlockSpell Poison() {
-        return new WarlockSpell
+    public WarlockSpell Poison() {
+        return new WarlockSpell(_simulation)
         {
             SpellId = 3,
             CooldownTime = 60,
@@ -70,8 +77,8 @@ static class SpellFactory {
         };
     }
 
-    public static WarlockSpell Burst() {
-        return new WarlockSpell
+    public WarlockSpell Burst() {
+        return new WarlockSpell(_simulation)
         {
             SpellId = 4,
             CooldownTime = 60,
@@ -96,8 +103,8 @@ static class SpellFactory {
         };
     }
 
-    public static WarlockSpell WindShield() {
-        return new WarlockSpell
+    public WarlockSpell WindShield() {
+        return new WarlockSpell(_simulation)
         {
             SpellId = 5,
             CooldownTime = 60,
@@ -105,9 +112,9 @@ static class SpellFactory {
             Effect = new SelfCastPositionComponent
             {
                 Component = new EffectComponent {
-                    EffectConstructor = (caster, location) => new ContinuousSpellEffect
+                    EffectConstructor = (spellContext, location) => new ContinuousSpellEffect
                     {
-                        Caster = caster,
+                        Context = spellContext,
                         Location = location,
                         RepeatEvery = 5,
                         Timer = GameTimer.FromSeconds(4),

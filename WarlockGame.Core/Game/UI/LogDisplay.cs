@@ -15,7 +15,17 @@ class LogDisplay : IInterfaceComponent {
     
     public int Layer { get; set; }
     public bool IsExpired { get; set; }
-    public bool Visible { get; set; } = false;
+    public Logger.Level DisplayLevel = Logger.Level.WARNING;
+
+    public bool Visible {
+        get;
+        set {
+            field = value;
+            if (value) {
+                Refresh();
+            }
+        }
+    } = false;
 
     private readonly TextDisplay _textDisplay;
 
@@ -31,7 +41,13 @@ class LogDisplay : IInterfaceComponent {
     public void Draw(SpriteBatch spriteBatch) {}
 
     public void Refresh() {
-        var logs = Logger.Logs.Select(x => String.Join(": ", x.LevelString(), x.Tick, x.Message)).Take(5).JoinToString('\n');
+        if (!Visible) return;
+        
+        var logs = Logger.Logs
+                         .Where(x => x.Level >= DisplayLevel)
+                         .Select(x => String.Join(": ", x.LevelString(), x.Tick, x.Message))
+                         .Take(5)
+                         .JoinToString('\n');
         _textDisplay.Text = logs;
     }
 }

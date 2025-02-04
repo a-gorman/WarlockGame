@@ -6,7 +6,7 @@ class SelfCastPositionComponent : ISelfSpellComponent {
     
     public required ILocationSpellComponent Component { get; init; }
     
-    public void Invoke(Warlock caster) {
-        Component.Invoke(caster, caster.Position);
+    public void Invoke(SpellContext context) {
+        Component.Invoke(context, context.Caster.Position);
     }
 }
