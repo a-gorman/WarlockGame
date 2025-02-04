@@ -7,9 +7,13 @@ using WarlockGame.Core.Game.Util;
 namespace WarlockGame.Core.Game.Log; 
 
 public static class Logger {
-    private static readonly CircularBuffer<Log> _logs = new CircularBuffer<Log>(1000);
+    private static readonly CircularBuffer<Log> _logs = new(1000);
 
     public static IEnumerable<Log> Logs => _logs;
+    
+    public static void Debug(string message) {
+        WriteLog(message, Level.DEBUG);
+    }
     
     public static void Info(string message) {
         WriteLog(message, Level.INFO);
@@ -17,6 +21,10 @@ public static class Logger {
     
     public static void Warning(string message) {
         WriteLog(message, Level.WARNING);
+    }
+    
+    public static void Error(string message) {
+        WriteLog(message, Level.ERROR);
     }
 
     public static void WriteLog(string message, Level level) {
@@ -28,7 +36,7 @@ public static class Logger {
         {
             Level = level,
             Message = message,
-            Tick = Simulation.Instance.Tick,
+            Tick = WarlockGame.Instance.SimRunner?.LastProcessedTick ?? 0,
             Timestamp = DateTime.Now
         });
 
@@ -55,9 +63,9 @@ public static class Logger {
     }
     
     public enum Level {
-        DEBUG,
-        INFO,
-        WARNING,
-        ERROR
+        DEBUG = 0,
+        INFO = 1,
+        WARNING = 2,
+        ERROR = 3
     }
 }
