@@ -106,9 +106,9 @@ public class Server : INetEventListener {
         _server.SendToAll(_writer, deliveryMethod, excluded);
     }
     
-    public void SendToPeer<T>(T packet, NetPeer peer, DeliveryMethod deliveryMethod = DeliveryMethod.ReliableOrdered) where T : class, new() {
+    public void SendToPeer<T>(T packet, NetPeer peer, DeliveryMethod deliveryMethod = DeliveryMethod.ReliableOrdered) where T : INetSerializable {
         _writer.Reset();
-        _packetProcessor.Write(_writer, packet);
+        _packetProcessor.WriteNetSerializable(_writer, ref packet);
         peer.Send(_writer, deliveryMethod);
     }
 

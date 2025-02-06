@@ -34,9 +34,6 @@ static class CommandManager {
             case StartGame sg:
                 WarlockGame.Instance.RestartGame(sg.Seed);
                 break;
-            case PlayerRemoved rm:
-                PlayerManager.RemovePlayer(rm.PlayerId);
-                break;
         }
     }
 

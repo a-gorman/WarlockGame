@@ -13,7 +13,6 @@ public interface IPlayerCommand : INetSerializable {
     enum Type {
         MoveCommand,
         CastCommand,
-        CreateWarlock,
     }
 
     Type GetSerializerType();
