@@ -35,8 +35,9 @@ class TextCommandHandler {
         if (_textCommandHandlers.TryGetValue(args[0], out var commandHandler)) {
             commandHandler.Handler.Invoke(args.Skip(1).ToArray());
         }
-
-        Logger.Info("Command not recognized");
+        else {
+            Logger.Info("Command not recognized");
+        }
     }
 
     private void RegisterTextCommand(TextCommand textCommand) {
