@@ -39,7 +39,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     public enum GameState { WaitingToStart, Running }
 
     public GameState State { get; set; } = GameState.WaitingToStart;
-    
+
     public WarlockGame() {
         Instance = this;
         _graphics = new GraphicsDeviceManager(this);
@@ -74,6 +74,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
 #if DEBUG
         LogDisplay.Instance.Visible = true;
+        LogDisplay.Instance.DisplayLevel = Logger.Level.DEBUG;
 #endif
     }
 
@@ -166,49 +167,5 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         base.Draw(gameTime);
 
         UIManager.Draw(_spriteBatch);
-        
-        // DrawDebugInfo();
-    }
-
-    private void DrawRightAlignedString(string text, float y)
-    {
-        var textWidth = Art.Font.MeasureString(text).X;
-        _spriteBatch.DrawString(Art.Font, text, new Vector2(ScreenSize.X - textWidth - 5, y), Color.White);
-    }
-    
-    public void OnServerTickProcessed(ServerTickProcessed serverTickProcessed) {
-        _serverTicks.Enqueue(new ServerProcessedTick { Tick = serverTickProcessed.Tick, Checksum = serverTickProcessed.Checksum });
-        
-        foreach (var serverCommand in serverTickProcessed.ServerCommands) {
-            CommandManager.AddServerCommand(serverCommand);
-        }
-        foreach (var playerCommand in serverTickProcessed.PlayerCommands) {
-            CommandManager.AddDelayedPlayerCommand(playerCommand, serverTickProcessed.Tick);
-        }
-    }
-    
-    public void ClientTickProcessed(int playerId, ClientTickProcessed clientTickProcessed) {
-        _clientTicksProcessed[playerId] = clientTickProcessed.Tick;
-        if (!clientTickProcessed.ChecksumMatched) {
-            Logger.Warning($"Client {playerId} has incorrect checksum");
-        }
-    }
-
-    private bool IsStutterRequired() {
-        if (NetworkManager.IsClient) {
-            return _serverTicks.Count == 0;
-        }
-
-        if(NetworkManager.IsServer && _clientTicksProcessed.Count > 0) {
-            var furthestBehindClient = _clientTicksProcessed.Max(x => x.Value);
-            return _simulation.Tick - furthestBehindClient > 50;
-        }
-
-        return false;
-    }
-    
-    private struct ServerProcessedTick {
-        public required int Tick { get; init; }
-        public required int Checksum { get; init; }
     }
 }

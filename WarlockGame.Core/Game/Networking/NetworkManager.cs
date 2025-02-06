@@ -54,14 +54,6 @@ static class NetworkManager {
         
         // SimDebug.Visualize($"Latency: {Latency}", new Vector2(800, 50));
     }
-
-    public static void RequestGameState() {
-        if(!IsClient) throw new ConstraintException("Can't get game state when not connected to server");
-
-        Logger.Info("Getting game state");
-        
-        _client!.Send(new RequestGameState(), DeliveryMethod.ReliableOrdered);
-    }
     
     public static void JoinGame(string playerName) {
         if(!IsClient) throw new ConstraintException("Can't get join game when not connected to server");

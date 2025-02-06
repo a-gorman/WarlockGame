@@ -12,6 +12,5 @@ public static class NetworkExtensions {
         processor.RegisterNestedType(() => new CastCommand());
         processor.RegisterNestedType(() => new StartGame());
         processor.RegisterNestedType(() => new PlayerRemoved());
-        processor.RegisterNestedType(() => new GameState());
     }
 }

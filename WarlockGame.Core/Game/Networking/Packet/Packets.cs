@@ -7,23 +7,23 @@ namespace WarlockGame.Core.Game.Networking.Packet;
 // Disable nullability complaints. A bunch of stuff here is initialized late by deserialization
 #pragma warning disable CS8618
 
-public class GameState : INetSerializable {
-    public List<Player> Players { get; set; }
-    public List<Warlock> Warlocks { get; set; }
-    public int Frame { get; set; }
-
-    public void Serialize(NetDataWriter writer) {
-        writer.PutMany(Players);
-        writer.PutMany(Warlocks);
-        writer.Put(Frame);
-    }
-
-    public void Deserialize(NetDataReader reader) {
-        Players = reader.GetMany<Player>();
-        Warlocks = reader.GetMany<Warlock>();
-        Frame = reader.GetInt();
-    }
-}
+// public class GameState : INetSerializable {
+//     public List<Player> Players { get; set; }
+//     public List<Warlock> Warlocks { get; set; }
+//     public int Frame { get; set; }
+//
+//     public void Serialize(NetDataWriter writer) {
+//         writer.PutMany(Players);
+//         writer.PutMany(Warlocks);
+//         writer.Put(Frame);
+//     }
+//
+//     public void Deserialize(NetDataReader reader) {
+//         Players = reader.GetMany<Player>();
+//         Warlocks = reader.GetMany<Warlock>();
+//         Frame = reader.GetInt();
+//     }
+// }
 
 public class JoinGameRequest : INetSerializable {
     public string PlayerName { get; set; }
@@ -43,17 +43,16 @@ public class JoinGameResponse : INetSerializable {
     /// The ID assigned to the joining player
     /// </summary>
     public int PlayerId { get; set; }
-
-    public GameState GameState { get; set; }
+    public List<Player> Players { get; set; }
 
     public void Serialize(NetDataWriter writer) {
         writer.Put(PlayerId);
-        writer.Put(GameState);
+        writer.PutMany(Players);
     }
 
     public void Deserialize(NetDataReader reader) {
         PlayerId = reader.GetInt();
-        GameState = reader.Get<GameState>();
+        Players = reader.GetMany<Player>();
     }
 }
 
@@ -114,23 +113,16 @@ public class Spell : INetSerializable {
 public class Player : INetSerializable {
     public int Id { get; set; }
     public string Name { get; set; }
-    public int WarlockId { get; set; }
 
     public void Serialize(NetDataWriter writer) {
         writer.Put(Id);
         writer.Put(Name);
-        writer.Put(WarlockId);
     }
 
     public void Deserialize(NetDataReader reader) {
         Id = reader.GetInt();
         Name = reader.GetString();
-        WarlockId = reader.GetInt();
     }
-}
-
-public class RequestGameState {
-    public int Frame { get; set; }
 }
 
 public class ServerTickProcessed : INetSerializable {

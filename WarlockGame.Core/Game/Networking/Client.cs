@@ -13,7 +13,7 @@ using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Networking;
 
-public sealed class Client : INetEventListener {
+sealed class Client : INetEventListener {
     // LATE INIT
     private NetManager _client = null!;
     private NetPeer? _server;
@@ -69,10 +69,6 @@ public sealed class Client : INetEventListener {
                 PlayerManager.AddRemotePlayer(player.Name);
             }
         }
-
-        response.GameState.Warlocks.Select(WarlockFactory.FromPacket).ForEach(EntityManager.Add);
-        
-        Simulation.Instance.Tick = response.GameState.Frame;
     }
 
     public void Update() {
@@ -100,6 +96,7 @@ public sealed class Client : INetEventListener {
         _server = peer;
 
         _clientConnectedCallback?.Invoke();
+        _clientConnectedCallback = null;
     }
 
     public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo) {
@@ -108,7 +105,7 @@ public sealed class Client : INetEventListener {
     }
 
     public void OnNetworkError(IPEndPoint endPoint, SocketError socketError) {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public void OnNetworkReceive(NetPeer peer, NetPacketReader reader, byte channelNumber,
@@ -118,7 +115,7 @@ public sealed class Client : INetEventListener {
 
     public void OnNetworkReceiveUnconnected(IPEndPoint remoteEndPoint, NetPacketReader reader,
         UnconnectedMessageType messageType) {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public void OnNetworkLatencyUpdate(NetPeer peer, int latency) {
@@ -126,6 +123,6 @@ public sealed class Client : INetEventListener {
     }
 
     public void OnConnectionRequest(ConnectionRequest request) {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 }
