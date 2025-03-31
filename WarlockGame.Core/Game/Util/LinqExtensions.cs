@@ -49,4 +49,20 @@ public static class LinqExtensions {
     public static string JoinToString(this IEnumerable<string> stringCollection, char separator) {
         return string.Join(separator, stringCollection);
     }
+
+    public static TOut MaxOrDefault<TSource, TOut>(this IEnumerable<TSource> source, Func<TSource, TOut> selector, TOut defaultValue = default) {
+        return source.Any() ? source.Max(selector) : defaultValue;
+    }
+    
+    public static TSource MaxOrDefault<TSource>(this IEnumerable<TSource> source, TSource defaultValue = default) {
+        return source.Any() ? source.Max() : defaultValue;
+    }
+    
+    public static TOut MinOrDefault<TSource, TOut>(this IEnumerable<TSource> source, Func<TSource, TOut> selector, TOut defaultValue = default) {
+        return source.Any() ? source.Min(selector) : defaultValue;
+    }
+    
+    public static TSource MinOrDefault<TSource>(this IEnumerable<TSource> source, TSource defaultValue = default) {
+        return source.Any() ? source.Min() : defaultValue;
+    }
 }

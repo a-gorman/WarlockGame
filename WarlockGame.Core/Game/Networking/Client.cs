@@ -1,15 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
-using WarlockGame.Core.Game.Sim;
-using WarlockGame.Core.Game.Sim.Entity.Factory;
-using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Networking;
 
@@ -46,8 +41,13 @@ sealed class Client : INetEventListener {
         _packetProcessor.SubscribeNetSerializable<ServerTickProcessed>(OnServerTickProcessed);
         _packetProcessor.SubscribeNetSerializable<JoinGameResponse>(OnJoinResponse);
         _packetProcessor.SubscribeNetSerializable<PlayerJoined>(OnPlayerJoined);
+        _packetProcessor.SubscribeNetSerializable<StartGame>(OnStartGame);
         
         _clientConnectedCallback = clientConnectedCallback;
+    }
+
+    private void OnStartGame(StartGame packet) {
+        WarlockGame.Instance.RestartGame(packet.Seed);
     }
 
     private void OnServerTickProcessed(ServerTickProcessed serverTickProcessed) {
@@ -61,7 +61,7 @@ sealed class Client : INetEventListener {
     private void OnJoinResponse(JoinGameResponse response) {
         Logger.Info("Joining game");
         
-        foreach (var player in response.GameState.Players) {
+        foreach (var player in response.Players) {
             if (player.Id == response.PlayerId) {
                 PlayerManager.AddLocalPlayer(player.Name);
             }

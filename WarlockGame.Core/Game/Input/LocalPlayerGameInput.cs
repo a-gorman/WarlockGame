@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using LiteNetLib.Utils;
 using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
@@ -74,7 +73,7 @@ class LocalPlayerGameInput {
             NetworkManager.Send(command);
         }
         else {
-            CommandManager.AddDelayedPlayerCommand(command, Simulation.Instance.Tick + 1);
+            CommandManager.AddSimulationCommand(command);
         }
     }
 }

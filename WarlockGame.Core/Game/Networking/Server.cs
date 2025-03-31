@@ -12,7 +12,7 @@ using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Networking;
 
-public class Server : INetEventListener {
+class Server : INetEventListener {
     // LATE INIT
     private NetManager _server = null!;
     private readonly NetDataWriter _writer = new();
@@ -36,7 +36,6 @@ public class Server : INetEventListener {
 
         _packetProcessor.RegisterCustomNestedTypes();
 
-        _packetProcessor.SubscribeReusable<RequestGameState, NetPeer>(OnRequestGameState);
         _packetProcessor.SubscribeNetSerializable<MoveCommand>(OnGameCommandReceived);
         _packetProcessor.SubscribeNetSerializable<CastCommand>(OnGameCommandReceived);
         _packetProcessor.SubscribeReusable<ClientTickProcessed, NetPeer>(OnClientTickProcessed);
@@ -52,29 +51,11 @@ public class Server : INetEventListener {
         
         _clientToPlayerMap.Add(sender.Id, player.Id);
         SendToAllExcept(new PlayerJoined { PlayerName = request.PlayerName }, sender);
-        SendToPeer(new JoinGameResponse { PlayerId = player.Id, GameState = CreateGameState() }, sender);
+        SendToPeer(new JoinGameResponse { PlayerId = player.Id, Players = PlayerManager.Players.Select(x => new Packet.Player { Id = x.Id, Name = x.Name }).ToList() }, sender);
     }
     
     private void OnGameCommandReceived<T>(T request) where T : IPlayerCommand, INetSerializable, new() {
-        var targetFrame = Simulation.Instance.Tick + 1;
-        CommandManager.AddDelayedPlayerCommand(request, targetFrame);
-    }
-
-    private void OnRequestGameState(RequestGameState _, NetPeer peer) {
-        Logger.Info("Game state request received");
-        SendToPeer(CreateGameState(), peer);
-    }
-
-    private static GameState CreateGameState() {
-        var gameState = new GameState
-        {
-            Players = PlayerManager.Players
-                                   .Select(x => new Packet.Player { Name = x.Name, Id = x.Id })
-                                   .ToList(),
-            Warlocks = EntityManager.Warlocks.Select(WarlockFactory.ToPacket).ToList(),
-            Frame = Simulation.Instance.Tick
-        };
-        return gameState;
+        CommandManager.AddSimulationCommand(request);
     }
 
     public void OnConnectionRequest(ConnectionRequest request) {

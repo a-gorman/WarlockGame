@@ -1,5 +1,4 @@
 using System;
-using WarlockGame.Core;
 
 namespace WarlockGame.WindowsDX
 {
