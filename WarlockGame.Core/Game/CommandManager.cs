@@ -5,31 +5,22 @@ namespace WarlockGame.Core.Game;
 
 static class CommandManager {
 
-    private static readonly List<IServerCommand> _serverCommands = new();
-    private static readonly List<IServerCommand> _processedServerCommands = new();
+    private static List<IServerCommand> _serverCommands = new();
+    private static List<IServerCommand> _processedServerCommands = new();
     public static IReadOnlyList<IServerCommand> ProcessedServerCommands => _processedServerCommands;
     
-    private static readonly PriorityQueue<IPlayerCommand, int> _simulationCommands = new();
-    private static readonly List<IPlayerCommand> _currentSimulationCommands = new();
-    public static IReadOnlyList<IPlayerCommand> CurrentSimulationCommands => _currentSimulationCommands;
+    public static List<IPlayerCommand> SimulationCommands { get; } = new();
     
-    public static void Update(int currentTick) {
-        _processedServerCommands.Clear();
-        _currentSimulationCommands.Clear();
-
-        foreach (var command in _serverCommands) {
-            _processedServerCommands.Add(command);
-            IssueServerCommand(command);
-        }
-
+    public static void Update() {
+        (_serverCommands, _processedServerCommands) = (_processedServerCommands, _serverCommands);
         _serverCommands.Clear();
         
-        while (_simulationCommands.TryPeek(out _, out var tick) && tick == currentTick) {
-            _currentSimulationCommands.Add(_simulationCommands.Dequeue());
+        foreach (var command in _processedServerCommands) {
+            IssueServerCommand(command);
         }
     }
 
-    private static void IssueServerCommand(IServerCommand command) {
+    public static void IssueServerCommand(IServerCommand command) {
         switch (command) {
             case StartGame sg:
                 WarlockGame.Instance.RestartGame(sg.Seed);
@@ -38,12 +29,10 @@ static class CommandManager {
     }
 
     /// <summary>
-    /// Issues a command to be executed on a future frame.
+    /// Issues a command to be executed on the next tick
     /// </summary>
-    /// <param name="command">The command to issue later</param>
-    /// <param name="targetFrame">The frame to issue the command on</param>
-    public static void AddDelayedPlayerCommand(IPlayerCommand command, int targetFrame) {
-        _simulationCommands.Enqueue(command, targetFrame);
+    public static void AddSimulationCommand(IPlayerCommand command) {
+        SimulationCommands.Add(command);
     }
 
     public static void AddServerCommand(IServerCommand command) {
@@ -52,10 +41,6 @@ static class CommandManager {
 
     public static void Clear() {
         _serverCommands.Clear();
-        _simulationCommands.Clear();
-    }
-    
-    public static void ClearSimulationCommands() {
-        _simulationCommands.Clear();
+        SimulationCommands.Clear();
     }
 }

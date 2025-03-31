@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,9 +12,7 @@ using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim;
-using WarlockGame.Core.Game.Sim.Effect;
 using WarlockGame.Core.Game.UI;
-using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core;
 
@@ -32,13 +29,16 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private readonly BloomComponent _bloom;
-    private readonly Simulation _simulation = Simulation.Instance;
-    private readonly Queue<ServerProcessedTick> _serverTicks = new();
+    internal Simulation Simulation { get; } = new();
+    private readonly Queue<ServerTickProcessed> _serverTicks = new();
     // Map of player Ids to most recent tick processed
     private readonly Dictionary<int, int> _clientTicksProcessed = new();
     public enum GameState { WaitingToStart, Running }
-
+    public enum ClientTypeState { Local, Client, Server }
+    
     public GameState State { get; set; } = GameState.WaitingToStart;
+    public static ClientTypeState ClientType => !NetworkManager.IsConnected ? ClientTypeState.Local 
+        : NetworkManager.IsClient ? ClientTypeState.Client : ClientTypeState.Server;
 
     public WarlockGame() {
         Instance = this;
@@ -50,6 +50,9 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         Components.Add(_bloom);
         _bloom.Settings = new BloomSettings(null, 0.25f, 4, 2, 1, 1.5f, 1);
         _bloom.Visible = false;
+
+        Window.Position = Vector2.Zero.ToPoint();
+        // TargetElapsedTime = TimeSpan.FromSeconds(0.1);
     }
 
     protected override void Initialize()
@@ -64,7 +67,6 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
         Ps4Input.Initialize(this);
         InputManager.Initialize();
-        _simulation.Initialize();
 
         Window.TextInput += (_, textArgs) => InputManager.OnTextInput(textArgs);
         
@@ -99,34 +101,71 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
         NetworkManager.Update();
         InputManager.Update();
-        CommandManager.Update(_simulation.Tick);
-        if (State == GameState.Running && !IsStutterRequired()) {
-            _simulation.Update(CommandManager.CurrentSimulationCommands);
-            var checksum = _simulation.Checksum;
+        CommandManager.Update();
 
-            if (NetworkManager.IsServer) {
+        switch (ClientType)
+        {
+            case ClientTypeState.Local:
+                if (State == GameState.Running)
+                {
+                    Simulation.Update(CommandManager.SimulationCommands);
+                    CommandManager.SimulationCommands.Clear();
+                }
+
+                break;
+            case ClientTypeState.Server:
+            {
+                if (State != GameState.Running || _clientTicksProcessed.Count != 0 && Simulation.Tick  > _clientTicksProcessed.Values.Max() + 30)
+                    break;
+                
+                var result = Simulation.Update(CommandManager.SimulationCommands);
+                
                 NetworkManager.Send(new ServerTickProcessed
                 {
-                    Tick = Simulation.Instance.Tick, 
-                    Checksum = checksum,
+                    Tick = Simulation.Tick, 
+                    Checksum = result.Checksum,
                     ServerCommands = CommandManager.ProcessedServerCommands.ToList(),
-                    PlayerCommands = CommandManager.CurrentSimulationCommands.ToList()
+                    PlayerCommands = CommandManager.SimulationCommands.ToList()
                 });
+                
+                CommandManager.SimulationCommands.Clear();
             }
-            else if (NetworkManager.IsClient) {
-                var serverProcessedTick = _serverTicks.Dequeue();
-                var checksumMatched = serverProcessedTick.Checksum == checksum;
+                break;
+            case ClientTypeState.Client:
+            {
+                if (!_serverTicks.Any())
+                    break;
+                
+                var tick = _serverTicks.Dequeue();
+
+                foreach (var command in tick.ServerCommands)
+                {
+                    CommandManager.IssueServerCommand(command);
+                }
+
+                if (State != GameState.Running)
+                {
+                    break;
+                }
+
+                var result = Simulation.Update(tick.PlayerCommands);
+                
+                var checksumMatched = tick.Checksum == result.Checksum;
                 if (!checksumMatched) {
-                    Logger.Warning($"Checksum does not match. Actual: '{checksum}' Expected: '{serverProcessedTick.Checksum}'");
+                    Logger.Warning($"Checksum does not match. Actual: '{result.Checksum}' Expected: '{tick.Checksum}'");
                 }
 
                 NetworkManager.SendReusable(new ClientTickProcessed
                 {
-                    Tick = Simulation.Instance.Tick, 
+                    Tick = Simulation.Tick, 
                     ChecksumMatched = checksumMatched
                 });
+                
+                CommandManager.SimulationCommands.Clear();
+                break;
             }
         }
+        
         UIManager.Update();
         ParticleManager.Update();
             
@@ -138,9 +177,9 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     public void RestartGame(int seed) {
         Logger.Info("Restarting game");
         
+        CommandManager.Clear();
         ParticleManager.Clear();
-        CommandManager.ClearSimulationCommands();
-        _simulation.Restart(seed);
+        Simulation.Restart(seed);
         State = GameState.Running;
     }
 
@@ -155,8 +194,8 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         GraphicsDevice.Clear(Color.Black);
 
         _spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive);
-        EntityManager.Draw(_spriteBatch);
-        EffectManager.Draw(_spriteBatch);
+        Simulation.EntityManager.Draw(_spriteBatch);
+        Simulation.EffectManager.Draw(_spriteBatch);
         _spriteBatch.End();
 
         _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
@@ -167,5 +206,16 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         base.Draw(gameTime);
 
         UIManager.Draw(_spriteBatch);
+    }
+
+    public void ClientTickProcessed(int playerId, ClientTickProcessed clientTickProcessed) {
+        _clientTicksProcessed[playerId] = clientTickProcessed.Tick;
+        if (!clientTickProcessed.ChecksumMatched) {
+            Logger.Error($"Client {playerId} checksum has diverged.");
+        }
+    }
+
+    public void OnServerTickProcessed(ServerTickProcessed serverTickProcessed) {
+        _serverTicks.Enqueue(serverTickProcessed);
     }
 }

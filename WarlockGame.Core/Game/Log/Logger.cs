@@ -36,7 +36,7 @@ public static class Logger {
         {
             Level = level,
             Message = message,
-            Tick = WarlockGame.Instance.SimRunner?.LastProcessedTick ?? 0,
+            Tick = WarlockGame.Instance.Simulation.Tick,
             Timestamp = DateTime.Now
         });
 

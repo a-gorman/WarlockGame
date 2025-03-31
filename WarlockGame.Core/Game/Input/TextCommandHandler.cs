@@ -5,14 +5,13 @@ using System.Text;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
-using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Input;
 
 class TextCommandHandler {
-    private record TextCommand(string Name,  string[] Aliases, string Description, Action<string[]> Handler);
+    private record TextCommand(string Name, string[] Aliases, string Description, Action<string[]> Handler);
 
     private static Dictionary<string, TextCommand> _textCommandHandlers = new();
     private static List<string> _textCommandNames = new();
@@ -25,8 +24,8 @@ class TextCommandHandler {
         RegisterTextCommand("host", args => Host());
         RegisterTextCommand("join", args => Join());
         RegisterTextCommand("check", ["checksum"],
-            args => Logger.Info($"Checksum is: {Simulation.Instance.CalculateChecksum()}"));
-        RegisterTextCommand("logs", args => Logs(args.FirstOrDefault()), 
+            args => Logger.Info($"Checksum is: {WarlockGame.Instance.Simulation?.CalculateChecksum() ?? 0}"));
+        RegisterTextCommand("logs", args => Logs(args.FirstOrDefault()),
             "Args: on | off | debug | info | warn | error");
     }
 
@@ -48,8 +47,8 @@ class TextCommandHandler {
 
         _textCommandNames.Add(textCommand.Name);
     }
-    
-    private void RegisterTextCommand(string name, Action<string[]> handler, string description = "") => 
+
+    private void RegisterTextCommand(string name, Action<string[]> handler, string description = "") =>
         RegisterTextCommand(name, [], handler, description);
 
     private void RegisterTextCommand(string name, string[] aliases, Action<string[]> handler, string description = "") {

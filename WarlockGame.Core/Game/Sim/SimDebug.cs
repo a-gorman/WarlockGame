@@ -7,7 +7,7 @@ using WarlockGame.Core.Game.Sim.Effect.Display;
 namespace WarlockGame.Core.Game.Sim; 
 
 public static class SimDebug {
-    private static EffectManager? EffectManager => WarlockGame.Instance.SimRunner?.Simulation.EffectManager;
+    private static EffectManager? EffectManager => WarlockGame.Instance.Simulation.EffectManager;
     
     public static void Visualize(Vector2 vectorToVisualize, Vector2 position, Color color, int duration = 1) {
         EffectManager?.Add(new VectorEffect(position, vectorToVisualize + position, color, duration));

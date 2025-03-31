@@ -18,7 +18,7 @@ class HealthBarManager : IInterfaceComponent {
     public IEnumerable<IInterfaceComponent> Components { get; } = new List<IInterfaceComponent>();
 
     public void Draw(SpriteBatch spriteBatch) {
-        foreach (var warlock in WarlockGame.Instance.SimRunner?.Simulation.EntityManager.Warlocks ?? Enumerable.Empty<Warlock>()) {
+        foreach (var warlock in WarlockGame.Instance.Simulation.EntityManager.Warlocks) {
             float filledProportion = warlock.Health / warlock.MaxHealth;
         
             var filledTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
