@@ -45,9 +45,21 @@ class LogDisplay : IInterfaceComponent {
         
         var logs = Logger.Logs
                          .Where(x => x.Level >= DisplayLevel)
-                         .Select(x => String.Join(": ", x.LevelString(), x.Tick, x.Message))
+                         .Select(FormatLog)
                          .Take(5)
                          .JoinToString('\n');
         _textDisplay.Text = logs;
+    }
+
+    private string FormatLog(Logger.Log log)
+    {
+        if (log.DedupCount == 0)
+        {
+            return string.Join(": ", log.LevelString(), log.Tick, log.Message);
+        }
+        else
+        {
+            return string.Join(": ", log.LevelString(), log.Tick, $"{log.Message} x{log.DedupCount + 1}");
+        }
     }
 }
