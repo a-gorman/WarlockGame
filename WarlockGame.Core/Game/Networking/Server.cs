@@ -36,8 +36,8 @@ class Server : INetEventListener {
 
         _packetProcessor.RegisterCustomNestedTypes();
 
-        _packetProcessor.SubscribeNetSerializable<MoveCommand>(OnGameCommandReceived);
-        _packetProcessor.SubscribeNetSerializable<CastCommand>(OnGameCommandReceived);
+        _packetProcessor.SubscribeNetSerializable(OnGameCommandReceived, () => new MoveCommand());
+        _packetProcessor.SubscribeNetSerializable(OnGameCommandReceived, () => new CastCommand());
         _packetProcessor.SubscribeReusable<ClientTickProcessed, NetPeer>(OnClientTickProcessed);
         _packetProcessor.SubscribeReusable<JoinGameRequest, NetPeer>(OnJoinGameRequest);
     }

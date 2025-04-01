@@ -115,12 +115,12 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
                 break;
             case ClientTypeState.Server:
             {
-                if (State != GameState.Running || _clientTicksProcessed.Count != 0 && Simulation.Tick  > _clientTicksProcessed.Values.Max() + 30)
+                if (State != GameState.Running || _clientTicksProcessed.Count != 0 && Simulation.Tick > _clientTicksProcessed.Values.Max() + 30)
                     break;
                 
                 var result = Simulation.Update(CommandManager.SimulationCommands);
                 
-                NetworkManager.Send(new ServerTickProcessed
+                NetworkManager.SendSerializable(new ServerTickProcessed
                 {
                     Tick = Simulation.Tick, 
                     Checksum = result.Checksum,
@@ -155,7 +155,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
                     Logger.Warning($"Checksum does not match. Actual: '{result.Checksum}' Expected: '{tick.Checksum}'");
                 }
 
-                NetworkManager.SendReusable(new ClientTickProcessed
+                NetworkManager.Send(new ClientTickProcessed
                 {
                     Tick = Simulation.Tick, 
                     ChecksumMatched = checksumMatched
