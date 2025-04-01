@@ -18,15 +18,14 @@ class TextCommandHandler {
 
 
     public void Initialize() {
-        RegisterTextCommand("help", ["h"], args => Help());
-        RegisterTextCommand("exit", ["quit", "q"], args => WarlockGame.Instance.Exit());
-        RegisterTextCommand("restart", ["rm"], args => Restart());
-        RegisterTextCommand("host", args => Host());
-        RegisterTextCommand("join", args => Join());
+        RegisterTextCommand("help", ["h"], _ => Help());
+        RegisterTextCommand("exit", ["quit", "q"], _ => WarlockGame.Instance.Exit());
+        RegisterTextCommand("restart", ["rm"], _ => Restart());
+        RegisterTextCommand("host", _ => Host());
+        RegisterTextCommand("join", _ => Join());
         RegisterTextCommand("check", ["checksum"],
             args => Logger.Info($"Checksum is: {WarlockGame.Instance.Simulation?.CalculateChecksum() ?? 0}"));
-        RegisterTextCommand("logs", args => Logs(args.FirstOrDefault()),
-            "Args: on | off | debug | info | warn | error");
+        RegisterTextCommand("logs", Logs, "Args: on | off | debug | info | warn | error");
     }
 
     public void HandleCommand(string command) {
@@ -39,15 +38,6 @@ class TextCommandHandler {
         }
     }
 
-    private void RegisterTextCommand(TextCommand textCommand) {
-        _textCommandHandlers[textCommand.Name] = textCommand;
-        foreach (var alias in textCommand.Aliases) {
-            _textCommandHandlers[alias] = textCommand;
-        }
-
-        _textCommandNames.Add(textCommand.Name);
-    }
-
     private void RegisterTextCommand(string name, Action<string[]> handler, string description = "") =>
         RegisterTextCommand(name, [], handler, description);
 
@@ -56,6 +46,15 @@ class TextCommandHandler {
         var lowerCaseAliases = aliases.Select(x => x.ToLowerInvariant()).ToArray();
         var textCommand = new TextCommand(lowerCaseName, lowerCaseAliases, description, handler);
         RegisterTextCommand(textCommand);
+    }
+    
+    private void RegisterTextCommand(TextCommand textCommand) {
+        _textCommandHandlers[textCommand.Name] = textCommand;
+        foreach (var alias in textCommand.Aliases) {
+            _textCommandHandlers[alias] = textCommand;
+        }
+
+        _textCommandNames.Add(textCommand.Name);
     }
 
     private static void Restart() {
@@ -119,31 +118,56 @@ class TextCommandHandler {
         Logger.Info(sb.ToString());
     }
 
-    private static void Logs(string? arg) {
-        if (arg == null) {
-            LogDisplay.Instance.Visible = !LogDisplay.Instance.Visible;
-            return;
-        }
-
-        switch (arg) {
-            case "debug":
-                LogDisplay.Instance.DisplayLevel = Logger.Level.DEBUG;
-                break;
-            case "info":
-                LogDisplay.Instance.DisplayLevel = Logger.Level.INFO;
-                break;
-            case "warn" or "warning":
-                LogDisplay.Instance.DisplayLevel = Logger.Level.WARNING;
-                break;
-            case "error":
-                LogDisplay.Instance.DisplayLevel = Logger.Level.ERROR;
-                break;
+    private static void Logs(string[] args) {
+        switch (args.ElementAtOrDefault(0)?.ToLowerInvariant()) {
+            case "level":
+                switch (args.ElementAtOrDefault(1)?.ToLowerInvariant())
+                {
+                    case "debug":
+                        LogDisplay.Instance.DisplayLevel = Logger.Level.DEBUG;
+                        return;
+                    case "info":
+                        LogDisplay.Instance.DisplayLevel = Logger.Level.INFO;
+                        return;
+                    case "warn" or "warning":
+                        LogDisplay.Instance.DisplayLevel = Logger.Level.WARNING;
+                        return;
+                    case "error":
+                        LogDisplay.Instance.DisplayLevel = Logger.Level.ERROR;
+                        return;
+                    case null:
+                        return;
+                }
+                return;
+            case "dedupe":
+                switch (args.ElementAtOrDefault(1)?.ToLowerInvariant())
+                {
+                    case "debug" or "0":
+                        Logger.DedupeLevel = Logger.Level.DEBUG;
+                        return;
+                    case "info" or "1":
+                        Logger.DedupeLevel = Logger.Level.INFO;
+                        return;
+                    case "warning" or "2":
+                        Logger.DedupeLevel = Logger.Level.WARNING;
+                        return;
+                    case "error" or "3":
+                        Logger.DedupeLevel = Logger.Level.NONE;
+                        return;
+                    case null or "off" or "-1":
+                        Logger.DedupeLevel = Logger.Level.NONE;
+                        return;
+                }
+                return;
             case "on" or "visible":
                 LogDisplay.Instance.Visible = true;
-                break;
+                return;
             case "off" or "hide":
                 LogDisplay.Instance.Visible = false;
-                break;
+                return;
+            case null:
+                LogDisplay.Instance.Visible = !LogDisplay.Instance.Visible;
+                return;
         }
     }
 }

@@ -10,6 +10,9 @@ public static class Logger {
     private static readonly CircularBuffer<Log> _logs = new(1000);
 
     public static IEnumerable<Log> Logs => _logs;
+
+    // Deduplicates sequential logs with the same message at this level or below
+    public static Level DedupeLevel { get; set; } = Level.INFO;
     
     public static void Debug(string message) {
         WriteLog(message, Level.DEBUG);
@@ -28,27 +31,34 @@ public static class Logger {
     }
 
     public static void WriteLog(string message, Level level) {
-        if (!_logs.IsEmpty && _logs.Front().Message == message) {
-            return;
+        if (!_logs.IsEmpty && level <= DedupeLevel && _logs.Front().Message == message) {
+             _logs.Front().Apply(x =>
+             {
+                 x.Tick = WarlockGame.Instance.Simulation.Tick;
+                 x.Timestamp = DateTime.Now;
+                 x.DedupCount++;
+             });
         }
-        
-        _logs.PushFront(new Log
+        else
         {
-            Level = level,
-            Message = message,
-            Tick = WarlockGame.Instance.Simulation.Tick,
-            Timestamp = DateTime.Now
-        });
+            _logs.PushFront(new Log
+            {
+                Level = level,
+                Message = message,
+                Tick = WarlockGame.Instance.Simulation.Tick,
+                Timestamp = DateTime.Now
+            });
+        }
 
         LogDisplay.Instance.Refresh();
     }
 
     public class Log {
         public required String Message { get; init; }
-        public required DateTime Timestamp { get; init; }
-        public required int Tick { get; init; }
+        public required DateTime Timestamp { get; set; }
+        public required int Tick { get; set; }
         public required Level Level { get; init; }
-        public int DedupCount { get; set; } = 1;
+        public int DedupCount { get; set; } = 0;
 
         public String LevelString() {
             return Level switch
@@ -63,6 +73,7 @@ public static class Logger {
     }
     
     public enum Level {
+        NONE = -1,
         DEBUG = 0,
         INFO = 1,
         WARNING = 2,
