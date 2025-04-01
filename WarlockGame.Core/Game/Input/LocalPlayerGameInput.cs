@@ -70,7 +70,7 @@ class LocalPlayerGameInput {
 
     private void IssueCommand<T>(T command)  where T : IPlayerCommand, new() {
         if (NetworkManager.IsClient) {
-            NetworkManager.Send(command);
+            NetworkManager.SendSerializable(command);
         }
         else {
             CommandManager.AddSimulationCommand(command);

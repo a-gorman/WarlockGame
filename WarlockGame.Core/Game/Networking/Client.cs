@@ -38,10 +38,10 @@ sealed class Client : INetEventListener {
         
         _packetProcessor.RegisterCustomNestedTypes();
 
-        _packetProcessor.SubscribeNetSerializable<ServerTickProcessed>(OnServerTickProcessed);
-        _packetProcessor.SubscribeNetSerializable<JoinGameResponse>(OnJoinResponse);
-        _packetProcessor.SubscribeNetSerializable<PlayerJoined>(OnPlayerJoined);
-        _packetProcessor.SubscribeNetSerializable<StartGame>(OnStartGame);
+        _packetProcessor.SubscribeNetSerializable(OnServerTickProcessed, () => new ServerTickProcessed());
+        _packetProcessor.SubscribeNetSerializable(OnJoinResponse, () => new JoinGameResponse());
+        _packetProcessor.SubscribeNetSerializable(OnPlayerJoined, () => new PlayerJoined());
+        _packetProcessor.SubscribeNetSerializable(OnStartGame,() => new StartGame());
         
         _clientConnectedCallback = clientConnectedCallback;
     }

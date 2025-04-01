@@ -65,7 +65,7 @@ static class NetworkManager {
         _client = null;
     }
 
-    public static void Send<T>(T packet) where T : INetSerializable {
+    public static void SendSerializable<T>(T packet) where T : INetSerializable {
         if (IsServer) {
             _server!.SendSerializableToAll(packet, DeliveryMethod.ReliableOrdered);
         }
@@ -74,7 +74,7 @@ static class NetworkManager {
         }
     }
     
-    public static void SendReusable<T>(T packet) where T : class, new() {
+    public static void Send<T>(T packet) where T : class, new() {
         if (IsServer) {
             _server!.SendToAll(packet, DeliveryMethod.ReliableOrdered);
         }
