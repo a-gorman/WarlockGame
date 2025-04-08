@@ -8,18 +8,18 @@ namespace WarlockGame.Core.Game
 {
 	internal static class Sound
 	{
-		public static Song Music { get; private set; }
+		public static Song Music { get; private set; } = null!;
 
 		private static readonly Random Rand = new();
 
-		private static SoundEffect[] _explosions;
+		private static SoundEffect[] _explosions = null!;
 		// return a random explosion sound
 		public static SoundEffect Explosion => _explosions[Rand.Next(_explosions.Length)];
 
-		private static SoundEffect[] _shots;
+		private static SoundEffect[] _shots = null!;
 		public static SoundEffect Shot => _shots[Rand.Next(_shots.Length)];
 
-		private static SoundEffect[] _spawns;
+		private static SoundEffect[] _spawns = null!;
 		public static SoundEffect Spawn => _spawns[Rand.Next(_spawns.Length)];
 
 		public static void Load(ContentManager content)

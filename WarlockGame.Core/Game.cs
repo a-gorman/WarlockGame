@@ -27,7 +27,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     public static bool IsLocal => !NetworkManager.IsConnected;
 
     private readonly GraphicsDeviceManager _graphics;
-    private SpriteBatch _spriteBatch;
+    private SpriteBatch _spriteBatch = null!;
     private readonly BloomComponent _bloom;
     internal Simulation Simulation { get; } = new();
     private readonly Queue<ServerTickProcessed> _serverTicks = new();
@@ -48,7 +48,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
         _bloom = new BloomComponent(this);
         Components.Add(_bloom);
-        _bloom.Settings = new BloomSettings(null, 0.25f, 4, 2, 1, 1.5f, 1);
+        _bloom.Settings = new BloomSettings("", 0.25f, 4, 2, 1, 1.5f, 1);
         _bloom.Visible = false;
 
         Window.Position = Vector2.Zero.ToPoint();

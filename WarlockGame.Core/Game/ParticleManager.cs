@@ -63,8 +63,11 @@ public class ParticleManager<T>
 		{
 			var particle = _particleList[i];
 
-			Vector2 origin = new Vector2(particle.Texture.Width / 2, particle.Texture.Height / 2);
-			spriteBatch.Draw(particle.Texture, particle.Position, null, particle.Tint, particle.Orientation, origin, particle.Scale, 0, 0);
+			Vector2 origin = new Vector2((particle.Texture?.Width ?? 0) / 2, (particle.Texture?.Height ?? 0) / 2);
+			if (particle.Texture != null)
+			{
+				spriteBatch.Draw(particle.Texture, particle.Position, null, particle.Tint, particle.Orientation, origin, particle.Scale, 0, 0);
+			}
 		}
 	}
 
@@ -121,7 +124,7 @@ public class ParticleManager<T>
 		public Color Tint;
 		public float Duration;
 		public float PercentLife = 1f;
-		public T State;
+		public T State = default!;
 	}
 
 	// Represents a circular array with an arbitrary starting point. It's useful for efficiently overwriting
@@ -137,7 +140,7 @@ public class ParticleManager<T>
 
 		public int Count { get; set; }
 		public int Capacity => _list.Length;
-		private readonly Particle[] _list;
+		private readonly Particle[] _list = null!;
 
 		public CircularParticleArray() { }  // for serialization
 
