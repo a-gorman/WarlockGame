@@ -31,7 +31,7 @@ public class SpellDisplay : IClickableComponent {
         Logger.Info("Click the spell display!");
     }
 
-    public List<IClickableComponent> ClickableComponents { get; set; }
+    public List<IClickableComponent> ClickableComponents { get; set; } = new();
 
     public void Draw(SpriteBatch spriteBatch) {
         DrawHollowRectangle(spriteBatch, BoundingBox, Color.White);

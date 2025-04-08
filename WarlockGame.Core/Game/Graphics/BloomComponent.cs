@@ -1,10 +1,12 @@
 #region File Description
+
 //-----------------------------------------------------------------------------
 // BloomComponent.cs
 //
 // Microsoft XNA Community Game Platform
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
+
 #endregion
 
 #region Using Statements
@@ -21,15 +23,15 @@ namespace WarlockGame.Core.Game.Graphics
     {
         #region Fields
 
-        private SpriteBatch _spriteBatch;
+        private SpriteBatch _spriteBatch = null!;
 
-        private Microsoft.Xna.Framework.Graphics.Effect _bloomExtractEffect;
-        private Microsoft.Xna.Framework.Graphics.Effect _bloomCombineEffect;
-        private Microsoft.Xna.Framework.Graphics.Effect _gaussianBlurEffect;
+        private Effect _bloomExtractEffect = null!;
+        private Effect _bloomCombineEffect = null!;
+        private Effect _gaussianBlurEffect = null!;
 
-        private RenderTarget2D _sceneRenderTarget;
-        private RenderTarget2D _renderTarget1;
-        private RenderTarget2D _renderTarget2;
+        private RenderTarget2D _sceneRenderTarget = null!;
+        private RenderTarget2D _renderTarget1 = null!;
+        private RenderTarget2D _renderTarget2 = null!;
 
 
         // Choose what display settings the bloom should use.
@@ -55,11 +57,9 @@ namespace WarlockGame.Core.Game.Graphics
 
         private IntermediateBuffer _showBuffer = IntermediateBuffer.FinalResult;
 
-
         #endregion
 
         #region Initialization
-
 
         public BloomComponent(Microsoft.Xna.Framework.Game game)
             : base(game)
@@ -77,8 +77,8 @@ namespace WarlockGame.Core.Game.Graphics
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             _bloomExtractEffect = Game.Content.Load<Microsoft.Xna.Framework.Graphics.Effect>("Shaders/BloomExtract");
-			_bloomCombineEffect = Game.Content.Load<Microsoft.Xna.Framework.Graphics.Effect>("Shaders/BloomCombine");
-			_gaussianBlurEffect = Game.Content.Load<Microsoft.Xna.Framework.Graphics.Effect>("Shaders/GaussianBlur");
+            _bloomCombineEffect = Game.Content.Load<Microsoft.Xna.Framework.Graphics.Effect>("Shaders/BloomCombine");
+            _gaussianBlurEffect = Game.Content.Load<Microsoft.Xna.Framework.Graphics.Effect>("Shaders/GaussianBlur");
 
             // Look up the resolution and format of our main backbuffer.
             PresentationParameters pp = GraphicsDevice.PresentationParameters;
@@ -90,8 +90,8 @@ namespace WarlockGame.Core.Game.Graphics
 
             // Create a texture for rendering the main scene, prior to applying bloom.
             _sceneRenderTarget = new RenderTarget2D(GraphicsDevice, width, height, false,
-                                                   format, pp.DepthStencilFormat, pp.MultiSampleCount,
-                                                   RenderTargetUsage.DiscardContents);
+                format, pp.DepthStencilFormat, pp.MultiSampleCount,
+                RenderTargetUsage.DiscardContents);
 
             // Create two rendertargets for the bloom processing. These are half the
             // size of the backbuffer, in order to minimize fillrate costs. Reducing
@@ -115,11 +115,9 @@ namespace WarlockGame.Core.Game.Graphics
             _renderTarget2.Dispose();
         }
 
-
         #endregion
 
         #region Draw
-
 
         /// <summary>
         /// This should be called at the very start of the scene rendering. The bloom
@@ -149,24 +147,24 @@ namespace WarlockGame.Core.Game.Graphics
                 Settings.BloomThreshold);
 
             DrawFullscreenQuad(_sceneRenderTarget, _renderTarget1,
-                               _bloomExtractEffect,
-                               IntermediateBuffer.PreBloom);
+                _bloomExtractEffect,
+                IntermediateBuffer.PreBloom);
 
             // Pass 2: draw from rendertarget 1 into rendertarget 2,
             // using a shader to apply a horizontal gaussian blur filter.
             SetBlurEffectParameters(1.0f / (float)_renderTarget1.Width, 0);
 
             DrawFullscreenQuad(_renderTarget1, _renderTarget2,
-                               _gaussianBlurEffect,
-                               IntermediateBuffer.BlurredHorizontally);
+                _gaussianBlurEffect,
+                IntermediateBuffer.BlurredHorizontally);
 
             // Pass 3: draw from rendertarget 2 back into rendertarget 1,
             // using a shader to apply a vertical gaussian blur filter.
             SetBlurEffectParameters(0, 1.0f / (float)_renderTarget1.Height);
 
             DrawFullscreenQuad(_renderTarget2, _renderTarget1,
-                               _gaussianBlurEffect,
-                               IntermediateBuffer.BlurredBothWays);
+                _gaussianBlurEffect,
+                IntermediateBuffer.BlurredBothWays);
 
             // Pass 4: draw both rendertarget 1 and the original scene
             // image back into the main backbuffer, using a shader that
@@ -185,9 +183,9 @@ namespace WarlockGame.Core.Game.Graphics
             Viewport viewport = GraphicsDevice.Viewport;
 
             DrawFullscreenQuad(_renderTarget1,
-                               viewport.Width, viewport.Height,
-                               _bloomCombineEffect,
-                               IntermediateBuffer.FinalResult);
+                viewport.Width, viewport.Height,
+                _bloomCombineEffect,
+                IntermediateBuffer.FinalResult);
         }
 
 
@@ -196,13 +194,13 @@ namespace WarlockGame.Core.Game.Graphics
         /// a custom shader to apply postprocessing effects.
         /// </summary>
         private void DrawFullscreenQuad(Texture2D texture, RenderTarget2D renderTarget,
-                                Microsoft.Xna.Framework.Graphics.Effect effect, IntermediateBuffer currentBuffer)
+            Microsoft.Xna.Framework.Graphics.Effect effect, IntermediateBuffer currentBuffer)
         {
             GraphicsDevice.SetRenderTarget(renderTarget);
 
             DrawFullscreenQuad(texture,
-                               renderTarget.Width, renderTarget.Height,
-                               effect, currentBuffer);
+                renderTarget.Width, renderTarget.Height,
+                effect, currentBuffer);
         }
 
 
@@ -211,14 +209,14 @@ namespace WarlockGame.Core.Game.Graphics
         /// using a custom shader to apply postprocessing effects.
         /// </summary>
         private void DrawFullscreenQuad(Texture2D texture, int width, int height,
-                                Microsoft.Xna.Framework.Graphics.Effect effect, IntermediateBuffer currentBuffer)
+            Microsoft.Xna.Framework.Graphics.Effect effect, IntermediateBuffer currentBuffer)
         {
             // If the user has selected one of the show intermediate buffer options,
             // we still draw the quad to make sure the image will end up on the screen,
             // but might need to skip applying the custom pixel shader.
             if (_showBuffer < currentBuffer)
             {
-                effect = null;
+                effect = null!;
             }
 
             _spriteBatch.Begin(0, BlendState.Opaque, null, null, null, effect);
@@ -305,7 +303,6 @@ namespace WarlockGame.Core.Game.Graphics
             return (float)((1.0 / Math.Sqrt(2 * Math.PI * theta)) *
                            Math.Exp(-(n * n) / (2 * theta * theta)));
         }
-
 
         #endregion
     }
