@@ -35,7 +35,7 @@ class LogDisplay : IInterfaceComponent {
             Bounds = new Rectangle(0,0, 900, 100)
         };
 
-        Components = new[] { _textDisplay };
+        Components = [_textDisplay];
     }
     public IEnumerable<IInterfaceComponent> Components { get; }
     public void Draw(SpriteBatch spriteBatch) {}
