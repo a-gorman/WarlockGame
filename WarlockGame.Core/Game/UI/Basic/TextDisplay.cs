@@ -30,6 +30,7 @@ class TextDisplay : IInterfaceComponent {
     public int Layer { get; set; }
     public bool IsExpired { get; set; }
     public bool Visible { get; set; } = true;
+    public float TextScale { get; set; } = 1f;
     public IEnumerable<IInterfaceComponent> Components { get; } = new List<IInterfaceComponent>();
 
     public SpriteFont Font {
@@ -37,6 +38,7 @@ class TextDisplay : IInterfaceComponent {
         set {
             field = value;
             _fontHeight = value.MeasureString(" ").Y;
+            RecalculateWrappedText();
         }
     }
 
@@ -49,7 +51,7 @@ class TextDisplay : IInterfaceComponent {
     }
     
     public void Draw(SpriteBatch spriteBatch) {
-        spriteBatch.DrawString(Art.Font, _wrappedText, Bounds.Location.ToVector2(), TextColor);
+        spriteBatch.DrawString(Art.Font, _wrappedText, Bounds.Location.ToVector2(), TextColor, scale: TextScale, rotation: 0, origin: Vector2.Zero, effects: SpriteEffects.None, layerDepth: 0);
     }
 
     private void RecalculateWrappedText() {

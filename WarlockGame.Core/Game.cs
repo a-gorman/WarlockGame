@@ -73,11 +73,15 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         base.Initialize();
         
         UIManager.AddComponent(LogDisplay.Instance);
+        UIManager.AddComponent(MessageDisplay.Instance);
+        
 
 #if DEBUG
         LogDisplay.Instance.Visible = true;
         LogDisplay.Instance.DisplayLevel = Logger.Level.DEBUG;
 #endif
+        
+        MessageDisplay.Instance.AddMessage("Game Started");
     }
 
     /// <summary>

@@ -22,10 +22,10 @@ class HealthBarManager : IInterfaceComponent {
             float filledProportion = warlock.Health / warlock.MaxHealth;
         
             var filledTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-            filledTexture.SetData(new[] { Color.Lerp(Color.Red, Color.Green, filledProportion) });
+            filledTexture.SetData([Color.Lerp(Color.Red, Color.Green, filledProportion)]);
         
             var unfilledTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-            unfilledTexture.SetData(new[] { Color.Black });
+            unfilledTexture.SetData([Color.Black]);
 
             var position = warlock.Position;
             position.Y -= VerticalOffset;
