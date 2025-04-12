@@ -5,6 +5,7 @@ using LiteNetLib;
 using LiteNetLib.Utils;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
+using WarlockGame.Core.Game.UI;
 
 namespace WarlockGame.Core.Game.Networking;
 
@@ -59,6 +60,7 @@ sealed class Client : INetEventListener {
     }
     
     private void OnJoinResponse(JoinGameResponse response) {
+        MessageDisplay.AddMessage("Joining game");
         Logger.Info("Joining game");
         
         foreach (var player in response.Players) {
