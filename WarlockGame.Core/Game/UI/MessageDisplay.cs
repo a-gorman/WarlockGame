@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
-using WarlockGame.Core.Game.Graphics;
+using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.UI.Basic;
+using WarlockGame.Core.Game.Util;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace WarlockGame.Core.Game.UI;
@@ -29,22 +27,24 @@ public class MessageDisplay : IInterfaceComponent
         Components = [_messageDisplay];
     }
 
-    public void AddMessage(string message)
+    public static void AddMessage(string message)
     {
+        Logger.Debug("Displayed Message: " + message);
+        
         var wrapper = new Message
         {
             Text = message,
             FramesRemaining = 5 * 60
         };
         
-        _messages.AddFirst(wrapper);
+        Instance._messages.AddFirst(wrapper);
 
-        if (_messages.Count > 5)
+        if (Instance._messages.Count > 5)
         {
-            _messages.RemoveLast();
+            Instance._messages.RemoveLast();
         }
 
-        Recalculate();
+        Instance.Recalculate();
     }
 
     public void Draw(SpriteBatch spriteBatch)
@@ -63,7 +63,7 @@ public class MessageDisplay : IInterfaceComponent
 
     private void Recalculate()
     {
-        _messageDisplay.Text = string.Join("\n\n", _messages.Select(x => x.Text));
+        _messageDisplay.Text = string.Join("\n\n", _messages.Reverse().Select(x => x.Text));
     }
     
     private class Message

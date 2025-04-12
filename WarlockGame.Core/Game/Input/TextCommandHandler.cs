@@ -24,7 +24,7 @@ class TextCommandHandler {
         RegisterTextCommand("host", _ => Host());
         RegisterTextCommand("join", _ => Join());
         RegisterTextCommand("check", ["checksum"],
-            args => Logger.Info($"Checksum is: {WarlockGame.Instance.Simulation?.CalculateChecksum() ?? 0}"));
+            _ => MessageDisplay.AddMessage($"Checksum is: {WarlockGame.Instance.Simulation?.CalculateChecksum() ?? 0}"));
         RegisterTextCommand("logs", Logs, "Args: on | off | debug | info | warn | error");
     }
 
@@ -34,7 +34,7 @@ class TextCommandHandler {
             commandHandler.Handler.Invoke(args.Skip(1).ToArray());
         }
         else {
-            Logger.Info("Command not recognized");
+            MessageDisplay.AddMessage("Command not recognized");
         }
     }
 
@@ -59,7 +59,7 @@ class TextCommandHandler {
 
     private static void Restart() {
         if (NetworkManager.IsClient) {
-            Logger.Info("Must be server host to restart game");
+            MessageDisplay.AddMessage("Must be server host to restart game");
             return;
         }
 
@@ -73,7 +73,7 @@ class TextCommandHandler {
 
     private static void Host() {
         if (NetworkManager.IsConnected) {
-            Logger.Info("Already in game!");
+            MessageDisplay.AddMessage("Already in game!");
             return;
         }
 
@@ -85,7 +85,7 @@ class TextCommandHandler {
 
     private static void Join() {
         if (NetworkManager.IsConnected) {
-            Logger.Info("Already in game!");
+            MessageDisplay.AddMessage("Already in game!");
             return;
         }
 
@@ -115,7 +115,7 @@ class TextCommandHandler {
             sb.Append(textCommand.Description);
         }
 
-        Logger.Info(sb.ToString());
+        MessageDisplay.AddMessage(sb.ToString());
     }
 
     private static void Logs(string[] args) {

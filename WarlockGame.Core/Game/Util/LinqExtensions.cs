@@ -65,4 +65,12 @@ public static class LinqExtensions {
     public static TSource? MinOrDefault<TSource>(this IEnumerable<TSource> source, TSource? defaultValue = default) {
         return source.Any() ? source.Min() : defaultValue;
     }
+    
+    public static IEnumerable<T> Reverse<T>(this LinkedList<T> list) {
+        var el = list.Last;
+        while (el != null) {
+            yield return el.Value;
+            el = el.Previous;
+        }
+    }
 }
