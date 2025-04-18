@@ -6,11 +6,11 @@ using MonoGame.Extended;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim.Effect;
-using WarlockGame.Core.Game.Sim.Entity.Order;
+using WarlockGame.Core.Game.Sim.Order;
 using WarlockGame.Core.Game.Sim.Rule;
 using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.UI;
-using Warlock = WarlockGame.Core.Game.Sim.Entity.Warlock;
+using Warlock = WarlockGame.Core.Game.Sim.Entities.Warlock;
 
 namespace WarlockGame.Core.Game.Sim;
 

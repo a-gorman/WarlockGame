@@ -6,9 +6,9 @@ using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.Sim.Spell.Component;
 using WarlockGame.Core.Game.Util;
 
-namespace WarlockGame.Core.Game.Sim.Entity;
+namespace WarlockGame.Core.Game.Sim.Entities;
 
-class Projectile : EntityBase {
+class Projectile : Entity {
     private static readonly Random _rand = new();
     private readonly IReadOnlyList<ILocationSpellComponent> _effects;
     public SpellContext Context { get; }
@@ -40,6 +40,8 @@ class Projectile : EntityBase {
                 WarlockGame.ParticleManager.CreateParticle(Art.LineParticle, Position, Color.LightBlue, 50, 1,
                     new ParticleState { Velocity = _rand.NextVector2(0, 9), Type = ParticleType.Bullet, LengthMultiplier = 1 });
         }
+        
+        base.Update();
     }
 
     public void OnCollision()

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using OneOf;
-using WarlockGame.Core.Game.Sim.Entity;
 using WarlockGame.Core.Game.Sim.Spell.Component;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Effect;
@@ -17,7 +16,7 @@ class ContinuousSpellEffect : IEffect {
     public int RepeatEvery { get; init; } = 1;
     
     public void Update() {
-        Timer.Update();
+        Timer.Decrement();
         IsExpired |= Timer.IsExpired;
 
         // TODO: This Doesn't consistently start on the first from

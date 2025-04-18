@@ -27,7 +27,7 @@ public class Lightning : IEffect
 
     public void Update()
     {
-        _timer.Update();
+        _timer.Decrement();
     }
     
     public void Draw(SpriteBatch spriteBatch)

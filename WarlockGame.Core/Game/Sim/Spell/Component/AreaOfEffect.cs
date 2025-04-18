@@ -7,10 +7,10 @@ namespace WarlockGame.Core.Game.Sim.Spell.Component;
 class LocationAreaOfEffect: ILocationSpellComponent {
 
     public required ILocationShape Shape { get; init; } 
-    public required IReadOnlyCollection<IWarlockComponent> Effects { get; init; }
+    public required IReadOnlyCollection<IWarlockComponent> Components { get; init; }
 
     public void Invoke(SpellContext context, Vector2 invokeLocation) {
-        foreach (var effect in Effects) {
+        foreach (var effect in Components) {
             effect.Invoke(context, Shape.GatherTargets(context, invokeLocation));
         }
     }

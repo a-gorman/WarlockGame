@@ -1,4 +1,4 @@
-namespace WarlockGame.Core.Game.Sim.Entity.Order; 
+namespace WarlockGame.Core.Game.Sim.Order; 
 
 interface IOrder {
     

@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
+using WarlockGame.Core.Game.Sim.Entities;
 
-namespace WarlockGame.Core.Game.Sim.Entity.Order; 
+namespace WarlockGame.Core.Game.Sim.Order; 
 
 class CastOrder: IOrder {
     private readonly Warlock _player;

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using LiteNetLib;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
@@ -26,6 +27,8 @@ class TextCommandHandler {
         RegisterTextCommand("check", ["checksum"],
             _ => MessageDisplay.AddMessage($"Checksum is: {WarlockGame.Instance.Simulation?.CalculateChecksum() ?? 0}"));
         RegisterTextCommand("logs", Logs, "Args: on | off | debug | info | warn | error");
+        RegisterTextCommand("ip", 
+            _ => MessageDisplay.AddMessage($"IP Address is: {NetUtils.GetLocalIpList(LocalAddrType.IPv4).JoinToString()}"));
     }
 
     public void HandleCommand(string command) {

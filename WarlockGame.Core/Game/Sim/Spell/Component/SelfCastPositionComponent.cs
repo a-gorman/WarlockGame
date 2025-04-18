@@ -1,12 +1,14 @@
-using WarlockGame.Core.Game.Sim.Entity;
+using System.Collections.Generic;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Component;
 
 class SelfCastPositionComponent : ISelfSpellComponent {
     
-    public required ILocationSpellComponent Component { get; init; }
+    public required List<ILocationSpellComponent> Components { get; init; }
     
     public void Invoke(SpellContext context) {
-        Component.Invoke(context, context.Caster.Position);
+        foreach (var component in Components) {
+            component.Invoke(context, context.Caster.Position);
+        }
     }
 }

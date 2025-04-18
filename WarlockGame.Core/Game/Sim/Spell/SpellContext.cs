@@ -1,5 +1,5 @@
 using WarlockGame.Core.Game.Sim.Effect;
-using WarlockGame.Core.Game.Sim.Entity;
+using WarlockGame.Core.Game.Sim.Entities;
 
 namespace WarlockGame.Core.Game.Sim.Spell;
 

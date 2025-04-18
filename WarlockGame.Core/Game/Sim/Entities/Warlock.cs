@@ -5,13 +5,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Sim.Buff;
-using WarlockGame.Core.Game.Sim.Entity.Order;
+using WarlockGame.Core.Game.Sim.Order;
 using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.Util;
 
-namespace WarlockGame.Core.Game.Sim.Entity
+namespace WarlockGame.Core.Game.Sim.Entities
 {
-    class Warlock : EntityBase
+    class Warlock : Entity
     {
         public const float Speed = 4;
 
@@ -20,6 +20,7 @@ namespace WarlockGame.Core.Game.Sim.Entity
         public float Health { get; set; }
 
         public event Action<Warlock>? Destroyed;
+        
         
         public Vector2? Direction { get; set; }
 
@@ -49,7 +50,7 @@ namespace WarlockGame.Core.Game.Sim.Entity
                 _simulation.SpellFactory.Fireball(), 
                 _simulation.SpellFactory.Lightning(), 
                 _simulation.SpellFactory.Poison(), 
-                _simulation.SpellFactory.Burst(), 
+                _simulation.SpellFactory.SoulSplit(), 
                 _simulation.SpellFactory.WindShield()
             };
         }
@@ -58,8 +59,6 @@ namespace WarlockGame.Core.Game.Sim.Entity
             Orders.FirstOrDefault()?.Update();
 
             Move();
-            
-            // Debug.Visualize(Position.ToString(), new Vector2(100,100));
             
             MakeExhaustFire();
 
@@ -76,6 +75,8 @@ namespace WarlockGame.Core.Game.Sim.Entity
                 Orders.First!.Value.OnFinish();
                 Orders.RemoveFirst();
             }
+            
+            base.Update();
         }
 
         public void GiveOrder(Func<Warlock, IOrder> order) {
@@ -185,15 +186,16 @@ namespace WarlockGame.Core.Game.Sim.Entity
             Velocity += force * direction.ToNormalizedOrZero();
         }
 
-        public void Damage(float damage, IEntity source) {
+        public override void Damage(float damage, Entity source) {
             Health -= damage;
+            base.Damage(damage, source);
 
             if (Health <= 0) {
                 Destroy(source);
             }
         }
 
-        private void Destroy(IEntity source) {
+        private void Destroy(Entity source) {
             if (!IsExpired) {
                 IsExpired = true;
                 Destroyed?.Invoke(this);

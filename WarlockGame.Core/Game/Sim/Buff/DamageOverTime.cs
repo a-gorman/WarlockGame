@@ -1,4 +1,4 @@
-using WarlockGame.Core.Game.Sim.Entity;
+using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Sim.Spell;
 
 namespace WarlockGame.Core.Game.Sim.Buff;
@@ -18,7 +18,7 @@ class DamageOverTime : IBuff {
     }
     
     public void Update(Warlock target) {
-        _gameTimer.Update();
+        _gameTimer.Decrement();
         if (_gameTimer.IsExpired) {
             IsExpired = true;
         }
