@@ -7,8 +7,9 @@ using WarlockGame.Core.Game.Graphics;
 
 namespace WarlockGame.Core.Game.Util;
 
-internal static class Extensions
-{
+internal static class Extensions {
+    public static Sprite ToSprite(this Texture2D texture) => new Sprite(texture);
+    
     public static void DrawLine(this SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color,
         float thickness = 2f)
     {

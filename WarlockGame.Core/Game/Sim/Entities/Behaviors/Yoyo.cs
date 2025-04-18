@@ -1,0 +1,53 @@
+using Microsoft.Xna.Framework;
+using WarlockGame.Core.Game.Util;
+
+namespace WarlockGame.Core.Game.Sim.Entities.Behaviors;
+
+class Yoyo : Behavior {
+    private readonly Simulation _simulation;
+
+    private State _state = State.Outwards;
+
+    private readonly Vector2 _outwardsAccel;
+    private readonly Vector2 _inwardsAccel;
+
+    public Vector2 Velocity { get; set; } = Vector2.Zero;
+    public GameTimer OutwardsTime { get; }
+    public GameTimer InwardsTime { get; }
+
+    public Yoyo(Simulation simulation, Vector2 maxDisplacement, SimTimeSpan outwardsTime, SimTimeSpan inwardsTime) {
+        _simulation = simulation;
+        OutwardsTime = outwardsTime.ToTimer();
+        InwardsTime = inwardsTime.ToTimer();
+
+        var maxDisplacementLength = maxDisplacement.Length();
+
+        // dx = 1/2 a dt^2 + vi dt
+        _outwardsAccel = maxDisplacement.WithLength(2f * maxDisplacementLength / outwardsTime.Ticks.Squared());
+        _inwardsAccel = maxDisplacement.WithLength(2f * maxDisplacementLength / inwardsTime.Ticks.Squared());
+
+        Velocity = -_outwardsAccel * outwardsTime.Ticks;
+    }
+
+    public override void Update(Entity entity) {
+        if (_state == State.Outwards) {
+            Velocity += _outwardsAccel;
+            if (OutwardsTime.Decrement()) {
+                _state = State.Inwards;
+            }
+        }
+        else {
+            Velocity += _inwardsAccel;
+            if (InwardsTime.Decrement()) {
+                IsExpired = true;
+            }
+        }
+
+        entity.Position += Velocity;
+    }
+
+    private enum State {
+        Outwards,
+        Inwards
+    }
+}

@@ -7,7 +7,6 @@ using LiteNetLib.Utils;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim;
-using WarlockGame.Core.Game.Sim.Entity.Factory;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Networking;

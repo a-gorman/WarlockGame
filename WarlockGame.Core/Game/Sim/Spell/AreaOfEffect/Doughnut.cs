@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using WarlockGame.Core.Game.Sim.Entity;
+using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
@@ -28,7 +28,7 @@ class Doughnut : ILocationShape {
                             .ToList();
     }
 
-    private TargetInfo CreateTargetInfo(EntityBase target, Vector2 invokeLocation) {
+    private TargetInfo CreateTargetInfo(Entity target, Vector2 invokeLocation) {
         var displacementAxis1 = target.Position - invokeLocation;
         
         var displacementAxis2 = Vector2.Zero;

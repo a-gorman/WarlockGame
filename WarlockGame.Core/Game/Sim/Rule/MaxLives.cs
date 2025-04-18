@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
-using WarlockGame.Core.Game.Sim.Entity;
+using WarlockGame.Core.Game.Sim.Entities;
 
 namespace WarlockGame.Core.Game.Sim.Rule;
 

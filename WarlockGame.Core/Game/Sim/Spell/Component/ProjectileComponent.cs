@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Graphics;
-using WarlockGame.Core.Game.Sim.Entity;
+using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Component; 

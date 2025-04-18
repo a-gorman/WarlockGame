@@ -1,8 +1,4 @@
-using System;
-using System.Linq;
-using WarlockGame.Core.Game.Sim.Spell;
-
-namespace WarlockGame.Core.Game.Sim.Entity.Factory; 
+namespace WarlockGame.Core.Game.Sim.Entities.Factory; 
 
 static class WarlockFactory {
     // public static Warlock FromPacket(Networking.Packet.Warlock packet) {

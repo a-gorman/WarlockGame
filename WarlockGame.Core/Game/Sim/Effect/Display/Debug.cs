@@ -26,7 +26,7 @@ public class VectorEffect : IEffect
 
     public void Update()
     {
-        _timer.Update();
+        _timer.Decrement();
     }
     
     public void Draw(SpriteBatch spriteBatch)
@@ -55,7 +55,7 @@ public class VectorEffect : IEffect
         }
 
         public void Update() {
-            _timer.Update();
+            _timer.Decrement();
         }
 
         public void Draw(SpriteBatch spriteBatch) {
@@ -86,7 +86,7 @@ public class StringEffect : IEffect {
     }
 
     public void Update() {
-        _timer.Update();
+        _timer.Decrement();
     }
 
     public void Draw(SpriteBatch spriteBatch) {
@@ -111,7 +111,7 @@ public class CircleEffect : IEffect {
     }
 
     public void Update() {
-        _timer.Update();
+        _timer.Decrement();
     }
 
     public void Draw(SpriteBatch spriteBatch) {

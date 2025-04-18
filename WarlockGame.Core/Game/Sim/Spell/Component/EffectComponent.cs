@@ -4,6 +4,9 @@ using WarlockGame.Core.Game.Sim.Effect;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Component;
 
+/// <summary>
+/// Creates new effects and adds them to the effect manager
+/// </summary>
 class EffectComponent : ILocationSpellComponent {
 
     public required Func<SpellContext, Vector2, IEffect> EffectConstructor { get; init; }

@@ -77,7 +77,6 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         
 
 #if DEBUG
-        LogDisplay.Instance.Visible = true;
         LogDisplay.Instance.DisplayLevel = Logger.Level.DEBUG;
 #endif
         

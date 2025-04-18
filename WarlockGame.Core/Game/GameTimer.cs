@@ -25,7 +25,7 @@ public class GameTimer
         return new GameTimer((int) (FramesPerSecond * seconds));
     }
     
-    public bool Update()
+    public bool Decrement()
     {
         FramesRemaining = Math.Max(0, FramesRemaining - 1);
         return FramesRemaining == 0;
