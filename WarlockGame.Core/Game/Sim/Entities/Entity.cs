@@ -20,6 +20,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
 		public bool IsExpired { get; set; }			// true if the entity was destroyed and should be deleted.
 		private List<Behavior> Behaviors { get; } = [];
 		public event Action<OnDamagedEventArgs>? OnDamaged;
+		public event Action<OnCollisionEventArgs>? OnCollision;
 		
 		public Entity(Sprite sprite, Simulation simulation) {
 			_sprite = sprite;
@@ -58,6 +59,17 @@ namespace WarlockGame.Core.Game.Sim.Entities
 				};
 				
 				OnDamaged.Invoke(args);
+			}
+		}
+
+		public virtual void HandleCollision(Entity other) {
+			if(OnCollision != null) {
+				var args = new OnCollisionEventArgs() {
+					Source = this,
+					Other = other
+				};
+
+				OnCollision.Invoke(args);
 			}
 		}
 	}

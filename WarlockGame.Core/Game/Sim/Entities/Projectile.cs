@@ -44,12 +44,18 @@ class Projectile : Entity {
         base.Update();
     }
 
-    public void OnCollision()
+    public override void HandleCollision(Entity other)
     {
+        if(other == context.Caster) {
+            return;
+        }
+
         IsExpired = true;
         foreach (var effect in _effects) {
             effect.Invoke(Context, Position);
         }
+
+        base.HandleCollision(other);
     }
 
     public void Push(float force, Vector2 direction) {
