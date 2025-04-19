@@ -72,19 +72,13 @@ namespace WarlockGame.Core.Game
 			return warlock;
 		}
 
-		// TODO: Make this better
 		private void HandleCollisions() {
 			var entities = _entities.Values.ToList();
 			for (int i = 0; i < entities.Count - 1; i++) {
 				for (int j = i + 1; j < entities.Count; j++) {
 					if (IsColliding(entities[i], entities[j])) {
-						if (entities[i] is Projectile projectile1 && projectile1.Context.Caster != entities[j]) {
-							projectile1.OnCollision();
-						}
-						
-						if (entities[j] is Projectile projectile2 && projectile2.Context.Caster != entities[i]) {
-							projectile2.OnCollision();
-						}
+						entities[i].HandleCollision(entities[j]);
+						entities[j].HandleCollision(entities[i]);
 					}
 				}
 			}
