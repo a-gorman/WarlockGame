@@ -7,6 +7,7 @@ using WarlockGame.Core.Game.Sim.Spell.Component;
 namespace WarlockGame.Core.Game.Sim.Spell;
 
 class WarlockSpell {
+    public required string Name { get; init; }
     public required int SpellId { get; init; }
     public required int CooldownTime { get; init; }
     public required Texture2D SpellIcon { get; init; }
