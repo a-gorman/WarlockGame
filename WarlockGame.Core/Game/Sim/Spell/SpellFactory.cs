@@ -152,6 +152,7 @@ class SpellFactory {
                                                 Position = location
                                             };
                                             image.AddBehaviors(
+                                                new PushShare(targetInfo.Entity.Id, sim),
                                                 new DamageShare(targetInfo.Entity.Id, sim),
                                                 new TimedLife(SimTimeSpan.OfSeconds(3.5f)),
                                                 new Shadow(targetInfo.Entity.Id, sim),
@@ -171,6 +172,7 @@ class SpellFactory {
                                                 Position = location
                                             };
                                             image.AddBehaviors(
+                                                new PushShare(targetInfo.Entity.Id, sim),
                                                 new DamageShare(targetInfo.Entity.Id, sim),
                                                 new TimedLife(SimTimeSpan.OfSeconds(3.5f)),
                                                 new Shadow(targetInfo.Entity.Id, sim),
