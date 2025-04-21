@@ -22,6 +22,7 @@ class SpellFactory {
     public WarlockSpell Fireball() {
         return new WarlockSpell(_simulation) {
             SpellId = 1,
+            Name = "Fireball",
             CooldownTime = 60,
             SpellIcon = Art.FireballIcon,
             Effect = new ProjectileComponent(
@@ -42,6 +43,7 @@ class SpellFactory {
     public WarlockSpell Lightning() {
         return new WarlockSpell(_simulation) {
             SpellId = 2,
+            Name = "Lightning",
             CooldownTime = 60,
             SpellIcon = Art.LightningIcon,
             Effect = new DirectionalAreaOfEffect {
@@ -57,6 +59,7 @@ class SpellFactory {
     public WarlockSpell Poison() {
         return new WarlockSpell(_simulation) {
             SpellId = 3,
+            Name = "Poison",
             CooldownTime = 60,
             SpellIcon = Art.PoisonIcon,
             Effect = new ProjectileComponent(
@@ -74,6 +77,7 @@ class SpellFactory {
     public WarlockSpell Burst() {
         return new WarlockSpell(_simulation) {
             SpellId = 4,
+            Name = "Burst",
             CooldownTime = 60,
             SpellIcon = Art.BurstIcon,
             Effect = new SelfAreaOfEffect {
@@ -95,6 +99,7 @@ class SpellFactory {
     public WarlockSpell WindShield() {
         return new WarlockSpell(_simulation) {
             SpellId = 5,
+            Name = "Wind Shield",
             CooldownTime = 60,
             SpellIcon = Art.WindWallIcon,
             Effect = new SelfCastPositionComponent {
@@ -130,9 +135,10 @@ class SpellFactory {
         };
     }
 
-    public WarlockSpell SoulSplit() {
+    public WarlockSpell SoulShatter() {
         return new WarlockSpell(_simulation) {
             SpellId = 6,
+            Name = "Soul Shatter",
             CooldownTime = 60,
             SpellIcon = Art.BurstIcon,
             Effect = new ProjectileComponent(Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f), 

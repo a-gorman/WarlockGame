@@ -50,7 +50,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
                 _simulation.SpellFactory.Fireball(),
                 _simulation.SpellFactory.Lightning(),
                 _simulation.SpellFactory.Poison(),
-                _simulation.SpellFactory.SoulSplit(),
+                _simulation.SpellFactory.SoulShatter(),
                 _simulation.SpellFactory.WindShield()
             ];
             
