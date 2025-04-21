@@ -46,7 +46,7 @@ class Projectile : Entity {
 
     public override void HandleCollision(Entity other)
     {
-        if(other == context.Caster) {
+        if(other == Context.Caster) {
             return;
         }
 
