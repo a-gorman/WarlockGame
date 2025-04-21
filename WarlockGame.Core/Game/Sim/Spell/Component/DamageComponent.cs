@@ -11,14 +11,12 @@ class DamageComponent : IWarlockComponent {
 
     public void Invoke(SpellContext context, IReadOnlyCollection<TargetInfo> targets) {
         foreach (var target in targets) {
-            if (target.Entity is Warlock warlock) {
-                var damageToInflict = Damage * target.FalloffFactor;
-                if (warlock == context.Caster) {
-                    damageToInflict *= SelfFactor;
-                }
-
-                warlock.Damage(damageToInflict, context.Caster);
+            var damageToInflict = Damage * target.FalloffFactor;
+            if (target.Entity == context.Caster) {
+                damageToInflict *= SelfFactor;
             }
+
+            target.Entity.Damage(damageToInflict, context.Caster);
         }
     }
 }

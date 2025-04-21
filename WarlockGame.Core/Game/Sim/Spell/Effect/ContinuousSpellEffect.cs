@@ -19,7 +19,7 @@ class ContinuousSpellEffect : IEffect {
         Timer.Decrement();
         IsExpired |= Timer.IsExpired;
 
-        // TODO: This Doesn't consistently start on the first from
+        // TODO: This Doesn't consistently start on the first tick
         if (Timer.FramesRemaining % RepeatEvery == 0) {
             var currentLocation = Location.Match(x => x, x => x.Invoke(this));
 
@@ -29,7 +29,5 @@ class ContinuousSpellEffect : IEffect {
         }
     }
 
-    public void Draw(SpriteBatch spriteBatch) {
-        // TODO: Draw
-    }
+    public void Draw(SpriteBatch spriteBatch) { }
 }
