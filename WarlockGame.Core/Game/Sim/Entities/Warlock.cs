@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Sim.Buff;
+using WarlockGame.Core.Game.Sim.Entities.Behaviors;
 using WarlockGame.Core.Game.Sim.Order;
 using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.Util;
@@ -45,14 +46,15 @@ namespace WarlockGame.Core.Game.Sim.Entities
             Position = Simulation.ArenaSize / 2;
             Radius = 20;
             
-            Spells = new List<WarlockSpell>
-            {
-                _simulation.SpellFactory.Fireball(), 
-                _simulation.SpellFactory.Lightning(), 
-                _simulation.SpellFactory.Poison(), 
-                _simulation.SpellFactory.SoulSplit(), 
+            Spells = [
+                _simulation.SpellFactory.Fireball(),
+                _simulation.SpellFactory.Lightning(),
+                _simulation.SpellFactory.Poison(),
+                _simulation.SpellFactory.SoulSplit(),
                 _simulation.SpellFactory.WindShield()
-            };
+            ];
+            
+            AddBehaviors(new Pushable());
         }
 
         public override void Update() {
@@ -179,11 +181,6 @@ namespace WarlockGame.Core.Game.Sim.Entities
         {
             if (!IsDead)
                 base.Draw(spriteBatch);
-        }
-
-        public void Push(float force, Vector2 direction)
-        {
-            Velocity += force * direction.ToNormalizedOrZero();
         }
 
         public override void Damage(float damage, Entity source) {

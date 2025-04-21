@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Sim.Entities.Behaviors;
+using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Sim.Entities
 {
@@ -20,6 +21,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
 		public bool IsExpired { get; set; }			// true if the entity was destroyed and should be deleted.
 		private List<Behavior> Behaviors { get; } = [];
 		public event Action<OnDamagedEventArgs>? OnDamaged;
+		public event Action<OnPushedEventArgs>? OnPushed;
 		public event Action<OnCollisionEventArgs>? OnCollision;
 		
 		public Entity(Sprite sprite, Simulation simulation) {
@@ -54,7 +56,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
 			if (OnDamaged != null) {
 				var args = new OnDamagedEventArgs() {
 					Amount = damage,
-					Damaged = this,
+					Source = this,
 					DamageSource = source
 				};
 				
@@ -71,6 +73,10 @@ namespace WarlockGame.Core.Game.Sim.Entities
 
 				OnCollision.Invoke(args);
 			}
+		}
+		
+		public void Push(Vector2 forceVector) {
+			OnPushed?.Invoke(new OnPushedEventArgs { Source = this, Force = forceVector });
 		}
 	}
 }
