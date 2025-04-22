@@ -102,7 +102,8 @@ sealed class Client : INetEventListener {
     }
 
     public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo) {
-        Logger.Info("Peer disconnected");
+        MessageDisplay.AddMessage("Server disconnected");
+        Logger.Info($"Peer disconnected. Reason: {(int)disconnectInfo.Reason}: {disconnectInfo.Reason.ToString()}. Socket error code: {disconnectInfo.SocketErrorCode}");
         NetworkManager.Disconnect();
     }
 
