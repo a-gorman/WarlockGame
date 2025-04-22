@@ -7,24 +7,6 @@ namespace WarlockGame.Core.Game.Networking.Packet;
 // Disable nullability complaints. A bunch of stuff here is initialized late by deserialization
 #pragma warning disable CS8618
 
-// public class GameState : INetSerializable {
-//     public List<Player> Players { get; set; }
-//     public List<Warlock> Warlocks { get; set; }
-//     public int Frame { get; set; }
-//
-//     public void Serialize(NetDataWriter writer) {
-//         writer.PutMany(Players);
-//         writer.PutMany(Warlocks);
-//         writer.Put(Frame);
-//     }
-//
-//     public void Deserialize(NetDataReader reader) {
-//         Players = reader.GetMany<Player>();
-//         Warlocks = reader.GetMany<Warlock>();
-//         Frame = reader.GetInt();
-//     }
-// }
-
 public class JoinGameRequest : INetSerializable {
     public string PlayerName { get; set; }
 
