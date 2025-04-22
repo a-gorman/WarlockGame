@@ -81,6 +81,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 #endif
         
         MessageDisplay.AddMessage("Game Started");
+        Logger.Info("Game initialized");
     }
 
     /// <summary>

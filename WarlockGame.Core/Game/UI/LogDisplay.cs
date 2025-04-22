@@ -15,7 +15,7 @@ class LogDisplay : IInterfaceComponent {
     
     public int Layer { get; set; }
     public bool IsExpired { get; set; }
-    public Logger.Level DisplayLevel = Logger.Level.WARNING;
+    public Logger.Level DisplayLevel = Logger.Level.INFO;
 
     public bool Visible {
         get;
