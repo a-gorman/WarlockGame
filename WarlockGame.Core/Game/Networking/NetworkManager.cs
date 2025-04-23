@@ -15,7 +15,7 @@ static class NetworkManager {
     public static bool IsConnected => IsClient || IsServer;
     public static bool IsClient => _client != null;
     public static bool IsServer => _server != null;
-    public static int FrameDelay => 1;
+
     /// <summary>
     /// Latency in milliseconds
     /// </summary>
