@@ -1,5 +1,3 @@
-using System;
-using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Sim.Buff;

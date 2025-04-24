@@ -60,7 +60,7 @@ sealed class Client : INetEventListener {
     }
     
     private void OnJoinResponse(JoinGameResponse response) {
-        MessageDisplay.AddMessage("Joining game");
+        MessageDisplay.Display("Joining game");
         Logger.Info("Joining game");
         
         foreach (var player in response.Players) {
@@ -102,7 +102,7 @@ sealed class Client : INetEventListener {
     }
 
     public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo) {
-        MessageDisplay.AddMessage("Server disconnected");
+        MessageDisplay.Display("Server disconnected");
         Logger.Info($"Peer disconnected. Reason: {(int)disconnectInfo.Reason}: {disconnectInfo.Reason.ToString()}. Socket error code: {disconnectInfo.SocketErrorCode}");
         NetworkManager.Disconnect();
     }

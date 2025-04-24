@@ -3,7 +3,6 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Geometry;
-using WarlockGame.Core.Game.Sim.Effect;
 using WarlockGame.Core.Game.Sim.Effect.Display;
 using WarlockGame.Core.Game.Util;
 

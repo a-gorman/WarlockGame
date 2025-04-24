@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.Util;
 

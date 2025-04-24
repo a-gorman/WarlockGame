@@ -3,7 +3,6 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
-using WarlockGame.Core.Game.Sim;
 
 namespace WarlockGame.Core.Game.Input; 
 

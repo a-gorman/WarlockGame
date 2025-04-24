@@ -25,10 +25,10 @@ class TextCommandHandler {
         RegisterTextCommand("host", _ => Host());
         RegisterTextCommand("join", _ => Join());
         RegisterTextCommand("check", ["checksum"],
-            _ => MessageDisplay.AddMessage($"Checksum is: {WarlockGame.Instance.Simulation?.CalculateChecksum() ?? 0}"));
+            _ => MessageDisplay.Display($"Checksum is: {WarlockGame.Instance.Simulation?.CalculateChecksum() ?? 0}"));
         RegisterTextCommand("logs", Logs, "Args: on | off | debug | info | warn | error");
         RegisterTextCommand("ip", 
-            _ => MessageDisplay.AddMessage($"IP Address is: {NetUtils.GetLocalIpList(LocalAddrType.IPv4).JoinToString()}"));
+            _ => MessageDisplay.Display($"IP Address is: {NetUtils.GetLocalIpList(LocalAddrType.IPv4).JoinToString()}"));
     }
 
     public void HandleCommand(string command) {
@@ -37,7 +37,7 @@ class TextCommandHandler {
             commandHandler.Handler.Invoke(args.Skip(1).ToArray());
         }
         else {
-            MessageDisplay.AddMessage("Command not recognized");
+            MessageDisplay.Display("Command not recognized");
         }
     }
 
@@ -62,7 +62,7 @@ class TextCommandHandler {
 
     private static void Restart() {
         if (NetworkManager.IsClient) {
-            MessageDisplay.AddMessage("Must be server host to restart game");
+            MessageDisplay.Display("Must be server host to restart game");
             return;
         }
 
@@ -76,7 +76,7 @@ class TextCommandHandler {
 
     private static void Host() {
         if (NetworkManager.IsConnected) {
-            MessageDisplay.AddMessage("Already in game!");
+            MessageDisplay.Display("Already in game!");
             return;
         }
 
@@ -88,7 +88,7 @@ class TextCommandHandler {
 
     private static void Join() {
         if (NetworkManager.IsConnected) {
-            MessageDisplay.AddMessage("Already in game!");
+            MessageDisplay.Display("Already in game!");
             return;
         }
 
@@ -118,7 +118,7 @@ class TextCommandHandler {
             sb.Append(textCommand.Description);
         }
 
-        MessageDisplay.AddMessage(sb.ToString());
+        MessageDisplay.Display(sb.ToString());
     }
 
     private static void Logs(string[] args) {

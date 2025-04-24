@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Sim.Entities.Behaviors;
-using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Sim.Entities
 {

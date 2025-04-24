@@ -26,7 +26,7 @@ static class NetworkManager {
         
         _server = new Server();
         _server.Start();
-        MessageDisplay.AddMessage("Game hosted.");
+        MessageDisplay.Display("Game hosted.");
     }
 
     public static void ConnectToServer(string address, Action clientConnectedCallback) {
@@ -52,7 +52,7 @@ static class NetworkManager {
         if(!IsClient) throw new ConstraintException("Can't get join game when not connected to server");
 
         Logger.Info("Joining game");
-        MessageDisplay.AddMessage("Joined new game");
+        MessageDisplay.Display("Joined new game");
         
         _client!.SendSerializable(new JoinGameRequest { PlayerName = playerName }, DeliveryMethod.ReliableOrdered);
     }

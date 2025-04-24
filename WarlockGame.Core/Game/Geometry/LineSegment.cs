@@ -1,8 +1,6 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
-using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Geometry; 
 

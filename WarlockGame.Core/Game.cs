@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
@@ -19,6 +18,7 @@ namespace WarlockGame.Core;
 
 public class WarlockGame: Microsoft.Xna.Framework.Game
 {
+    private readonly Arguments _args;
     public static WarlockGame Instance { get; private set; }  = null!;
     public static Viewport Viewport => Instance.GraphicsDevice.Viewport;
     public static Vector2 ScreenSize => new Vector2(Viewport.Width, Viewport.Height);
@@ -41,7 +41,8 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     public static ClientTypeState ClientType => !NetworkManager.IsConnected ? ClientTypeState.Local 
         : NetworkManager.IsClient ? ClientTypeState.Client : ClientTypeState.Server;
 
-    public WarlockGame() {
+    public WarlockGame(params string[] args) {
+        _args = ParseArgs(args);
         Instance = this;
         _graphics = new GraphicsDeviceManager(this);
         _graphics.PreferredBackBufferWidth = 1920;
@@ -53,9 +54,8 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         _bloom.Visible = false;
 
         Window.Position = Vector2.Zero.ToPoint();
-        // TargetElapsedTime = TimeSpan.FromSeconds(0.1);
     }
-
+    
     protected override void Initialize()
     {
         Content.RootDirectory = "Content";
@@ -80,8 +80,17 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         LogDisplay.Instance.DisplayLevel = Logger.Level.DEBUG;
 #endif
         
-        MessageDisplay.AddMessage("Game Started");
+        MessageDisplay.Display("Game Started");
         Logger.Info("Game initialized");
+
+        if (_args.Client) {
+            NetworkManager.ConnectToServer(_args.JoinIp, () => NetworkManager.JoinGame(_args.Name));
+        }
+        
+        if (_args.Server) {
+            PlayerManager.AddLocalPlayer(_args.Name);
+            NetworkManager.StartServer();
+        }
     }
 
     /// <summary>
@@ -221,5 +230,37 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
     public void OnServerTickProcessed(ServerTickProcessed serverTickProcessed) {
         _serverTicks.Enqueue(serverTickProcessed);
+    }
+
+    private Arguments ParseArgs(string[] args) {
+        var arguments = new Arguments();
+
+        for (int i = 0; i < args.Length; i++) {
+            switch (args[i].ToLowerInvariant()) {
+                case "server":
+                    arguments.Server = true;
+                    break;
+                case "client":
+                    arguments.Client = true;
+                    break;
+                case "name":
+                    arguments.Name = args[i + 1];
+                    i++;
+                    break;
+                case "ip":
+                    arguments.JoinIp = args[i + 1];
+                    i++;
+                    break;
+            }
+        }
+
+        return arguments;
+    }
+
+    private class Arguments {
+        public bool Server { get; set; }
+        public bool Client { get; set; }
+        public string Name { get; set; } = "default";
+        public string JoinIp { get; set; } = "localhost";
     }
 }
