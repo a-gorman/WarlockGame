@@ -4,7 +4,7 @@ using WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Component;
 
-class TargetLocationComponent : IWarlockComponent {
+class TargetLocationComponent : ITargetComponent {
 
     public List<ILocationSpellComponent> Components { get; init; } = [];
     public List<Func<TargetInfo, ILocationSpellComponent>> DynamicComponents { get; init; } = [];

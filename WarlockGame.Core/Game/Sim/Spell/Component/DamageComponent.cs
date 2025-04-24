@@ -3,7 +3,7 @@ using WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Component;
 
-class DamageComponent : IWarlockComponent {
+class DamageComponent : ITargetComponent {
     public required float Damage { get; init; }
 
     public float SelfFactor { get; init; } = 1;
