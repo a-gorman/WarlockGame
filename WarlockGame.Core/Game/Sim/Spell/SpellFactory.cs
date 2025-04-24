@@ -46,7 +46,7 @@ class SpellFactory {
             SpellIcon = Art.LightningIcon,
             Effect = new DirectionalAreaOfEffect {
                 Shape = new LineTarget { Length = 600, IgnoreCaster = true, Texture = Art.Lightning },
-                Effects = new IWarlockComponent[] {
+                Effects = new ITargetComponent[] {
                     new DamageComponent { Damage = 15 },
                     new PushComponent { Force = 100 }
                 }
@@ -80,7 +80,7 @@ class SpellFactory {
             SpellIcon = Art.BurstIcon,
             Effect = new SelfAreaOfEffect {
                 Shape = new CircleTarget { Radius = 200 },
-                Components = new IWarlockComponent[] {
+                Components = new ITargetComponent[] {
                     new DamageComponent {
                         Damage = 10,
                         SelfFactor = 0.25f

@@ -6,7 +6,7 @@ using WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Component;
 
-class ApplyBuff : IWarlockComponent {
+class ApplyBuff : ITargetComponent {
     private readonly int _radius;
     private readonly Func<SpellContext,IBuff> _buffConstructor;
     public bool IgnoreCaster { get; init; } = false;

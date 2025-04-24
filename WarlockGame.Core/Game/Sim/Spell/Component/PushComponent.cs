@@ -7,7 +7,7 @@ using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Component;
 
-class PushComponent : IWarlockComponent {
+class PushComponent : ITargetComponent {
     public required float Force { get; init; }
     public float SelfFactor { get; init; } = 1;
     public float ProjectileFactor { get; init; } = 0;

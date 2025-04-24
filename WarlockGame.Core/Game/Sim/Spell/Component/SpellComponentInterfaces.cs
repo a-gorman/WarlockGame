@@ -28,6 +28,6 @@ interface ISelfSpellComponent {
 /// <summary>
 /// Component that applies to warlocks, such as doing damage
 /// </summary>
-interface IWarlockComponent {
+interface ITargetComponent {
     void Invoke(SpellContext context, IReadOnlyCollection<TargetInfo> targets);
 }
