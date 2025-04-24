@@ -1,7 +1,6 @@
 using System;
 using System.Text;
 using Microsoft.Xna.Framework;
-using SpriteFont = Microsoft.Xna.Framework.Graphics.SpriteFont;
 
 namespace WarlockGame.Core.Game.Util;
 

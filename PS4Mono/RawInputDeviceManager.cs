@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using PS4Mono.Win32;
 using static PS4Mono.Win32.NativeMethods;
 

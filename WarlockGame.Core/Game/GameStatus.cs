@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace WarlockGame.Core.Game; 
 
 static class GameStatus {

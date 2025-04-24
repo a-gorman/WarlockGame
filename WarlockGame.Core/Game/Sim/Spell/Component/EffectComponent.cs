@@ -1,6 +1,5 @@
 using System;
 using Microsoft.Xna.Framework;
-using WarlockGame.Core.Game.Sim.Effect;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Component;
 

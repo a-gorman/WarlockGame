@@ -6,7 +6,7 @@ using LiteNetLib;
 using LiteNetLib.Utils;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
-using WarlockGame.Core.Game.Sim;
+using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Networking;
@@ -68,7 +68,7 @@ class Server : INetEventListener {
         ClientDropping = false;
         foreach (var client in _clients.Values) {
             if(client.NetPeer.TimeSinceLastPacket > 1000) { // 1s
-                Logger.Info("Client is dropping");
+                MessageDisplay.Display("Client is dropping");
                 ClientDropping = true;
             }
         }
@@ -100,12 +100,14 @@ class Server : INetEventListener {
 
     public void OnPeerConnected(NetPeer peer) {
         Logger.Info($"Peer connected: {peer.Id}");
+        MessageDisplay.Display($"Peer connected: {peer.Id}");
         _clients.Add(peer.Id, new ClientPeer { NetPeer = peer });
         CalculateLatency();
     }
 
     public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo) {
         Logger.Info($"Peer disconnected: {peer.Id}");
+        MessageDisplay.Display($"Peer disconnected: {peer.Id}");
         _clients.Remove(peer.Id);
         Latency = CalculateLatency();
 

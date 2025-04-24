@@ -7,9 +7,7 @@ using MonoGame.Extended;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Log;
-using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.UI.Basic;
-using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.UI;
 

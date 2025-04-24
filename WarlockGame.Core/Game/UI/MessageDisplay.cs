@@ -27,7 +27,7 @@ public class MessageDisplay : IInterfaceComponent
         Components = [_messageDisplay];
     }
 
-    public static void AddMessage(string message)
+    public static void Display(string message)
     {
         Logger.Debug("Displayed Message: " + message);
         
