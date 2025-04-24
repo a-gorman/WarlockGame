@@ -16,4 +16,12 @@ internal static class MathUtil {
 	public static T Doubled<T>(this T number) where T: INumber<T> {
 		return number + number;
 	}
+
+	public static bool IsNan(this float number) {
+		return float.IsNaN(number);
+	}
+	
+	public static bool IsNan(this double number) {
+		return double.IsNaN(number);
+	}
 }
