@@ -1,11 +1,13 @@
-using System;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended;
 
 namespace WarlockGame.Core.Game.Util;
 
 public static class VectorExtensions
 {
+    public static Vector2 Rotated(this Vector2 source, float radians) {
+        return Vector2.Rotate(source, radians);
+    }
+    
     public static Vector2 NanToZero(this Vector2 source) {
         source.X = source.X.IsNan() ? 0 : source.X;
         source.Y = source.Y.IsNan() ? 0 : source.Y;
