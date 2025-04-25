@@ -4,8 +4,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
+using TextCopy;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
+using WarlockGame.Core.Game.Input.Devices;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.UI.Basic;
 
@@ -46,6 +48,17 @@ class TextPrompt: ITextInputConsumer, IInterfaceComponent {
     }
 
     public void OnTextInput(TextInputEventArgs textEvent) {
+        if(StaticKeyboardInput.IsKeyPressed(Keys.LeftControl) || StaticKeyboardInput.IsKeyPressed(Keys.RightControl)) {
+            switch (textEvent.Key) {
+                case Keys.V:
+                    // This gets around max text size limits
+                    Text += ClipboardService.GetText();
+                    break;
+            }
+
+            return;
+        }
+        
         switch (textEvent.Key) {
             case Keys.Enter:
                 Close(true);
@@ -75,7 +88,7 @@ class TextPrompt: ITextInputConsumer, IInterfaceComponent {
     }
     
     public void OnClick(Vector2 location) {
-        Logger.Info("Click on text prompt");
+        Logger.Debug("Click on text prompt");
         // TODO: Move a cursor to the click location
     }
 

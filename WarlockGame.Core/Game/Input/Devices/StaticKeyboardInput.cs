@@ -29,6 +29,10 @@ public static class StaticKeyboardInput {
     public static bool WasKeyPressed(Keys key) {
         return WarlockGame.Instance.IsActive && _lastKeyboardState.IsKeyUp(key) && _keyboardState.IsKeyDown(key);
     }
+    
+    public static bool IsKeyPressed(Keys key) {
+        return WarlockGame.Instance.IsActive && _keyboardState.IsKeyDown(key);
+    }
 
     public static void Update() {
         _lastKeyboardState = _keyboardState;
