@@ -161,7 +161,7 @@ class SpellFactory {
                                                 new TimedLife(SimTimeSpan.OfSeconds(3.5f)),
                                                 new Shadow(targetInfo.Entity.Id, sim),
                                                 new Yoyo(sim,
-                                                    -targetInfo.DisplacementAxis1.WithLength(160).Rotate(float.Pi / 6),
+                                                    -targetInfo.DisplacementAxis1.WithLength(160).Rotated(float.Pi / 6),
                                                     SimTimeSpan.OfSeconds(0.5f),
                                                     SimTimeSpan.OfSeconds(3)));
                                             return image;
@@ -181,7 +181,7 @@ class SpellFactory {
                                                 new TimedLife(SimTimeSpan.OfSeconds(3.5f)),
                                                 new Shadow(targetInfo.Entity.Id, sim),
                                                 new Yoyo(sim,
-                                                    -targetInfo.DisplacementAxis1.WithLength(160).Rotate(-float.Pi / 6),
+                                                    -targetInfo.DisplacementAxis1.WithLength(160).Rotated(-float.Pi / 6),
                                                     SimTimeSpan.OfSeconds(0.5f),
                                                     SimTimeSpan.OfSeconds(3)));
                                             return image;

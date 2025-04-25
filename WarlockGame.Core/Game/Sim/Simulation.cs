@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim.Effect;
@@ -10,6 +9,7 @@ using WarlockGame.Core.Game.Sim.Order;
 using WarlockGame.Core.Game.Sim.Rule;
 using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.UI;
+using WarlockGame.Core.Game.Util;
 using Warlock = WarlockGame.Core.Game.Sim.Entities.Warlock;
 
 namespace WarlockGame.Core.Game.Sim;
@@ -58,7 +58,7 @@ class Simulation {
         Random = new Random(seed);
         var radiansPerPlayer = (float)(2 * Math.PI / PlayerManager.Players.Count);
         var warlocks = PlayerManager.Players.Select((x, i) => new Warlock(x.Id, this)
-            { Position = ArenaSize / 2 + new Vector2(0, 250).Rotate(radiansPerPlayer * i) });
+            { Position = ArenaSize / 2 + new Vector2(0, 250).Rotated(radiansPerPlayer * i) });
         foreach (var warlock in warlocks) {
             Logger.Info($"Creating warlock at: {warlock.Position / 2}");
             EntityManager.Add(warlock);

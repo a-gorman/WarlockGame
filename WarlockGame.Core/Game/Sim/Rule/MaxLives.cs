@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Sim.Entities;
+using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Sim.Rule;
 
@@ -29,7 +30,7 @@ class MaxLives {
 
         if (PlayerLives[playerId] != 0) {
             _simulation.EffectManager.AddDelayedEffect(() => {
-                var respawnPosition = Simulation.ArenaSize / 2 + new Vector2(250, 0).Rotate(_simulation.Random.NextAngle());
+                var respawnPosition = Simulation.ArenaSize / 2 + new Vector2(250, 0).Rotated(_simulation.Random.NextAngle());
                 _simulation.EntityManager.Add(new Warlock(playerId, _simulation) { Position = respawnPosition });
             }, GameTimer.FromSeconds(5));
         }
