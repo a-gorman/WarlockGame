@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
@@ -13,12 +14,13 @@ using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.UI;
+using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core;
 
 public class WarlockGame: Microsoft.Xna.Framework.Game
 {
-    private readonly Arguments _args;
+    private readonly Configurations _configurations;
     public static WarlockGame Instance { get; private set; }  = null!;
     public static Viewport Viewport => Instance.GraphicsDevice.Viewport;
     public static Vector2 ScreenSize => new Vector2(Viewport.Width, Viewport.Height);
@@ -34,6 +36,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     private readonly Queue<ServerTickProcessed> _serverTicks = new();
     // Map of player Ids to most recent tick processed
     private readonly Dictionary<int, int> _clientTicksProcessed = new();
+
     public enum GameState { WaitingToStart, Running }
     public enum ClientTypeState { Local, Client, Server }
     
@@ -42,11 +45,12 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         : NetworkManager.IsClient ? ClientTypeState.Client : ClientTypeState.Server;
 
     public WarlockGame(params string[] args) {
-        _args = ParseArgs(args);
+        _configurations = ParseArgs(new ConfigurationBuilder().AddIniFile("settings.ini").AddCommandLine(args).Build());
+
         Instance = this;
         _graphics = new GraphicsDeviceManager(this);
-        _graphics.PreferredBackBufferWidth = 1920;
-        _graphics.PreferredBackBufferHeight = 1080;
+        _graphics.PreferredBackBufferWidth = _configurations.ScreenWidth;
+        _graphics.PreferredBackBufferHeight = _configurations.ScreenHeight;
 
         _bloom = new BloomComponent(this);
         Components.Add(_bloom);
@@ -83,12 +87,12 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         MessageDisplay.Display("Game Started");
         Logger.Info("Game initialized");
 
-        if (_args.Client) {
-            NetworkManager.ConnectToServer(_args.JoinIp, () => NetworkManager.JoinGame(_args.Name));
+        if (_configurations.Client) {
+            NetworkManager.ConnectToServer(_configurations.JoinIp, () => NetworkManager.JoinGame(_configurations.Name ?? "Default"));
         }
         
-        if (_args.Server) {
-            PlayerManager.AddLocalPlayer(_args.Name);
+        if (_configurations.Server) {
+            PlayerManager.AddLocalPlayer(_configurations.Name ?? "Default");
             NetworkManager.StartServer();
         }
     }
@@ -232,35 +236,23 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         _serverTicks.Enqueue(serverTickProcessed);
     }
 
-    private Arguments ParseArgs(string[] args) {
-        var arguments = new Arguments();
-
-        for (int i = 0; i < args.Length; i++) {
-            switch (args[i].ToLowerInvariant()) {
-                case "server":
-                    arguments.Server = true;
-                    break;
-                case "client":
-                    arguments.Client = true;
-                    break;
-                case "name":
-                    arguments.Name = args[i + 1];
-                    i++;
-                    break;
-                case "ip":
-                    arguments.JoinIp = args[i + 1];
-                    i++;
-                    break;
-            }
-        }
-
-        return arguments;
+    private Configurations ParseArgs(IConfigurationRoot args) {
+        return new Configurations {
+            Server = args["autoStartServer"]?.Let(bool.Parse) ?? false,
+            Client = args["autoStartClient"]?.Let(bool.Parse) ?? false,
+            Name = args["playerName"],
+            JoinIp = args["joinIp"] ?? "localhost",
+            ScreenHeight = args["screenHeight"]?.Let(int.Parse) ?? 1080,
+            ScreenWidth = args["screenWidth"]?.Let(int.Parse) ?? 1920
+        };
     }
 
-    private class Arguments {
-        public bool Server { get; set; }
-        public bool Client { get; set; }
-        public string Name { get; set; } = "default";
-        public string JoinIp { get; set; } = "localhost";
+    private class Configurations {
+        public required bool Server { get; init; }
+        public required bool Client { get; init; }
+        public required string? Name { get; init; }
+        public required string JoinIp { get; init; }
+        public required int ScreenWidth { get; init; }
+        public required int ScreenHeight { get; init; }
     }
 }
