@@ -12,8 +12,8 @@ namespace WarlockGame.Core.Game.Sim.Effect
 		private bool _isUpdating;
 		private readonly List<IEffect> _addedEffects = new();
 
-		public void AddDelayedEffect(Action action, GameTimer timer) {
-			AddEffect(new DelayedEffect { Action = action, Timer = timer});
+		public void AddDelayedEffect(Action action, SimTime time) {
+			AddEffect(new DelayedEffect { Action = action, Timer = time.ToTimer() });
 		}
 		
 		public void Add(IEffect effect)

@@ -158,12 +158,12 @@ class SpellFactory {
                                             image.AddBehaviors(
                                                 new PushShare(targetInfo.Entity.Id, sim),
                                                 new DamageShare(targetInfo.Entity.Id, sim),
-                                                new TimedLife(SimTimeSpan.OfSeconds(3.5f)),
+                                                new TimedLife(SimTime.OfSeconds(3.5f)),
                                                 new Shadow(targetInfo.Entity.Id, sim),
                                                 new Yoyo(sim,
                                                     -targetInfo.DisplacementAxis1.WithLength(160).Rotated(float.Pi / 6),
-                                                    SimTimeSpan.OfSeconds(0.5f),
-                                                    SimTimeSpan.OfSeconds(3)));
+                                                    SimTime.OfSeconds(0.5f),
+                                                    SimTime.OfSeconds(3)));
                                             return image;
                                         }
                                     },
@@ -178,12 +178,12 @@ class SpellFactory {
                                             image.AddBehaviors(
                                                 new PushShare(targetInfo.Entity.Id, sim),
                                                 new DamageShare(targetInfo.Entity.Id, sim),
-                                                new TimedLife(SimTimeSpan.OfSeconds(3.5f)),
+                                                new TimedLife(SimTime.OfSeconds(3.5f)),
                                                 new Shadow(targetInfo.Entity.Id, sim),
                                                 new Yoyo(sim,
                                                     -targetInfo.DisplacementAxis1.WithLength(160).Rotated(-float.Pi / 6),
-                                                    SimTimeSpan.OfSeconds(0.5f),
-                                                    SimTimeSpan.OfSeconds(3)));
+                                                    SimTime.OfSeconds(0.5f),
+                                                    SimTime.OfSeconds(3)));
                                             return image;
                                         }
                                     }

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Input.Devices;
@@ -17,6 +19,7 @@ public class SpellDisplay : IClickableComponent {
     public bool IsExpired => false;
     public bool Visible { get; set; } = true;
     public IEnumerable<IInterfaceComponent> Components { get; } = new List<IInterfaceComponent>();
+    public Dictionary<InputAction, string> KeyMappings { get; }
 
     private const int spellSpacing = 100;
 
@@ -25,6 +28,10 @@ public class SpellDisplay : IClickableComponent {
     public int Layer => 2;
     public Rectangle BoundingBox { get; } = new Rectangle(20, 925, 1880, 90);
 
+    public SpellDisplay(Dictionary<Keys, InputAction> keyMappings) {
+        KeyMappings = keyMappings.ToDictionary(x => x.Value, x => x.Key.ToString());
+    }
+    
     public void OnClick(Vector2 location) {
         Logger.Info("Click the spell display!");
     }
@@ -43,7 +50,7 @@ public class SpellDisplay : IClickableComponent {
                 spell.SpellIcon,
                 new Rectangle(60 + spellSpacing * i, 950, 50, 50),
                 spell.OnCooldown ? Color.Gray : Color.White);
-            spriteBatch.DrawString(Art.Font, StaticKeyboardInput._mappings[_actions[i]].DisplayValue, new Vector2(55 + spellSpacing * i, 950-9), Color.White);
+            spriteBatch.DrawString(Art.Font, KeyMappings[_actions[i]], new Vector2(55 + spellSpacing * i, 950-9), Color.White);
         }
     }
 
