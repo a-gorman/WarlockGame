@@ -3,7 +3,7 @@ namespace WarlockGame.Core.Game.Sim.Entities.Behaviors;
 class TimedLife : Behavior {
     private readonly GameTimer _timeToLive;
 
-    public TimedLife(SimTimeSpan timeToLive) {
+    public TimedLife(SimTime timeToLive) {
         _timeToLive = timeToLive.ToTimer();
     }
 

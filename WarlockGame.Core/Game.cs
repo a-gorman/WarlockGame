@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using PS4Mono;
 using WarlockGame.Core.Game;
@@ -71,7 +72,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         Grid = new Grid(Viewport.Bounds, gridSpacing);
 
         Ps4Input.Initialize(this);
-        InputManager.Initialize();
+        InputManager.Initialize(_configurations.KeyMappings);
 
         Window.TextInput += (_, textArgs) => InputManager.OnTextInput(textArgs);
         
@@ -79,6 +80,8 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         
         UIManager.AddComponent(LogDisplay.Instance);
         UIManager.AddComponent(MessageDisplay.Instance);
+        UIManager.AddComponent(new SpellDisplay(_configurations.KeyMappings));
+        UIManager.AddComponent(new HealthBarManager());
 
 #if DEBUG
         LogDisplay.Instance.DisplayLevel = Logger.Level.DEBUG;
@@ -243,8 +246,23 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
             Name = args["playerName"],
             JoinIp = args["joinIp"] ?? "localhost",
             ScreenHeight = args["screenHeight"]?.Let(int.Parse) ?? 1080,
-            ScreenWidth = args["screenWidth"]?.Let(int.Parse) ?? 1920
+            ScreenWidth = args["screenWidth"]?.Let(int.Parse) ?? 1920,
+            KeyMappings = new Dictionary<Keys, InputAction> {
+                { ParseKey(args["keymap:spell1"], Keys.Q), InputAction.Spell1 },
+                { ParseKey(args["keymap:spell2"], Keys.W), InputAction.Spell2 },
+                { ParseKey(args["keymap:spell3"], Keys.E), InputAction.Spell3 },
+                { ParseKey(args["keymap:spell4"], Keys.R), InputAction.Spell4 },
+                { ParseKey(args["keymap:spell5"], Keys.T), InputAction.Spell5 },
+                { ParseKey(args["keymap:spell6"], Keys.F), InputAction.Spell6 },
+                { ParseKey(args["keymap:exit"], Keys.Escape), InputAction.Exit },
+                { ParseKey(args["keymap:pause"], Keys.P), InputAction.Pause },
+                { ParseKey(args["keymap:openCommandInput"], Keys.Enter), InputAction.OpenCommandInput },
+            }
         };
+    }
+
+    private Keys ParseKey(string? str, Keys defaultValue) {
+        return Enum.TryParse(str, true, out Keys key) ? key : defaultValue;
     }
 
     private class Configurations {
@@ -254,5 +272,6 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         public required string JoinIp { get; init; }
         public required int ScreenWidth { get; init; }
         public required int ScreenHeight { get; init; }
+        public required Dictionary<Keys, InputAction> KeyMappings { get; init; }
     }
 }

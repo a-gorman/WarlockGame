@@ -8,7 +8,6 @@ using WarlockGame.Core.Game.Sim.Effect;
 using WarlockGame.Core.Game.Sim.Order;
 using WarlockGame.Core.Game.Sim.Rule;
 using WarlockGame.Core.Game.Sim.Spell;
-using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.Util;
 using Warlock = WarlockGame.Core.Game.Sim.Entities.Warlock;
 
@@ -27,9 +26,6 @@ class Simulation {
     public static Vector2 ArenaSize => new Vector2(1900, 1000);
 
     public Simulation() {
-        UIManager.AddComponent(new SpellDisplay());
-        UIManager.AddComponent(new HealthBarManager());
-
         EffectManager = new EffectManager();
         SpellFactory = new SpellFactory(this);
         _gameRule = new MaxLives(this, 3);

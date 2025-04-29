@@ -15,7 +15,7 @@ class Yoyo : Behavior {
     public GameTimer OutwardsTime { get; }
     public GameTimer InwardsTime { get; }
 
-    public Yoyo(Simulation simulation, Vector2 maxDisplacement, SimTimeSpan outwardsTime, SimTimeSpan inwardsTime) {
+    public Yoyo(Simulation simulation, Vector2 maxDisplacement, SimTime outwardsTime, SimTime inwardsTime) {
         _simulation = simulation;
         OutwardsTime = outwardsTime.ToTimer();
         InwardsTime = inwardsTime.ToTimer();

@@ -1,16 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using WarlockGame.Core.Game.Input.Devices;
 using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.Util;
+using KeyboardInput = WarlockGame.Core.Game.Input.Devices.KeyboardInput;
 
 namespace WarlockGame.Core.Game.Input; 
 
 static class InputManager {
-    // private static readonly List<IInputDevice> _devices = new();
     private static readonly MouseInput _mouse = new();
-    private static readonly KeyboardInput _keyboard = new();
+    private static KeyboardInput _keyboard = null!;
     private static readonly List<ITextInputConsumer> _textInputConsumers = new();
     private static readonly InputState _inputState = new();
     private static readonly TextCommandHandler _commandHandler = new();
@@ -19,8 +20,9 @@ static class InputManager {
 
     public static bool HasTextConsumers => _textInputConsumers.Any();
 
-    public static void Initialize() {
+    public static void Initialize(Dictionary<Keys, InputAction> keyMappings) {
         _commandHandler.Initialize();
+        _keyboard = new KeyboardInput(keyMappings);
     }
     
     public static void Update() {

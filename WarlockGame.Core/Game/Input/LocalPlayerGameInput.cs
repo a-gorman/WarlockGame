@@ -21,7 +21,7 @@ class LocalPlayerGameInput {
     }
     
     public void Update(InputManager.InputState inputState) {
-        var warlock = WarlockGame.Instance?.Simulation.EntityManager.GetWarlockByPlayerId(_playerId);
+        var warlock = WarlockGame.Instance.Simulation.EntityManager.GetWarlockByPlayerId(_playerId);
         if (warlock is null) return;
         
         if (!InputManager.HasTextConsumers) {
@@ -43,7 +43,7 @@ class LocalPlayerGameInput {
 
     private void OnLeftClick(InputManager.InputState inputState, Vector2 warlockPosition) {
         if (SelectedSpellId != null) {
-            Vector2? castVector = WarlockGame.Instance?.Simulation
+            Vector2? castVector = WarlockGame.Instance.Simulation
                                              .EntityManager.GetWarlockByPlayerId(_playerId)
                                              !.Spells
                                              .Find(x => x.SpellId == SelectedSpellId)
