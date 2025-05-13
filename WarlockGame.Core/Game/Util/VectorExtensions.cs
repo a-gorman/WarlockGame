@@ -51,22 +51,17 @@ public static class VectorExtensions
     {
         return vector.ToNormalized() * length;
     }
-
-    // public static Vector2 ProjectedOnto(this Vector2 sourceVector, Vector2 other) {
-    //     // (a*b/b*b)b
-    //     return other * (Vector2.Dot(sourceVector, other) / other.LengthSquared());
-    // }
     
     public static float DistanceSquaredTo(this Vector2 sourceVector, Vector2 other) {
         return (sourceVector - other).LengthSquared();
     }
 
-    public static bool IsWithin(this Vector2 vector, Rectangle rectangle) {
-        return rectangle.Contains(vector);
-    }
-
     public static Vector2 WithMaxLength(this Vector2 source, float length) {
         return source.IsLengthGreaterThan(length) ? source.WithLength(length) : source;
+    }
+    
+    public static Vector2 ToNormalVector(this Vector2 source) {
+        return new Vector2(source.Y, -source.X);
     }
     
     // Min 0

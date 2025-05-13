@@ -53,10 +53,12 @@ class Simulation {
         ClearGameState();
         Random = new Random(seed);
         var radiansPerPlayer = (float)(2 * Math.PI / PlayerManager.Players.Count);
-        var warlocks = PlayerManager.Players.Select((x, i) => new Warlock(x.Id, this)
-            { Position = ArenaSize / 2 + new Vector2(0, 250).Rotated(radiansPerPlayer * i) });
+        var warlocks = PlayerManager.Players.Select((x, i) => {
+            var spawnPos = ArenaSize / 2 + new Vector2(0, 250).Rotated(radiansPerPlayer * i);
+            return new Warlock(x.Id, spawnPos, this);
+        });
         foreach (var warlock in warlocks) {
-            Logger.Info($"Creating warlock at: {warlock.Position / 2}");
+            Logger.Info($"Creating warlock at: {warlock.Position}");
             EntityManager.Add(warlock);
         }
         _gameRule.Reset();

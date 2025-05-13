@@ -152,9 +152,7 @@ class SpellFactory {
                                         EntityConstructor = (spellContext, location) => {
                                             var sim = spellContext.Simulation;
 
-                                            var image = new Entity(new Sprite(Art.Player), spellContext.Simulation) {
-                                                Position = location
-                                            };
+                                            var image = new Entity(new Sprite(Art.Player), location, spellContext.Simulation);
                                             image.AddBehaviors(
                                                 new PushShare(targetInfo.Entity.Id, sim),
                                                 new DamageShare(targetInfo.Entity.Id, sim),
@@ -172,9 +170,7 @@ class SpellFactory {
                                         EntityConstructor = (spellContext, location) => {
                                             var sim = spellContext.Simulation;
 
-                                            var image = new Entity(new Sprite(Art.Player), spellContext.Simulation) {
-                                                Position = location
-                                            };
+                                            var image = new Entity(new Sprite(Art.Player), location, spellContext.Simulation);
                                             image.AddBehaviors(
                                                 new PushShare(targetInfo.Entity.Id, sim),
                                                 new DamageShare(targetInfo.Entity.Id, sim),

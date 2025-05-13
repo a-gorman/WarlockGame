@@ -31,7 +31,7 @@ class MaxLives {
         if (PlayerLives[playerId] != 0) {
             _simulation.EffectManager.AddDelayedEffect(() => {
                 var respawnPosition = Simulation.ArenaSize / 2 + new Vector2(250, 0).Rotated(_simulation.Random.NextAngle());
-                _simulation.EntityManager.Add(new Warlock(playerId, _simulation) { Position = respawnPosition });
+                _simulation.EntityManager.Add(new Warlock(playerId, respawnPosition, _simulation));
             }, SimTime.OfSeconds(5));
         }
         
