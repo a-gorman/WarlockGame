@@ -14,12 +14,11 @@ class Projectile : Entity {
     public SpellContext Context { get; }
     
     public Projectile(Vector2 position, Vector2 velocity, SpellContext context, Sprite sprite, IReadOnlyList<ILocationSpellComponent> effects) : 
-        base(sprite, context.Simulation) {
+        base(sprite, position, context.Simulation, radius: 8) {
         Context = context;
         Position = position;
         Velocity = velocity;
         Orientation = Velocity.ToAngle();
-        Radius = 8;
         _effects = effects;
     }
 

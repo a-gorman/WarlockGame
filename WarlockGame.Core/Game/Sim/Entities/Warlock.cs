@@ -37,14 +37,12 @@ namespace WarlockGame.Core.Game.Sim.Entities
 
         private LinkedList<IOrder> Orders { get; } = new();
 
-        public Warlock(int playerId, Simulation simulation) :
-            base(new Sprite(Art.Player), simulation) {
+        public Warlock(int playerId, Vector2 position, Simulation simulation) :
+            base(new Sprite(Art.Player), position, simulation, radius: 20) {
             
             Health = MaxHealth;
 
             PlayerId = playerId;
-            Position = Simulation.ArenaSize / 2;
-            Radius = 20;
             
             Spells = [
                 _simulation.SpellFactory.Fireball(),

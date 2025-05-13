@@ -104,7 +104,7 @@ public class CircleEffect : IEffect {
     public bool IsExpired => _timer.IsExpired;
 
     public CircleEffect(float radius, Vector2 position, Color color, int duration = 1) {
-        _circle = new CircleF(position.ToPoint(), radius);
+        _circle = new CircleF(position, radius);
         _position = position;
         _color = color;
         _timer = GameTimer.FromTicks(duration+1);
