@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -47,10 +48,13 @@ class Server : INetEventListener {
 
     private void OnJoinGameRequest(JoinGameRequest request, NetPeer sender) {
         var player = PlayerManager.AddRemotePlayer(request.PlayerName);
-        
         _clientToPlayerMap.Add(sender.Id, player.Id);
         SendToAllExcept(new PlayerJoined { PlayerName = request.PlayerName }, sender);
         SendToPeer(new JoinGameResponse { PlayerId = player.Id, Players = PlayerManager.Players.Select(x => new Packet.Player { Id = x.Id, Name = x.Name }).ToList() }, sender);
+
+        if (WarlockGame.Instance.Config.RestartOnJoin) {
+            CommandManager.AddServerCommand(new StartGame { Seed = Random.Shared.Next() });
+        }
     }
     
     private void OnGameCommandReceived<T>(T request) where T : IPlayerCommand, INetSerializable, new() {
@@ -68,7 +72,7 @@ class Server : INetEventListener {
         ClientDropping = false;
         foreach (var client in _clients.Values) {
             if(client.NetPeer.TimeSinceLastPacket > 1000) { // 1s
-                MessageDisplay.Display("Client is dropping");
+                // MessageDisplay.Display("Client is dropping");
                 ClientDropping = true;
             }
         }

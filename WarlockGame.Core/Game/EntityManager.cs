@@ -94,6 +94,18 @@ namespace WarlockGame.Core.Game
 				return false;
 			}
 
+			foreach (var filter in a.CollisionFilters) {
+				if (!filter.Invoke(a, b)) {
+					return false;
+				}
+			}
+			
+			foreach (var filter in b.CollisionFilters) {
+				if (!filter.Invoke(b, a)) {
+					return false;
+				}
+			}
+
 			switch (a.CollisionType) {
 				case CollisionType.Circle:
 					switch (b.CollisionType) {
@@ -103,7 +115,7 @@ namespace WarlockGame.Core.Game
 						case CollisionType.Rectangle:
 							return new CircleF(a.Position, a.Radius).Intersects(b.BoundingRectangle);
 						case CollisionType.OrientedRectangle:
-							return a.OrientedRectangle.Intersects(new CircleF(b.Position, b.Radius));
+							return b.OrientedRectangle.Intersects(new CircleF(a.Position, a.Radius));
 					}
 					break;
 				case CollisionType.Rectangle:
@@ -122,7 +134,7 @@ namespace WarlockGame.Core.Game
 				case CollisionType.OrientedRectangle:
 					switch (b.CollisionType) {
 						case CollisionType.Circle:
-							return Util.Geometry.IsColliding(b.Position, b.Radius, a.BoundingRectangle, new Angle(a.Orientation));
+							return a.OrientedRectangle.Intersects(new CircleF(b.Position, b.Radius));
 						case CollisionType.Rectangle:
 							var bounds = a.BoundingRectangle;
 							var rect = RectangleF.CreateFrom(bounds.Center - bounds.HalfExtents * 2,

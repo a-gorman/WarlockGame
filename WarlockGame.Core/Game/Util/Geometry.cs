@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Shapes;
@@ -7,6 +6,26 @@ using MonoGame.Extended.Shapes;
 namespace WarlockGame.Core.Game.Util;
 
 public static class Geometry {
+    
+    /// <summary>
+    /// Gets the sides of an oriented rectangle, in clockwise order
+    /// </summary>
+    public static Segment2[] GetSides(this in OrientedRectangle rectangle) {
+        Vector2 position =  new Vector2(rectangle.Radii.X, -rectangle.Radii.Y);
+        Vector2 radii = rectangle.Radii;
+        var corner1 = Vector2.Transform(radii, rectangle.Orientation) + rectangle.Center;
+        var corner2 = Vector2.Transform(position, rectangle.Orientation) + rectangle.Center;
+        var corner3 = Vector2.Transform(-radii, rectangle.Orientation) + rectangle.Center;
+        var corner4 = Vector2.Transform(-position, rectangle.Orientation) + rectangle.Center;
+
+        return [
+            new Segment2(corner1, corner2),
+            new Segment2(corner2, corner3),
+            new Segment2(corner3, corner4),
+            new Segment2(corner4, corner1)
+        ];
+    }
+    
     /// <summary>
     /// Circle-Circle collision
     /// </summary>

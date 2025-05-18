@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using WarlockGame.Core.Game.Geometry;
 using WarlockGame.Core.Game.Sim.Effect;
 using WarlockGame.Core.Game.Sim.Effect.Display;
@@ -27,9 +28,17 @@ public static class SimDebug {
     public static void VisualizeCircle(float radius, Vector2 position, Color color, int duration = 1) {
         EffectManager?.Add(new CircleEffect(radius, position, color, duration));
     }
+    
+    public static void VisualizePoint(Vector2 position, Color color, int duration = 1) {
+        EffectManager?.Add(new PointEffect(position, color, duration));
+    }
 
     public static void Visualize(string input, Vector2 position, int duration = 1) {
         EffectManager?.Add(new StringEffect(input, position, Color.White, duration));
+    }
+    
+    public static void Visualize(OrientedRectangle rectangle, Color color, int duration = 1) {
+        EffectManager?.Add(new PolygonEffect(rectangle, color, duration));
     }
     
     public static void Visualize(IEnumerable<string> input, Vector2 position, int duration = 1) {

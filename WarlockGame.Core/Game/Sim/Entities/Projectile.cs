@@ -20,6 +20,7 @@ class Projectile : Entity {
         Velocity = velocity;
         Orientation = Velocity.ToAngle();
         _effects = effects;
+        BlocksProjectiles = true;
     }
 
     public override void Update()
@@ -45,7 +46,7 @@ class Projectile : Entity {
 
     public override void HandleCollision(Entity other)
     {
-        if(other == Context.Caster) {
+        if(other == Context.Caster || !other.BlocksProjectiles) {
             return;
         }
 

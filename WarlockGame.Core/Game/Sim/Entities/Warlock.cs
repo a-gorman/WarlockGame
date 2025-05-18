@@ -39,10 +39,9 @@ namespace WarlockGame.Core.Game.Sim.Entities
 
         public Warlock(int playerId, Vector2 position, Simulation simulation) :
             base(new Sprite(Art.Player), position, simulation, radius: 20) {
-            
             Health = MaxHealth;
-
             PlayerId = playerId;
+            BlocksProjectiles = true;
             
             Spells = [
                 _simulation.SpellFactory.Fireball(),
@@ -50,7 +49,8 @@ namespace WarlockGame.Core.Game.Sim.Entities
                 _simulation.SpellFactory.Poison(),
                 _simulation.SpellFactory.Burst(),
                 _simulation.SpellFactory.SoulShatter(),
-                _simulation.SpellFactory.WindShield()
+                _simulation.SpellFactory.WindShield(),
+                _simulation.SpellFactory.RefractionShield(),
             ];
             
             AddBehaviors(new Pushable());
