@@ -1,8 +1,11 @@
+using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Sim.Buff;
 using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Sim.Entities.Behaviors;
+using WarlockGame.Core.Game.Sim.Entities.Behaviors.CollisionBehaviors;
+using WarlockGame.Core.Game.Sim.Entities.Behaviors.CollisionBehaviors.CollisionFilters;
 using WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
 using WarlockGame.Core.Game.Sim.Spell.Component;
 using WarlockGame.Core.Game.Sim.Spell.Effect;
@@ -152,7 +155,7 @@ class SpellFactory {
                                         EntityConstructor = (spellContext, location) => {
                                             var sim = spellContext.Simulation;
 
-                                            var image = new Entity(new Sprite(Art.Player), location, spellContext.Simulation);
+                                            var image = new Entity(new Sprite(Art.Player), location, spellContext.Simulation)  { BlocksProjectiles = true };
                                             image.AddBehaviors(
                                                 new PushShare(targetInfo.Entity.Id, sim),
                                                 new DamageShare(targetInfo.Entity.Id, sim),
@@ -170,7 +173,7 @@ class SpellFactory {
                                         EntityConstructor = (spellContext, location) => {
                                             var sim = spellContext.Simulation;
 
-                                            var image = new Entity(new Sprite(Art.Player), location, spellContext.Simulation);
+                                            var image = new Entity(new Sprite(Art.Player), location, spellContext.Simulation) { BlocksProjectiles = true };
                                             image.AddBehaviors(
                                                 new PushShare(targetInfo.Entity.Id, sim),
                                                 new DamageShare(targetInfo.Entity.Id, sim),
@@ -188,6 +191,51 @@ class SpellFactory {
                     ]
                 }
             ])
+        };
+    }
+
+    public WarlockSpell RefractionShield() {
+        return new WarlockSpell(_simulation) {
+            SpellId = 7,
+            Name = "Refraction Shield",
+            CooldownTime = 60,
+            SpellIcon = Art.BurstIcon,
+            Effect = new SelfCastPositionComponent {
+                Components = [
+                    new EntityComponent {
+                        EntityConstructor = (spellContext, location) => {
+                            var caster = spellContext.Caster;
+                            var wallLoc = location + new Vector2(80, 40).Rotated(caster.Orientation);
+                    
+                            return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, caster.Orientation + float.Pi / 4, spellContext.Simulation)
+                                .Also(x => x.AddBehaviors(
+                                    new DebugVisualize(),
+                                    new TimedLife(SimTime.OfSeconds(5)),
+                                    new OneCollisionPerEntity(),
+                                    new DeflectProjectiles {
+                                        DeflectionFunc = (e, p) => DeflectProjectiles.OrientedRectangleDiffraction(e, p, 0.4f)
+                                    }
+                                ));
+                        }
+                    },
+                    new EntityComponent {
+                        EntityConstructor = (spellContext, location) => {
+                            var caster = spellContext.Caster;
+                            var wallLoc = location + new Vector2(80, -40).Rotated(caster.Orientation);
+                            
+                            return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, caster.Orientation - float.Pi / 4, spellContext.Simulation)
+                                .Also(x => x.AddBehaviors(
+                                    new DebugVisualize(),
+                                    new TimedLife(SimTime.OfSeconds(5)),
+                                    new OneCollisionPerEntity(),
+                                    new DeflectProjectiles {
+                                        DeflectionFunc = (e, p) => DeflectProjectiles.OrientedRectangleDiffraction(e, p, 0.4f)
+                                    }
+                                ));
+                        }
+                    }
+                ]
+            } 
         };
     }
 }

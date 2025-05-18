@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
-using WarlockGame.Core.Game.Input.Devices;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Util;
 
@@ -23,7 +22,10 @@ public class SpellDisplay : IClickableComponent {
 
     private const int spellSpacing = 100;
 
-    private static readonly InputAction[] _actions = [InputAction.Spell1, InputAction.Spell2, InputAction.Spell3, InputAction.Spell4, InputAction.Spell5, InputAction.Spell6];
+    private static readonly InputAction[] _actions = [ 
+        InputAction.Spell1, InputAction.Spell2, InputAction.Spell3, InputAction.Spell4, InputAction.Spell5, 
+        InputAction.Spell6, InputAction.Spell7, InputAction.Spell8, InputAction.Spell9, InputAction.Spell10
+    ];
 
     public int Layer => 2;
     public Rectangle BoundingBox { get; } = new Rectangle(20, 925, 1880, 90);

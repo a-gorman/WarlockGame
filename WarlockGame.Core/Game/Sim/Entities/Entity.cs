@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
-using MonoGame.Extended.Shapes;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Sim.Entities.Behaviors;
 using WarlockGame.Core.Game.Util;
@@ -18,6 +17,8 @@ namespace WarlockGame.Core.Game.Sim.Entities
 
 		public CollisionType CollisionType { get; }
 		public BoundingRectangle BoundingRectangle { get; private set; }
+		public bool BlocksProjectiles { get; set; }
+		
 		public Vector2 Position {
 			get => BoundingRectangle.Center;
 			set {
@@ -51,6 +52,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
 		public event Action<OnDamagedEventArgs>? OnDamaged;
 		public event Action<OnPushedEventArgs>? OnPushed;
 		public event Action<OnCollisionEventArgs>? OnCollision;
+		public List<Func<Entity, Entity, bool>> CollisionFilters { get; } = new();
 		
 		/// <summary>
 		/// Constructs an entity with a circle collision
@@ -66,11 +68,12 @@ namespace WarlockGame.Core.Game.Sim.Entities
 		/// <summary>
 		/// Constructs an entity with an orientable rectangle collision
 		/// </summary>
-		public Entity(Sprite sprite, Simulation simulation, Vector2 center, float width, float height, float orientation) {
+		public Entity(Sprite sprite, Vector2 center, float width, float height, float orientation, Simulation simulation) {
 			_sprite = sprite;
 			_simulation = simulation;
+			Orientation = orientation;
+			
 			CollisionType = CollisionType.OrientedRectangle;
-
 			OrientedRectangle = new OrientedRectangle(center, new SizeF(width, height), Matrix3x2.CreateRotationZ(orientation));
 			BoundingRectangle = OrientedRectangle.BoundingRectangle;
 		}
@@ -118,7 +121,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
 			OnPushed?.Invoke(new OnPushedEventArgs { Source = this, Force = forceVector.NanToZero() });
 		}
 	}
-	
+
 	enum CollisionType {
 		None,
 		Circle,

@@ -21,7 +21,7 @@ namespace WarlockGame.Core;
 
 public class WarlockGame: Microsoft.Xna.Framework.Game
 {
-    private readonly Configurations _configurations;
+    public Configurations Config { get; }
     public static WarlockGame Instance { get; private set; }  = null!;
     public static Viewport Viewport => Instance.GraphicsDevice.Viewport;
     public static Vector2 ScreenSize => new Vector2(Viewport.Width, Viewport.Height);
@@ -46,12 +46,12 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         : NetworkManager.IsClient ? ClientTypeState.Client : ClientTypeState.Server;
 
     public WarlockGame(params string[] args) {
-        _configurations = ParseArgs(new ConfigurationBuilder().AddIniFile("settings.ini").AddCommandLine(args).Build());
+        Config = ParseArgs(new ConfigurationBuilder().AddIniFile("settings.ini").AddCommandLine(args).Build());
 
         Instance = this;
         _graphics = new GraphicsDeviceManager(this);
-        _graphics.PreferredBackBufferWidth = _configurations.ScreenWidth;
-        _graphics.PreferredBackBufferHeight = _configurations.ScreenHeight;
+        _graphics.PreferredBackBufferWidth = Config.ScreenWidth;
+        _graphics.PreferredBackBufferHeight = Config.ScreenHeight;
 
         _bloom = new BloomComponent(this);
         Components.Add(_bloom);
@@ -72,7 +72,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         Grid = new Grid(Viewport.Bounds, gridSpacing);
 
         Ps4Input.Initialize(this);
-        InputManager.Initialize(_configurations.KeyMappings);
+        InputManager.Initialize(Config.KeyMappings);
 
         Window.TextInput += (_, textArgs) => InputManager.OnTextInput(textArgs);
         
@@ -80,7 +80,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         
         UIManager.AddComponent(LogDisplay.Instance);
         UIManager.AddComponent(MessageDisplay.Instance);
-        UIManager.AddComponent(new SpellDisplay(_configurations.KeyMappings));
+        UIManager.AddComponent(new SpellDisplay(Config.KeyMappings));
         UIManager.AddComponent(new HealthBarManager());
 
 #if DEBUG
@@ -90,12 +90,12 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         MessageDisplay.Display("Game Started");
         Logger.Info("Game initialized");
 
-        if (_configurations.Client) {
-            NetworkManager.ConnectToServer(_configurations.JoinIp, () => NetworkManager.JoinGame(_configurations.Name ?? "Default"));
+        if (Config.Client) {
+            NetworkManager.ConnectToServer(Config.JoinIp, () => NetworkManager.JoinGame(Config.Name ?? "Default"));
         }
         
-        if (_configurations.Server) {
-            PlayerManager.AddLocalPlayer(_configurations.Name ?? "Default");
+        if (Config.Server) {
+            PlayerManager.AddLocalPlayer(Config.Name ?? "Default");
             NetworkManager.StartServer();
         }
     }
@@ -241,8 +241,9 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
     private Configurations ParseArgs(IConfigurationRoot args) {
         return new Configurations {
-            Server = args["autoStartServer"]?.Let(bool.Parse) ?? false,
             Client = args["autoStartClient"]?.Let(bool.Parse) ?? false,
+            Server = args["autoStartServer"]?.Let(bool.Parse) ?? false,
+            RestartOnJoin = args["autoRestartOnJoin"]?.Let(bool.Parse) ?? false,
             Name = args["playerName"],
             JoinIp = args["joinIp"] ?? "localhost",
             ScreenHeight = args["screenHeight"]?.Let(int.Parse) ?? 1080,
@@ -253,7 +254,11 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
                 { ParseKey(args["keymap:spell3"], Keys.E), InputAction.Spell3 },
                 { ParseKey(args["keymap:spell4"], Keys.R), InputAction.Spell4 },
                 { ParseKey(args["keymap:spell5"], Keys.T), InputAction.Spell5 },
-                { ParseKey(args["keymap:spell6"], Keys.F), InputAction.Spell6 },
+                { ParseKey(args["keymap:spell6"], Keys.D), InputAction.Spell6 },
+                { ParseKey(args["keymap:spell7"], Keys.F), InputAction.Spell7 },
+                { ParseKey(args["keymap:spell8"], Keys.G), InputAction.Spell8 },
+                { ParseKey(args["keymap:spell9"], Keys.C), InputAction.Spell9 },
+                { ParseKey(args["keymap:spell10"], Keys.V), InputAction.Spell10 },
                 { ParseKey(args["keymap:exit"], Keys.Escape), InputAction.Exit },
                 { ParseKey(args["keymap:pause"], Keys.P), InputAction.Pause },
                 { ParseKey(args["keymap:openCommandInput"], Keys.Enter), InputAction.OpenCommandInput },
@@ -265,7 +270,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         return Enum.TryParse(str, true, out Keys key) ? key : defaultValue;
     }
 
-    private class Configurations {
+    public class Configurations {
         public required bool Server { get; init; }
         public required bool Client { get; init; }
         public required string? Name { get; init; }
@@ -273,5 +278,6 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         public required int ScreenWidth { get; init; }
         public required int ScreenHeight { get; init; }
         public required Dictionary<Keys, InputAction> KeyMappings { get; init; }
+        public bool RestartOnJoin { get; set; }
     }
 }
