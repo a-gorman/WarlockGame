@@ -155,7 +155,10 @@ class SpellFactory {
                                         EntityConstructor = (spellContext, location) => {
                                             var sim = spellContext.Simulation;
 
-                                            var image = new Entity(new Sprite(Art.Player), location, spellContext.Simulation)  { BlocksProjectiles = true };
+                                            var image = new Entity(new Sprite(Art.Player), location, spellContext.Simulation) {
+                                                BlocksProjectiles = true,
+                                                PlayerId = spellContext.Caster.PlayerId
+                                            };
                                             image.AddBehaviors(
                                                 new PushShare(targetInfo.Entity.Id, sim),
                                                 new DamageShare(targetInfo.Entity.Id, sim),
@@ -173,7 +176,10 @@ class SpellFactory {
                                         EntityConstructor = (spellContext, location) => {
                                             var sim = spellContext.Simulation;
 
-                                            var image = new Entity(new Sprite(Art.Player), location, spellContext.Simulation) { BlocksProjectiles = true };
+                                            var image = new Entity(new Sprite(Art.Player), location, spellContext.Simulation) {
+                                                BlocksProjectiles = true,
+                                                PlayerId = spellContext.Caster.PlayerId
+                                            };
                                             image.AddBehaviors(
                                                 new PushShare(targetInfo.Entity.Id, sim),
                                                 new DamageShare(targetInfo.Entity.Id, sim),
@@ -207,10 +213,12 @@ class SpellFactory {
                             var caster = spellContext.Caster;
                             var wallLoc = location + new Vector2(80, 40).Rotated(caster.Orientation);
                     
-                            return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, caster.Orientation + float.Pi / 4, spellContext.Simulation)
+                            return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, caster.Orientation + float.Pi / 4, spellContext.Simulation) {
+                                    PlayerId = caster.PlayerId
+                                }
                                 .Also(x => x.AddBehaviors(
                                     new DebugVisualize(),
-                                    new TimedLife(SimTime.OfSeconds(5)),
+                                    new TimedLife(SimTime.OfSeconds(10)),
                                     new OneCollisionPerEntity(),
                                     new DeflectProjectiles {
                                         DeflectionFunc = (e, p) => DeflectProjectiles.OrientedRectangleDiffraction(e, p, 0.4f)
@@ -223,14 +231,17 @@ class SpellFactory {
                             var caster = spellContext.Caster;
                             var wallLoc = location + new Vector2(80, -40).Rotated(caster.Orientation);
                             
-                            return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, caster.Orientation - float.Pi / 4, spellContext.Simulation)
+                            return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, caster.Orientation - float.Pi / 4, spellContext.Simulation) {
+                                    PlayerId = caster.PlayerId
+                                }
                                 .Also(x => x.AddBehaviors(
                                     new DebugVisualize(),
-                                    new TimedLife(SimTime.OfSeconds(5)),
+                                    new TimedLife(SimTime.OfSeconds(10)),
                                     new OneCollisionPerEntity(),
                                     new DeflectProjectiles {
                                         DeflectionFunc = (e, p) => DeflectProjectiles.OrientedRectangleDiffraction(e, p, 0.4f)
-                                    }
+                                    },
+                                    new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies)
                                 ));
                         }
                     }

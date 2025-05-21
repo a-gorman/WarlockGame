@@ -43,7 +43,7 @@ namespace WarlockGame.Core.Game
 					_projectiles.Add(projectile);
 					break;
 				case Warlock warlock:
-					_warlocks.TryAdd(warlock.PlayerId, warlock);
+					_warlocks.TryAdd(warlock.PlayerId!.Value, warlock);
 					warlock.Destroyed += x => WarlockDestroyed?.Invoke(x);
 					break;
 			}
