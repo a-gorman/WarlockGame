@@ -17,25 +17,19 @@ namespace WarlockGame.Core.Game.Sim.Entities
         public const float Speed = 4;
 
         public float MaxHealth { get; private set; } = 100;
-
         public float Health { get; set; }
 
-        public event Action<Warlock>? Destroyed;
-        
-        
         public Vector2? Direction { get; set; }
 
         public List<WarlockSpell> Spells { get; }
         public List<IBuff> Buffs { get; } = new();
         
-        public int PlayerId { get; }
-
         private int _framesUntilRespawn = 0;
         public bool IsDead => _framesUntilRespawn > 0;
 
         private static readonly Random _rand = new();
-
         private LinkedList<IOrder> Orders { get; } = new();
+        public event Action<Warlock>? Destroyed;
 
         public Warlock(int playerId, Vector2 position, Simulation simulation) :
             base(new Sprite(Art.Player), position, simulation, radius: 20) {

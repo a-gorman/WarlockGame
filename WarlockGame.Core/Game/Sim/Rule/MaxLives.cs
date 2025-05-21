@@ -25,7 +25,7 @@ class MaxLives {
     }
 
     public void OnWarlockDestroyed(Warlock warlock) {
-        int playerId = warlock.PlayerId;
+        int playerId = warlock.PlayerId!.Value;
         PlayerLives[playerId] -= 1;
 
         if (PlayerLives[playerId] != 0) {

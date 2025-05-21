@@ -12,19 +12,29 @@ namespace WarlockGame.Core.Game.Sim.Entities
 	class Entity
 	{
 		public int Id { get; set; }
+		public int? PlayerId { get; set; }
 		protected readonly Sprite _sprite;
 		protected readonly Simulation _simulation;
 
 		public CollisionType CollisionType { get; }
 		public BoundingRectangle BoundingRectangle { get; private set; }
 		public bool BlocksProjectiles { get; set; }
+		public OrientedRectangle OrientedRectangle { get; private set; }	// used for polygon and rotated rectangle collision detection
+		public float Radius { get; }						// used for circular collision detection
+		public Vector2 Velocity { get; set; }
+		public bool IsExpired { get; set; }					// true if the entity was destroyed and should be deleted.
+		private List<Behavior> Behaviors { get; } = [];
+		public event Action<OnDamagedEventArgs>? OnDamaged;
+		public event Action<OnPushedEventArgs>? OnPushed;
+		public event Action<OnCollisionEventArgs>? OnCollision;
+		public List<CollisionFilter> CollisionFilters { get; } = new();
 		
 		public Vector2 Position {
 			get => BoundingRectangle.Center;
 			set {
 				if (CollisionType == CollisionType.OrientedRectangle) {
 					var translation = Matrix3x2.CreateTranslation(value - Position);
-					 OrientedRectangle = OrientedRectangle.Transform(OrientedRectangle, ref translation);
+					OrientedRectangle = OrientedRectangle.Transform(OrientedRectangle, ref translation);
 				}
 				var bounds = BoundingRectangle;
 				bounds.Center = value;
@@ -43,16 +53,6 @@ namespace WarlockGame.Core.Game.Sim.Entities
 				field = value;
 			}
 		}
-
-		public OrientedRectangle OrientedRectangle { get; private set; }	// used for polygon and rotated rectangle collision detection
-		public float Radius { get; }						// used for circular collision detection
-		public Vector2 Velocity { get; set; }
-		public bool IsExpired { get; set; }					// true if the entity was destroyed and should be deleted.
-		private List<Behavior> Behaviors { get; } = [];
-		public event Action<OnDamagedEventArgs>? OnDamaged;
-		public event Action<OnPushedEventArgs>? OnPushed;
-		public event Action<OnCollisionEventArgs>? OnCollision;
-		public List<Func<Entity, Entity, bool>> CollisionFilters { get; } = new();
 		
 		/// <summary>
 		/// Constructs an entity with a circle collision
@@ -122,6 +122,8 @@ namespace WarlockGame.Core.Game.Sim.Entities
 		}
 	}
 
+	delegate bool CollisionFilter(Entity source, Entity other);
+	
 	enum CollisionType {
 		None,
 		Circle,
