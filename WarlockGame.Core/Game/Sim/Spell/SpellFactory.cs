@@ -204,7 +204,7 @@ class SpellFactory {
         return new WarlockSpell(_simulation) {
             SpellId = 7,
             Name = "Refraction Shield",
-            CooldownTime = 60,
+            CooldownTime = SimTime.OfSeconds(3).Ticks,
             SpellIcon = Art.BurstIcon,
             Effect = new SelfCastPositionComponent {
                 Components = [
@@ -213,16 +213,17 @@ class SpellFactory {
                             var caster = spellContext.Caster;
                             var wallLoc = location + new Vector2(80, 40).Rotated(caster.Orientation);
                     
-                            return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, caster.Orientation + float.Pi / 4, spellContext.Simulation) {
+                            return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, caster.Orientation + float.Pi / 6, spellContext.Simulation) {
                                     PlayerId = caster.PlayerId
                                 }
                                 .Also(x => x.AddBehaviors(
                                     new DebugVisualize(),
-                                    new TimedLife(SimTime.OfSeconds(10)),
+                                    new TimedLife(SimTime.OfSeconds(4)),
                                     new OneCollisionPerEntity(),
                                     new DeflectProjectiles {
                                         DeflectionFunc = (e, p) => DeflectProjectiles.OrientedRectangleDiffraction(e, p, 0.4f)
-                                    }
+                                    },
+                                    new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies)
                                 ));
                         }
                     },
@@ -231,12 +232,12 @@ class SpellFactory {
                             var caster = spellContext.Caster;
                             var wallLoc = location + new Vector2(80, -40).Rotated(caster.Orientation);
                             
-                            return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, caster.Orientation - float.Pi / 4, spellContext.Simulation) {
+                            return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, caster.Orientation - float.Pi / 6, spellContext.Simulation) {
                                     PlayerId = caster.PlayerId
                                 }
                                 .Also(x => x.AddBehaviors(
                                     new DebugVisualize(),
-                                    new TimedLife(SimTime.OfSeconds(10)),
+                                    new TimedLife(SimTime.OfSeconds(4)),
                                     new OneCollisionPerEntity(),
                                     new DeflectProjectiles {
                                         DeflectionFunc = (e, p) => DeflectProjectiles.OrientedRectangleDiffraction(e, p, 0.4f)
@@ -246,7 +247,7 @@ class SpellFactory {
                         }
                     }
                 ]
-            } 
+            }
         };
     }
 }
