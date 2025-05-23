@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Util;
+using ZLinq;
 
 namespace WarlockGame.Core.Game
 {
@@ -53,12 +54,12 @@ namespace WarlockGame.Core.Game
 			_isUpdating = true;
 			HandleCollisions();
 
-			foreach (var entity in _entities.Values)
+			foreach (var entity in _entities.Values.AsValueEnumerable())
 				entity.Update();
 
 			_isUpdating = false;
 
-			foreach (var entity in _addedEntities)
+			foreach (var entity in _addedEntities.AsValueEnumerable())
 				AddEntity(entity);
 
 			_addedEntities.Clear();
@@ -94,13 +95,13 @@ namespace WarlockGame.Core.Game
 				return false;
 			}
 
-			foreach (var filter in a.CollisionFilters) {
+			foreach (var filter in a.CollisionFilters.AsValueEnumerable()) {
 				if (!filter.Invoke(a, b)) {
 					return false;
 				}
 			}
 			
-			foreach (var filter in b.CollisionFilters) {
+			foreach (var filter in b.CollisionFilters.AsValueEnumerable()) {
 				if (!filter.Invoke(b, a)) {
 					return false;
 				}

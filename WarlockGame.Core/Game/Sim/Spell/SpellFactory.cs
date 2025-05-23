@@ -220,10 +220,10 @@ class SpellFactory {
                                     new DebugVisualize(),
                                     new TimedLife(SimTime.OfSeconds(4)),
                                     new OneCollisionPerEntity(),
+                                    new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies),
                                     new DeflectProjectiles {
                                         DeflectionFunc = (e, p) => DeflectProjectiles.OrientedRectangleDiffraction(e, p, 0.4f)
-                                    },
-                                    new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies)
+                                    }
                                 ));
                         }
                     },
@@ -239,10 +239,10 @@ class SpellFactory {
                                     new DebugVisualize(),
                                     new TimedLife(SimTime.OfSeconds(4)),
                                     new OneCollisionPerEntity(),
+                                    new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies),
                                     new DeflectProjectiles {
                                         DeflectionFunc = (e, p) => DeflectProjectiles.OrientedRectangleDiffraction(e, p, 0.4f)
-                                    },
-                                    new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies)
+                                    }
                                 ));
                         }
                     }
