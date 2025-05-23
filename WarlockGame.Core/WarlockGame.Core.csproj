@@ -6,6 +6,8 @@
     <WarningsAsErrors>Nullable</WarningsAsErrors>
     <RootNamespace>WarlockGame.Core</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Version>0.0.3</Version>
+    <Authors>Alex Gorman</Authors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugType>full</DebugType>
