@@ -40,6 +40,36 @@ class SpellFactory {
             )
         };
     }
+    
+    // public WarlockSpell Boomerang() {
+    //     return new WarlockSpell(_simulation) {
+    //         SpellId = 1,
+    //         Name = "Fireball",
+    //         CooldownTime = 60,
+    //         SpellIcon = Art.FireballIcon,
+    //         Effect =  new SelfCastPositionComponent {
+    //             Components = [
+    //                 new EntityComponent {
+    //                     EntityConstructor = (spellContext, location) => {
+    //                         var caster = spellContext.Caster;
+    //                         var wallLoc = location + new Vector2(80, 40).Rotated(caster.Orientation);
+    //                 
+    //                         return new Projectile(location, ) {
+    //                                 PlayerId = caster.PlayerId
+    //                             }
+    //                             .Also(x => x.AddBehaviors(
+    //                                 new DebugVisualize(),
+    //                                 new TimedLife(SimTime.OfSeconds(4)),
+    //                                 new OneCollisionPerEntity(),
+    //                                 new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies),
+    //                                 new DeflectProjectiles {
+    //                                     DeflectionFunc = (e, p) => DeflectProjectiles.OrientedRectangleDiffraction(e, p, 0.4f)
+    //                                 }
+    //                             ));
+    //                     }
+    //                 },
+    //     };
+    // }
 
     public WarlockSpell Lightning() {
         return new WarlockSpell(_simulation) {
@@ -101,7 +131,7 @@ class SpellFactory {
         return new WarlockSpell(_simulation) {
             SpellId = 5,
             Name = "Wind Shield",
-            CooldownTime = 60,
+            CooldownTime = 60 * 10,
             SpellIcon = Art.WindWallIcon,
             Effect = new SelfCastPositionComponent {
                 Components = [
@@ -116,12 +146,12 @@ class SpellFactory {
                                     Shape = new Doughnut {
                                         Radius = 202,
                                         Width = 30,
-                                        IgnoreCaster = true,
+                                        IgnoreCaster = false,
                                         FalloffFactor = Falloff.None
                                     },
                                     Components = [
                                         new PushComponent {
-                                            Force = 1.5f,
+                                            Force = 5f,
                                             SelfFactor = 0,
                                             ProjectileFactor = 1,
                                             DisplacementTransform = (axis1, axis2) => axis1.PerpendicularClockwise()
@@ -155,7 +185,7 @@ class SpellFactory {
                                         EntityConstructor = (spellContext, location) => {
                                             var sim = spellContext.Simulation;
 
-                                            var image = new Entity(new Sprite(Art.Player), location, spellContext.Simulation) {
+                                            var image = new Entity(new Sprite(Art.Player), location) {
                                                 BlocksProjectiles = true,
                                                 PlayerId = spellContext.Caster.PlayerId
                                             };
@@ -176,7 +206,7 @@ class SpellFactory {
                                         EntityConstructor = (spellContext, location) => {
                                             var sim = spellContext.Simulation;
 
-                                            var image = new Entity(new Sprite(Art.Player), location, spellContext.Simulation) {
+                                            var image = new Entity(new Sprite(Art.Player), location) {
                                                 BlocksProjectiles = true,
                                                 PlayerId = spellContext.Caster.PlayerId
                                             };
@@ -213,7 +243,7 @@ class SpellFactory {
                             var caster = spellContext.Caster;
                             var wallLoc = location + new Vector2(80, 40).Rotated(caster.Orientation);
                     
-                            return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, caster.Orientation + float.Pi / 6, spellContext.Simulation) {
+                            return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, caster.Orientation + float.Pi / 6) {
                                     PlayerId = caster.PlayerId
                                 }
                                 .Also(x => x.AddBehaviors(
@@ -232,7 +262,7 @@ class SpellFactory {
                             var caster = spellContext.Caster;
                             var wallLoc = location + new Vector2(80, -40).Rotated(caster.Orientation);
                             
-                            return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, caster.Orientation - float.Pi / 6, spellContext.Simulation) {
+                            return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, caster.Orientation - float.Pi / 6) {
                                     PlayerId = caster.PlayerId
                                 }
                                 .Also(x => x.AddBehaviors(

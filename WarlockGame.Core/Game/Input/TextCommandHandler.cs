@@ -81,7 +81,7 @@ class TextCommandHandler {
         }
 
         UIManager.OpenTextPrompt("Enter name:", name => {
-            PlayerManager.AddLocalPlayer(name);
+            PlayerManager.AddLocalPlayer(name, Configuration.PreferredColor);
             NetworkManager.StartServer();
         });
     }
@@ -97,7 +97,7 @@ class TextCommandHandler {
                 UIManager.OpenTextPrompt("Enter Host IP Address:",
                     ipAddress => {
                         NetworkManager.ConnectToServer(ipAddress.NullOrEmptyTo("localhost"),
-                            () => NetworkManager.JoinGame(name));
+                            () => NetworkManager.JoinGame(name, Configuration.PreferredColor));
                     });
             });
     }

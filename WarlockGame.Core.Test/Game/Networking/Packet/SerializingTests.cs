@@ -12,13 +12,14 @@ namespace WarlockGame.Core.Test.Game.Networking.Packet;
 public class SerializingTests {
 
     [Theory]
-    [InlineData(1, "name")]
-    [InlineData(0, "")]
-    public void PlayerSerializesCorrectly(int id, string name) {
+    [InlineData(1, "name", 30)]
+    [InlineData(0, "", uint.MaxValue)]
+    public void PlayerSerializesCorrectly(int id, string name, uint color) {
         var player = new Player
         {
             Id = id,
-            Name = name
+            Name = name,
+            Color = new Color(color)
         };
 
         SerializeAndDeserialize(player).Should().BeEquivalentTo(player);
@@ -28,7 +29,31 @@ public class SerializingTests {
     public void JoinGameRequestSerializesCorrectly() {
         var request = new JoinGameRequest
         {
-            PlayerName = "name"
+            PlayerName = "name",
+            ColorPreference = Color.Aquamarine
+        };
+
+        SerializeAndDeserialize(request).Should().BeEquivalentTo(request);
+    }
+    
+    [Fact]
+    public void JoinGameRequestSerializesCorrectly_NullColor() {
+        var request = new JoinGameRequest
+        {
+            PlayerName = "name",
+            ColorPreference = null
+        };
+
+        SerializeAndDeserialize(request).Should().BeEquivalentTo(request);
+    }
+    
+    [Fact]
+    public void PlayerJoinedSerializesCorrectly() {
+        var request = new PlayerJoined
+        {
+            PlayerId = 3,
+            PlayerName = "name",
+            Color = Color.Aquamarine
         };
 
         SerializeAndDeserialize(request).Should().BeEquivalentTo(request);
@@ -48,18 +73,19 @@ public class SerializingTests {
 
         SerializeAndDeserialize(players).Should().BeEquivalentTo(players);
     }
-    
+
     [Fact]
     public void ServerTickProcessedSerializesCorrectly() {
-        var players = new ServerTickProcessed()
-        {
+        var players = new ServerTickProcessed() {
             Tick = 1,
             Checksum = 2,
-            PlayerCommands = new List<IPlayerCommand>
-            {
+            PlayerCommands = [
                 new CastCommand { SpellId = 3, PlayerId = 4, CastVector = new Vector2(5, 6) },
                 new MoveCommand { PlayerId = 7, Location = new Vector2(8, 9) }
-            }
+            ],
+            ServerCommands = [
+                new StartGame()
+            ]
         };
 
         SerializeAndDeserialize(players).Should().BeEquivalentTo(players);

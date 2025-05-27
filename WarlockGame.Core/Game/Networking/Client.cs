@@ -56,7 +56,7 @@ sealed class Client : INetEventListener {
     }
 
     private void OnPlayerJoined(PlayerJoined joinInfo) {
-        PlayerManager.AddRemotePlayer(joinInfo.PlayerName);
+        PlayerManager.AddRemotePlayer(joinInfo.PlayerName, joinInfo.Color, joinInfo.PlayerId);
     }
     
     private void OnJoinResponse(JoinGameResponse response) {
@@ -65,10 +65,10 @@ sealed class Client : INetEventListener {
         
         foreach (var player in response.Players) {
             if (player.Id == response.PlayerId) {
-                PlayerManager.AddLocalPlayer(player.Name);
+                PlayerManager.AddLocalPlayer(player.Name, player.Color, player.Id);
             }
             else {
-                PlayerManager.AddRemotePlayer(player.Name);
+                PlayerManager.AddRemotePlayer(player.Name, player.Color, player.Id);
             }
         }
     }
