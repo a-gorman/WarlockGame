@@ -39,7 +39,7 @@ class Server : INetEventListener {
         _packetProcessor.SubscribeNetSerializable(OnGameCommandReceived, () => new MoveCommand());
         _packetProcessor.SubscribeNetSerializable(OnGameCommandReceived, () => new CastCommand());
         _packetProcessor.SubscribeReusable<ClientTickProcessed, NetPeer>(OnClientTickProcessed);
-        _packetProcessor.SubscribeReusable<JoinGameRequest, NetPeer>(OnJoinGameRequest);
+        _packetProcessor.SubscribeNetSerializable<JoinGameRequest, NetPeer>(OnJoinGameRequest);
     }
 
     private void OnClientTickProcessed(ClientTickProcessed clientTickProcessed, NetPeer sender) {
@@ -47,12 +47,15 @@ class Server : INetEventListener {
     }
 
     private void OnJoinGameRequest(JoinGameRequest request, NetPeer sender) {
-        var player = PlayerManager.AddRemotePlayer(request.PlayerName);
+        var player = PlayerManager.AddRemotePlayer(request.PlayerName, color: request.ColorPreference);
         _clientToPlayerMap.Add(sender.Id, player.Id);
-        SendToAllExcept(new PlayerJoined { PlayerName = request.PlayerName }, sender);
-        SendToPeer(new JoinGameResponse { PlayerId = player.Id, Players = PlayerManager.Players.Select(x => new Packet.Player { Id = x.Id, Name = x.Name }).ToList() }, sender);
+        SendSerializableToAllExcept(new PlayerJoined { PlayerId = player.Id, PlayerName = request.PlayerName, Color = player.Color }, sender);
+        SendToPeer(new JoinGameResponse { 
+            PlayerId = player.Id, 
+            Players = PlayerManager.Players.Select(x => new Packet.Player { Id = x.Id, Name = x.Name, Color = x.Color }).ToList() }, 
+            sender);
 
-        if (WarlockGame.Instance.Config.RestartOnJoin) {
+        if (Configuration.RestartOnJoin) {
             CommandManager.AddServerCommand(new StartGame { Seed = Random.Shared.Next() });
         }
     }
@@ -84,9 +87,9 @@ class Server : INetEventListener {
         _server.SendToAll(_writer, deliveryMethod);
     }
     
-    public void SendToAllExcept<T>(T packet, NetPeer excluded, DeliveryMethod deliveryMethod = DeliveryMethod.ReliableOrdered) where T : class, new() {
+    public void SendSerializableToAllExcept<T>(T packet, NetPeer excluded, DeliveryMethod deliveryMethod = DeliveryMethod.ReliableOrdered) where T : INetSerializable {
         _writer.Reset();
-        _packetProcessor.Write(_writer, packet);
+        _packetProcessor.WriteNetSerializable(_writer, ref packet);
         _server.SendToAll(_writer, deliveryMethod, excluded);
     }
     

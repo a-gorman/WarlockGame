@@ -9,13 +9,18 @@ namespace WarlockGame.Core.Game.Networking.Packet;
 
 public class JoinGameRequest : INetSerializable {
     public string PlayerName { get; set; }
+    
+    public Color? ColorPreference { get; set; }
 
     public void Serialize(NetDataWriter writer) {
         writer.Put(PlayerName);
+        writer.Put(ColorPreference?.PackedValue ?? 0);
     }
 
     public void Deserialize(NetDataReader reader) {
         PlayerName = reader.GetString();
+        var color = reader.GetUInt();
+        ColorPreference = color == 0 ? null : new Color(color);
     }
 }
 
@@ -39,14 +44,20 @@ public class JoinGameResponse : INetSerializable {
 }
 
 public class PlayerJoined : INetSerializable {
+    public int PlayerId { get; set; }
     public string PlayerName { get; set; }
+    public Color Color { get; set; }
 
     public void Serialize(NetDataWriter writer) {
+        writer.Put(PlayerId);
         writer.Put(PlayerName);
+        writer.Put(Color.PackedValue);
     }
 
     public void Deserialize(NetDataReader reader) {
+        PlayerId = reader.GetInt();
         PlayerName = reader.GetString();
+        Color = new Color(reader.GetUInt());
     }
 }
 
@@ -95,15 +106,18 @@ public class Spell : INetSerializable {
 public class Player : INetSerializable {
     public int Id { get; set; }
     public string Name { get; set; }
+    public Color Color { get; set; }
 
     public void Serialize(NetDataWriter writer) {
         writer.Put(Id);
         writer.Put(Name);
+        writer.Put(Color.PackedValue);
     }
 
     public void Deserialize(NetDataReader reader) {
         Id = reader.GetInt();
         Name = reader.GetString();
+        Color = new Color(reader.GetUInt());
     }
 }
 

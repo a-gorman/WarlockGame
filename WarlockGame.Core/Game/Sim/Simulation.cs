@@ -5,11 +5,11 @@ using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim.Effect;
+using WarlockGame.Core.Game.Sim.Entities.Factory;
 using WarlockGame.Core.Game.Sim.Order;
 using WarlockGame.Core.Game.Sim.Rule;
 using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.Util;
-using Warlock = WarlockGame.Core.Game.Sim.Entities.Warlock;
 
 namespace WarlockGame.Core.Game.Sim;
 
@@ -20,6 +20,7 @@ class Simulation {
     public EntityManager EntityManager { get; } = new();
     public SpellFactory SpellFactory { get; }
     public EffectManager EffectManager { get; }
+    public WarlockFactory WarlockFactory { get; }
 
     private readonly MaxLives _gameRule;
 
@@ -28,6 +29,7 @@ class Simulation {
     public Simulation() {
         EffectManager = new EffectManager();
         SpellFactory = new SpellFactory(this);
+        WarlockFactory = new WarlockFactory(this);
         _gameRule = new MaxLives(this, 3);
         EntityManager.WarlockDestroyed += _gameRule.OnWarlockDestroyed;
     }
@@ -55,7 +57,7 @@ class Simulation {
         var radiansPerPlayer = (float)(2 * Math.PI / PlayerManager.Players.Count);
         var warlocks = PlayerManager.Players.Select((x, i) => {
             var spawnPos = ArenaSize / 2 + new Vector2(0, 250).Rotated(radiansPerPlayer * i);
-            return new Warlock(x.Id, spawnPos, this);
+            return WarlockFactory.CreateWarlock(x.Id, spawnPos);
         });
         foreach (var warlock in warlocks) {
             Logger.Info($"Creating warlock at: {warlock.Position}");

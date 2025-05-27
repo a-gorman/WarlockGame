@@ -13,8 +13,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
 	{
 		public int Id { get; set; }
 		public int? PlayerId { get; set; }
-		protected readonly Sprite _sprite;
-		protected readonly Simulation _simulation;
+		public Sprite Sprite { get; }
 
 		public CollisionType CollisionType { get; }
 		public BoundingRectangle BoundingRectangle { get; private set; }
@@ -57,9 +56,8 @@ namespace WarlockGame.Core.Game.Sim.Entities
 		/// <summary>
 		/// Constructs an entity with a circle collision
 		/// </summary>
-		public Entity(Sprite sprite, Vector2 position, Simulation simulation, float radius = 20) {
-			_sprite = sprite;
-			_simulation = simulation;
+		public Entity(Sprite sprite, Vector2 position, float radius = 20) {
+			Sprite = sprite;
 			CollisionType = CollisionType.Circle;
 			Radius = radius;
 			BoundingRectangle = new CircleF(position, radius).BoundingRectangle;
@@ -68,9 +66,8 @@ namespace WarlockGame.Core.Game.Sim.Entities
 		/// <summary>
 		/// Constructs an entity with an orientable rectangle collision
 		/// </summary>
-		public Entity(Sprite sprite, Vector2 center, float width, float height, float orientation, Simulation simulation) {
-			_sprite = sprite;
-			_simulation = simulation;
+		public Entity(Sprite sprite, Vector2 center, float width, float height, float orientation) {
+			Sprite = sprite;
 			Orientation = orientation;
 			
 			CollisionType = CollisionType.OrientedRectangle;
@@ -98,7 +95,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
 
 		public virtual void Draw(SpriteBatch spriteBatch)
 		{
-			_sprite.Draw(spriteBatch, Position, Orientation);
+			Sprite.Draw(spriteBatch, Position, Orientation);
 		}
 
 		public virtual void Damage(float damage, Entity source) {

@@ -14,7 +14,7 @@ class Projectile : Entity {
     public SpellContext Context { get; }
     
     public Projectile(Vector2 position, Vector2 velocity, SpellContext context, Sprite sprite, IReadOnlyList<ILocationSpellComponent> effects) : 
-        base(sprite, position, context.Simulation, radius: 8) {
+        base(sprite, position, radius: 8) {
         Context = context;
         Position = position;
         Velocity = velocity;

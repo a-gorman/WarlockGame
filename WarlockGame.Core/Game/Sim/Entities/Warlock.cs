@@ -21,7 +21,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
 
         public Vector2? Direction { get; set; }
 
-        public List<WarlockSpell> Spells { get; }
+        public List<WarlockSpell> Spells { get; } = [];
         public List<IBuff> Buffs { get; } = new();
         
         private int _framesUntilRespawn = 0;
@@ -31,21 +31,11 @@ namespace WarlockGame.Core.Game.Sim.Entities
         private LinkedList<IOrder> Orders { get; } = new();
         public event Action<Warlock>? Destroyed;
 
-        public Warlock(int playerId, Vector2 position, Simulation simulation) :
-            base(new Sprite(Art.Player), position, simulation, radius: 20) {
+        public Warlock(int playerId, Vector2 position):
+            base(new Sprite(Art.Player), position, radius: 20) {
             Health = MaxHealth;
             PlayerId = playerId;
             BlocksProjectiles = true;
-            
-            Spells = [
-                _simulation.SpellFactory.Fireball(),
-                _simulation.SpellFactory.Lightning(),
-                _simulation.SpellFactory.Poison(),
-                _simulation.SpellFactory.Burst(),
-                _simulation.SpellFactory.SoulShatter(),
-                _simulation.SpellFactory.WindShield(),
-                _simulation.SpellFactory.RefractionShield(),
-            ];
             
             AddBehaviors(new Pushable());
         }
@@ -91,7 +81,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
         }
 
         private void Move() {
-            if (Velocity.IsLengthLessThan(Speed)) {
+            if (Velocity.LengthSquared() < Speed.Squared()) {
                 Velocity = Vector2.Zero;
             }
             else {
@@ -103,7 +93,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
             }
 
             Position += Velocity;
-            Position = Vector2.Clamp(Position, _sprite.Size / 2, Simulation.ArenaSize - _sprite.Size / 2);
+            Position = Vector2.Clamp(Position, Sprite.Size / 2, Simulation.ArenaSize - Sprite.Size / 2);
 
             if (Velocity.HasLength())
                 Orientation = Velocity.ToAngle();
