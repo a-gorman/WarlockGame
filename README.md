@@ -5,3 +5,5 @@ builder (MGCB).
 
 To run, use `dotnet run` in subfolder corresponding to your operating system (ex. WarlockGame.WindowsDX for windows users)
 or you can ask me for a published .exe (can be self-contained if you don't want to install .net runtime).
+
+This project is made without the use of AI tools.
