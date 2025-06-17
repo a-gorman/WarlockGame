@@ -44,12 +44,14 @@ namespace WarlockGame.Core.Game.Sim.Entities
 		public float Orientation { 
 			get;
 			set {
+				// var angle = value % float.Pi;
+				var angle = value;
 				if (CollisionType == CollisionType.OrientedRectangle) {
-					var rotation = Matrix3x2.CreateRotationZ(value - field);
+					var rotation = Matrix3x2.CreateRotationZ(angle - field);
 					OrientedRectangle = OrientedRectangle.Transform(OrientedRectangle, ref rotation);
 					BoundingRectangle = OrientedRectangle.BoundingRectangle;
 				}
-				field = value;
+				field = angle;
 			}
 		}
 		
