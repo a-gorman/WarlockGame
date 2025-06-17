@@ -15,6 +15,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
     class Warlock : Entity
     {
         public const float Speed = 4;
+        public const float RotationSpeed = 0.1f; // Radians per tick
 
         public float MaxHealth { get; private set; } = 100;
         public float Health { get; set; }
@@ -89,14 +90,21 @@ namespace WarlockGame.Core.Game.Sim.Entities
             }
 
             if (Direction != null) {
-                Velocity += Speed * (Vector2)Direction;
+                var targetOrientation = Extensions.ToAngle(Direction.Value);
+                var interiorAngle = Util.Geometry.GetInteriorAngle(targetOrientation, Orientation);
+                var rotationFactor = MathF.Cos(interiorAngle / 2).Squared();
+                Velocity += Speed * rotationFactor * Direction.Value;
+
+                if (Math.Abs(interiorAngle) < RotationSpeed) {
+                    Orientation = targetOrientation;
+                }
+                else {
+                    Orientation += -Math.Sign(interiorAngle) * RotationSpeed;
+                }
             }
 
             Position += Velocity;
             Position = Vector2.Clamp(Position, Sprite.Size / 2, Simulation.ArenaSize - Sprite.Size / 2);
-
-            if (Velocity.HasLength())
-                Orientation = Velocity.ToAngle();
         }
         
         public void CastSpell(int spellId, Vector2 castDirection) {

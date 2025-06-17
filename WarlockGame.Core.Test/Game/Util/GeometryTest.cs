@@ -1,3 +1,4 @@
+using System;
 using FluentAssertions;
 using JetBrains.Annotations;
 using Microsoft.Xna.Framework;
@@ -34,5 +35,11 @@ public class GeometryTest {
         for (int i = 0; i < 4; i++) {
             result[i].End.Should().Be(result[i == 3 ? 0 : i + 1].Start);
         }
+    }
+
+    [Theory]
+    [InlineData(1.71591246, -2.09394097)]
+    public void GetInteriorAngle_CalculatesCorrectly(float angle1, float angle2) {
+        Math.Abs(Geometry.GetInteriorAngle(angle1, angle2) % float.Tau).Should().BeLessThanOrEqualTo(float.Pi);
     }
 }

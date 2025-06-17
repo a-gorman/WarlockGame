@@ -132,4 +132,12 @@ public static class Geometry {
             center.Translate(-width / 2, -height / 2)
         ]);
     }
+    
+    public static float GetInteriorAngle(float angle1, float angle2) {
+        var difference = (angle2 - angle1) % float.Tau;
+        if (Math.Abs(difference) > float.Pi) {
+            return difference - float.Tau;
+        }
+        return difference;
+    }
 }
