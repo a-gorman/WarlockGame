@@ -44,8 +44,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
 		public float Orientation { 
 			get;
 			set {
-				// var angle = value % float.Pi;
-				var angle = value;
+				var angle = value % float.Tau;
 				if (CollisionType == CollisionType.OrientedRectangle) {
 					var rotation = Matrix3x2.CreateRotationZ(angle - field);
 					OrientedRectangle = OrientedRectangle.Transform(OrientedRectangle, ref rotation);
