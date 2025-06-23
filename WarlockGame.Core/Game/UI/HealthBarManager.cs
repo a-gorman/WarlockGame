@@ -4,18 +4,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace WarlockGame.Core.Game.UI;
 
-class HealthBarManager : IInterfaceComponent {
-
-    public int Layer => 0;
-
+class HealthBarManager : InterfaceComponent {
     private const int VerticalOffset = 30;
     private const int Width = 80;
     private const int Height = 3;
 
-    public bool Visible { get; set; } = true;
-    public IEnumerable<IInterfaceComponent> Components { get; } = new List<IInterfaceComponent>();
-
-    public void Draw(SpriteBatch spriteBatch) {
+    public override void Draw(SpriteBatch spriteBatch) {
         foreach (var warlock in WarlockGame.Instance.Simulation.EntityManager.Warlocks) {
             float filledProportion = warlock.Health / warlock.MaxHealth;
         
@@ -32,6 +26,4 @@ class HealthBarManager : IInterfaceComponent {
             spriteBatch.Draw(filledTexture, new Rectangle((int) position.X - Width/2, (int) position.Y, (int)(Width * filledProportion), Height), Color.White);
         }
     }
-
-    public bool IsExpired => false;
 }

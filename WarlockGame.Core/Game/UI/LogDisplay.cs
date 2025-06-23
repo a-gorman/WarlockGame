@@ -1,19 +1,14 @@
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.UI.Basic;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.UI;
 
-class LogDisplay : IInterfaceComponent {
+class LogDisplay : InterfaceComponent {
 
     public static LogDisplay Instance { get; } = new LogDisplay();
-    
-    public int Layer { get; set; }
-    public bool IsExpired { get; set; }
 
     public Logger.Level DisplayLevel {
         get;
@@ -23,7 +18,7 @@ class LogDisplay : IInterfaceComponent {
         }
     } = Logger.Level.INFO;
 
-    public bool Visible {
+    public override bool Visible {
         get;
         set {
             field = value;
@@ -41,11 +36,9 @@ class LogDisplay : IInterfaceComponent {
             Bounds = new Rectangle(0,0, 900, 100)
         };
 
-        Components = [_textDisplay];
+        Components.Add(_textDisplay);
     }
-    public IEnumerable<IInterfaceComponent> Components { get; }
-    public void Draw(SpriteBatch spriteBatch) {}
-
+    
     public void Refresh() {
         if (!Visible) return;
         

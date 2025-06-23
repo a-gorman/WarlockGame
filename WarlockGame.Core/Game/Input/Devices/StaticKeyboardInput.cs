@@ -1,9 +1,7 @@
-using System;
 using Microsoft.Xna.Framework.Input;
 
 namespace WarlockGame.Core.Game.Input.Devices;
 
-[Obsolete]
 public static class StaticKeyboardInput {
     private static KeyboardState _keyboardState, _lastKeyboardState;
     

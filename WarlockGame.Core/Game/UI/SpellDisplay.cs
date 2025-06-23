@@ -13,34 +13,27 @@ namespace WarlockGame.Core.Game.UI;
 /// <summary>
 /// Assumes single active player (No local coop)
 /// </summary>
-public class SpellDisplay : IClickableComponent {
-    // Spell display never goes away
-    public bool IsExpired => false;
-    public bool Visible { get; set; } = true;
-    public IEnumerable<IInterfaceComponent> Components { get; } = new List<IInterfaceComponent>();
+public sealed class SpellDisplay : InterfaceComponent {
     public Dictionary<InputAction, string> KeyMappings { get; }
 
-    private const int spellSpacing = 100;
+    private const int SpellSpacing = 100;
 
-    private static readonly InputAction[] _actions = [ 
+    private static readonly InputAction[] Actions = [ 
         InputAction.Spell1, InputAction.Spell2, InputAction.Spell3, InputAction.Spell4, InputAction.Spell5, 
         InputAction.Spell6, InputAction.Spell7, InputAction.Spell8, InputAction.Spell9, InputAction.Spell10
     ];
 
-    public int Layer => 2;
-    public Rectangle BoundingBox { get; } = new Rectangle(20, 925, 1880, 90);
-
     public SpellDisplay(Dictionary<Keys, InputAction> keyMappings) {
         KeyMappings = keyMappings.ToDictionary(x => x.Value, x => x.Key.ToString());
+        Layer = 2;
+        BoundingBox = new Rectangle(20, 925, 1880, 90);
     }
     
-    public void OnClick(Vector2 location) {
+    public override void OnClick(Vector2 location) {
         Logger.Info("Click the spell display!");
     }
-
-    public List<IClickableComponent> ClickableComponents { get; set; } = new();
-
-    public void Draw(SpriteBatch spriteBatch) {
+    
+    public override void Draw(SpriteBatch spriteBatch) {
         DrawHollowRectangle(spriteBatch, BoundingBox, Color.White);
 
         var localWarlock = PlayerManager.LocalPlayer?.Id.Let(x => WarlockGame.Instance.Simulation.EntityManager.GetWarlockByPlayerId(x));
@@ -50,9 +43,9 @@ public class SpellDisplay : IClickableComponent {
             var spell = localWarlock.Spells[i];
             spriteBatch.Draw(
                 spell.SpellIcon,
-                new Rectangle(60 + spellSpacing * i, 950, 50, 50),
+                new Rectangle(60 + SpellSpacing * i, 950, 50, 50),
                 spell.OnCooldown ? Color.Gray : Color.White);
-            spriteBatch.DrawString(Art.Font, KeyMappings[_actions[i]], new Vector2(55 + spellSpacing * i, 950-9), Color.White);
+            spriteBatch.DrawString(Art.Font, KeyMappings[Actions[i]], new Vector2(55 + SpellSpacing * i, 950-9), Color.White);
         }
     }
 

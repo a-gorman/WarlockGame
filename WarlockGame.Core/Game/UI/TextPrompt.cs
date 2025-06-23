@@ -13,17 +13,13 @@ using WarlockGame.Core.Game.UI.Basic;
 
 namespace WarlockGame.Core.Game.UI;
 
-class TextPrompt: ITextInputConsumer, IInterfaceComponent {
+class TextPrompt: InterfaceComponent, ITextInputConsumer {
     public string Prompt { get; set; }
 
     public string Text { get => _textDisplay.Text; set => _textDisplay.Text = value; }
 
-    public int Layer { get; } = 1;
-    public Rectangle BoundingBox { get => _textDisplay.Bounds; set => _textDisplay.Bounds = value; }
+    public override Rectangle BoundingBox { get => _textDisplay.Bounds; set => _textDisplay.Bounds = value; }
     public int TextConsumerPriority { get; } = 1;
-    public bool IsExpired { get; private set; }
-    public bool Visible { get; set; } = true;
-    public IEnumerable<IInterfaceComponent> Components { get; }
     public int MaxCharacters { get; } = 30;
     private Vector2 Position { get; }
     private Action<string> AcceptedCallback { get; }
@@ -40,7 +36,7 @@ class TextPrompt: ITextInputConsumer, IInterfaceComponent {
             Layer = 1
         };
 
-        Components = new List<IInterfaceComponent> { _textDisplay };
+        Components.Add(_textDisplay);
         
         Prompt = prompt;
         AcceptedCallback = acceptedCallback;
@@ -79,7 +75,7 @@ class TextPrompt: ITextInputConsumer, IInterfaceComponent {
         }
     }
 
-    public void Draw(SpriteBatch spriteBatch) {
+    public override void Draw(SpriteBatch spriteBatch) {
         var pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
         pointTexture.SetData(new[] { Color.DarkSlateGray });
         spriteBatch.Draw(pointTexture, BoundingBox, Color.White);
@@ -87,7 +83,7 @@ class TextPrompt: ITextInputConsumer, IInterfaceComponent {
         spriteBatch.DrawString(Art.Font, Prompt, Position.Translate(0, -24), Color.White);
     }
     
-    public void OnClick(Vector2 location) {
+    public override void OnClick(Vector2 location) {
         Logger.Debug("Click on text prompt");
         // TODO: Move a cursor to the click location
     }
