@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,7 +7,7 @@ using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.UI.Basic;
 
-class TextDisplay : IInterfaceComponent {
+class TextDisplay : InterfaceComponent {
     public required Rectangle Bounds {
         get;
         set {
@@ -27,14 +26,10 @@ class TextDisplay : IInterfaceComponent {
     private string _text = string.Empty;
     private string _wrappedText = string.Empty;
 
-    public int Layer { get; set; }
-    public bool IsExpired { get; set; }
-    public bool Visible { get; set; } = true;
     public float TextScale { get; set; } = 1f;
-    public IEnumerable<IInterfaceComponent> Components { get; } = new List<IInterfaceComponent>();
 
     public SpriteFont Font {
-        get => field;
+        get;
         set {
             field = value;
             _fontHeight = value.MeasureString(" ").Y;
@@ -50,7 +45,7 @@ class TextDisplay : IInterfaceComponent {
         Font = font ?? Art.Font;
     }
     
-    public void Draw(SpriteBatch spriteBatch) {
+    public override void Draw(SpriteBatch spriteBatch) {
         spriteBatch.DrawString(Art.Font, _wrappedText, Bounds.Location.ToVector2(), TextColor, scale: TextScale, rotation: 0, origin: Vector2.Zero, effects: SpriteEffects.None, layerDepth: 0);
     }
 

@@ -8,23 +8,17 @@ using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace WarlockGame.Core.Game.UI;
 
-public class MessageDisplay : IInterfaceComponent
+public class MessageDisplay : InterfaceComponent
 {
     public static MessageDisplay Instance { get; } = new();
-    
-    public int Layer { get; }
-    public bool IsExpired => false;
-    public bool Visible { get; set; } = true;
  
     private readonly TextDisplay _messageDisplay = new() { Bounds = new Rectangle(50, 600, 400, 100), TextScale = 0.5f };
     
-    public IEnumerable<IInterfaceComponent> Components { get; }
-
     private readonly LinkedList<Message> _messages = [];
 
     public MessageDisplay()
     {
-        Components = [_messageDisplay];
+        Components.Add(_messageDisplay);
     }
 
     public static void Display(string message)
@@ -47,7 +41,7 @@ public class MessageDisplay : IInterfaceComponent
         Instance.Recalculate();
     }
 
-    public void Draw(SpriteBatch spriteBatch)
+    public override void Draw(SpriteBatch spriteBatch)
     {
         foreach (var message in _messages)
         {
