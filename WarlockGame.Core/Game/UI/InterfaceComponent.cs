@@ -19,7 +19,8 @@ public class InterfaceComponent {
     /// </summary>
     public virtual Rectangle BoundingBox { get; set; }
 
-    public List<InterfaceComponent> Components { get; } = [];
+    protected readonly List<InterfaceComponent> _components = [];
+    public IReadOnlyList<InterfaceComponent> Components => _components;
     
     public virtual void OnClick(Vector2 location) { }
 
