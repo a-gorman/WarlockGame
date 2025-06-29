@@ -19,10 +19,24 @@ public class InterfaceComponent {
     /// </summary>
     public virtual Rectangle BoundingBox { get; set; }
 
-    protected readonly List<InterfaceComponent> _components = [];
+    private readonly List<InterfaceComponent> _components = [];
     public IReadOnlyList<InterfaceComponent> Components => _components;
-    
+
     public virtual void OnClick(Vector2 location) { }
 
     public virtual void Draw(SpriteBatch spriteBatch) { }
+
+    public void AddComponent(InterfaceComponent component) {
+        Components.Add(component);
+        component.OnAdd();
+    }
+
+    public void RemoveComponent(InterfaceComponent component) {
+        Components.Remove(component);
+        component.OnRemove();
+    }
+
+    public virtual void OnAdd() { }
+
+    public virtual void OnRemove() { }
 }

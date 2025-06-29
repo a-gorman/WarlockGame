@@ -4,7 +4,7 @@ namespace WarlockGame.Core.Game.UI.Basic;
 
 public sealed class Grid : InterfaceComponent {
 
-    private Cell[,] Cells;
+    public Cell[,] Cells { get; }
     
     public Grid(int x, int y, int nColumns, int columnWidth, int nRows, int rowHeight) {
         Cells = new Cell[nColumns, nRows];
@@ -13,7 +13,7 @@ public sealed class Grid : InterfaceComponent {
             int currentWidth = 0;
             for (int r = 0; r < nRows; r++) {
                 var cell = new Cell(x + currentWidth, y + currentHeight, columnWidth, rowHeight);
-                _components.Add(cell);
+                AddComponent(cell);
                 Cells[c, r] = cell;
                 currentWidth += columnWidth;
             }
