@@ -8,9 +8,10 @@ using WarlockGame.Core.Game.Util;
 namespace WarlockGame.Core.Game.Sim.Rule;
 
 class MaxLives {
-    public int InitialLives { get; private set; }
+    public int InitialLives { get; }
     private readonly Simulation _simulation;
     public Dictionary<int, int> PlayerLives { get; } = new();
+    public event Action<MaxLivesChanged>? OnChanged;
 
     public MaxLives(Simulation simulation, int initialLives) {
         _simulation = simulation;
@@ -22,11 +23,13 @@ class MaxLives {
         foreach (var player in PlayerManager.Players) {
             PlayerLives.Add(player.Id, InitialLives);
         }
+        Onchanged?.Invoke(new MaxLivesChanged { Reset = true })
     }
 
     public void OnWarlockDestroyed(Warlock warlock) {
         int playerId = warlock.PlayerId!.Value;
         PlayerLives[playerId] -= 1;
+        OnChanged?.Invoke(new MaxLivesChanged { PlayerId = playerId })
 
         if (PlayerLives[playerId] != 0) {
             _simulation.EffectManager.AddDelayedEffect(() => {
@@ -46,4 +49,9 @@ class MaxLives {
             SimDebug.Visualize("It's a draw!", Simulation.ArenaSize / 2, 500);
         }
     }
+}
+
+public struct MaxLivesChanged {
+    public bool Reset { get; set; } = false;
+    public int PlayerId { get; set; }
 }

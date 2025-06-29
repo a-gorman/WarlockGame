@@ -48,6 +48,7 @@ static class UIManager {
     public static void AddComponent(InterfaceComponent component) {
         Components.Add(component);
         Components.Sort((first, second) => second.Layer.CompareTo(first.Layer));
+        component.OnAdd();
     }
 
     private static void DrawComponent(InterfaceComponent component, SpriteBatch spriteBatch) {
