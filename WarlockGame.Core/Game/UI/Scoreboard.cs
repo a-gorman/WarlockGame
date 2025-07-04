@@ -3,7 +3,7 @@
 public class Scoreboard : InterfaceComponent {
     private readonly MaxLives _gameRule;
     private readonly Grid _grid;
-    private readonly Dictionary<int,int> PlayerRows = new();
+    private readonly Dictionary<int, TextDisplay> _playerLifeDisplays = new();
 
     public Scoreboard(MaxLives gameRule) {
         _gameRule = gameRule;
@@ -19,12 +19,13 @@ public class Scoreboard : InterfaceComponent {
                 player.color,
                 Text = player.Name 
             }, i, 0);
-            _grid.AddComponent(new TextDisplay() { 
+            var lifeDisplay = new TextDisplay() { 
                 Bounds = new Rectangle(0,0,200,300), 
                 Color = player.Color,
-                Text = lives.toString(); 
-            }, i, 1);
-            _playerRows[id] = i; 
+                Text = lives.toString()
+            };
+            _grid.AddComponent(lifeDisplay, i, 1);
+            _playerLifeDisplays[id] = lifeDisplay; 
         }
     }
 
@@ -47,8 +48,6 @@ public class Scoreboard : InterfaceComponent {
     }
 
     private void RecalculatePlayerLives(int playerId) {
-        var row = _playerRows[playerId];
-        // Gross
-        (_grid[1, row].Components.Single() as TextDisplayer)!.Text = _gameRule.PlayerLives[playerId].ToString();
+        _playerLifeDisplays[playerId].Text = _gameRule.PlayerLives[playerId].ToString();
     }
 }
