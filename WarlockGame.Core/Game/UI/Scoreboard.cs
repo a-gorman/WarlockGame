@@ -14,16 +14,16 @@ public class Scoreboard : InterfaceComponent {
             var id = playerIds[i];
             var lives = gameRules.PlayerLives[id];
             var player = PlayerManager.GetPlayer(id);
-            _grid[i,0].AddComponent(new TextDisplay() { 
+            _grid.AddComponent(new TextDisplay() { 
                 Bounds = new Rectangle(0,0,200,300), 
                 player.color,
                 Text = player.Name 
-            });
-            _grid[i,1].AddComponent(new TextDisplay() { 
+            }, i, 0);
+            _grid.AddComponent(new TextDisplay() { 
                 Bounds = new Rectangle(0,0,200,300), 
                 Color = player.Color,
                 Text = lives.toString(); 
-            });
+            }, i, 1);
             _playerRows[id] = i; 
         }
     }
@@ -49,6 +49,6 @@ public class Scoreboard : InterfaceComponent {
     private void RecalculatePlayerLives(int playerId) {
         var row = _playerRows[playerId];
         // Gross
-        (_grid[row,1].Components.Single() as TextDisplayer)!.Text = _gameRule.PlayerLives[playerId].ToString();
+        (_grid[1, row].Components.Single() as TextDisplayer)!.Text = _gameRule.PlayerLives[playerId].ToString();
     }
 }
