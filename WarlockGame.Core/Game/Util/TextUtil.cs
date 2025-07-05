@@ -7,16 +7,27 @@ namespace WarlockGame.Core.Game.Util;
 public static class TextUtil {
     public delegate Vector2 MeasureTextSize(ReadOnlySpan<Char> text);
     
-    public static string WrapText(string text, MeasureTextSize measureText, float maxLineWidth) {
+    public static string WrapText(string text, MeasureTextSize measureText, float maxLineWidth, 
+        float? maxHeight = null, int? maxLines = null, string truncation = "") {
         if (measureText(text).X <= maxLineWidth) {
             return text;
+        }
+
+        var spaceMeasurement = measureText(" ");
+
+        if (maxHeight != null) {
+            maxLines = Math.Min(maxLines ?? 0, maxHeight / spaceMeasurement.Y)
+        }
+        if (maxLines == 0) {
+            maxLines = 1;
         }
 
         var span = text.AsSpan();
         
         var sb = new StringBuilder();
         var lineWidth = 0f;
-        var spaceWidth = measureText(" ").X;
+        var nLines = 0;
+        var spaceWidth = spaceMeasurement.X;
 
         var i = 0;
         while (!span.IsEmpty) {
@@ -42,6 +53,10 @@ public static class TextUtil {
             }
 
             if (size.X <= maxLineWidth) {
+                if(maxLines != null && maxLines >= nLines) {
+                    TruncateAndAddWord(word);
+                    return sb.ToString();
+                }
                 AddNewLine();
                 AddWord(word);
                 continue;
@@ -49,6 +64,10 @@ public static class TextUtil {
             
             // Word is larger than one line
             while (!word.IsEmpty) {
+                if(maxLines != null && maxLines >= nLines) {
+                    TruncateAndAddWord(word);
+                    return sb.ToString();
+                }
                 var wordPortion = GetPortionOfWordThatFits(word, measureText, maxLineWidth);
                 if (lineWidth != 0) {
                     AddNewLine();
@@ -71,11 +90,22 @@ public static class TextUtil {
                     sb.Append('\n');
                 }
                 lineWidth = 0;
+                nLines++;
             }
 
             void AddWord(ReadOnlySpan<Char> newWord) {
                 sb.Append(newWord);
                 lineWidth += size.X;
+            }
+
+            void TruncateAndAddWord(ReadOnlySpan<Char> newWord) {
+                if(truncation.IsEmpty) {
+                    sb.Append(GetPortionOfWordThatFits(newWord, measureText, maxLineWidth - lineWidth));
+                }
+                var truncationSize = measureText(truncation);
+                var truncatedWord = GetPortionOfWordThatFits(newWord, measureText, maxLineWidth - (lineWidth + truncationSize));
+                sb.Append(truncatedWord);
+                sb.Append(truncation);
             }
         }
 
@@ -97,7 +127,7 @@ public static class TextUtil {
         return text;
     }
 
-    // This is pretty expensive. Something like a binary search would be much faster
+    // This is pretty expensive. Something like a binary search could be much faster
     private static ReadOnlySpan<Char> GetPortionOfWordThatFits(
         ReadOnlySpan<Char> word, MeasureTextSize measureText, float remainingLineWidth) {
         for (var i = 0; i < word.Length; i++) {
