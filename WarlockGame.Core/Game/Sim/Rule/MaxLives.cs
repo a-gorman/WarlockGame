@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -23,13 +24,14 @@ class MaxLives {
         foreach (var player in PlayerManager.Players) {
             PlayerLives.Add(player.Id, InitialLives);
         }
-        Onchanged?.Invoke(new MaxLivesChanged { Reset = true })
+
+        OnChanged?.Invoke(new MaxLivesChanged { Reset = true });
     }
 
     public void OnWarlockDestroyed(Warlock warlock) {
         int playerId = warlock.PlayerId!.Value;
         PlayerLives[playerId] -= 1;
-        OnChanged?.Invoke(new MaxLivesChanged { PlayerId = playerId })
+        OnChanged?.Invoke(new MaxLivesChanged { PlayerId = playerId });
 
         if (PlayerLives[playerId] != 0) {
             _simulation.EffectManager.AddDelayedEffect(() => {
@@ -52,6 +54,6 @@ class MaxLives {
 }
 
 public struct MaxLivesChanged {
-    public bool Reset { get; set; } = false;
+    public bool Reset { get; set; }
     public int PlayerId { get; set; }
 }

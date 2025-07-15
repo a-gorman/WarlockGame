@@ -27,12 +27,12 @@ public class InterfaceComponent {
     public virtual void Draw(SpriteBatch spriteBatch) { }
 
     public void AddComponent(InterfaceComponent component) {
-        Components.Add(component);
+        _components.Add(component);
         component.OnAdd();
     }
 
     public void RemoveComponent(InterfaceComponent component) {
-        Components.Remove(component);
+        _components.Remove(component);
         component.OnRemove();
     }
 

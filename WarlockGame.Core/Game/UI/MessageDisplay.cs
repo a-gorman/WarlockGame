@@ -18,7 +18,7 @@ public class MessageDisplay : InterfaceComponent
 
     public MessageDisplay()
     {
-        _components.Add(_messageDisplay);
+        AddComponent(_messageDisplay);
     }
 
     public static void Display(string message)

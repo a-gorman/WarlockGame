@@ -16,7 +16,7 @@ public static class TextUtil {
         var spaceMeasurement = measureText(" ");
 
         if (maxHeight != null) {
-            maxLines = Math.Min(maxLines ?? 0, maxHeight / spaceMeasurement.Y)
+            maxLines = (int)Math.Min(maxLines ?? 0, maxHeight.Value / spaceMeasurement.Y);
         }
         if (maxLines == 0) {
             maxLines = 1;
@@ -99,10 +99,10 @@ public static class TextUtil {
             }
 
             void TruncateAndAddWord(ReadOnlySpan<Char> newWord) {
-                if(truncation.IsEmpty) {
+                if(truncation.IsEmpty()) {
                     sb.Append(GetPortionOfWordThatFits(newWord, measureText, maxLineWidth - lineWidth));
                 }
-                var truncationSize = measureText(truncation);
+                var truncationSize = measureText(truncation).X;
                 var truncatedWord = GetPortionOfWordThatFits(newWord, measureText, maxLineWidth - (lineWidth + truncationSize));
                 sb.Append(truncatedWord);
                 sb.Append(truncation);

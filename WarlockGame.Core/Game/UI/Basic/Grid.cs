@@ -23,8 +23,8 @@ public sealed class Grid : InterfaceComponent {
         BoundingBox = new Rectangle(x, y, nColumns * columnWidth, nRows * rowHeight);
     }
 
-    void AddComponent(InterfaceComponent Component, int row, int column) {
-        Cells[column, row].AddComponent(Component);
+    public void AddComponent(InterfaceComponent component, int row, int column) {
+        Cells[column, row].AddComponent(component);
     }
 
     public sealed class Cell : InterfaceComponent {
