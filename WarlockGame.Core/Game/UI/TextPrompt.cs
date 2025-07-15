@@ -36,7 +36,7 @@ class TextPrompt: InterfaceComponent, ITextInputConsumer {
             Layer = 1
         };
 
-        _components.Add(_textDisplay);
+        AddComponent(_textDisplay);
         
         Prompt = prompt;
         AcceptedCallback = acceptedCallback;

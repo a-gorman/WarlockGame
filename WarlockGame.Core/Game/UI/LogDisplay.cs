@@ -36,7 +36,7 @@ class LogDisplay : InterfaceComponent {
             Bounds = new Rectangle(0,0, 900, 100)
         };
 
-        _components.Add(_textDisplay);
+        AddComponent(_textDisplay);
     }
     
     public void Refresh() {
