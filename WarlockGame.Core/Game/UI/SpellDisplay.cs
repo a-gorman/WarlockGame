@@ -33,7 +33,7 @@ public sealed class SpellDisplay : InterfaceComponent {
         Logger.Info("Click the spell display!");
     }
     
-    public override void Draw(SpriteBatch spriteBatch) {
+    public override void Draw(Vector2 location, SpriteBatch spriteBatch) {
         DrawHollowRectangle(spriteBatch, BoundingBox, Color.White);
 
         var localWarlock = PlayerManager.LocalPlayer?.Id.Let(x => WarlockGame.Instance.Simulation.EntityManager.GetWarlockByPlayerId(x));

@@ -18,7 +18,7 @@ static class UIManager {
         spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
         foreach (var component in Components) {
-            DrawComponent(component, spriteBatch);
+            DrawComponent(component, Vector2.Zero, spriteBatch);
         }
         spriteBatch.End();
 
@@ -51,11 +51,11 @@ static class UIManager {
         component.OnAdd();
     }
 
-    private static void DrawComponent(InterfaceComponent component, SpriteBatch spriteBatch) {
-        component.Draw(spriteBatch);
+    private static void DrawComponent(InterfaceComponent component, Vector2 globalLocation, SpriteBatch spriteBatch) {
+        component.Draw(globalLocation, spriteBatch);
         foreach (var nestedComponent in component.Components) {
             if (component.Visible) {
-                DrawComponent(nestedComponent, spriteBatch);
+                DrawComponent(nestedComponent, globalLocation + component.BoundingBox.Location.ToVector2(), spriteBatch);
             }
         }
     }

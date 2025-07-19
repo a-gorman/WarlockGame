@@ -1,3 +1,5 @@
+global using Vector2 = Microsoft.Xna.Framework.Vector2;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

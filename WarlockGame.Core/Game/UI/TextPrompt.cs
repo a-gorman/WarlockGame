@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -75,12 +74,14 @@ class TextPrompt: InterfaceComponent, ITextInputConsumer {
         }
     }
 
-    public override void Draw(SpriteBatch spriteBatch) {
+    public override void Draw(Vector2 location, SpriteBatch spriteBatch) {
         var pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-        pointTexture.SetData(new[] { Color.DarkSlateGray });
+        pointTexture.SetData([Color.DarkSlateGray]);
+
+        BoundingBox.Offset(location);
         spriteBatch.Draw(pointTexture, BoundingBox, Color.White);
 
-        spriteBatch.DrawString(Art.Font, Prompt, Position.Translate(0, -24), Color.White);
+        spriteBatch.DrawString(Art.Font, Prompt, Position.Translate(0, -24) + location, Color.White);
     }
     
     public override void OnClick(Vector2 location) {

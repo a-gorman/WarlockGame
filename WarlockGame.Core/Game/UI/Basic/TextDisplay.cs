@@ -45,13 +45,13 @@ class TextDisplay : InterfaceComponent {
         Font = font ?? Art.Font;
     }
     
-    public override void Draw(SpriteBatch spriteBatch) {
+    public override void Draw(Vector2 location, SpriteBatch spriteBatch) {
         if(_isDirty) {
             RecalculateWrappedText();
             _isDirty = false;
         }
 
-        spriteBatch.DrawString(Art.Font, _wrappedText, Bounds.Location.ToVector2(), TextColor, 
+        spriteBatch.DrawString(Art.Font, _wrappedText, location, TextColor, 
         scale: TextScale, 
         rotation: 0, 
         origin: Vector2.Zero, 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using Vector2 = Microsoft.Xna.Framework.Vector2;
+using Microsoft.Xna.Framework;
 
 namespace WarlockGame.Core.Game.Util; 
 
@@ -29,5 +29,10 @@ internal static class MathUtil {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool IsNan(this double number) {
 		return double.IsNaN(number);
+	}
+
+	public static Rectangle AtOffset(this Rectangle source, Vector2 offset) {
+		source.Offset(offset);
+		return source;
 	}
 }
