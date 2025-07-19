@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.UI.Basic;
@@ -41,7 +42,7 @@ public class MessageDisplay : InterfaceComponent
         Instance.Recalculate();
     }
 
-    public override void Draw(SpriteBatch spriteBatch)
+    public override void Draw(Vector2 location, SpriteBatch spriteBatch)
     {
         foreach (var message in _messages)
         {

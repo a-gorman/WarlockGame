@@ -19,12 +19,14 @@ public class InterfaceComponent {
     /// </summary>
     public virtual Rectangle BoundingBox { get; set; }
 
+    public Vector2 RelativeLocation => BoundingBox.Location.ToVector2();
+
     private readonly List<InterfaceComponent> _components = [];
     public IReadOnlyList<InterfaceComponent> Components => _components;
 
     public virtual void OnClick(Vector2 location) { }
 
-    public virtual void Draw(SpriteBatch spriteBatch) { }
+    public virtual void Draw(Vector2 location, SpriteBatch spriteBatch) { }
 
     public void AddComponent(InterfaceComponent component) {
         _components.Add(component);

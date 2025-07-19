@@ -6,15 +6,17 @@ using WarlockGame.Core.Game.UI.Basic;
 
 namespace WarlockGame.Core.Game.UI;
 
-class Scoreboard : InterfaceComponent {
+sealed class Scoreboard : InterfaceComponent {
     private readonly MaxLives _gameRule;
     private readonly Basic.Grid _grid;
     private readonly Dictionary<int, TextDisplay> _playerLifeDisplays = new();
 
     public Scoreboard(MaxLives gameRule) {
+        BoundingBox = new Rectangle(100, 200, 0, 0);
+        
         _gameRule = gameRule;
         var playerIds = gameRule.PlayerLives.Keys.ToList();
-        _grid = new Basic.Grid(200, 300, 2, 300, playerIds.Count, 100);
+        _grid = new Basic.Grid(0, 0, 2, 300, playerIds.Count, 100);
         AddComponent(_grid);
         for (int i = 0; i < playerIds.Count; i++) {
             var id = playerIds[i];
@@ -24,7 +26,7 @@ class Scoreboard : InterfaceComponent {
             _grid.AddComponent(new TextDisplay { 
                 Bounds = new Rectangle(0,0,200,300), 
                 TextColor = player.Color,
-                Text = player.Name 
+                Text = player.Name
             }, i, 0);
             var lifeDisplay = new TextDisplay { 
                 Bounds = new Rectangle(0,0,200,300), 

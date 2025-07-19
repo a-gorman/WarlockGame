@@ -9,6 +9,7 @@ using WarlockGame.Core.Game.Sim.Entities.Factory;
 using WarlockGame.Core.Game.Sim.Order;
 using WarlockGame.Core.Game.Sim.Rule;
 using WarlockGame.Core.Game.Sim.Spell;
+using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Sim;
@@ -64,6 +65,7 @@ class Simulation {
             EntityManager.Add(warlock);
         }
         _gameRule.Reset();
+        UIManager.AddComponent(new Scoreboard(_gameRule));
     }
     
     private void ClearGameState() {
