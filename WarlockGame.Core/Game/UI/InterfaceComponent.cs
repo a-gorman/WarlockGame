@@ -28,6 +28,8 @@ public class InterfaceComponent {
 
     public virtual void Draw(Vector2 location, SpriteBatch spriteBatch) { }
 
+    public virtual void Update() { }
+
     public void AddComponent(InterfaceComponent component) {
         _components.Add(component);
         component.OnAdd();

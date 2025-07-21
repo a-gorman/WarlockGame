@@ -12,30 +12,36 @@ sealed class Scoreboard : InterfaceComponent {
     private readonly Dictionary<int, TextDisplay> _playerLifeDisplays = new();
 
     public Scoreboard(MaxLives gameRule) {
-        BoundingBox = new Rectangle(100, 200, 0, 0);
+        var columnWidth = 90;
+        var rowHeight = 25;
         
         _gameRule = gameRule;
         var playerIds = gameRule.PlayerLives.Keys.ToList();
-        _grid = new Basic.Grid(0, 0, 2, 300, playerIds.Count, 100);
+        _grid = new Basic.Grid(0, 0, 2, columnWidth, playerIds.Count, rowHeight);
         AddComponent(_grid);
         for (int i = 0; i < playerIds.Count; i++) {
             var id = playerIds[i];
             var lives = gameRule.PlayerLives[id];
             var player = PlayerManager.GetPlayer(id);
             if (player == null) continue;
-            _grid.AddComponent(new TextDisplay { 
-                Bounds = new Rectangle(0,0,200,300), 
+            _grid.AddComponent(new TextDisplay {
+                Bounds = new Rectangle(0, 0, columnWidth, rowHeight),
                 TextColor = player.Color,
-                Text = player.Name
+                Text = player.Name,
+                TextScale = 0.55f
             }, i, 0);
-            var lifeDisplay = new TextDisplay { 
-                Bounds = new Rectangle(0,0,200,300), 
+            var lifeDisplay = new TextDisplay {
+                Bounds = new Rectangle(0, 0, columnWidth, rowHeight),
                 TextColor = player.Color,
-                Text = lives.ToString()
+                Text = lives.ToString(),
+                TextScale = 0.55f
             };
             _grid.AddComponent(lifeDisplay, i, 1);
-            _playerLifeDisplays[id] = lifeDisplay; 
+            _playerLifeDisplays[id] = lifeDisplay;
         }
+
+        var totalWidth = columnWidth * 2;
+        BoundingBox = new Rectangle((int)WarlockGame.ScreenSize.X - totalWidth, 15, totalWidth, rowHeight * playerIds.Count);
     }
 
     public override void OnAdd() {

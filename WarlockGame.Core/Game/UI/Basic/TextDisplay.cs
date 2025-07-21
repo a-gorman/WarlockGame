@@ -27,6 +27,14 @@ class TextDisplay : InterfaceComponent {
     public Color TextColor { get; set; } = Color.White;
     public float TextScale { get; set; } = 1f;
 
+    public string TruncationCharacters {
+        get;
+        set {
+            field = value;
+            _isDirty = true;
+        }
+    } = "";
+
     public SpriteFont Font {
         get;
         set {
@@ -63,9 +71,9 @@ class TextDisplay : InterfaceComponent {
         var sb = new StringBuilder();
         Vector2 TextMeasurement(ReadOnlySpan<char> x) {
             sb.Clear();
-            return Font.MeasureString(sb.Append(x));
+            return Font.MeasureString(sb.Append(x)) * TextScale;
         }
 
-        _wrappedText = TextUtil.WrapText(_text, TextMeasurement, Bounds.Width);
+        _wrappedText = TextUtil.WrapText(_text, TextMeasurement, Bounds.Width, maxHeight: Bounds.Height, truncation: TruncationCharacters);
     }
 }

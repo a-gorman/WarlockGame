@@ -5,19 +5,19 @@ namespace WarlockGame.Core.Game.UI.Basic;
 public sealed class Grid : InterfaceComponent {
 
     public Cell[,] Cells { get; }
-    
+
     public Grid(int x, int y, int nColumns, int columnWidth, int nRows, int rowHeight) {
         Cells = new Cell[nColumns, nRows];
-        int currentHeight = 0;
+        int currentWidth = 0;
         for (int c = 0; c < nColumns; c++) {
-            int currentWidth = 0;
+            int currentHeight = 0;
             for (int r = 0; r < nRows; r++) {
-                var cell = new Cell(x + currentWidth, y + currentHeight, columnWidth, rowHeight);
+                var cell = new Cell(currentWidth, currentHeight, columnWidth, rowHeight);
                 AddComponent(cell);
                 Cells[c, r] = cell;
-                currentWidth += columnWidth;
+                currentHeight += rowHeight;
             }
-            currentHeight += rowHeight;
+            currentWidth += columnWidth;
         }
 
         BoundingBox = new Rectangle(x, y, nColumns * columnWidth, nRows * rowHeight);

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
+using ZLinq;
 
 namespace WarlockGame.Core.Game.UI;
 
@@ -31,6 +32,9 @@ static class UIManager {
 
     public static void Update() {
         Components.RemoveAll(x => x.IsExpired);
+        foreach (var component in Components.AsValueEnumerable()) {
+            component.Update();
+        }
     }
 
     /// <summary>
