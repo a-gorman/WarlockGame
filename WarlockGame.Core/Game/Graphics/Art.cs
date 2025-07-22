@@ -13,6 +13,7 @@ namespace WarlockGame.Core.Game.Graphics
 
 		public static Texture2D Lightning { get; private set; } = null!;
 		public static Texture2D Fireball { get; private set; } = null!;
+		public static Texture2D PoisonBall { get; private set; } = null!;
 		public static Texture2D Pointer { get; private set; } = null!;
 		public static Texture2D BlackHole { get; private set; } = null!;
 
@@ -37,6 +38,7 @@ namespace WarlockGame.Core.Game.Graphics
 			Bullet = content.Load<Texture2D>("Art/Bullet");
 			Lightning = content.Load<Texture2D>("Art/Lightning");
 			Fireball = content.Load<Texture2D>("Art/Fireball");
+			PoisonBall = content.Load<Texture2D>("Art/Poison_Ball");
 			Pointer = content.Load<Texture2D>("Art/Pointer");
 			BlackHole = content.Load<Texture2D>("Art/Black Hole");
 
