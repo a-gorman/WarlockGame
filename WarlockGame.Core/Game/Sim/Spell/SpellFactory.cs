@@ -94,13 +94,13 @@ class SpellFactory {
             CooldownTime = 60,
             SpellIcon = Art.PoisonIcon,
             Effect = new ProjectileComponent(
-                sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f),
-                new[] {
+                sprite: new Sprite(Art.PoisonBall) { Scale = 0.80f },
+                [
                     new LocationAreaOfEffect {
                         Shape = new CircleTarget { Radius = 20 },
                         Components = [new ApplyBuff(10, caster => new DamageOverTime(caster, 120, 5f / 60))]
                     }
-                }
+                ]
             )
         };
     }
