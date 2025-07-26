@@ -300,13 +300,13 @@ class SpellFactory {
                     }
                 ],
                 behaviors: () => [
-                    new AccelerateTowards(0.2f,
+                    new AccelerateTowards(0.22f,
                         targetLocation: projectile =>
                             _simulation.EntityManager.Warlocks
                                 .Where(x => x.PlayerId != projectile.PlayerId)
                                 .MinBy(x => x.Position.DistanceSquaredTo(projectile.Position))
                                 ?.Position),
-                    new Friction(0.001f, 0.001f, 0.1f),
+                    new Friction(0.001f, 0.001f, 0.08f),
                     new TimedLife(SimTime.OfSeconds(6))
                 ]
             )
