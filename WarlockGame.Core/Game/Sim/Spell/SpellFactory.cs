@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Graphics;
@@ -79,10 +80,10 @@ class SpellFactory {
             SpellIcon = Art.LightningIcon,
             Effect = new DirectionalAreaOfEffect {
                 Shape = new LineTarget { Length = 600, IgnoreCaster = true, Texture = Art.Lightning },
-                Effects = new ITargetComponent[] {
+                Effects = [
                     new DamageComponent { Damage = 15 },
                     new PushComponent { Force = 100 }
-                }
+                ]
             }
         };
     }
@@ -278,6 +279,37 @@ class SpellFactory {
                     }
                 ]
             }
+        };
+    }
+
+    public WarlockSpell Homing() {
+        return new WarlockSpell(_simulation) {
+            SpellId = 8,
+            Name = "Fireball",
+            CooldownTime = 60,
+            SpellIcon = Art.FireballIcon,
+            Effect = new ProjectileComponent(
+                sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f),
+                effects: [
+                    new LocationAreaOfEffect {
+                        Shape = new CircleTarget { Radius = 30 },
+                        Components = [
+                            new DamageComponent { Damage = 10 },
+                            new PushComponent { Force = 100 }
+                        ]
+                    }
+                ],
+                behaviors: () => [
+                    new AccelerateTowards(0.2f,
+                        targetLocation: projectile =>
+                            _simulation.EntityManager.Warlocks
+                                .Where(x => x.PlayerId != projectile.PlayerId)
+                                .MinBy(x => x.Position.DistanceSquaredTo(projectile.Position))
+                                ?.Position),
+                    new Friction(0.001f, 0.001f, 0.1f),
+                    new TimedLife(SimTime.OfSeconds(6))
+                ]
+            )
         };
     }
 }
