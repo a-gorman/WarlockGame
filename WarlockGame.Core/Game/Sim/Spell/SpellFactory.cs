@@ -1,5 +1,4 @@
 using System.Linq;
-using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Sim.Buff;
@@ -155,7 +154,7 @@ class SpellFactory {
                                             Force = 5f,
                                             SelfFactor = 0,
                                             ProjectileFactor = 1,
-                                            DisplacementTransform = (axis1, axis2) => axis1.PerpendicularClockwise()
+                                            DisplacementTransform = (axis1, _) => axis1.PerpendicularClockwise()
                                         }
                                     ]
                                 }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
 using WarlockGame.Core.Game.Util;

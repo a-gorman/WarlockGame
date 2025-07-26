@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 
 namespace WarlockGame.Core.Game.Input.Devices; 
 

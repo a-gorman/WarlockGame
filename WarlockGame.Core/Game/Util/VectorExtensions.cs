@@ -1,5 +1,3 @@
-using Microsoft.Xna.Framework;
-
 namespace WarlockGame.Core.Game.Util;
 
 public static class VectorExtensions

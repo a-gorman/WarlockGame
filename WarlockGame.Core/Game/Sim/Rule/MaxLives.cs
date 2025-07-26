@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Util;
