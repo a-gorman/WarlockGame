@@ -1,4 +1,3 @@
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using OneOf;
 using WarlockGame.Core.Game.Sim.Entities;

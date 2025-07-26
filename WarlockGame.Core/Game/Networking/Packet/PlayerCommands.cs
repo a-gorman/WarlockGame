@@ -1,5 +1,4 @@
 using LiteNetLib.Utils;
-using Microsoft.Xna.Framework;
 
 namespace WarlockGame.Core.Game.Networking.Packet;
 

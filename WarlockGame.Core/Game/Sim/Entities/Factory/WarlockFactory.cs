@@ -1,5 +1,3 @@
-using Microsoft.Xna.Framework;
-
 namespace WarlockGame.Core.Game.Sim.Entities.Factory;
 
 class WarlockFactory(Simulation simulation) {
