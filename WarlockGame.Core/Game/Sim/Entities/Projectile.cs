@@ -12,14 +12,21 @@ class Projectile : Entity {
     private static readonly Random _rand = new();
     private readonly IReadOnlyList<ILocationSpellComponent> _effects;
     public SpellContext Context { get; }
+    public bool IgnoreCaster { get; set; }
     
-    public Projectile(Vector2 position, Vector2 velocity, SpellContext context, Sprite sprite, IReadOnlyList<ILocationSpellComponent> effects) : 
+    public Projectile(Vector2 position, 
+        Vector2 velocity, 
+        SpellContext context, 
+        Sprite sprite, 
+        IReadOnlyList<ILocationSpellComponent> effects,
+        bool ignoreCaster = true) : 
         base(sprite, position, radius: 8) {
         Context = context;
         Position = position;
         Velocity = velocity;
         Orientation = Velocity.ToAngle();
         _effects = effects;
+        IgnoreCaster = ignoreCaster;
         BlocksProjectiles = true;
         PlayerId = context.Caster.PlayerId;
     }
@@ -32,7 +39,7 @@ class Projectile : Entity {
         Position += Velocity;
         WarlockGame.Grid.ApplyExplosiveForce(0.5f * Velocity.Length(), Position, 80);
 
-        // delete bullets that go off-screen
+        // delete projectiles that go off-screen
         if (!WarlockGame.Viewport.Bounds.Contains(Position.ToPoint()))
         {
             IsExpired = true;
@@ -47,7 +54,7 @@ class Projectile : Entity {
 
     public override void HandleCollision(Entity other)
     {
-        if(other == Context.Caster || !other.BlocksProjectiles) {
+        if((IgnoreCaster && other == Context.Caster) || !other.BlocksProjectiles) {
             return;
         }
 

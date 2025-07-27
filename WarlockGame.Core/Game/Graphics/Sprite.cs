@@ -15,6 +15,7 @@ public class Sprite
     public Color Color { get; set; } = Color.White;
 
     public float Scale { get; set; } = 1f;
+    public bool Rotates { get; set; } = true;
 
     private readonly List<Rectangle> _sourceRectangles;
     private int _activeSourceRectangleIndex = 0;
@@ -40,8 +41,9 @@ public class Sprite
         _framesBetweenTransitions = framesBetweenTransitions;
     }
 
-    public void Draw(SpriteBatch spriteBatch, Vector2 position, float orientation, Vector2? origin = null)
-    {
+    public void Draw(SpriteBatch spriteBatch, Vector2 position, float orientation, Vector2? origin = null) {
+        if (!Rotates) orientation = 0;
+        
         spriteBatch.Draw(_image, position, ActiveSourceRectangle, Color, orientation, origin ?? Size / 2f, Scale, 0, 0);
         AdvanceSpriteFrame();
     }
@@ -71,10 +73,18 @@ public class Sprite
         }
     }
 
-    public static Sprite FromGridSpriteSheet(Texture2D image, int subdivisionsX, int subdivisionsY, int framesBetweenTransitions, float scale = 1f)
+    public static Sprite FromGridSpriteSheet(Texture2D image,
+        int subdivisionsX,
+        int subdivisionsY,
+        int framesBetweenTransitions,
+        float scale = 1f,
+        bool rotates = true)
     {
-        var sprite = new Sprite(image, image.Bounds.Subdivide(subdivisionsX, subdivisionsY).ToList(), framesBetweenTransitions);
-        sprite.Scale = scale;
+        var sprite = new Sprite(image, image.Bounds.Subdivide(subdivisionsX, subdivisionsY).ToList(),
+            framesBetweenTransitions) {
+            Scale = scale,
+            Rotates = rotates
+        };
         return sprite;
     }
 }

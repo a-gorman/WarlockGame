@@ -11,7 +11,8 @@ class WarlockFactory(Simulation simulation) {
             simulation.SpellFactory.SoulShatter(),
             simulation.SpellFactory.WindShield(),
             simulation.SpellFactory.RefractionShield(),
-            simulation.SpellFactory.Homing()
+            simulation.SpellFactory.Homing(),
+            simulation.SpellFactory.Boomerang()
         ]);
 
         warlock.Sprite.Color = PlayerManager.GetPlayer(playerId)!.Color;
