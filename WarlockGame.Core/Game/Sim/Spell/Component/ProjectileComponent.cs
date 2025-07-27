@@ -13,11 +13,16 @@ class ProjectileComponent: IDirectionalSpellComponent {
     private int _speed = 8;
     private readonly Sprite _sprite;
     private readonly Func<Behavior[]>? _behaviors;
+    private readonly bool _ignoreCaster;
     private readonly IReadOnlyList<ILocationSpellComponent> _effects;
 
-    public ProjectileComponent(Sprite sprite, IEnumerable<ILocationSpellComponent> effects, Func<Behavior[]>? behaviors = null) {
+    public ProjectileComponent(Sprite sprite, 
+        IEnumerable<ILocationSpellComponent> effects, 
+        Func<Behavior[]>? behaviors = null,
+        bool ignoreCaster = true) {
         _sprite = sprite;
         _behaviors = behaviors;
+        _ignoreCaster = ignoreCaster;
         _effects = effects.ToList();
     }
 
@@ -27,7 +32,8 @@ class ProjectileComponent: IDirectionalSpellComponent {
             velocity: invokeDirection.ToNormalized() * _speed,
             context: context,
             sprite: _sprite,
-            effects: _effects)
+            effects: _effects,
+            ignoreCaster: _ignoreCaster)
             .Also(x => _behaviors?.Invoke().ForEach(b => x.AddBehaviors(b))));
     }
 }

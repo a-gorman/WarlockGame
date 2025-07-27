@@ -37,6 +37,18 @@
 /processorParam:TextureFormat=Color
 /build:Art/Bullet.png
 
+#begin Art/Energy_Spark.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Art/Energy_Spark.png
+
 #begin Art/Fireball.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -205,6 +217,18 @@
 /processorParam:TextureFormat=Color
 /build:Art/Poison_Ball.png
 
+#begin Art/Power_Ball.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Art/Power_Ball.png
+
 #begin Art/Seeker.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -216,6 +240,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Art/Seeker.png
+
+#begin Art/Triple.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Art/Triple.png
 
 #begin Art/Wanderer.png
 /importer:TextureImporter

@@ -27,7 +27,7 @@ class SpellFactory {
             CooldownTime = 60,
             SpellIcon = Art.FireballIcon,
             Effect = new ProjectileComponent(
-                sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f),
+                sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .12f),
                 [
                     new LocationAreaOfEffect {
                         Shape = new CircleTarget { Radius = 30 },
@@ -40,36 +40,6 @@ class SpellFactory {
             )
         };
     }
-    
-    // public WarlockSpell Boomerang() {
-    //     return new WarlockSpell(_simulation) {
-    //         SpellId = 1,
-    //         Name = "Fireball",
-    //         CooldownTime = 60,
-    //         SpellIcon = Art.FireballIcon,
-    //         Effect =  new SelfCastPositionComponent {
-    //             Components = [
-    //                 new EntityComponent {
-    //                     EntityConstructor = (spellContext, location) => {
-    //                         var caster = spellContext.Caster;
-    //                         var wallLoc = location + new Vector2(80, 40).Rotated(caster.Orientation);
-    //                 
-    //                         return new Projectile(location, ) {
-    //                                 PlayerId = caster.PlayerId
-    //                             }
-    //                             .Also(x => x.AddBehaviors(
-    //                                 new DebugVisualize(),
-    //                                 new TimedLife(SimTime.OfSeconds(4)),
-    //                                 new OneCollisionPerEntity(),
-    //                                 new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies),
-    //                                 new DeflectProjectiles {
-    //                                     DeflectionFunc = (e, p) => DeflectProjectiles.OrientedRectangleDiffraction(e, p, 0.4f)
-    //                                 }
-    //                             ));
-    //                     }
-    //                 },
-    //     };
-    // }
 
     public WarlockSpell Lightning() {
         return new WarlockSpell(_simulation) {
@@ -172,7 +142,7 @@ class SpellFactory {
             Name = "Soul Shatter",
             CooldownTime = 60,
             SpellIcon = Art.BurstIcon,
-            Effect = new ProjectileComponent(Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f), 
+            Effect = new ProjectileComponent(Sprite.FromGridSpriteSheet(Art.PowerBall, 4, 4, 10), 
             [
                 new LocationAreaOfEffect {
                     Shape = new CircleTarget { Radius = 20 },
@@ -284,11 +254,11 @@ class SpellFactory {
     public WarlockSpell Homing() {
         return new WarlockSpell(_simulation) {
             SpellId = 8,
-            Name = "Fireball",
+            Name = "Homing",
             CooldownTime = 60,
             SpellIcon = Art.FireballIcon,
             Effect = new ProjectileComponent(
-                sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .15f),
+                sprite: Sprite.FromGridSpriteSheet(Art.EnergySpark, 4, 4, 10, scale: 2f, rotates: false),
                 effects: [
                     new LocationAreaOfEffect {
                         Shape = new CircleTarget { Radius = 30 },
@@ -309,6 +279,40 @@ class SpellFactory {
                     new TimedLife(SimTime.OfSeconds(6))
                 ]
             )
+        };
+    }
+    
+    public WarlockSpell Boomerang() {
+        return new WarlockSpell(_simulation) {
+            SpellId = 9,
+            Name = "Boomerang",
+            CooldownTime = 60,
+            SpellIcon = Art.FireballIcon,
+            Effect = new ProjectileComponent(
+                sprite: Sprite.FromGridSpriteSheet(Art.Triple, 4, 4, 10, scale: 2f),
+                ignoreCaster: false,
+                effects: [
+                    new LocationAreaOfEffect {
+                        Shape = new CircleTarget { Radius = 30 },
+                        Components = [
+                            new DamageComponent { Damage = 10 },
+                            new PushComponent { Force = 100 }
+                        ]
+                    }
+                ],
+                behaviors: () => [
+                    new AccelerateTowards(0.22f,
+                        targetLocation: projectile =>
+                            _simulation.EntityManager.Warlocks.FirstOrDefault(x => x.PlayerId == projectile.PlayerId)
+                                ?.Position),
+                    new Friction(0.001f, 0.001f, 0.08f),
+                    new TimedLife(SimTime.OfSeconds(6)),
+                    new OnCollision(args => {
+                        if (args.Source is Projectile _projectile && _projectile.Context.Caster.Id == args.Other.Id) {
+                            args.Source.IsExpired = true;
+                        }
+                    })
+                ])
         };
     }
 }
