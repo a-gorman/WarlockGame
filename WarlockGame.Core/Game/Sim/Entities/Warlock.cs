@@ -17,7 +17,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
         public const float Speed = 4;
         public const float RotationSpeed = 0.1f; // Radians per tick
 
-        public float MaxHealth { get; private set; } = 100;
+        public float MaxHealth { get; private set; } = 60;
         public float Health { get; set; }
 
         public Vector2? Direction { get; set; }
