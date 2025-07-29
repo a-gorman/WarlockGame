@@ -12,21 +12,18 @@ class Projectile : Entity {
     private static readonly Random _rand = new();
     private readonly IReadOnlyList<ILocationSpellComponent> _effects;
     public SpellContext Context { get; }
-    public bool IgnoreCaster { get; set; }
     
     public Projectile(Vector2 position, 
         Vector2 velocity, 
         SpellContext context, 
         Sprite sprite, 
-        IReadOnlyList<ILocationSpellComponent> effects,
-        bool ignoreCaster = true) : 
+        IReadOnlyList<ILocationSpellComponent> effects) : 
         base(sprite, position, radius: 8) {
         Context = context;
         Position = position;
         Velocity = velocity;
         Orientation = Velocity.ToAngle();
         _effects = effects;
-        IgnoreCaster = ignoreCaster;
         BlocksProjectiles = true;
         PlayerId = context.Caster.PlayerId;
     }
@@ -52,15 +49,12 @@ class Projectile : Entity {
         base.Update();
     }
 
-    public override void HandleCollision(Entity other)
-    {
-        if((IgnoreCaster && other == Context.Caster) || !other.BlocksProjectiles) {
-            return;
-        }
-
-        IsExpired = true;
-        foreach (var effect in _effects) {
-            effect.Invoke(Context, Position);
+    public override void HandleCollision(Entity other) {
+        if (other != Context.Caster && other.BlocksProjectiles) {
+            IsExpired = true;
+            foreach (var effect in _effects) {
+                effect.Invoke(Context, Position);
+            }
         }
 
         base.HandleCollision(other);

@@ -9,11 +9,11 @@ class OnCollision: Behavior {
         _onCollision = onCollision;
     }
 
-    public virtual void OnAdd(Entity entity) {
+    public override void OnAdd(Entity entity) {
         entity.OnCollision += _onCollision;
     }
 
-    public virtual void OnRemove(Entity entity) {
+    public override void OnRemove(Entity entity) {
         entity.OnCollision -= _onCollision;
     }
 }

@@ -8,7 +8,7 @@ class Friction: Behavior {
     private readonly float _c;
 
     // a*v^2 + b*v + c
-    public Friction(float a, float b, float c) {
+    public Friction(float a = 0f, float b = 0f, float c = 0f) {
         _a = a;
         _b = b;
         _c = c;

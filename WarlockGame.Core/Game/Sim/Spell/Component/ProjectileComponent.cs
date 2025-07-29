@@ -10,19 +10,18 @@ namespace WarlockGame.Core.Game.Sim.Spell.Component;
 
 class ProjectileComponent: IDirectionalSpellComponent {
     
-    private int _speed = 8;
+    private readonly int _speed;
     private readonly Sprite _sprite;
     private readonly Func<Behavior[]>? _behaviors;
-    private readonly bool _ignoreCaster;
     private readonly IReadOnlyList<ILocationSpellComponent> _effects;
 
     public ProjectileComponent(Sprite sprite, 
         IEnumerable<ILocationSpellComponent> effects, 
         Func<Behavior[]>? behaviors = null,
-        bool ignoreCaster = true) {
+        int speed = 8) {
         _sprite = sprite;
         _behaviors = behaviors;
-        _ignoreCaster = ignoreCaster;
+        _speed = speed;
         _effects = effects.ToList();
     }
 
@@ -32,8 +31,7 @@ class ProjectileComponent: IDirectionalSpellComponent {
             velocity: invokeDirection.ToNormalized() * _speed,
             context: context,
             sprite: _sprite,
-            effects: _effects,
-            ignoreCaster: _ignoreCaster)
+            effects: _effects)
             .Also(x => _behaviors?.Invoke().ForEach(b => x.AddBehaviors(b))));
     }
 }

@@ -31,7 +31,10 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D PoisonIcon { get; private set; } = null!;
 		public static Texture2D BurstIcon { get; private set; } = null!;
 		public static Texture2D WindWallIcon { get; private set; } = null!;
-
+		public static Texture2D BoomerangIcon { get; set; } = null!;
+		public static Texture2D HomingIcon { get; set; } = null!;
+		public static Texture2D RefractionShieldIcon { get; set; } = null!;
+		public static Texture2D SoulShatterIcon { get; set; } = null!;
 
 		public static void Load(ContentManager content)
 		{
@@ -65,8 +68,12 @@ namespace WarlockGame.Core.Game.Graphics
 			PoisonIcon = content.Load<Texture2D>("Art/Icons/Nature_01_Missile");
 			BurstIcon = content.Load<Texture2D>("Art/Icons/Light_08_Divine_Body");
 			WindWallIcon = content.Load<Texture2D>("Art/Icons/Water_10_Aura_Of_Cold");
+			SoulShatterIcon = content.Load<Texture2D>("Art/Icons/General_15_Blur");
+			RefractionShieldIcon = content.Load<Texture2D>("Art/Icons/Light_05_Bouncing_Light");
+			HomingIcon = content.Load<Texture2D>("Art/Icons/Water_08_Ball_Of_Water");
+			BoomerangIcon = content.Load<Texture2D>("Art/Icons/Light_07_Wave_Of_Light");
 		}
-		
+
 		public static Texture2D LoadTexture(string assetName)
 		{
 			var texture = Texture2D.FromFile(WarlockGame.Instance.GraphicsDevice, assetName);
