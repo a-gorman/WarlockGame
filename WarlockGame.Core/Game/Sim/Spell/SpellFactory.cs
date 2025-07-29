@@ -24,7 +24,7 @@ class SpellFactory {
         return new WarlockSpell(_simulation) {
             SpellId = 1,
             Name = "Fireball",
-            CooldownTime = 60,
+            CooldownTime = SimTime.OfSeconds(3).Ticks,
             SpellIcon = Art.FireballIcon,
             Effect = new ProjectileComponent(
                 sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .12f),
@@ -45,7 +45,7 @@ class SpellFactory {
         return new WarlockSpell(_simulation) {
             SpellId = 2,
             Name = "Lightning",
-            CooldownTime = 60,
+            CooldownTime = SimTime.OfSeconds(20).Ticks,
             SpellIcon = Art.LightningIcon,
             Effect = new DirectionalAreaOfEffect {
                 Shape = new LineTarget { Length = 600, IgnoreCaster = true, Texture = Art.Lightning },
@@ -61,7 +61,7 @@ class SpellFactory {
         return new WarlockSpell(_simulation) {
             SpellId = 3,
             Name = "Poison",
-            CooldownTime = 60,
+            CooldownTime = SimTime.OfSeconds(6).Ticks,
             SpellIcon = Art.PoisonIcon,
             Effect = new ProjectileComponent(
                 sprite: new Sprite(Art.PoisonBall) { Scale = 0.80f },
@@ -79,7 +79,7 @@ class SpellFactory {
         return new WarlockSpell(_simulation) {
             SpellId = 4,
             Name = "Burst",
-            CooldownTime = 60,
+            CooldownTime = SimTime.OfSeconds(6).Ticks,
             SpellIcon = Art.BurstIcon,
             Effect = new SelfAreaOfEffect {
                 Shape = new CircleTarget { Radius = 200 },
@@ -101,7 +101,7 @@ class SpellFactory {
         return new WarlockSpell(_simulation) {
             SpellId = 5,
             Name = "Wind Shield",
-            CooldownTime = 60 * 10,
+            CooldownTime = SimTime.OfSeconds(16).Ticks,
             SpellIcon = Art.WindWallIcon,
             Effect = new SelfCastPositionComponent {
                 Components = [
@@ -140,9 +140,9 @@ class SpellFactory {
         return new WarlockSpell(_simulation) {
             SpellId = 6,
             Name = "Soul Shatter",
-            CooldownTime = 60,
-            SpellIcon = Art.BurstIcon,
-            Effect = new ProjectileComponent(Sprite.FromGridSpriteSheet(Art.PowerBall, 4, 4, 10), 
+            CooldownTime = SimTime.OfSeconds(6).Ticks,
+            SpellIcon = Art.SoulShatterIcon,
+            Effect = new ProjectileComponent(Sprite.FromGridSpriteSheet(Art.PowerBall, 4, 4, 10),
             [
                 new LocationAreaOfEffect {
                     Shape = new CircleTarget { Radius = 20 },
@@ -186,7 +186,8 @@ class SpellFactory {
                                                 new TimedLife(SimTime.OfSeconds(3.5f)),
                                                 new Shadow(targetInfo.Entity.Id, sim),
                                                 new Yoyo(sim,
-                                                    -targetInfo.DisplacementAxis1.WithLength(160).Rotated(-float.Pi / 6),
+                                                    -targetInfo.DisplacementAxis1.WithLength(160)
+                                                        .Rotated(-float.Pi / 6),
                                                     SimTime.OfSeconds(0.5f),
                                                     SimTime.OfSeconds(3)));
                                             return image;
@@ -204,15 +205,15 @@ class SpellFactory {
         return new WarlockSpell(_simulation) {
             SpellId = 7,
             Name = "Refraction Shield",
-            CooldownTime = SimTime.OfSeconds(3).Ticks,
-            SpellIcon = Art.BurstIcon,
+            CooldownTime = SimTime.OfSeconds(16).Ticks,
+            SpellIcon = Art.RefractionShieldIcon,
             Effect = new SelfCastPositionComponent {
                 Components = [
                     new EntityComponent {
                         EntityConstructor = (spellContext, location) => {
                             var caster = spellContext.Caster;
                             var wallLoc = location + new Vector2(80, 40).Rotated(caster.Orientation);
-                    
+
                             return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, caster.Orientation + float.Pi / 6) {
                                     PlayerId = caster.PlayerId
                                 }
@@ -222,7 +223,8 @@ class SpellFactory {
                                     new OneCollisionPerEntity(),
                                     new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies),
                                     new DeflectProjectiles {
-                                        DeflectionFunc = (e, p) => DeflectProjectiles.OrientedRectangleDiffraction(e, p, 0.4f)
+                                        DeflectionFunc = (e, p) =>
+                                            DeflectProjectiles.OrientedRectangleDiffraction(e, p, 0.4f)
                                     }
                                 ));
                         }
@@ -231,7 +233,7 @@ class SpellFactory {
                         EntityConstructor = (spellContext, location) => {
                             var caster = spellContext.Caster;
                             var wallLoc = location + new Vector2(80, -40).Rotated(caster.Orientation);
-                            
+
                             return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, caster.Orientation - float.Pi / 6) {
                                     PlayerId = caster.PlayerId
                                 }
@@ -241,7 +243,8 @@ class SpellFactory {
                                     new OneCollisionPerEntity(),
                                     new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies),
                                     new DeflectProjectiles {
-                                        DeflectionFunc = (e, p) => DeflectProjectiles.OrientedRectangleDiffraction(e, p, 0.4f)
+                                        DeflectionFunc = (e, p) =>
+                                            DeflectProjectiles.OrientedRectangleDiffraction(e, p, 0.4f)
                                     }
                                 ));
                         }
@@ -255,8 +258,8 @@ class SpellFactory {
         return new WarlockSpell(_simulation) {
             SpellId = 8,
             Name = "Homing",
-            CooldownTime = 60,
-            SpellIcon = Art.FireballIcon,
+            CooldownTime = SimTime.OfSeconds(6).Ticks,
+            SpellIcon = Art.HomingIcon,
             Effect = new ProjectileComponent(
                 sprite: Sprite.FromGridSpriteSheet(Art.EnergySpark, 4, 4, 10, scale: 2f, rotates: false),
                 effects: [
@@ -281,16 +284,16 @@ class SpellFactory {
             )
         };
     }
-    
+
     public WarlockSpell Boomerang() {
         return new WarlockSpell(_simulation) {
             SpellId = 9,
             Name = "Boomerang",
-            CooldownTime = 60,
-            SpellIcon = Art.FireballIcon,
+            CooldownTime = SimTime.OfSeconds(6).Ticks,
+            SpellIcon = Art.BoomerangIcon,
             Effect = new ProjectileComponent(
                 sprite: Sprite.FromGridSpriteSheet(Art.Triple, 4, 4, 10, scale: 2f),
-                ignoreCaster: false,
+                speed: 18,
                 effects: [
                     new LocationAreaOfEffect {
                         Shape = new CircleTarget { Radius = 30 },
@@ -300,19 +303,25 @@ class SpellFactory {
                         ]
                     }
                 ],
-                behaviors: () => [
-                    new AccelerateTowards(0.22f,
-                        targetLocation: projectile =>
-                            _simulation.EntityManager.Warlocks.FirstOrDefault(x => x.PlayerId == projectile.PlayerId)
-                                ?.Position),
-                    new Friction(0.001f, 0.001f, 0.08f),
-                    new TimedLife(SimTime.OfSeconds(6)),
-                    new OnCollision(args => {
-                        if (args.Source is Projectile _projectile && _projectile.Context.Caster.Id == args.Other.Id) {
-                            args.Source.IsExpired = true;
-                        }
-                    })
-                ])
+                behaviors: () => {
+                    var initialTick = _simulation.Tick;
+                    return [
+                        new AccelerateTowards(0.18f,
+                            targetLocation: projectile =>
+                                _simulation.EntityManager.Warlocks
+                                    .FirstOrDefault(x => x.PlayerId == projectile.PlayerId)
+                                    ?.Position),
+                        new Friction(c: 0.1f),
+                        new TimedLife(SimTime.OfSeconds(9)),
+                        new OnCollision(args => {
+                            if (args.Source is Projectile projectile
+                                && projectile.Context.Caster.Id == args.Other.Id
+                                && initialTick + SimTime.OfSeconds(0.5f).Ticks <= _simulation.Tick) {
+                                args.Source.IsExpired = true;
+                            }
+                        })
+                    ];
+                })
         };
     }
 }
