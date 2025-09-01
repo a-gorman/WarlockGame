@@ -60,7 +60,7 @@ public static class TextUtil {
                 AddWord(word);
                 continue;
             }
-            
+
             // Word is larger than one line
             while (!word.IsEmpty) {
                 if(maxLines != null && nLines >= maxLines) {
