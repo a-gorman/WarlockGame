@@ -54,6 +54,7 @@ public static class TextUtil {
             if (size.X <= maxLineWidth) {
                 if(maxLines != null && nLines >= maxLines) {
                     TruncateAndAddFinalWord(word);
+                    RemoveLastWhitespace();
                     return sb.ToString();
                 }
                 AddNewLine();
@@ -97,13 +98,6 @@ public static class TextUtil {
                 lineWidth += size.X;
             }
 
-            void RemoveLastWhitespace() {
-                if (sb.Length > 1 && sb[^1] == ' ') {
-                    sb.Remove(sb.Length - 1, 1);
-                    lineWidth -= spaceWidth;
-                }
-            }
-
             void TruncateAndAddFinalWord(ReadOnlySpan<Char> newWord) {
                 if(truncation.IsEmpty()) {
                     sb.Append(GetPortionOfWordThatFits(newWord, measureText, maxLineWidth - lineWidth));
@@ -124,8 +118,16 @@ public static class TextUtil {
                 }
             }
         }
-
+        
+        RemoveLastWhitespace();
         return sb.ToString();
+        
+        void RemoveLastWhitespace() {
+            if (sb.Length > 1 && sb[^1] == ' ' || sb[^1] == '\n') {
+                sb.Remove(sb.Length - 1, 1);
+                lineWidth -= spaceWidth;
+            }
+        }
     }
     
     private static ReadOnlySpan<Char> GetWord(ReadOnlySpan<Char> text) {
