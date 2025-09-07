@@ -9,8 +9,8 @@ class SpellIcon(WarlockSpell spell, string hotkey) : InterfaceComponent {
     public override void Draw(Vector2 location, SpriteBatch spriteBatch) {
         spriteBatch.Draw(
             spell.SpellIcon,
-            new Rectangle(0, 0, 50, 50),
+            new Rectangle((int)location.X, (int)location.Y, 50, 50),
             spell.OnCooldown ? Color.Gray : Color.White);
-        spriteBatch.DrawString(Art.Font, hotkey, new Vector2(0, 9), Color.White);
+        spriteBatch.DrawString(Art.Font, hotkey, location + new Vector2(0, 0), Color.White);
     }
 }
