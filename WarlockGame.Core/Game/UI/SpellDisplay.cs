@@ -14,8 +14,8 @@ namespace WarlockGame.Core.Game.UI;
 /// Assumes single active player (No local coop)
 /// </summary>
 public sealed class SpellDisplay : InterfaceComponent {
-    public static SpellDisplay? Instance { get; private set; }
     public Dictionary<InputAction, string> KeyMappings { get; }
+    public Basic.Grid IconGrid { get; }
 
     private const int SpellSpacing = 100;
 
@@ -28,8 +28,8 @@ public sealed class SpellDisplay : InterfaceComponent {
         KeyMappings = keyMappings.ToDictionary(x => x.Value, x => x.Key.ToString());
         Layer = 2;
         BoundingBox = new Rectangle(20, 925, 1880, 90);
-        AddComponent(new Basic.Grid(55, -9, Actions.Length, SpellSpacing, 1, 90));
-        Instance = this;
+        IconGrid = new Basic.Grid(55, 20, Actions.Length, SpellSpacing, 1, 90);
+        AddComponent(IconGrid);
     }
     
     public override void OnClick(Vector2 location) {
@@ -56,7 +56,7 @@ public sealed class SpellDisplay : InterfaceComponent {
     
     private void AddSpell(int playerId, WarlockSpell spell) {
         if (PlayerManager.IsLocal(playerId)) {
-            AddComponent(new SpellIcon(spell, KeyMappings[Actions[spell.SlotLocation]]));
+            IconGrid.AddComponent(new SpellIcon(spell, KeyMappings[Actions[spell.SlotLocation]]), 0, spell.SlotLocation);
         }
     }
 }
