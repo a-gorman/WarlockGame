@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Sim.Spell;

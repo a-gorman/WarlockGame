@@ -7,7 +7,6 @@ using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Sim.Buff;
 using WarlockGame.Core.Game.Sim.Entities.Behaviors;
 using WarlockGame.Core.Game.Sim.Order;
-using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Sim.Entities
