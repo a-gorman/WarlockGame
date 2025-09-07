@@ -71,13 +71,28 @@ internal static class Extensions {
         return source == string.Empty;
     }
 
-    public static void RemoveAll<TKey, TValue>(
-        this IDictionary<TKey, TValue> source,
-        Func<TKey, TValue, bool> predicate) {
-        foreach (var entry in source) {
-            if (predicate(entry.Key, entry.Value)) {
-                source.Remove(entry.Key);
+    extension<TKey, TValue>(IDictionary<TKey, TValue> source) {
+        public void RemoveAll(Func<TKey, TValue, bool> predicate) {
+            foreach (var entry in source) {
+                if (predicate(entry.Key, entry.Value)) {
+                    source.Remove(entry.Key);
+                }
             }
+        }
+
+        /// <summary>
+        /// Adds returns the dictionary value if the key exists.
+        /// If the key does not exist, adds the value computed by valueFunc to the dictionary and returns that value.
+        /// Note: This method is not thread safe.
+        /// </summary>
+        public TValue GetOrAdd(TKey key, Func<TKey, TValue> valueFunc) {
+            if (source.TryGetValue(key, out var existingValue)) {
+                return existingValue;
+            }
+
+            var newValue = valueFunc.Invoke(key);
+            source.Add(key, newValue);
+            return newValue;
         }
     }
 }

@@ -14,6 +14,7 @@ using WarlockGame.Core.Game.Util;
 namespace WarlockGame.Core.Game.Sim.Spell;
 
 class SpellFactory {
+    private int _nextSpellId = 0;
     private readonly Simulation _simulation;
 
     public SpellFactory(Simulation simulation) {
@@ -22,7 +23,8 @@ class SpellFactory {
 
     public WarlockSpell Fireball() {
         return new WarlockSpell(_simulation) {
-            SpellId = 1,
+            Id = _nextSpellId++,
+            SpellTypeId = 1,
             Name = "Fireball",
             CooldownTime = SimTime.OfSeconds(3).Ticks,
             SpellIcon = Art.FireballIcon,
@@ -43,7 +45,8 @@ class SpellFactory {
 
     public WarlockSpell Lightning() {
         return new WarlockSpell(_simulation) {
-            SpellId = 2,
+            Id = _nextSpellId++,
+            SpellTypeId = 2,
             Name = "Lightning",
             CooldownTime = SimTime.OfSeconds(20).Ticks,
             SpellIcon = Art.LightningIcon,
@@ -59,7 +62,8 @@ class SpellFactory {
 
     public WarlockSpell Poison() {
         return new WarlockSpell(_simulation) {
-            SpellId = 3,
+            Id = _nextSpellId++,
+            SpellTypeId = 3,
             Name = "Poison",
             CooldownTime = SimTime.OfSeconds(6).Ticks,
             SpellIcon = Art.PoisonIcon,
@@ -77,7 +81,8 @@ class SpellFactory {
 
     public WarlockSpell Burst() {
         return new WarlockSpell(_simulation) {
-            SpellId = 4,
+            Id = _nextSpellId++,
+            SpellTypeId = 4,
             Name = "Burst",
             CooldownTime = SimTime.OfSeconds(6).Ticks,
             SpellIcon = Art.BurstIcon,
@@ -99,7 +104,8 @@ class SpellFactory {
 
     public WarlockSpell WindShield() {
         return new WarlockSpell(_simulation) {
-            SpellId = 5,
+            Id = _nextSpellId++,
+            SpellTypeId = 5,
             Name = "Wind Shield",
             CooldownTime = SimTime.OfSeconds(16).Ticks,
             SpellIcon = Art.WindWallIcon,
@@ -138,7 +144,8 @@ class SpellFactory {
 
     public WarlockSpell SoulShatter() {
         return new WarlockSpell(_simulation) {
-            SpellId = 6,
+            Id = _nextSpellId++,
+            SpellTypeId = 6,
             Name = "Soul Shatter",
             CooldownTime = SimTime.OfSeconds(6).Ticks,
             SpellIcon = Art.SoulShatterIcon,
@@ -203,7 +210,8 @@ class SpellFactory {
 
     public WarlockSpell RefractionShield() {
         return new WarlockSpell(_simulation) {
-            SpellId = 7,
+            Id = _nextSpellId++,
+            SpellTypeId = 7,
             Name = "Refraction Shield",
             CooldownTime = SimTime.OfSeconds(16).Ticks,
             SpellIcon = Art.RefractionShieldIcon,
@@ -256,7 +264,8 @@ class SpellFactory {
 
     public WarlockSpell Homing() {
         return new WarlockSpell(_simulation) {
-            SpellId = 8,
+            Id = _nextSpellId++,
+            SpellTypeId = 8,
             Name = "Homing",
             CooldownTime = SimTime.OfSeconds(6).Ticks,
             SpellIcon = Art.HomingIcon,
@@ -287,7 +296,8 @@ class SpellFactory {
 
     public WarlockSpell Boomerang() {
         return new WarlockSpell(_simulation) {
-            SpellId = 9,
+            Id = _nextSpellId++,
+            SpellTypeId = 9,
             Name = "Boomerang",
             CooldownTime = SimTime.OfSeconds(6).Ticks,
             SpellIcon = Art.BoomerangIcon,

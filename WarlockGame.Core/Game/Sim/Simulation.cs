@@ -18,6 +18,7 @@ class Simulation {
 
     public Random Random { get; private set; } = new();
     public EntityManager EntityManager { get; } = new();
+    public SpellManager SpellManager { get; } = new();
     public SpellFactory SpellFactory { get; }
     public EffectManager EffectManager { get; }
     public WarlockFactory WarlockFactory { get; }
@@ -43,6 +44,7 @@ class Simulation {
         
         EntityManager.Update();
         EffectManager.Update();
+        SpellManager.Update();
 
         return new TickResult
         {
@@ -62,6 +64,15 @@ class Simulation {
         foreach (var warlock in warlocks) {
             Logger.Info($"Creating warlock at: {warlock.Position}");
             EntityManager.Add(warlock);
+            SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.Fireball());
+            SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.Lightning());
+            SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.Poison());
+            SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.Burst());
+            SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.SoulShatter());
+            SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.WindShield());
+            SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.RefractionShield());
+            SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.Homing());
+            SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.Boomerang());
         }
         _gameRule.Reset();
         UIManager.AddComponent(new Scoreboard(_gameRule));
@@ -71,6 +82,7 @@ class Simulation {
         Tick = 0;
         EntityManager.Clear();
         EffectManager.Clear();
+        SpellManager.Clear();
     }
     
     public int CalculateChecksum() {

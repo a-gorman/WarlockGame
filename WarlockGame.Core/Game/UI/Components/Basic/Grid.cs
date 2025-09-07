@@ -1,12 +1,16 @@
 using Microsoft.Xna.Framework;
+using WarlockGame.Core.Game.Log;
 
 namespace WarlockGame.Core.Game.UI.Basic;
 
 public sealed class Grid : InterfaceComponent {
-
     public Cell[,] Cells { get; }
 
     public Grid(int x, int y, int nColumns, int columnWidth, int nRows, int rowHeight) {
+        if (nColumns < 1 || nRows < 1) {
+            Logger.Warning($"Added column with no cells, Columns: {nColumns}, Rows: {nRows}");
+        }
+
         Cells = new Cell[nColumns, nRows];
         int currentWidth = 0;
         for (int c = 0; c < nColumns; c++) {

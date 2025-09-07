@@ -23,17 +23,19 @@ class LocalPlayerGameInput {
     }
     
     public void Update(InputManager.InputState inputState) {
-        var warlock = WarlockGame.Instance.Simulation.EntityManager.GetWarlockByPlayerId(_playerId);
+        var sim = WarlockGame.Instance.Simulation;
+        var warlock = sim.EntityManager.GetWarlockByPlayerId(_playerId);
         if (warlock is null) return;
         
         if (!InputManager.HasTextConsumers) {
             foreach (var actionType in SpellSelectionActions) {
                 if (inputState.WasActionKeyPressed(actionType)) {
-                    var selectedSpell = warlock.Spells.ElementAtOrDefault(SpellSelectionActions.IndexOf(actionType));
+                    var selectedSpell = sim.SpellManager.PlayerSpells[_playerId]
+                        .FirstOrDefault(x => x.Value.SlotLocation == SpellSelectionActions.IndexOf(actionType)).Value;
                     selectedSpell?.Effect.Switch(
-                        _ => SelectedSpellId = selectedSpell.SpellId,
-                        _ => SelectedSpellId = selectedSpell.SpellId,
-                        _ => IssueCommand(new CastCommand { PlayerId = _playerId, CastVector = Vector2.Zero, SpellId = selectedSpell.SpellId })
+                        _ => SelectedSpellId = selectedSpell.Id,
+                        _ => SelectedSpellId = selectedSpell.Id,
+                        _ => IssueCommand(new CastCommand { PlayerId = _playerId, CastVector = Vector2.Zero, SpellId = selectedSpell.Id })
                     );
                 }
             }
@@ -45,18 +47,19 @@ class LocalPlayerGameInput {
 
     private void OnLeftClick(InputManager.InputState inputState, Vector2 warlockPosition) {
         if (SelectedSpellId != null) {
-            Vector2? castVector = WarlockGame.Instance.Simulation
-                                             .EntityManager.GetWarlockByPlayerId(_playerId)
-                                             !.Spells
-                                             .Find(x => x.SpellId == SelectedSpellId)
-                                             ?.Effect
-                                             .Match(
-                                                 _ => inputState.GetAimDirection(warlockPosition),
-                                                 _ => inputState.GetAimPosition(),
-                                                 _ => null
-                                             );
+            var sim = WarlockGame.Instance.Simulation;
+            var warlock =sim.EntityManager.GetWarlockByPlayerId(_playerId);
+            if (warlock == null) return;
+            if(!sim.SpellManager.Spells.TryGetValue(SelectedSpellId.Value, out var spell)) return;
+
+            Vector2? castVector = spell.Effect.Match(
+                _ => inputState.GetAimDirection(warlockPosition),
+                _ => inputState.GetAimPosition(),
+                _ => null
+            );
             if (castVector is not null) {
-                IssueCommand(new CastCommand { PlayerId = _playerId, CastVector = castVector.Value, SpellId = SelectedSpellId.Value });
+                IssueCommand(new CastCommand
+                    { PlayerId = _playerId, CastVector = castVector.Value, SpellId = SelectedSpellId.Value });
             }
         }
 

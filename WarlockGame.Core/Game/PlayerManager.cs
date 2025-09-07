@@ -53,4 +53,8 @@ static class PlayerManager {
     private static int GetNextPlayerId() {
         return Players.Select(x => x.Id).DefaultIfEmpty().Max() + 1;
     }
+
+    public static bool IsLocal(int playerId) {
+        return LocalPlayer != null && LocalPlayer.Id == playerId;
+    }
 }
