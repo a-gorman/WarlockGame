@@ -3,10 +3,10 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Log;
-using WarlockGame.Core.Game.Util;
+using WarlockGame.Core.Game.Sim.Spell;
+using WarlockGame.Core.Game.UI.Components;
 
 namespace WarlockGame.Core.Game.UI; 
 
@@ -14,6 +14,7 @@ namespace WarlockGame.Core.Game.UI;
 /// Assumes single active player (No local coop)
 /// </summary>
 public sealed class SpellDisplay : InterfaceComponent {
+    public static SpellDisplay? Instance { get; private set; }
     public Dictionary<InputAction, string> KeyMappings { get; }
 
     private const int SpellSpacing = 100;
@@ -27,35 +28,35 @@ public sealed class SpellDisplay : InterfaceComponent {
         KeyMappings = keyMappings.ToDictionary(x => x.Value, x => x.Key.ToString());
         Layer = 2;
         BoundingBox = new Rectangle(20, 925, 1880, 90);
+        AddComponent(new Basic.Grid(55, -9, Actions.Length, SpellSpacing, 1, 90));
+        Instance = this;
     }
     
     public override void OnClick(Vector2 location) {
         Logger.Info("Click the spell display!");
     }
-    
+
+    public override void OnAdd() {
+        WarlockGame.Instance.Simulation.SpellManager.SpellAdded += AddSpell;
+    }
+
     public override void Draw(Vector2 location, SpriteBatch spriteBatch) {
         DrawHollowRectangle(spriteBatch, BoundingBox, Color.White);
-
-        var localWarlock = PlayerManager.LocalPlayer?.Id.Let(x => WarlockGame.Instance.Simulation.EntityManager.GetWarlockByPlayerId(x));
-        if(localWarlock is null) return;
-        
-        for (var i = 0; i < localWarlock.Spells.Count; i++) {
-            var spell = localWarlock.Spells[i];
-            spriteBatch.Draw(
-                spell.SpellIcon,
-                new Rectangle(60 + SpellSpacing * i, 950, 50, 50),
-                spell.OnCooldown ? Color.Gray : Color.White);
-            spriteBatch.DrawString(Art.Font, KeyMappings[Actions[i]], new Vector2(55 + SpellSpacing * i, 950-9), Color.White);
-        }
     }
 
     private static void DrawHollowRectangle(SpriteBatch spriteBatch, Rectangle rectangle, Color color, int width = 1) {
         var pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 2, 2);
-        pointTexture.SetData(new[] { Color.Red, Color.Blue, Color.White, Color.Green });
+        pointTexture.SetData([Color.Red, Color.Blue, Color.White, Color.Green]);
         
         spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Left, rectangle.Bottom, rectangle.Width, width), color); // Bottom line
-        spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Left, rectangle.Top, width, rectangle.Height), color);        // Left line
-        spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Right, rectangle.Top, width, rectangle.Height), color);       // Right line
+        spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Left, rectangle.Top, width, rectangle.Height), color);   // Left line
+        spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Right, rectangle.Top, width, rectangle.Height), color);  // Right line
         spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Left, rectangle.Top, rectangle.Width, width), color);    // Top line
+    }
+    
+    private void AddSpell(int playerId, WarlockSpell spell) {
+        if (PlayerManager.IsLocal(playerId)) {
+            AddComponent(new SpellIcon(spell, KeyMappings[Actions[spell.SlotLocation]]));
+        }
     }
 }

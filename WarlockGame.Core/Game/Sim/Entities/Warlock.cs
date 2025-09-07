@@ -14,6 +14,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
 {
     class Warlock : Entity
     {
+        private readonly Simulation _sim;
         public const float Speed = 4;
         public const float RotationSpeed = 0.1f; // Radians per tick
 
@@ -22,7 +23,6 @@ namespace WarlockGame.Core.Game.Sim.Entities
 
         public Vector2? Direction { get; set; }
 
-        public List<WarlockSpell> Spells { get; } = [];
         public List<IBuff> Buffs { get; } = new();
         
         private int _framesUntilRespawn = 0;
@@ -32,8 +32,9 @@ namespace WarlockGame.Core.Game.Sim.Entities
         private LinkedList<IOrder> Orders { get; } = new();
         public event Action<Warlock>? Destroyed;
 
-        public Warlock(int playerId, Vector2 position):
+        public Warlock(int playerId, Vector2 position, Simulation simulation):
             base(new Sprite(Art.Player), position, radius: 20) {
+            _sim = simulation;
             Health = MaxHealth;
             PlayerId = playerId;
             BlocksProjectiles = true;
@@ -47,10 +48,6 @@ namespace WarlockGame.Core.Game.Sim.Entities
             Move();
             
             MakeExhaustFire();
-
-            foreach (var spell in Spells) {
-                spell.Update();
-            }
 
             foreach (var buff in Buffs) {
                 buff.Update(this);
@@ -108,10 +105,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
         }
         
         public void CastSpell(int spellId, Vector2 castDirection) {
-            var spell = Spells.Find(x => spellId == x.SpellId);
-            
-            if (spell is not null && !spell.OnCooldown)
-            {
+            if(_sim.SpellManager.Spells.TryGetValue(spellId, out var spell) && !spell.OnCooldown) {
                 spell.DoCast(this, castDirection);
             }
         }

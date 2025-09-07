@@ -83,7 +83,8 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         UIManager.AddComponent(new HealthBarManager());
 
 #if DEBUG
-        LogDisplay.Instance.DisplayLevel = Logger.Level.DEBUG;
+        LogDisplay.Instance.DisplayLevel = Logger.Level.WARNING;
+        LogDisplay.Instance.Visible = true;
 #endif
         
         MessageDisplay.Display("Game Started");

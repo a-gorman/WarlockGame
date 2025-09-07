@@ -6,8 +6,10 @@ using WarlockGame.Core.Game.Sim.Spell.Component;
 namespace WarlockGame.Core.Game.Sim.Spell;
 
 class WarlockSpell {
+    public required int Id { get; set; }
     public required string Name { get; init; }
-    public required int SpellId { get; init; }
+    public required int SpellTypeId { get; init; }
+    public int SlotLocation { get; set; }
     public required int CooldownTime { get; init; }
     public required Texture2D SpellIcon { get; init; }
     public required OneOf<IDirectionalSpellComponent, ILocationSpellComponent, ISelfSpellComponent> Effect { get; init; }
