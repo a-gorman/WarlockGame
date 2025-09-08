@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Log;
 
-namespace WarlockGame.Core.Game.UI.Basic;
+namespace WarlockGame.Core.Game.UI.Components.Basic;
 
 public sealed class Grid : InterfaceComponent {
     public Cell[,] Cells { get; }
@@ -34,6 +34,8 @@ public sealed class Grid : InterfaceComponent {
     public sealed class Cell : InterfaceComponent {
         public Cell(int x, int y, int width, int height) {
             BoundingBox = new Rectangle(x, y, width, height);
+            // If the parent grid is clickable, assume we want to be able to click all the individual cells as well.
+            Clickable = true;
         }
     }
 }

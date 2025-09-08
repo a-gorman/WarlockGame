@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Util;
 
-namespace WarlockGame.Core.Game.UI.Basic;
+namespace WarlockGame.Core.Game.UI.Components.Basic;
 
 class TextDisplay : InterfaceComponent {
     public required Rectangle Bounds {

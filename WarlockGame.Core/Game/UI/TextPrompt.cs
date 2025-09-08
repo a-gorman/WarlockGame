@@ -8,7 +8,7 @@ using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Input.Devices;
 using WarlockGame.Core.Game.Log;
-using WarlockGame.Core.Game.UI.Basic;
+using WarlockGame.Core.Game.UI.Components.Basic;
 
 namespace WarlockGame.Core.Game.UI;
 
@@ -84,8 +84,9 @@ class TextPrompt: InterfaceComponent, ITextInputConsumer {
         spriteBatch.DrawString(Art.Font, Prompt, Position.Translate(0, -24) + location, Color.White);
     }
     
-    public override void OnClick(Vector2 location) {
+    public override bool OnClick(Vector2 location) {
         Logger.Debug("Click on text prompt");
+        return true;
         // TODO: Move a cursor to the click location
     }
 

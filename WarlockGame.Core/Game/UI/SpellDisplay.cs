@@ -15,7 +15,7 @@ namespace WarlockGame.Core.Game.UI;
 /// </summary>
 public sealed class SpellDisplay : InterfaceComponent {
     public Dictionary<InputAction, string> KeyMappings { get; }
-    public Basic.Grid IconGrid { get; }
+    public Components.Basic.Grid IconGrid { get; }
 
     private const int SpellSpacing = 100;
 
@@ -28,12 +28,14 @@ public sealed class SpellDisplay : InterfaceComponent {
         KeyMappings = keyMappings.ToDictionary(x => x.Value, x => x.Key.ToString());
         Layer = 2;
         BoundingBox = new Rectangle(20, 925, 1880, 90);
-        IconGrid = new Basic.Grid(55, 20, Actions.Length, SpellSpacing, 1, 90);
+        IconGrid = new Components.Basic.Grid(55, 20, Actions.Length, SpellSpacing, 1, 90) { Clickable = true };
         AddComponent(IconGrid);
+        Clickable = true;
     }
     
-    public override void OnClick(Vector2 location) {
+    public override bool OnClick(Vector2 location) {
         Logger.Info("Click the spell display!");
+        return false;
     }
 
     public override void OnAdd() {

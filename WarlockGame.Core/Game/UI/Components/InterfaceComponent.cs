@@ -11,6 +11,7 @@ public class InterfaceComponent {
     /// </summary>
     public int Layer { get; set; }
     public bool IsExpired { get; set; }
+    public bool Clickable { get; set; } = false;
     public virtual bool Visible { get; set; } = true;
     
     /// <summary>
@@ -24,7 +25,7 @@ public class InterfaceComponent {
     private readonly List<InterfaceComponent> _components = [];
     public IReadOnlyList<InterfaceComponent> Components => _components;
 
-    public virtual void OnClick(Vector2 location) { }
+    public virtual bool OnClick(Vector2 location) { return false; }
 
     public virtual void Draw(Vector2 location, SpriteBatch spriteBatch) { }
 
@@ -32,6 +33,7 @@ public class InterfaceComponent {
 
     public void AddComponent(InterfaceComponent component) {
         _components.Add(component);
+        _components.Sort((first, second) => second.Layer.CompareTo(first.Layer));
         component.OnAdd();
     }
 

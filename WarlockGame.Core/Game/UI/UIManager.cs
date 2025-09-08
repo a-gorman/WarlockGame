@@ -54,6 +54,16 @@ static class UIManager {
         Components.Sort((first, second) => second.Layer.CompareTo(first.Layer));
         component.OnAdd();
     }
+    
+    public static bool HandleClick(Vector2 clickLocation) {
+        foreach (var component in Components) {
+            if (component.Clickable && ClickComponent(component, clickLocation)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     private static void DrawComponent(InterfaceComponent component, Vector2 globalLocation, SpriteBatch spriteBatch) {
         component.Draw(globalLocation, spriteBatch);
@@ -62,5 +72,19 @@ static class UIManager {
                 DrawComponent(nestedComponent, globalLocation + component.BoundingBox.Location.ToVector2(), spriteBatch);
             }
         }
+    }
+    
+    private static bool ClickComponent(InterfaceComponent component, Vector2 clickLocation) {
+        if (!component.BoundingBox.Contains(clickLocation)) return false;
+        
+        foreach (var nestedComponent in component.Components) {
+            if (nestedComponent.Clickable) {
+                if(ClickComponent(nestedComponent, clickLocation - component.RelativeLocation)) {
+                    return true;
+                }
+            }
+        }
+
+        return component.OnClick(clickLocation);
     }
 }
