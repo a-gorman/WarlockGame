@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Sim.Rule;
-using WarlockGame.Core.Game.UI.Basic;
+using WarlockGame.Core.Game.UI.Components.Basic;
 
 namespace WarlockGame.Core.Game.UI;
 
 sealed class Scoreboard : InterfaceComponent {
     private readonly MaxLives _gameRule;
-    private readonly Basic.Grid _grid;
+    private readonly Components.Basic.Grid _grid;
     private readonly Dictionary<int, TextDisplay> _playerLifeDisplays = new();
 
     public Scoreboard(MaxLives gameRule) {
@@ -17,7 +17,7 @@ sealed class Scoreboard : InterfaceComponent {
         
         _gameRule = gameRule;
         var playerIds = gameRule.PlayerLives.Keys.ToList();
-        _grid = new Basic.Grid(0, 0, 2, columnWidth, playerIds.Count, rowHeight);
+        _grid = new Components.Basic.Grid(0, 0, 2, columnWidth, playerIds.Count, rowHeight);
         AddComponent(_grid);
         for (int i = 0; i < playerIds.Count; i++) {
             var id = playerIds[i];

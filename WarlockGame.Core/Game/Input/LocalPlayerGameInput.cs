@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
+using WarlockGame.Core.Game.UI;
 
 namespace WarlockGame.Core.Game.Input; 
 
@@ -14,7 +15,7 @@ class LocalPlayerGameInput {
         InputAction.Spell6, InputAction.Spell7, InputAction.Spell8, InputAction.Spell9, InputAction.Spell10
     };
 
-    public int? SelectedSpellId { get; private set; }
+    public int? SelectedSpellId { get; set; }
 
     private readonly int _playerId;
 
@@ -46,9 +47,10 @@ class LocalPlayerGameInput {
     }
 
     private void OnLeftClick(InputManager.InputState inputState, Vector2 warlockPosition) {
+        if (UIManager.HandleClick(inputState.GetAimPosition()!.Value)) return;
         if (SelectedSpellId != null) {
             var sim = WarlockGame.Instance.Simulation;
-            var warlock =sim.EntityManager.GetWarlockByPlayerId(_playerId);
+            var warlock = sim.EntityManager.GetWarlockByPlayerId(_playerId);
             if (warlock == null) return;
             if(!sim.SpellManager.Spells.TryGetValue(SelectedSpellId.Value, out var spell)) return;
 
