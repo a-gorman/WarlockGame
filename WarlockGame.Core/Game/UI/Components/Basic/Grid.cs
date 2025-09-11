@@ -35,7 +35,7 @@ public sealed class Grid : InterfaceComponent {
         public Cell(int x, int y, int width, int height) {
             BoundingBox = new Rectangle(x, y, width, height);
             // If the parent grid is clickable, assume we want to be able to click all the individual cells as well.
-            Clickable = true;
+            Clickable = ClickableState.PassThrough;
         }
     }
 }

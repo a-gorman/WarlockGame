@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
+using WarlockGame.Core.Game.Log;
 
 namespace WarlockGame.Core.Game.UI;
 
@@ -56,7 +57,7 @@ static class UIManager {
     
     public static bool HandleLeftClick(Vector2 clickLocation) {
         foreach (var component in Components) {
-            if (component.Clickable && LeftClickComponent(component, clickLocation)) {
+            if (LeftClickComponent(component, clickLocation)) {
                 return true;
             }
         }
@@ -65,7 +66,7 @@ static class UIManager {
     
     public static bool HandleRightClick(Vector2 clickLocation) {
         foreach (var component in Components) {
-            if (component.Clickable && RightClickComponent(component, clickLocation)) {
+            if (RightClickComponent(component, clickLocation)) {
                 return true;
             }
         }
@@ -83,29 +84,39 @@ static class UIManager {
     
     private static bool LeftClickComponent(InterfaceComponent component, Vector2 clickLocation) {
         if (!component.BoundingBox.Contains(clickLocation)) return false;
-        
-        foreach (var nestedComponent in component.Components) {
-            if (nestedComponent.Clickable) {
-                if(LeftClickComponent(nestedComponent, clickLocation - component.RelativeLocation)) {
-                    return true;
+        switch (component.Clickable) {
+            case ClickableState.PassThrough:
+                foreach (var nestedComponent in component.Components) {
+                    var consumed = LeftClickComponent(nestedComponent, clickLocation - component.RelativeLocation);
+                    if (consumed) return true;
                 }
-            }
+                return false;
+            case ClickableState.Consume:
+                component.OnLeftClick(clickLocation);
+                return true;
+            case ClickableState.Skip:
+                return false;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
-
-        return component.OnLeftClick(clickLocation);
     }
     
     private static bool RightClickComponent(InterfaceComponent component, Vector2 clickLocation) {
         if (!component.BoundingBox.Contains(clickLocation)) return false;
-        
-        foreach (var nestedComponent in component.Components) {
-            if (nestedComponent.Clickable) {
-                if(RightClickComponent(nestedComponent, clickLocation - component.RelativeLocation)) {
-                    return true;
+        switch (component.Clickable) {
+            case ClickableState.PassThrough:
+                foreach (var nestedComponent in component.Components) {
+                    var consumed = RightClickComponent(nestedComponent, clickLocation - component.RelativeLocation);
+                    if (consumed) return true;
                 }
-            }
+                return false;
+            case ClickableState.Consume:
+                component.OnRightClick(clickLocation);
+                return true;
+            case ClickableState.Skip:
+                return false;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
-
-        return component.OnRightClick(clickLocation);
     }
 }
