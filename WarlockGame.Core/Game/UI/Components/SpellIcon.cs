@@ -25,7 +25,7 @@ sealed class SpellIcon : InterfaceComponent {
     }
 
     public override bool OnClick(Vector2 location) {
-        InputManager.LocalPlayerInput?.SelectedSpellId = _spell.Id;
+        InputManager.SelectedSpellId = _spell.Id;
         return true;
     }
 }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using WarlockGame.Core.Game.Input;
 
 namespace WarlockGame.Core.Game; 
 
@@ -11,6 +10,7 @@ static class PlayerManager {
     private static int _nextPlayerId = 0;
     
     public static Player? LocalPlayer { get; private set; }
+    public static int? LocalPlayerId { get; private set; }
     private static readonly Color[] PlayerColors = [Color.Blue, Color.Red, Color.Yellow, Color.Green, Color.Purple, Color.Orange, Color.Brown, Color.Gold, Color.Gray];
 
     public static Player AddLocalPlayer(string name, Color? color, int? id = null) {
@@ -18,8 +18,8 @@ static class PlayerManager {
         id ??= Players.Select(x => x.Id).DefaultIfEmpty().Max() + 1;
         
         var player = CreatePlayer(id.Value, name, color ?? GetColor(id.Value), true);
-        InputManager.AttachLocalGameInput(player);
         LocalPlayer = player;
+        LocalPlayerId = id.Value;
         return player;
     }
 
