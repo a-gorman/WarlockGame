@@ -12,27 +12,27 @@ sealed class MainView : InterfaceComponent {
     public MainView(Simulation sim) {
         _sim = sim;
         Layer = -1;
-        Clickable = true;
+        Clickable = ClickableState.Consume;
         BoundingBox = new Rectangle(new Point(0, 0), WarlockGame.ScreenSize.ToPoint());
     }
 
-    public override bool OnRightClick(Vector2 location) {
+    public override void OnRightClick(Vector2 location) {
         var localPlayerId = PlayerManager.LocalPlayer?.Id;
         if (localPlayerId != null) {
             InputManager.IssueCommand(new MoveCommand { PlayerId = localPlayerId.Value, Location = location });
         }
         InputManager.SelectedSpellId = null;
-        return true;
+        return;
     }
 
-    public override bool OnLeftClick(Vector2 location) {
+    public override void OnLeftClick(Vector2 location) {
         if (InputManager.SelectedSpellId != null) {
             var localPlayerId = PlayerManager.LocalPlayer?.Id;
-            if (localPlayerId == null) return true;
+            if (localPlayerId == null) return;
             
             var warlock = _sim.EntityManager.GetWarlockByPlayerId(localPlayerId.Value);
-            if (warlock == null) return true;
-            if (!_sim.SpellManager.Spells.TryGetValue(InputManager.SelectedSpellId.Value, out var spell)) return true;
+            if (warlock == null) return;
+            if (!_sim.SpellManager.Spells.TryGetValue(InputManager.SelectedSpellId.Value, out var spell)) return;
 
             Vector2? castVector = spell.Effect.Match<Vector2?>(
                 _ => (location - warlock.Position).ToNormalizedOrZero(),
@@ -48,6 +48,5 @@ sealed class MainView : InterfaceComponent {
         }
 
         InputManager.SelectedSpellId = null;
-        return true;
     }
 }

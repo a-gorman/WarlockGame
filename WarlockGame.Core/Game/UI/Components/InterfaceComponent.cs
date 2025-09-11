@@ -11,7 +11,7 @@ public class InterfaceComponent {
     /// </summary>
     public int Layer { get; set; }
     public bool IsExpired { get; set; }
-    public bool Clickable { get; set; } = false;
+    public ClickableState Clickable { get; set; } = ClickableState.Skip;
     public virtual bool Visible { get; set; } = true;
     
     /// <summary>
@@ -25,8 +25,8 @@ public class InterfaceComponent {
     private readonly List<InterfaceComponent> _components = [];
     public IReadOnlyList<InterfaceComponent> Components => _components;
 
-    public virtual bool OnLeftClick(Vector2 location) { return false; }
-    public virtual bool OnRightClick(Vector2 location) { return false; }
+    public virtual void OnLeftClick(Vector2 location) { }
+    public virtual void OnRightClick(Vector2 location) { }
 
     public virtual void Draw(Vector2 location, SpriteBatch spriteBatch) { }
 
@@ -46,4 +46,10 @@ public class InterfaceComponent {
     public virtual void OnAdd() { }
 
     public virtual void OnRemove() { }
+}
+
+public enum ClickableState {
+    Skip,
+    Consume,
+    PassThrough
 }

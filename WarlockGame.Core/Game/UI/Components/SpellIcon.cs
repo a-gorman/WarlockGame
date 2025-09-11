@@ -12,7 +12,7 @@ sealed class SpellIcon : InterfaceComponent {
     public SpellIcon(WarlockSpell spell, string hotkey) {
         _spell = spell;
         _hotkey = hotkey;
-        Clickable = true;
+        Clickable = ClickableState.Consume;
         BoundingBox = spell.SpellIcon.Bounds;
     }
 
@@ -24,10 +24,5 @@ sealed class SpellIcon : InterfaceComponent {
         spriteBatch.DrawString(Art.Font, _hotkey, location + new Vector2(0, 0), Color.White);
     }
 
-    public override bool OnLeftClick(Vector2 location) {
-        InputManager.SelectedSpellId = _spell.Id;
-        return true;
-    }
-
-    public override bool OnRightClick(Vector2 _) { return true; }
+    public override void OnLeftClick(Vector2 _) { InputManager.SelectedSpellId = _spell.Id; }
 }
