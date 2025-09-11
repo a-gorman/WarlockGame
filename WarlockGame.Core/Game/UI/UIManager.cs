@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
-using ZLinq;
 
 namespace WarlockGame.Core.Game.UI;
 
@@ -32,7 +31,7 @@ static class UIManager {
 
     public static void Update() {
         Components.RemoveAll(x => x.IsExpired);
-        foreach (var component in Components.AsValueEnumerable()) {
+        foreach (var component in Components) {
             component.Update();
         }
     }
@@ -55,13 +54,21 @@ static class UIManager {
         component.OnAdd();
     }
     
-    public static bool HandleClick(Vector2 clickLocation) {
+    public static bool HandleLeftClick(Vector2 clickLocation) {
         foreach (var component in Components) {
-            if (component.Clickable && ClickComponent(component, clickLocation)) {
+            if (component.Clickable && LeftClickComponent(component, clickLocation)) {
                 return true;
             }
         }
-
+        return false;
+    }
+    
+    public static bool HandleRightClick(Vector2 clickLocation) {
+        foreach (var component in Components) {
+            if (component.Clickable && RightClickComponent(component, clickLocation)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -74,17 +81,31 @@ static class UIManager {
         }
     }
     
-    private static bool ClickComponent(InterfaceComponent component, Vector2 clickLocation) {
+    private static bool LeftClickComponent(InterfaceComponent component, Vector2 clickLocation) {
         if (!component.BoundingBox.Contains(clickLocation)) return false;
         
         foreach (var nestedComponent in component.Components) {
             if (nestedComponent.Clickable) {
-                if(ClickComponent(nestedComponent, clickLocation - component.RelativeLocation)) {
+                if(LeftClickComponent(nestedComponent, clickLocation - component.RelativeLocation)) {
                     return true;
                 }
             }
         }
 
-        return component.OnClick(clickLocation);
+        return component.OnLeftClick(clickLocation);
+    }
+    
+    private static bool RightClickComponent(InterfaceComponent component, Vector2 clickLocation) {
+        if (!component.BoundingBox.Contains(clickLocation)) return false;
+        
+        foreach (var nestedComponent in component.Components) {
+            if (nestedComponent.Clickable) {
+                if(RightClickComponent(nestedComponent, clickLocation - component.RelativeLocation)) {
+                    return true;
+                }
+            }
+        }
+
+        return component.OnRightClick(clickLocation);
     }
 }

@@ -84,7 +84,7 @@ class TextPrompt: InterfaceComponent, ITextInputConsumer {
         spriteBatch.DrawString(Art.Font, Prompt, Position.Translate(0, -24) + location, Color.White);
     }
     
-    public override bool OnClick(Vector2 location) {
+    public override bool OnLeftClick(Vector2 location) {
         Logger.Debug("Click on text prompt");
         return true;
         // TODO: Move a cursor to the click location

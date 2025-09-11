@@ -81,6 +81,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         UIManager.AddComponent(MessageDisplay.Instance);
         UIManager.AddComponent(new SpellDisplay(Configuration.KeyMappings));
         UIManager.AddComponent(new HealthBarManager());
+        UIManager.AddComponent(new MainView(Simulation));
 
 #if DEBUG
         LogDisplay.Instance.DisplayLevel = Logger.Level.WARNING;
