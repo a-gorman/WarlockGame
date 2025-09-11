@@ -25,7 +25,7 @@ static class UIManager {
 
         // draw the custom mouse cursor
         spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
-        var color = InputManager.LocalPlayerInput?.SelectedSpellId is null ? Color.White : Color.Red;
+        var color = InputManager.SelectedSpellId is null ? Color.White : Color.Red;
         spriteBatch.Draw(Art.Pointer, StaticInput.MousePosition,  color);
         spriteBatch.End();
     }
