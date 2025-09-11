@@ -24,8 +24,10 @@ sealed class SpellIcon : InterfaceComponent {
         spriteBatch.DrawString(Art.Font, _hotkey, location + new Vector2(0, 0), Color.White);
     }
 
-    public override bool OnClick(Vector2 location) {
+    public override bool OnLeftClick(Vector2 location) {
         InputManager.SelectedSpellId = _spell.Id;
         return true;
     }
+
+    public override bool OnRightClick(Vector2 _) { return true; }
 }

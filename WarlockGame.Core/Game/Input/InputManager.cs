@@ -96,41 +96,11 @@ static class InputManager {
             }
         }
         
-        if(inputState.WasActionKeyPressed(InputAction.LeftClick)) OnLeftClick(inputState, warlock.Position);
-        if(inputState.WasActionKeyPressed(InputAction.RightClick)) OnRightClick(inputState);
+        if(inputState.WasActionKeyPressed(InputAction.LeftClick)) UIManager.HandleLeftClick(inputState.GetAimPosition()!.Value);
+        if(inputState.WasActionKeyPressed(InputAction.RightClick)) UIManager.HandleRightClick(inputState.GetAimPosition()!.Value);
     }
 
-    private static void OnLeftClick(InputState inputState, Vector2 warlockPosition) {
-        if (UIManager.HandleClick(inputState.GetAimPosition()!.Value)) return;
-        if (LocalPlayerId == null) return;
-        if (SelectedSpellId != null) {
-            var sim = WarlockGame.Instance.Simulation;
-            var warlock = sim.EntityManager.GetWarlockByPlayerId(LocalPlayerId.Value);
-            if (warlock == null) return;
-            if(!sim.SpellManager.Spells.TryGetValue(SelectedSpellId.Value, out var spell)) return;
-
-            Vector2? castVector = spell.Effect.Match(
-                _ => inputState.GetAimDirection(warlockPosition),
-                _ => inputState.GetAimPosition(),
-                _ => null
-            );
-            if (castVector is not null) {
-                IssueCommand(new CastCommand
-                    { PlayerId = LocalPlayerId.Value, CastVector = castVector.Value, SpellId = SelectedSpellId.Value });
-            }
-        }
-
-        SelectedSpellId = null;
-    }
-
-    private static void OnRightClick(InputState inputState) {
-        if (LocalPlayerId == null) return;
-        var aimPosition = inputState.GetAimPosition()!.Value;
-        IssueCommand(new MoveCommand { PlayerId = LocalPlayerId.Value, Location = aimPosition });
-        SelectedSpellId = null;
-    }
-
-    private static void IssueCommand<T>(T command)  where T : IPlayerCommand, new() {
+    public static void IssueCommand<T>(T command)  where T : IPlayerCommand, new() {
         if (NetworkManager.IsClient) {
             NetworkManager.SendSerializable(command);
         }

@@ -25,7 +25,8 @@ public class InterfaceComponent {
     private readonly List<InterfaceComponent> _components = [];
     public IReadOnlyList<InterfaceComponent> Components => _components;
 
-    public virtual bool OnClick(Vector2 location) { return false; }
+    public virtual bool OnLeftClick(Vector2 location) { return false; }
+    public virtual bool OnRightClick(Vector2 location) { return false; }
 
     public virtual void Draw(Vector2 location, SpriteBatch spriteBatch) { }
 

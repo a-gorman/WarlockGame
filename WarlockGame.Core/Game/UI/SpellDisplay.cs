@@ -33,7 +33,7 @@ public sealed class SpellDisplay : InterfaceComponent {
         Clickable = true;
     }
     
-    public override bool OnClick(Vector2 location) {
+    public override bool OnLeftClick(Vector2 location) {
         Logger.Info("Click the spell display!");
         return false;
     }
