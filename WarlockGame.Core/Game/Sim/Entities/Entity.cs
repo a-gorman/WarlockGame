@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Sim.Entities.Behaviors;
@@ -13,14 +12,18 @@ namespace WarlockGame.Core.Game.Sim.Entities
 		public int Id { get; set; }
 		public int? PlayerId { get; set; }
 		public Sprite Sprite { get; }
-
 		public CollisionType CollisionType { get; }
 		public bool BlocksProjectiles { get; set; }
 		public BoundingRectangle BoundingRectangle { get; private set; }
 		public OrientedRectangle OrientedRectangle { get; private set; }	// used for polygon and rotated rectangle collision detection
 		public float Radius { get; }						// used for circular collision detection
 		public Vector2 Velocity { get; set; }
-		public bool IsExpired { get; set; }					// true if the entity was destroyed and should be deleted.
+
+		/// true if the entity was destroyed and should be deleted.
+		public bool IsExpired { get; set; }
+		/// true if the entity was destroyed for gameplay purposes, but may come back. It is not deleted.
+		public bool IsDead { get => field || IsExpired; set; }
+
 		private List<Behavior> Behaviors { get; } = [];
 		public event Action<OnDamagedEventArgs>? OnDamaged;
 		public event Action<OnPushedEventArgs>? OnPushed;
@@ -91,11 +94,6 @@ namespace WarlockGame.Core.Game.Sim.Entities
 				behavior.OnAdd(this);
 				Behaviors.Add(behavior);
 			}
-		}
-
-		public virtual void Draw(SpriteBatch spriteBatch)
-		{
-			Sprite.Draw(spriteBatch, Position, Orientation);
 		}
 
 		public virtual void Damage(float damage, Entity source) {

@@ -80,7 +80,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         UIManager.AddComponent(LogDisplay.Instance);
         UIManager.AddComponent(MessageDisplay.Instance);
         UIManager.AddComponent(new SpellDisplay(Configuration.KeyMappings));
-        UIManager.AddComponent(new HealthBarManager());
+        UIManager.AddComponent(new HealthBarManager(Simulation));
         UIManager.AddComponent(new MainView(Simulation));
 
 #if DEBUG
@@ -216,7 +216,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         GraphicsDevice.Clear(Color.Black);
 
         _spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive);
-        Simulation.EntityManager.Draw(_spriteBatch);
+        // Simulation.EntityManager.Draw(_spriteBatch);
         Simulation.EffectManager.Draw(_spriteBatch);
         _spriteBatch.End();
 

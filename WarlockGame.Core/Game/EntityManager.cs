@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
+using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Util;
 using ZLinq;
@@ -12,18 +12,21 @@ namespace WarlockGame.Core.Game
 {
 	internal class EntityManager
 	{
-		private int _nextEntityId = 0;
+		private int _nextEntityId = 1;
 		private readonly Dictionary<int, Entity> _entities = new();
 		private readonly List<Projectile> _projectiles = new();
 		/// <summary>
-		/// Map between player Ids and warlocks
+		/// Map between player Ids and warlocks. Contains dead warlocks!
 		/// </summary>
 		private readonly Dictionary<int, Warlock> _warlocks = new();
+
+		private readonly HashSet<Warlock> _livingWarlocks = new();
 
 		private bool _isUpdating;
 		private readonly List<Entity> _addedEntities = new();
 
-		public IReadOnlyCollection<Warlock> Warlocks => _warlocks.Values;
+		public IReadOnlyCollection<Warlock> Warlocks => _livingWarlocks;
+		public IReadOnlyCollection<Entity> EntitiesLivingOrDead => _entities.Values;
 
 		public event Action<Warlock>? WarlockDestroyed;
 
@@ -44,8 +47,10 @@ namespace WarlockGame.Core.Game
 					_projectiles.Add(projectile);
 					break;
 				case Warlock warlock:
-					_warlocks.TryAdd(warlock.PlayerId!.Value, warlock);
-					warlock.Destroyed += x => WarlockDestroyed?.Invoke(x);
+					if (_warlocks.TryAdd(warlock.PlayerId!.Value, warlock)) {
+						_livingWarlocks.Add(warlock);
+						warlock.Destroyed += OnWarlockDestroyed;
+					}
 					break;
 			}
 		}
@@ -54,12 +59,12 @@ namespace WarlockGame.Core.Game
 			_isUpdating = true;
 			HandleCollisions();
 
-			foreach (var entity in _entities.Values.AsValueEnumerable())
+			foreach (var entity in _entities.Values.AsValueEnumerable().Where(x => !x.IsDead))
 				entity.Update();
 
 			_isUpdating = false;
 
-			foreach (var entity in _addedEntities.AsValueEnumerable())
+			foreach (var entity in _addedEntities)
 				AddEntity(entity);
 
 			_addedEntities.Clear();
@@ -69,8 +74,19 @@ namespace WarlockGame.Core.Game
 			_warlocks.RemoveAll((_, v) => v.IsExpired);
 		}
 
-		public Warlock? GetWarlockByPlayerId(int id) {
-			_warlocks.TryGetValue(id, out var warlock);
+		public Warlock? GetWarlockByForceId(int forceId) {
+			if (_warlocks.TryGetValue(forceId, out var warlock) && !warlock.IsDead) {
+				return warlock;
+			}
+			return null;
+		}
+		
+		/// <summary>
+		/// Gets a warlock by their force's id.
+		/// Will also get dead warlocks, which is useful for "metagame" functionality
+		/// </summary>
+		public Warlock? GetWarlockLivingOrDeadByForceId(int forceId) {
+			_warlocks.TryGetValue(forceId, out var warlock);
 			return warlock;
 		}
 
@@ -88,6 +104,10 @@ namespace WarlockGame.Core.Game
 
 		private static bool IsColliding(Entity a, Entity b) {
 			if (a.CollisionType == CollisionType.None || b.CollisionType == CollisionType.None) {
+				return false;
+			}
+
+			if (a.IsDead || b.IsDead) {
 				return false;
 			}
 
@@ -112,7 +132,7 @@ namespace WarlockGame.Core.Game
 					switch (b.CollisionType) {
 						case CollisionType.Circle:
 							float radius = a.Radius + b.Radius;
-							return !a.IsExpired && !b.IsExpired && Vector2.DistanceSquared(a.Position, b.Position) < radius.Squared();
+							return Vector2.DistanceSquared(a.Position, b.Position) < radius.Squared();
 						case CollisionType.Rectangle:
 							return new CircleF(a.Position, a.Radius).Intersects(b.BoundingRectangle);
 						case CollisionType.OrientedRectangle:
@@ -166,27 +186,51 @@ namespace WarlockGame.Core.Game
 		
 		public IEnumerable<Entity> GetNearbyEntities(Vector2 position, float radius)
 		{
-			return _entities.Values.Where(x => Vector2.DistanceSquared(position, x.Position) < (x.Radius + radius) * (x.Radius + radius));
+			return _entities.Values
+				.Where(x => !x.IsDead && Vector2.DistanceSquared(position, x.Position) < (x.Radius + radius) * (x.Radius + radius));
 		}
 		
 		public Entity? GetEntity(int id)
 		{
 			_entities.TryGetValue(id, out var entity);
-			return entity;
+			if (entity != null && !entity.IsDead) {
+				return entity;
+			}
+			return null;
 		}
 
 
-		public void Draw(SpriteBatch spriteBatch)
-		{
-			foreach (var entity in _entities.Values)
-				entity.Draw(spriteBatch);
-		}
 
 		public void Clear() {
 			_entities.Clear();
 			_projectiles.Clear();
 			_addedEntities.Clear();
 			_warlocks.Clear();
+		}
+
+		private void OnWarlockDestroyed(Warlock warlock) {
+			if (_livingWarlocks.Remove(warlock)) {
+				WarlockDestroyed?.Invoke(warlock);
+			}
+			else {
+				Logger.Warning($"Tried to destroy warlock more than once. Id: {warlock.Id}");
+			}
+		}
+
+		public void RespawnWarlock(int forceId, Vector2 location) {
+			if (_warlocks.TryGetValue(forceId, out var warlock)) {
+				if (!_livingWarlocks.Contains(warlock)) {
+					warlock.Position = location;
+					warlock.Respawn();
+					_livingWarlocks.Add(warlock);
+				}
+				else {
+					Logger.Warning($"Tried to respawn a warlock that is already alive for force {forceId}");
+				}
+			}
+			else {
+				Logger.Warning($"Tried to respawn warlock for force that does not exist! Id: {forceId}");
+			}
 		}
 	}
 }

@@ -79,7 +79,7 @@ static class InputManager {
         if (LocalPlayerId is null) return;
         
         var sim = WarlockGame.Instance.Simulation;
-        var warlock = sim.EntityManager.GetWarlockByPlayerId(LocalPlayerId.Value);
+        var warlock = sim.EntityManager.GetWarlockByForceId(LocalPlayerId.Value);
         if (warlock is null) return;
         
         if (!HasTextConsumers) {

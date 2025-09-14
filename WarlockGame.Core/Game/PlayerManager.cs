@@ -7,7 +7,7 @@ namespace WarlockGame.Core.Game;
 
 static class PlayerManager {
     public static List<Player> Players { get; } = new();
-    private static int _nextPlayerId = 0;
+    private static int _nextPlayerId = 1;
     
     public static Player? LocalPlayer { get; private set; }
     public static int? LocalPlayerId { get; private set; }
