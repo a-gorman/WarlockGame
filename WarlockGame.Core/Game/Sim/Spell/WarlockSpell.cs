@@ -26,7 +26,7 @@ class WarlockSpell {
         Cooldown.Decrement();
     }
 
-    public void DoCast(Warlock caster, Vector2 direction) {
+    public void DoCast(Warlock caster, Vector2? direction) {
         Cooldown.FramesRemaining = CooldownTime;
         var context = new SpellContext
         {
@@ -34,8 +34,8 @@ class WarlockSpell {
             Simulation = _simulation
         };
         Effect.Switch(
-            directionalEffect => directionalEffect.Invoke(context, caster.Position, direction),
-            locationEffect => locationEffect.Invoke(context, direction),
+            directionalEffect => directionalEffect.Invoke(context, caster.Position, direction ?? Vector2.Zero),
+            locationEffect => locationEffect.Invoke(context, direction ?? Vector2.Zero),
             selfEffect => selfEffect.Invoke(context)
         );
     }

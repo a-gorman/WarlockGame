@@ -103,7 +103,7 @@ class Simulation {
                 break;
             case CastCommand cast:
                 EntityManager.GetWarlockByForceId(cast.PlayerId)
-                             ?.GiveOrder(x => new CastOrder(cast.SpellId, cast.CastVector, x));
+                             ?.GiveOrder(x => new CastOrder(cast.SpellId, cast.CastVector, x, cast.Type.ToSimType()));
                 break;
         }
     }

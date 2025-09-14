@@ -12,13 +12,15 @@ namespace WarlockGame.Core.Game.Sim.Entities
     class Warlock : Entity
     {
         private readonly Simulation _sim;
-        public const float Speed = 4;
-        public const float RotationSpeed = 0.1f; // Radians per tick
+        public const float Speed = 3.5f;
+        public const float RotationSpeed = 0.095f; // Radians per tick
 
         public float MaxHealth => 60;
         public float Health { get; set => field = float.Clamp(value, 0, MaxHealth); }
 
+        /// Desired direction of travel. If set, the Warlock will move and rotate as needed
         public Vector2? Direction { get; set; }
+        public float? DesiredOrientation { get; set; }
 
         public List<IBuff> Buffs { get; } = new();
 
@@ -90,7 +92,16 @@ namespace WarlockGame.Core.Game.Sim.Entities
                     Orientation = targetOrientation;
                 }
                 else {
-                    Orientation += -Math.Sign(interiorAngle) * RotationSpeed;
+                    Orientation -= Math.Sign(interiorAngle) * RotationSpeed;
+                }
+            } else if(DesiredOrientation != null) {
+                var interiorAngle = Util.Geometry.GetInteriorAngle(DesiredOrientation.Value, Orientation);
+
+                if (Math.Abs(interiorAngle) < RotationSpeed) {
+                    Orientation = DesiredOrientation.Value;
+                }
+                else {
+                    Orientation -= Math.Sign(interiorAngle) * RotationSpeed;
                 }
             }
 
@@ -98,7 +109,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
             Position = Vector2.Clamp(Position, Sprite.Size / 2, Simulation.ArenaSize - Sprite.Size / 2);
         }
         
-        public void CastSpell(int spellId, Vector2 castDirection) {
+        public void CastSpell(int spellId, Vector2? castDirection) {
             if(_sim.SpellManager.Spells.TryGetValue(spellId, out var spell) && !spell.OnCooldown) {
                 spell.DoCast(this, castDirection);
                 SpellCast?.Invoke(this);

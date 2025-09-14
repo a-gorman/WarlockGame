@@ -116,7 +116,7 @@ class SpellFactory {
                             Context = spellContext,
                             Location = location,
                             RepeatEvery = 5,
-                            Timer = GameTimer.FromSeconds(4),
+                            Timer = GameTimer.FromSeconds(6),
                             Components = [
                                 new LocationAreaOfEffect {
                                     Shape = new Doughnut {

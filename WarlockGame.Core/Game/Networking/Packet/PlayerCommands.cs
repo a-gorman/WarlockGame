@@ -40,6 +40,14 @@ public class CastCommand : IPlayerCommand {
     public Vector2 CastVector { get; set; }
 
     public int SpellId { get; set; }
+    public CastType Type { get; set; }
+
+    public enum CastType {
+        Invalid = 0,
+        Self = 1,
+        Location = 2,
+        Directional = 3
+    }
 
     public IPlayerCommand.Type GetSerializerType() => IPlayerCommand.Type.CastCommand;
 
@@ -47,11 +55,13 @@ public class CastCommand : IPlayerCommand {
         writer.Put(PlayerId);
         writer.Put(CastVector);
         writer.Put(SpellId);
+        writer.Put((int)Type);
     }
 
     public void Deserialize(NetDataReader reader) {
         PlayerId = reader.GetInt();
         CastVector = reader.GetVector2();
         SpellId = reader.GetInt();
+        Type = (CastType) reader.GetInt();
     }
 }
