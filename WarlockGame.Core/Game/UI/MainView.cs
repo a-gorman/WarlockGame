@@ -41,9 +41,17 @@ sealed class MainView : InterfaceComponent {
                 _ => location,
                 _ => null
             );
+
+            CastCommand.CastType castType = spell.Effect.Match<CastCommand.CastType>(
+                _ => CastCommand.CastType.Directional,
+                _ => CastCommand.CastType.Location,
+                _ => CastCommand.CastType.Self
+            );
+            
             if (castVector is not null) {
                 InputManager.IssueCommand(new CastCommand {
                     PlayerId = localPlayerId.Value,
+                    Type = castType,
                     CastVector = castVector.Value,
                     SpellId = InputManager.SelectedSpellId.Value
                 });

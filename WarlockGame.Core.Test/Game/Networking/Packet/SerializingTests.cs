@@ -80,7 +80,7 @@ public class SerializingTests {
             Tick = 1,
             Checksum = 2,
             PlayerCommands = [
-                new CastCommand { SpellId = 3, PlayerId = 4, CastVector = new Vector2(5, 6) },
+                new CastCommand { SpellId = 3, PlayerId = 4, Type = CastCommand.CastType.Directional, CastVector = new Vector2(5, 6) },
                 new MoveCommand { PlayerId = 7, Location = new Vector2(8, 9) }
             ],
             ServerCommands = [

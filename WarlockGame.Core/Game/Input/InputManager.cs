@@ -90,7 +90,7 @@ static class InputManager {
                     selectedSpell?.Effect.Switch(
                         _ => SelectedSpellId = selectedSpell.Id,
                         _ => SelectedSpellId = selectedSpell.Id,
-                        _ => IssueCommand(new CastCommand { PlayerId = LocalPlayerId.Value, CastVector = Vector2.Zero, SpellId = selectedSpell.Id })
+                        _ => IssueCommand(new CastCommand { PlayerId = LocalPlayerId.Value, Type = CastCommand.CastType.Self, SpellId = selectedSpell.Id })
                     );
                 }
             }

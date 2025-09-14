@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
+using WarlockGame.Core.Game.Networking.Packet;
+using WarlockGame.Core.Game.Sim.Order;
 
 namespace WarlockGame.Core.Game.Util;
 
@@ -94,5 +96,14 @@ internal static class Extensions {
             source.Add(key, newValue);
             return newValue;
         }
+    }
+
+    public static CastOrder.CastType ToSimType(this CastCommand.CastType source) {
+        return source switch {
+            CastCommand.CastType.Self => CastOrder.CastType.Self,
+            CastCommand.CastType.Location => CastOrder.CastType.Location,
+            CastCommand.CastType.Directional => CastOrder.CastType.Directional,
+            _ => throw new ArgumentOutOfRangeException(nameof(source), source, null)
+        };
     }
 }
