@@ -7,7 +7,9 @@ class DamageOverTime : IBuff {
     private readonly SpellContext _spellContext;
     private readonly float _damagePerTick;
     private readonly GameTimer _gameTimer;
-    
+
+    public int Id { get; set; }
+    public int TypeId { get; } = 2;
     public bool IsExpired { get; set; }
 
 

@@ -6,6 +6,7 @@ using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim.Effect;
 using WarlockGame.Core.Game.Sim.Entities.Factory;
 using WarlockGame.Core.Game.Sim.Order;
+using WarlockGame.Core.Game.Sim.Perks;
 using WarlockGame.Core.Game.Sim.Rule;
 using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.UI;
@@ -22,6 +23,7 @@ class Simulation {
     public SpellFactory SpellFactory { get; }
     public EffectManager EffectManager { get; }
     public WarlockFactory WarlockFactory { get; }
+    public PerkManager PerkManager { get; }
 
     private readonly MaxLives _gameRule;
 
@@ -31,6 +33,7 @@ class Simulation {
         EffectManager = new EffectManager();
         SpellFactory = new SpellFactory(this);
         WarlockFactory = new WarlockFactory(this);
+        PerkManager = new PerkManager(this);
         _gameRule = new MaxLives(this, 3);
         EntityManager.WarlockDestroyed += _gameRule.OnWarlockDestroyed;
     }
@@ -45,6 +48,7 @@ class Simulation {
         EntityManager.Update();
         EffectManager.Update();
         SpellManager.Update();
+        PerkManager.Update();
 
         return new TickResult
         {
@@ -73,6 +77,7 @@ class Simulation {
             SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.RefractionShield());
             SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.Homing());
             SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.Boomerang());
+            PerkManager.AddPerk(new InvisibilityPerk(warlock.PlayerId!.Value, this));
         }
         _gameRule.Reset();
         UIManager.AddComponent(new Scoreboard(_gameRule));
@@ -86,18 +91,18 @@ class Simulation {
     }
     
     public int CalculateChecksum() {
-        return (int)EntityManager.Warlocks.Sum(x => x.Position.X + x.Position.Y);
+        return (int)EntityManager.EntitiesLivingOrDead.Sum(x => x.Position.X + x.Position.Y);
     }
     
     private void IssuePlayerCommand(IPlayerCommand action) {
         Logger.Debug($"Issuing {action.GetSerializerType()} command for player {action.PlayerId}");
         switch (action) {
             case MoveCommand move:
-                EntityManager.GetWarlockByPlayerId(move.PlayerId)
+                EntityManager.GetWarlockByForceId(move.PlayerId)
                              ?.GiveOrder(x => new DestinationMoveOrder(move.Location, x));
                 break;
             case CastCommand cast:
-                EntityManager.GetWarlockByPlayerId(cast.PlayerId)
+                EntityManager.GetWarlockByForceId(cast.PlayerId)
                              ?.GiveOrder(x => new CastOrder(cast.SpellId, cast.CastVector, x));
                 break;
         }

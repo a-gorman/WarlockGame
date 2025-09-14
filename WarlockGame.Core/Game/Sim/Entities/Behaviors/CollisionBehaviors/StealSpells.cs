@@ -20,7 +20,7 @@ class StealProjectiles : Behavior {
 
     private void OnCollision(OnCollisionEventArgs args) {
         if (args.Other is Projectile projectile) {
-            var owner = _sim.EntityManager.GetWarlockByPlayerId(_ownerId);
+            var owner = _sim.EntityManager.GetWarlockByForceId(_ownerId);
             if (owner != null) {
                 projectile.Context.Caster = owner;
             }
