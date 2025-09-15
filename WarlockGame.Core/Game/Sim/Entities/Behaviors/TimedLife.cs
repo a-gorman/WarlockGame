@@ -1,14 +1,15 @@
 namespace WarlockGame.Core.Game.Sim.Entities.Behaviors;
 
 class TimedLife : Behavior {
-    private readonly GameTimer _timeToLive;
+    private GameTimer _timeToLive;
 
     public TimedLife(SimTime timeToLive) {
         _timeToLive = timeToLive.ToTimer();
     }
 
     public override void Update(Entity entity) {
-        if (_timeToLive.Decrement()) {
+        _timeToLive = _timeToLive.Decrement();
+        if (_timeToLive.IsExpired) {
             entity.IsExpired = true;
         }
     }

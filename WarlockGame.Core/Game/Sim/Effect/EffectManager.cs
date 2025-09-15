@@ -58,11 +58,12 @@ namespace WarlockGame.Core.Game.Sim.Effect
 		}
 
 		private class DelayedEffect : IEffect {
-			public required GameTimer Timer { get; init; }
+			public required GameTimer Timer { get; set; }
 			public required Action Action { get; init; }
 			public bool IsExpired => Timer.IsExpired;
 			public void Update() {
-				if (Timer.Decrement()) {
+				Timer = Timer.Decrement();
+				if (Timer.IsExpired) {
 					Action.Invoke();
 				}
 			}

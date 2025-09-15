@@ -11,7 +11,6 @@ namespace WarlockGame.Core.Game.Sim.Entities
 {
     class Warlock : Entity
     {
-        private readonly Simulation _sim;
         public const float Speed = 3.5f;
         public const float RotationSpeed = 0.095f; // Radians per tick
 
@@ -23,12 +22,15 @@ namespace WarlockGame.Core.Game.Sim.Entities
         public float? DesiredOrientation { get; set; }
 
         public List<IBuff> Buffs { get; } = new();
-
-        private static readonly Random _rand = new();
-        private LinkedList<IOrder> Orders { get; } = new();
         public event Action<Warlock>? Respawned;
         public event Action<Warlock>? Destroyed;
         public event Action<Warlock>? SpellCast;
+
+        private static readonly Random _rand = new();
+        private readonly Simulation _sim;
+        
+        private LinkedList<IOrder> Orders { get; } = new();
+
 
         public Warlock(int playerId, Vector2 position, Simulation simulation):
             base(new Sprite(Art.Player), position, radius: 20) {
@@ -47,6 +49,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
             
             foreach (var buff in Buffs) {
                 buff.Update(this);
+                if (IsDead) break;
             }
             Buffs.RemoveAll(x => x.IsExpired);
 
@@ -83,7 +86,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
             }
 
             if (Direction != null) {
-                var targetOrientation = Extensions.ToAngle(Direction.Value);
+                var targetOrientation = Direction.Value.ToAngle();
                 var interiorAngle = Util.Geometry.GetInteriorAngle(targetOrientation, Orientation);
                 var rotationFactor = MathF.Cos(interiorAngle / 2).Squared();
                 Velocity += Speed * rotationFactor * Direction.Value;
@@ -110,7 +113,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
         }
         
         public void CastSpell(int spellId, Vector2? castDirection) {
-            if(_sim.SpellManager.Spells.TryGetValue(spellId, out var spell) && !spell.OnCooldown) {
+            if (_sim.SpellManager.Spells.TryGetValue(spellId, out var spell) && !spell.OnCooldown) {
                 spell.DoCast(this, castDirection);
                 SpellCast?.Invoke(this);
             }

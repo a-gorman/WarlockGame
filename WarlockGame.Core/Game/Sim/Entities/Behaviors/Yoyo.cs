@@ -11,8 +11,8 @@ class Yoyo : Behavior {
     private readonly Vector2 _inwardsAccel;
 
     public Vector2 Velocity { get; set; } = Vector2.Zero;
-    public GameTimer OutwardsTime { get; }
-    public GameTimer InwardsTime { get; }
+    public GameTimer OutwardsTime { get; private set; }
+    public GameTimer InwardsTime { get; private set; }
 
     public Yoyo(Simulation simulation, Vector2 maxDisplacement, SimTime outwardsTime, SimTime inwardsTime) {
         _simulation = simulation;
@@ -31,13 +31,15 @@ class Yoyo : Behavior {
     public override void Update(Entity entity) {
         if (_state == State.Outwards) {
             Velocity += _outwardsAccel;
-            if (OutwardsTime.Decrement()) {
+            OutwardsTime = OutwardsTime.Decrement();
+            if (OutwardsTime.IsExpired) {
                 _state = State.Inwards;
             }
         }
         else {
             Velocity += _inwardsAccel;
-            if (InwardsTime.Decrement()) {
+            InwardsTime = InwardsTime.Decrement();
+            if (InwardsTime.IsExpired) {
                 IsExpired = true;
             }
         }

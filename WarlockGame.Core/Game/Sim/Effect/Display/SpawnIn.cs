@@ -14,7 +14,7 @@ public class SpawnIn : IEffect
     
     private readonly Sprite _sprite;
 
-    private readonly GameTimer _timer = GameTimer.FromTicks(Duration);
+    private GameTimer _timer = GameTimer.FromTicks(Duration);
 
     public bool IsExpired => _timer.IsExpired;
 
@@ -34,7 +34,7 @@ public class SpawnIn : IEffect
     {
         if (!_timer.IsExpired)
         {
-            float factor = 1 - (float)_timer.FramesRemaining / Duration;
+            float factor = 1 - (float)_timer.TicksRemaining / Duration;
             _sprite.Color = Color.White * factor;
             _sprite.Scale = factor;
             _sprite.Draw(spriteBatch, _position, _orientation);
