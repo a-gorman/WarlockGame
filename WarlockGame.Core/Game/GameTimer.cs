@@ -2,17 +2,17 @@ using System;
 
 namespace WarlockGame.Core.Game;
 
-public class GameTimer
+public struct GameTimer
 {
-    public int FramesRemaining { get; set; }
+    public int TicksRemaining { get; set; }
     
-    private const float FramesPerSecond = 60;
+    private const float TicksPerSecond = 60;
 
-    public bool IsExpired => FramesRemaining == 0;
+    public bool IsExpired => TicksRemaining == 0;
 
-    private GameTimer(int frames)
+    private GameTimer(int ticks)
     {
-        FramesRemaining = frames;
+        TicksRemaining = ticks;
     }
 
     public static GameTimer FromTicks(int frames)
@@ -22,12 +22,12 @@ public class GameTimer
     
     public static GameTimer FromSeconds(float seconds)
     {
-        return new GameTimer((int) (FramesPerSecond * seconds));
+        return new GameTimer((int) (TicksPerSecond * seconds));
     }
     
-    public bool Decrement()
+    public GameTimer Decrement()
     {
-        FramesRemaining = Math.Max(0, FramesRemaining - 1);
-        return FramesRemaining == 0;
+        TicksRemaining = Math.Max(0, TicksRemaining - 1);
+        return this;
     }
 }

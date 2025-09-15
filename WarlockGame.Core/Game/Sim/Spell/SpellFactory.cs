@@ -26,7 +26,7 @@ class SpellFactory {
             Id = _nextSpellId++,
             SpellTypeId = 1,
             Name = "Fireball",
-            CooldownTime = SimTime.OfSeconds(3).Ticks,
+            CooldownTime = SimTime.OfSeconds(3),
             SpellIcon = Art.FireballIcon,
             Effect = new ProjectileComponent(
                 sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .12f),
@@ -48,7 +48,7 @@ class SpellFactory {
             Id = _nextSpellId++,
             SpellTypeId = 2,
             Name = "Lightning",
-            CooldownTime = SimTime.OfSeconds(20).Ticks,
+            CooldownTime = SimTime.OfSeconds(20),
             SpellIcon = Art.LightningIcon,
             Effect = new DirectionalAreaOfEffect {
                 Shape = new LineTarget { Length = 600, IgnoreCaster = true, Texture = Art.Lightning },
@@ -65,14 +65,14 @@ class SpellFactory {
             Id = _nextSpellId++,
             SpellTypeId = 3,
             Name = "Poison",
-            CooldownTime = SimTime.OfSeconds(6).Ticks,
+            CooldownTime = SimTime.OfSeconds(6),
             SpellIcon = Art.PoisonIcon,
             Effect = new ProjectileComponent(
                 sprite: new Sprite(Art.PoisonBall) { Scale = 0.80f },
                 [
                     new LocationAreaOfEffect {
                         Shape = new CircleTarget { Radius = 20 },
-                        Components = [new ApplyBuff(10, caster => new DamageOverTime(caster, 120, 5f / 60))]
+                        Components = [new ApplyBuff(10, caster => new DamageOverTime(caster, SimTime.OfSeconds(5), 2.5f / 60))]
                     }
                 ]
             )
@@ -84,7 +84,7 @@ class SpellFactory {
             Id = _nextSpellId++,
             SpellTypeId = 4,
             Name = "Burst",
-            CooldownTime = SimTime.OfSeconds(6).Ticks,
+            CooldownTime = SimTime.OfSeconds(6),
             SpellIcon = Art.BurstIcon,
             Effect = new SelfAreaOfEffect {
                 Shape = new CircleTarget { Radius = 200 },
@@ -107,7 +107,7 @@ class SpellFactory {
             Id = _nextSpellId++,
             SpellTypeId = 5,
             Name = "Wind Shield",
-            CooldownTime = SimTime.OfSeconds(16).Ticks,
+            CooldownTime = SimTime.OfSeconds(16),
             SpellIcon = Art.WindWallIcon,
             Effect = new SelfCastPositionComponent {
                 Components = [
@@ -147,7 +147,7 @@ class SpellFactory {
             Id = _nextSpellId++,
             SpellTypeId = 6,
             Name = "Soul Shatter",
-            CooldownTime = SimTime.OfSeconds(6).Ticks,
+            CooldownTime = SimTime.OfSeconds(6),
             SpellIcon = Art.SoulShatterIcon,
             Effect = new ProjectileComponent(Sprite.FromGridSpriteSheet(Art.PowerBall, 4, 4, 10),
             [
@@ -213,7 +213,7 @@ class SpellFactory {
             Id = _nextSpellId++,
             SpellTypeId = 7,
             Name = "Refraction Shield",
-            CooldownTime = SimTime.OfSeconds(16).Ticks,
+            CooldownTime = SimTime.OfSeconds(16),
             SpellIcon = Art.RefractionShieldIcon,
             Effect = new SelfCastPositionComponent {
                 Components = [
@@ -267,7 +267,7 @@ class SpellFactory {
             Id = _nextSpellId++,
             SpellTypeId = 8,
             Name = "Homing",
-            CooldownTime = SimTime.OfSeconds(6).Ticks,
+            CooldownTime = SimTime.OfSeconds(6),
             SpellIcon = Art.HomingIcon,
             Effect = new ProjectileComponent(
                 sprite: Sprite.FromGridSpriteSheet(Art.EnergySpark, 4, 4, 10, scale: 2f, rotates: false),
@@ -299,7 +299,7 @@ class SpellFactory {
             Id = _nextSpellId++,
             SpellTypeId = 9,
             Name = "Boomerang",
-            CooldownTime = SimTime.OfSeconds(6).Ticks,
+            CooldownTime = SimTime.OfSeconds(6),
             SpellIcon = Art.BoomerangIcon,
             Effect = new ProjectileComponent(
                 sprite: Sprite.FromGridSpriteSheet(Art.Triple, 4, 4, 10, scale: 2f),

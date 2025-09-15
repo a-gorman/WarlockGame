@@ -11,15 +11,15 @@ class ContinuousSpellEffect : IEffect {
     public required SpellContext Context { get; init; }
     public required OneOf<Vector2, Func<ContinuousSpellEffect, Vector2>> Location { private get; init; }
     public required IReadOnlyCollection<ILocationSpellComponent> Components { get; init; }
-    public required GameTimer Timer { get; init; }
+    public required GameTimer Timer { get; set; }
     public int RepeatEvery { get; init; } = 1;
     
     public void Update() {
-        Timer.Decrement();
+        Timer = Timer.Decrement();
         IsExpired |= Timer.IsExpired;
 
         // TODO: This Doesn't consistently start on the first tick
-        if (Timer.FramesRemaining % RepeatEvery == 0) {
+        if (Timer.TicksRemaining % RepeatEvery == 0) {
             var currentLocation = Location.Match(x => x, x => x.Invoke(this));
 
             foreach (var component in Components) {

@@ -12,7 +12,7 @@ public class VectorEffect : IEffect {
     private readonly Vector2 _end;
     private readonly Color _color;
 
-    private readonly GameTimer _timer;
+    private GameTimer _timer;
 
     public bool IsExpired => _timer.IsExpired;
 
@@ -41,7 +41,7 @@ public class PointEffect : IEffect {
     private readonly Vector2 _position;
     private readonly Color _color;
 
-    private readonly GameTimer _timer;
+    private GameTimer _timer;
 
     public bool IsExpired => _timer.IsExpired;
 
@@ -52,7 +52,7 @@ public class PointEffect : IEffect {
     }
 
     public void Update() {
-        _timer.Decrement();
+        _timer = _timer.Decrement();
     }
 
     public void Draw(SpriteBatch spriteBatch) {
@@ -70,7 +70,7 @@ public class StringEffect : IEffect {
     private readonly Vector2 _position;
     private readonly Color _color;
 
-    private readonly GameTimer _timer;
+    private GameTimer _timer;
 
     public bool IsExpired => _timer.IsExpired;
 
@@ -82,7 +82,7 @@ public class StringEffect : IEffect {
     }
 
     public void Update() {
-        _timer.Decrement();
+        _timer = _timer.Decrement();
     }
 
     public void Draw(SpriteBatch spriteBatch) {
@@ -94,7 +94,7 @@ public class CircleEffect : IEffect {
     private readonly CircleF _circle;
     private readonly Color _color;
 
-    private readonly GameTimer _timer;
+    private GameTimer _timer;
 
     public bool IsExpired => _timer.IsExpired;
 
@@ -105,7 +105,7 @@ public class CircleEffect : IEffect {
     }
 
     public void Update() {
-        _timer.Decrement();
+        _timer = _timer.Decrement();
     }
 
     public void Draw(SpriteBatch spriteBatch) {
@@ -117,7 +117,7 @@ public class PolygonEffect : IEffect {
     private readonly Polygon _polygon;
     private readonly Color _color;
 
-    private readonly GameTimer _timer;
+    private GameTimer _timer;
 
     public bool IsExpired => _timer.IsExpired;
 
@@ -128,7 +128,7 @@ public class PolygonEffect : IEffect {
     }
 
     public void Update() {
-        _timer.Decrement();
+        _timer = _timer.Decrement();
     }
 
     public void Draw(SpriteBatch spriteBatch) {

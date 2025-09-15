@@ -14,7 +14,7 @@ public class Lightning : IEffect
     
     private readonly Sprite _sprite;
 
-    private readonly GameTimer _timer = GameTimer.FromTicks(Duration);
+    private GameTimer _timer = GameTimer.FromTicks(Duration);
 
     public bool IsExpired => _timer.IsExpired;
 

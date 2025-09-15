@@ -10,10 +10,10 @@ class WarlockSpell {
     public required string Name { get; init; }
     public required int SpellTypeId { get; init; }
     public int SlotLocation { get; set; }
-    public required int CooldownTime { get; init; }
+    public required SimTime CooldownTime { get; init; }
     public required Texture2D SpellIcon { get; init; }
     public required OneOf<IDirectionalSpellComponent, ILocationSpellComponent, ISelfSpellComponent> Effect { get; init; }
-    public GameTimer Cooldown { get; } = GameTimer.FromTicks(0);
+    public GameTimer Cooldown { get; set; } = GameTimer.FromTicks(0);
     public bool OnCooldown => !Cooldown.IsExpired;
 
     private readonly Simulation _simulation;
@@ -23,11 +23,11 @@ class WarlockSpell {
     }
 
     public void Update() {
-        Cooldown.Decrement();
+        Cooldown = Cooldown.Decrement();
     }
 
     public void DoCast(Warlock caster, Vector2? direction) {
-        Cooldown.FramesRemaining = CooldownTime;
+        Cooldown = CooldownTime.ToTimer();
         var context = new SpellContext
         {
             Caster = caster,
