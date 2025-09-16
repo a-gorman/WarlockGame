@@ -80,7 +80,6 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         UIManager.AddComponent(LogDisplay.Instance);
         UIManager.AddComponent(MessageDisplay.Instance);
         UIManager.AddComponent(new SpellDisplay(Configuration.KeyMappings));
-        UIManager.AddComponent(new HealthBarManager(Simulation));
         UIManager.AddComponent(new MainView(Simulation));
 
 #if DEBUG

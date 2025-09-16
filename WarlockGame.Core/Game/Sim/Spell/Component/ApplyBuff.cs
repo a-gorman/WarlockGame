@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using WarlockGame.Core.Game.Sim.Buff;
+using WarlockGame.Core.Game.Sim.Buffs;
 using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
 
@@ -8,10 +8,10 @@ namespace WarlockGame.Core.Game.Sim.Spell.Component;
 
 class ApplyBuff : ITargetComponent {
     private readonly int _radius;
-    private readonly Func<SpellContext,IBuff> _buffConstructor;
+    private readonly Func<SpellContext,Buff> _buffConstructor;
     public bool IgnoreCaster { get; init; } = false;
     
-    public ApplyBuff(int radius, Func<SpellContext,IBuff> buffConstructor) {
+    public ApplyBuff(int radius, Func<SpellContext,Buff> buffConstructor) {
         _radius = radius;
         _buffConstructor = buffConstructor;
     }
