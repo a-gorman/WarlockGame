@@ -77,7 +77,9 @@ class Simulation {
             SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.RefractionShield());
             SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.Homing());
             SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.Boomerang());
-            PerkManager.AddPerk(new InvisibilityPerk(warlock.PlayerId!.Value, this));
+            PerkManager.AddPerk(new PermanentInvisibilityPerk(warlock.PlayerId!.Value));
+            PerkManager.AddPerk(new PermanentRegenerationPerk(warlock.PlayerId!.Value));
+            PerkManager.AddPerk(new PermanentDamageBoost(warlock.PlayerId!.Value));
         }
         _gameRule.Reset();
         UIManager.AddComponent(new Scoreboard(_gameRule));

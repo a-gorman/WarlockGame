@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using WarlockGame.Core.Game.Graphics;
-using WarlockGame.Core.Game.Sim.Buff;
+using WarlockGame.Core.Game.Log;
+using WarlockGame.Core.Game.Sim.Buffs;
 using WarlockGame.Core.Game.Sim.Entities.Behaviors;
 using WarlockGame.Core.Game.Sim.Order;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Sim.Entities
 {
-    class Warlock : Entity
-    {
+    class Warlock : Entity {
         public const float Speed = 3.5f;
         public const float RotationSpeed = 0.095f; // Radians per tick
 
@@ -21,14 +21,18 @@ namespace WarlockGame.Core.Game.Sim.Entities
         public Vector2? Direction { get; set; }
         public float? DesiredOrientation { get; set; }
 
-        public List<IBuff> Buffs { get; } = new();
+        public List<Buff> Buffs { get; } = new();
+
+        public float DamageMultiplier { get; set; }= 1;
+        
         public event Action<Warlock>? Respawned;
         public event Action<Warlock>? Destroyed;
         public event Action<Warlock>? SpellCast;
 
         private static readonly Random _rand = new();
         private readonly Simulation _sim;
-        
+        private int _nextBuffId = 1;
+
         private LinkedList<IOrder> Orders { get; } = new();
 
 
@@ -49,7 +53,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
             
             foreach (var buff in Buffs) {
                 buff.Update(this);
-                if (IsDead) break;
+                if(buff.IsExpired) { buff.OnRemove(this); }
             }
             Buffs.RemoveAll(x => x.IsExpired);
 
@@ -119,57 +123,22 @@ namespace WarlockGame.Core.Game.Sim.Entities
             }
         }
 
-        public void AddBuff(IBuff buff) {
+        public int AddBuff(Buff buff) {
+            buff.Id = _nextBuffId++;
             Buffs.Add(buff);
+            buff.OnAdd(this);
+            return buff.Id;
         }
-
-        // private void MakeExhaustFire()
-        // {
-        //     if (Velocity.LengthSquared() > 0.1f)
-        //     {
-        //         // set up some variables
-        //         Quaternion rot = Quaternion.CreateFromYawPitchRoll(0f, 0f, Orientation);
-        //
-        //         double t = WarlockGame.GameTime.TotalGameTime.TotalSeconds;
-        //         // The primary velocity of the particles is 3 pixels/frame in the direction opposite to which the ship is travelling.
-        //         Vector2 baseVel = Extensions.ScaleTo(Velocity, -3);
-        //         // Calculate the sideways velocity for the two side streams. The direction is perpendicular to the ship's velocity and the
-        //         // magnitude varies sinusoidally.
-        //         Vector2 perpVel = new Vector2(baseVel.Y, -baseVel.X) * (0.6f * (float)Math.Sin(t * 10));
-        //         Color sideColor = new Color(200, 38, 9); // deep red
-        //         Color midColor = new Color(255, 187, 30); // orange-yellow
-        //         Vector2 pos =
-        //             Position + Vector2.Transform(new Vector2(-25, 0), rot); // position of the ship's exhaust pipe.
-        //         const float alpha = 0.7f;
-        //
-        //         // middle particle stream
-        //         Vector2 velMid = baseVel + _rand.NextVector2(0, 1);
-        //         WarlockGame.ParticleManager.CreateParticle(Art.LineParticle, pos, Color.White * alpha, 60f,
-        //             new Vector2(0.5f, 1),
-        //             new ParticleState(velMid, ParticleType.Enemy));
-        //         WarlockGame.ParticleManager.CreateParticle(Art.Glow, pos, midColor * alpha, 60f,
-        //             new Vector2(0.5f, 1),
-        //             new ParticleState(velMid, ParticleType.Enemy));
-        //
-        //         // side particle streams
-        //         Vector2 vel1 = baseVel + perpVel + _rand.NextVector2(0, 0.3f);
-        //         Vector2 vel2 = baseVel - perpVel + _rand.NextVector2(0, 0.3f);
-        //         WarlockGame.ParticleManager.CreateParticle(Art.LineParticle, pos, Color.White * alpha, 60f,
-        //             new Vector2(0.5f, 1),
-        //             new ParticleState(vel1, ParticleType.Enemy));
-        //         WarlockGame.ParticleManager.CreateParticle(Art.LineParticle, pos, Color.White * alpha, 60f,
-        //             new Vector2(0.5f, 1),
-        //             new ParticleState(vel2, ParticleType.Enemy));
-        //
-        //         WarlockGame.ParticleManager.CreateParticle(Art.Glow, pos, sideColor * alpha, 60f,
-        //             new Vector2(0.5f, 1),
-        //             new ParticleState(vel1, ParticleType.Enemy));
-        //         WarlockGame.ParticleManager.CreateParticle(Art.Glow, pos, sideColor * alpha, 60f,
-        //             new Vector2(0.5f, 1),
-        //             new ParticleState(vel2, ParticleType.Enemy));
-        //     }
-        // }
-
+        
+        public void RemoveBuff(int buffId) {
+            foreach (var buff in Buffs) {
+                if (buffId == buff.Id) {
+                    buff.IsExpired = true;
+                    return;
+                }
+            }
+        }
+        
         public override void Damage(float damage, Entity source) {
             Health -= damage;
             base.Damage(damage, source);
@@ -186,15 +155,17 @@ namespace WarlockGame.Core.Game.Sim.Entities
         }
         
         private void Destroy(Entity source) {
-            if (!IsDead) {
-                IsDead = true;
-                foreach (var buff in Buffs) {
+            if (IsDead) return;
+            
+            Logger.Info($"Warlock {Id} destroyed! Source: {source.Id} Force: {source.PlayerId}");
+            IsDead = true;
+            foreach (var buff in Buffs) {
+                if (buff.ClearedOnDeath) {
                     buff.IsExpired = true;
                 }
-                Buffs.Clear();
-                CancelOrders();
-                Destroyed?.Invoke(this);
             }
+            CancelOrders();
+            Destroyed?.Invoke(this);
         }
     }
 }
