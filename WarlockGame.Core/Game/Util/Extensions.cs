@@ -46,14 +46,12 @@ internal static class Extensions {
         return new Vector2(length * (float)Math.Cos(theta), length * (float)Math.Sin(theta));
     }
 
-    public static IEnumerable<Rectangle> Subdivide(this Rectangle rectangle, int rectanglesX, int rectanglesY)
-    {
+    public static IEnumerable<Rectangle> Subdivide(this Rectangle rectangle, int rectanglesX, int rectanglesY) {
         var rectangleWidth = rectangle.Width / rectanglesX;
         var rectangleHeight = rectangle.Height / rectanglesY;
-        for (int x = 0; x < rectanglesX; x++)
-        {
-            for (int y = 0; y < rectanglesY; y++)
-            {
+
+        for (int y = 0; y < rectanglesY; y++) {
+            for (int x = 0; x < rectanglesX; x++) {
                 yield return new Rectangle(rectangleWidth * x, rectangleHeight * y, rectangleWidth, rectangleHeight);
             }
         }

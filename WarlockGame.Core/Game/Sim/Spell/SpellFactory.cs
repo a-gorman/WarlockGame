@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Graphics;
@@ -302,7 +303,7 @@ class SpellFactory {
             CooldownTime = SimTime.OfSeconds(6),
             SpellIcon = Art.BoomerangIcon,
             Effect = new ProjectileComponent(
-                sprite: Sprite.FromGridSpriteSheet(Art.Triple, 4, 4, 10, scale: 2f),
+                sprite: Sprite.FromGridSpriteSheet(Art.Triple, 4, 4, 2, scale: 2f, rotates: false),
                 speed: 18,
                 effects: [
                     new LocationAreaOfEffect {
