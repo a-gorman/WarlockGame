@@ -9,16 +9,16 @@ using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace WarlockGame.Core.Game.UI;
 
-public class MessageDisplay : InterfaceComponent
+public sealed class MessageDisplay : InterfaceComponent
 {
     public static MessageDisplay Instance { get; } = new();
  
-    private readonly TextDisplay _messageDisplay = new() { BoundingBox = new Rectangle(50, 600, 400, 100), TextScale = 0.5f };
+    private readonly TextDisplay _messageDisplay = new() { TextScale = 0.5f };
     
     private readonly LinkedList<Message> _messages = [];
 
-    public MessageDisplay()
-    {
+    public MessageDisplay() {
+        BoundingBox = new Rectangle(50, 600, 400, 100);
         AddComponent(_messageDisplay);
     }
 
