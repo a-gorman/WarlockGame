@@ -31,6 +31,7 @@ class Buff {
         Invisibility,
         DamageOverTime,
         Regeneration,
-        DamageBoost
+        DamageBoost,
+        SpeedBoost
     }
 }

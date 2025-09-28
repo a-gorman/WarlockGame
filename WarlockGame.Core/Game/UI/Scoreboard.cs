@@ -8,31 +8,28 @@ using WarlockGame.Core.Game.UI.Components.Basic;
 namespace WarlockGame.Core.Game.UI;
 
 sealed class Scoreboard : InterfaceComponent {
-    private readonly MaxLives _gameRule;
+    private readonly GameRules _gameRule;
     private readonly Components.Basic.Grid _grid;
     private readonly Dictionary<int, TextDisplay> _playerLifeDisplays = new();
 
-    public Scoreboard(MaxLives gameRule) {
+    public Scoreboard(GameRules gameRule) {
         var columnWidth = 90;
         var rowHeight = 25;
         
         _gameRule = gameRule;
-        var playerIds = gameRule.PlayerLives.Keys.ToList();
+        var playerIds = gameRule.Statuses.Keys.ToList();
         _grid = new Components.Basic.Grid(0, 0, 2, columnWidth, playerIds.Count, rowHeight);
-        AddComponent(_grid);
         for (int i = 0; i < playerIds.Count; i++) {
             var id = playerIds[i];
-            var lives = gameRule.PlayerLives[id];
+            var lives = gameRule.Statuses[id].Lives;
             var player = PlayerManager.GetPlayer(id);
             if (player == null) continue;
             _grid.AddComponent(new TextDisplay {
-                Bounds = new Rectangle(0, 0, columnWidth, rowHeight),
                 TextColor = player.Color,
                 Text = player.Name,
                 TextScale = 0.55f
             }, i, 0);
             var lifeDisplay = new TextDisplay {
-                Bounds = new Rectangle(0, 0, columnWidth, rowHeight),
                 TextColor = player.Color,
                 Text = lives.ToString(),
                 TextScale = 0.55f
@@ -43,6 +40,7 @@ sealed class Scoreboard : InterfaceComponent {
 
         var totalWidth = columnWidth * 2;
         BoundingBox = new Rectangle((int)WarlockGame.ScreenSize.X - totalWidth, 15, totalWidth, rowHeight * playerIds.Count);
+        AddComponent(_grid);
     }
 
     public override void OnAdd() {
@@ -53,7 +51,7 @@ sealed class Scoreboard : InterfaceComponent {
         _gameRule.OnChanged -= HandleGameRuleChanged;
     }
 
-    private void HandleGameRuleChanged(MaxLivesChanged eventArgs) {
+    private void HandleGameRuleChanged(LivesChanged eventArgs) {
         if(eventArgs.Reset) {
             foreach(var playerId in _playerLifeDisplays.Keys) {
                 RecalculatePlayerLives(playerId);
@@ -64,6 +62,6 @@ sealed class Scoreboard : InterfaceComponent {
     }
 
     private void RecalculatePlayerLives(int playerId) {
-        _playerLifeDisplays[playerId].Text = _gameRule.PlayerLives[playerId].ToString();
+        _playerLifeDisplays[playerId].Text = _gameRule.Statuses[playerId].Lives.ToString();
     }
 }

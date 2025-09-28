@@ -11,6 +11,7 @@ namespace WarlockGame.Core.Game.UI;
 /// <summary>
 /// Manager for UI elements like text boxes, menus and status displays
 /// </summary>
+// ReSharper disable once InconsistentNaming
 static class UIManager {
     private static readonly List<InterfaceComponent> Components = new();
     
@@ -33,7 +34,14 @@ static class UIManager {
     public static void Update() {
         Components.RemoveAll(x => x.IsExpired);
         foreach (var component in Components) {
-            component.Update();
+            UpdateComponent(component);
+        }
+    }
+
+    private static void UpdateComponent(InterfaceComponent component) {
+        component.Update();
+        foreach (var nestedComponent in component.Components) {
+            UpdateComponent(nestedComponent);
         }
     }
 
@@ -74,16 +82,17 @@ static class UIManager {
     }
 
     private static void DrawComponent(InterfaceComponent component, Vector2 globalLocation, SpriteBatch spriteBatch) {
-        component.Draw(globalLocation, spriteBatch);
-        foreach (var nestedComponent in component.Components) {
-            if (component.Visible) {
-                DrawComponent(nestedComponent, globalLocation + component.BoundingBox.Location.ToVector2(), spriteBatch);
+        if (component.Visible) {
+            component.Draw(globalLocation, spriteBatch);
+            foreach (var nestedComponent in component.Components) {
+                DrawComponent(nestedComponent, globalLocation + component.BoundingBox.Location.ToVector2(),
+                    spriteBatch);
             }
         }
     }
     
     private static bool LeftClickComponent(InterfaceComponent component, Vector2 clickLocation) {
-        if (!component.BoundingBox.Contains(clickLocation)) return false;
+        if (!component.Visible || !component.BoundingBox.Contains(clickLocation)) return false;
         switch (component.Clickable) {
             case ClickableState.PassThrough:
                 foreach (var nestedComponent in component.Components) {
@@ -92,6 +101,10 @@ static class UIManager {
                 }
                 return false;
             case ClickableState.Consume:
+                foreach (var nestedComponent in component.Components) {
+                    var consumed = LeftClickComponent(nestedComponent, clickLocation - component.RelativeLocation);
+                    if (consumed) return true;
+                }
                 component.OnLeftClick(clickLocation);
                 return true;
             case ClickableState.Skip:

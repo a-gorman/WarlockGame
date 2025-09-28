@@ -1,4 +1,5 @@
 using LiteNetLib.Utils;
+using WarlockGame.Core.Game.Sim.Perks;
 
 namespace WarlockGame.Core.Game.Networking.Packet;
 
@@ -6,23 +7,24 @@ namespace WarlockGame.Core.Game.Networking.Packet;
 /// A player issued command that has an effect on the game.
 /// For example, issuing orders to a warlock or pausing the game.
 /// </summary>
-public interface IPlayerCommand : INetSerializable {
+public interface IPlayerAction : INetSerializable {
     int PlayerId { get; }
 
     enum Type {
         MoveCommand,
         CastCommand,
+        SelectPerk
     }
 
     Type GetSerializerType();
 }
 
-public class MoveCommand : IPlayerCommand {
+public class MoveAction : IPlayerAction {
     public int PlayerId { get; set; }
 
     public Vector2 Location { get; set; }
 
-    public IPlayerCommand.Type GetSerializerType() => IPlayerCommand.Type.MoveCommand;
+    public IPlayerAction.Type GetSerializerType() => IPlayerAction.Type.MoveCommand;
 
     public void Serialize(NetDataWriter writer) {
         writer.Put(PlayerId);
@@ -35,7 +37,7 @@ public class MoveCommand : IPlayerCommand {
     }
 }
 
-public class CastCommand : IPlayerCommand {
+public class CastAction : IPlayerAction {
     public int PlayerId { get; set; }
     public Vector2 CastVector { get; set; }
 
@@ -49,7 +51,7 @@ public class CastCommand : IPlayerCommand {
         Directional = 3
     }
 
-    public IPlayerCommand.Type GetSerializerType() => IPlayerCommand.Type.CastCommand;
+    public IPlayerAction.Type GetSerializerType() => IPlayerAction.Type.CastCommand;
 
     public void Serialize(NetDataWriter writer) {
         writer.Put(PlayerId);
@@ -63,5 +65,22 @@ public class CastCommand : IPlayerCommand {
         CastVector = reader.GetVector2();
         SpellId = reader.GetInt();
         Type = (CastType) reader.GetInt();
+    }
+}
+
+class SelectPerk : IPlayerAction {
+    public int PlayerId { get; set; }
+    public PerkType PerkType { get; set; }
+
+    public IPlayerAction.Type GetSerializerType() => IPlayerAction.Type.SelectPerk;
+
+    public void Serialize(NetDataWriter writer) {
+        writer.Put(PlayerId);
+        writer.Put((char) PerkType);
+    }
+
+    public void Deserialize(NetDataReader reader) {
+        PlayerId = reader.GetInt();
+        PerkType = (PerkType)reader.GetChar();
     }
 }

@@ -11,7 +11,7 @@ public static class Logger {
     public static IEnumerable<Log> Logs => _logs;
 
     // Deduplicates sequential logs with the same message at this level or below
-    public static Level DedupeLevel { get; set; } = Level.INFO;
+    public static Level DedupeLevel { get; set; } = Level.ERROR;
     
     public static void Debug(string message) {
         WriteLog(message, Level.DEBUG);
@@ -49,7 +49,7 @@ public static class Logger {
             });
         }
 
-        LogDisplay.Instance.Refresh();
+        LogDisplay.Instance?.Refresh();
     }
 
     public class Log {
@@ -76,6 +76,7 @@ public static class Logger {
         DEBUG = 0,
         INFO = 1,
         WARNING = 2,
-        ERROR = 3
+        ERROR = 3,
+        FATAL = 4
     }
 }

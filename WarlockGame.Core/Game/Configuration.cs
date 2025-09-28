@@ -22,6 +22,7 @@ static class Configuration {
     public static string? PlayerName { get; set; }
     public static Color? PreferredColor { get; set; }
     public static Logger.Level LogDisplayLevel { get; set; }
+    public static Logger.Level LogDedupeLevel { get; set; }
     public static bool LogDisplayVisible { get; set; }
 
     public static void ParseArgs(IConfigurationRoot args) {
@@ -51,6 +52,7 @@ static class Configuration {
         
         LogDisplayLevel = args["logDisplayLevel"]?.Let(x => Logger.Level.ParseOrNull(x, true)) ?? Logger.Level.ERROR;
         LogDisplayVisible = args["logDisplayVisible"]?.Let(bool.Parse) ?? true;
+        LogDedupeLevel = args["logDedupeLevel"]?.Let(x => Logger.Level.ParseOrNull(x, true)) ?? Logger.Level.ERROR;
     }
 
     

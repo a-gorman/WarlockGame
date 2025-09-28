@@ -125,7 +125,7 @@ public class ServerTickProcessed : INetSerializable {
     public int Tick { get; set; }
     public int Checksum { get; set; }
 
-    public List<IPlayerCommand> PlayerCommands { get; set; } = null!;
+    public List<IPlayerAction> PlayerCommands { get; set; } = null!;
     public List<IServerCommand> ServerCommands { get; set; } = null!;
 
     public void Serialize(NetDataWriter writer) {
@@ -139,10 +139,10 @@ public class ServerTickProcessed : INetSerializable {
         Tick = reader.GetInt();
         Checksum = reader.GetInt();
         ServerCommands = GetManyServerCommands(reader);
-        PlayerCommands = GetManyPlayerCommands(reader);
+        PlayerCommands = GetManyPlayerActions(reader);
     }
 
-    private static void PutManyPlayerCommands(NetDataWriter writer, IReadOnlyCollection<IPlayerCommand> commands) {
+    private static void PutManyPlayerCommands(NetDataWriter writer, IReadOnlyCollection<IPlayerAction> commands) {
         writer.Put(commands.Count);
         foreach (var command in commands) {
             writer.Put((byte) command.GetSerializerType());
@@ -158,17 +158,20 @@ public class ServerTickProcessed : INetSerializable {
         }
     }
 
-    private static List<IPlayerCommand> GetManyPlayerCommands(NetDataReader reader) {
+    private static List<IPlayerAction> GetManyPlayerActions(NetDataReader reader) {
         var count = reader.GetInt();
-        var list = new List<IPlayerCommand>(count);
+        var list = new List<IPlayerAction>(count);
         for (int i = 0; i < count; i++) {
-            var classType = (IPlayerCommand.Type)reader.GetByte();
+            var classType = (IPlayerAction.Type)reader.GetByte();
             switch (classType) {
-                case IPlayerCommand.Type.CastCommand:
-                    list.Add(reader.Get<CastCommand>());
+                case IPlayerAction.Type.CastCommand:
+                    list.Add(reader.Get<CastAction>());
                     break;
-                case IPlayerCommand.Type.MoveCommand:
-                    list.Add(reader.Get<MoveCommand>());
+                case IPlayerAction.Type.MoveCommand:
+                    list.Add(reader.Get<MoveAction>());
+                    break;
+                case IPlayerAction.Type.SelectPerk:
+                    list.Add(reader.Get<SelectPerk>());
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

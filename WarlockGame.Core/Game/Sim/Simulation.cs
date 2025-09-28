@@ -4,13 +4,13 @@ using System.Linq;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim.Effect;
-using WarlockGame.Core.Game.Sim.Entities.Factory;
 using WarlockGame.Core.Game.Sim.Order;
 using WarlockGame.Core.Game.Sim.Perks;
 using WarlockGame.Core.Game.Sim.Rule;
 using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.Util;
+using Warlock = WarlockGame.Core.Game.Sim.Entities.Warlock;
 
 namespace WarlockGame.Core.Game.Sim;
 
@@ -19,30 +19,33 @@ class Simulation {
 
     public Random Random { get; private set; } = new();
     public EntityManager EntityManager { get; } = new();
-    public SpellManager SpellManager { get; } = new();
+    public SpellManager SpellManager { get; }
     public SpellFactory SpellFactory { get; }
     public EffectManager EffectManager { get; }
-    public WarlockFactory WarlockFactory { get; }
     public PerkManager PerkManager { get; }
 
-    private readonly MaxLives _gameRule;
+    public GameRules GameRules { get; }
 
     public static Vector2 ArenaSize => new Vector2(1900, 1000);
 
     public Simulation() {
         EffectManager = new EffectManager();
         SpellFactory = new SpellFactory(this);
-        WarlockFactory = new WarlockFactory(this);
+        SpellManager = new SpellManager(SpellFactory);
         PerkManager = new PerkManager(this);
-        _gameRule = new MaxLives(this, 3);
-        EntityManager.WarlockDestroyed += _gameRule.OnWarlockDestroyed;
+        GameRules = new GameRules(this, 3);
+        EntityManager.WarlockDestroyed += GameRules.OnWarlockDestroyed;
     }
 
-    public TickResult Update(IEnumerable<IPlayerCommand> inputs) {
+    public void Initialize() {
+        GameRules.Initialize();
+    }
+
+    public TickResult Update(IEnumerable<IPlayerAction> inputs) {
         Tick++;
 
         foreach (var command in inputs) {
-            IssuePlayerCommand(command);
+            ProcessPlayerAction(command);
         }
         
         EntityManager.Update();
@@ -60,31 +63,30 @@ class Simulation {
     public void Restart(int seed) {
         ClearGameState();
         Random = new Random(seed);
+        GameRules.Reset();
+        UIManager.AddComponent(new Scoreboard(GameRules));
+        
         var radiansPerPlayer = (float)(2 * Math.PI / PlayerManager.Players.Count);
         var warlocks = PlayerManager.Players.Select((x, i) => {
             var spawnPos = ArenaSize / 2 + new Vector2(0, 250).Rotated(radiansPerPlayer * i);
-            return WarlockFactory.CreateWarlock(x.Id, spawnPos);
+            var warlock = new Warlock(x.Id, spawnPos, this);
+
+            warlock.Sprite.Color = PlayerManager.GetPlayer(x.Id)!.Color;
+        
+            return warlock;
         });
         foreach (var warlock in warlocks) {
             Logger.Info($"Creating warlock at: {warlock.Position}");
             EntityManager.Add(warlock);
-            SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.Fireball());
-            SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.Lightning());
-            SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.Poison());
-            SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.Burst());
-            SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.SoulShatter());
-            SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.WindShield());
-            SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.RefractionShield());
-            SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.Homing());
-            SpellManager.AddSpell(warlock.PlayerId!.Value, SpellFactory.Boomerang());
-            PerkManager.AddPerk(new PermanentInvisibilityPerk(warlock.PlayerId!.Value));
-            PerkManager.AddPerk(new PermanentRegenerationPerk(warlock.PlayerId!.Value));
-            PerkManager.AddPerk(new PermanentDamageBoost(warlock.PlayerId!.Value));
+            foreach (var spellType in GameRules.StartingSpells) {
+                SpellManager.AddSpell(warlock.PlayerId!.Value, spellType);
+            }
+            PerkManager.ChoosePerk(warlock.PlayerId!.Value, PerkType.SpeedBoostOnDamage);
         }
-        _gameRule.Reset();
-        UIManager.AddComponent(new Scoreboard(_gameRule));
+
+
     }
-    
+
     private void ClearGameState() {
         Tick = 0;
         EntityManager.Clear();
@@ -96,16 +98,19 @@ class Simulation {
         return (int)EntityManager.EntitiesLivingOrDead.Sum(x => x.Position.X + x.Position.Y);
     }
     
-    private void IssuePlayerCommand(IPlayerCommand action) {
+    private void ProcessPlayerAction(IPlayerAction action) {
         Logger.Debug($"Issuing {action.GetSerializerType()} command for player {action.PlayerId}");
         switch (action) {
-            case MoveCommand move:
+            case MoveAction move:
                 EntityManager.GetWarlockByForceId(move.PlayerId)
                              ?.GiveOrder(x => new DestinationMoveOrder(move.Location, x));
                 break;
-            case CastCommand cast:
+            case CastAction cast:
                 EntityManager.GetWarlockByForceId(cast.PlayerId)
                              ?.GiveOrder(x => new CastOrder(cast.SpellId, cast.CastVector, x, cast.Type.ToSimType()));
+                break;
+            case SelectPerk selectPerk:
+                PerkManager.ChoosePerk(selectPerk.PlayerId, selectPerk.PerkType);
                 break;
         }
     }

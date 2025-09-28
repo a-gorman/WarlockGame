@@ -4,11 +4,11 @@ namespace WarlockGame.Core.Game.Sim.Perks;
 
 class PermanentInvisibilityPerk : PermanentBuffPerk { 
     private const float FadeInDistanceMin = 200;
-    private const float FadeInDistanceMax = 300;
-    private const float VisibilityDecay = 0.006f;
+    private const float FadeInDistanceMax = 400;
+    private const float VisibilityDecay = 0.004f;
 
-    public PermanentInvisibilityPerk(int forceId)
-        : base(type: PerkType.Invisibility, forceId: forceId) { }
+    public PermanentInvisibilityPerk()
+        : base(type: PerkType.Invisibility) { }
 
     protected override Buff CreateBuff() {
         return new Invisibility(

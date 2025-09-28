@@ -14,6 +14,7 @@ namespace WarlockGame.Core.Game.UI;
 
 sealed class MainView : InterfaceComponent {
     private readonly Simulation _sim;
+    private readonly PerkPicker _perkPicker;
     
     private const int HpBarVerticalOffset = 30;
     private const int HpBarWidth = 80;
@@ -24,12 +25,15 @@ sealed class MainView : InterfaceComponent {
         Layer = -1;
         Clickable = ClickableState.Consume;
         BoundingBox = new Rectangle(new Point(0, 0), WarlockGame.ScreenSize.ToPoint());
+
+        _perkPicker = new PerkPicker(_sim, new Vector2(600, 400)) {Visible = false, Clickable = ClickableState.PassThrough};
+        AddComponent(_perkPicker);
     }
 
     public override void OnRightClick(Vector2 location) {
         var localPlayerId = PlayerManager.LocalPlayer?.Id;
         if (localPlayerId != null) {
-            InputManager.IssueCommand(new MoveCommand { PlayerId = localPlayerId.Value, Location = location });
+            InputManager.HandlePlayerAction(new MoveAction { PlayerId = localPlayerId.Value, Location = location });
         }
         InputManager.SelectedSpellId = null;
     }
@@ -49,14 +53,14 @@ sealed class MainView : InterfaceComponent {
                 _ => null
             );
 
-            CastCommand.CastType castType = spell.Effect.Match(
-                _ => CastCommand.CastType.Directional,
-                _ => CastCommand.CastType.Location,
-                _ => CastCommand.CastType.Self
+            CastAction.CastType castType = spell.Effect.Match(
+                _ => CastAction.CastType.Directional,
+                _ => CastAction.CastType.Location,
+                _ => CastAction.CastType.Self
             );
             
             if (castVector is not null) {
-                InputManager.IssueCommand(new CastCommand {
+                InputManager.HandlePlayerAction(new CastAction {
                     PlayerId = localPlayerId.Value,
                     Type = castType,
                     CastVector = castVector.Value,
@@ -66,6 +70,22 @@ sealed class MainView : InterfaceComponent {
         }
 
         InputManager.SelectedSpellId = null;
+    }
+
+    public override void Update() {
+        var localPlayerId = PlayerManager.LocalPlayerId;
+        if (localPlayerId != null && _sim.GameRules.Statuses.TryGetValue(localPlayerId.Value, out var status)) {
+            _perkPicker.Visible = status.ChoosingPerk;
+        }
+    }
+
+    public override void OnAdd() {
+        // _sim.GameRules.OnChanged.PerkChosen += (forceId, perk) => {
+        //     if (PlayerManager.IsLocal(forceId)) {
+        //         _perkSelection.Visible = false;
+        //         _perkSelection.Clickable = ClickableState.Skip;
+        //     }
+        // };
     }
 
     public override void Draw(Vector2 location, SpriteBatch spriteBatch) {

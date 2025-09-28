@@ -78,11 +78,8 @@ static class InputManager {
 
         if (LocalPlayerId is null) return;
         
-        var sim = WarlockGame.Instance.Simulation;
-        var warlock = sim.EntityManager.GetWarlockByForceId(LocalPlayerId.Value);
-        if (warlock is null) return;
-        
         if (!HasTextConsumers) {
+            var sim = WarlockGame.Instance.Simulation;
             foreach (var actionType in SpellSelectionActions) {
                 if (inputState.WasActionKeyPressed(actionType)) {
                     var selectedSpell = sim.SpellManager.PlayerSpells[LocalPlayerId.Value]
@@ -90,7 +87,7 @@ static class InputManager {
                     selectedSpell?.Effect.Switch(
                         _ => SelectedSpellId = selectedSpell.Id,
                         _ => SelectedSpellId = selectedSpell.Id,
-                        _ => IssueCommand(new CastCommand { PlayerId = LocalPlayerId.Value, Type = CastCommand.CastType.Self, SpellId = selectedSpell.Id })
+                        _ => HandlePlayerAction(new CastAction { PlayerId = LocalPlayerId.Value, Type = CastAction.CastType.Self, SpellId = selectedSpell.Id })
                     );
                 }
             }
@@ -100,7 +97,7 @@ static class InputManager {
         if(inputState.WasActionKeyPressed(InputAction.RightClick)) UIManager.HandleRightClick(inputState.GetAimPosition()!.Value);
     }
 
-    public static void IssueCommand<T>(T command)  where T : IPlayerCommand, new() {
+    public static void HandlePlayerAction<T>(T command)  where T : IPlayerAction, new() {
         if (NetworkManager.IsClient) {
             NetworkManager.SendSerializable(command);
         }

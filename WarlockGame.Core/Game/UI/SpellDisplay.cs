@@ -28,7 +28,7 @@ public sealed class SpellDisplay : InterfaceComponent {
         KeyMappings = keyMappings.ToDictionary(x => x.Value, x => x.Key.ToString());
         Layer = 2;
         BoundingBox = new Rectangle(20, 925, 1880, 90);
-        IconGrid = new Components.Basic.Grid(55, 20, Actions.Length, SpellSpacing, 1, 90) {
+        IconGrid = new Components.Basic.Grid(55, 20, Actions.Length, SpellSpacing, 1, 70) {
             Clickable = ClickableState.PassThrough
         };
         AddComponent(IconGrid);
@@ -59,7 +59,8 @@ public sealed class SpellDisplay : InterfaceComponent {
     
     private void AddSpell(int playerId, WarlockSpell spell) {
         if (PlayerManager.IsLocal(playerId)) {
-            IconGrid.AddComponent(new SpellIcon(spell, KeyMappings[Actions[spell.SlotLocation]]), 0, spell.SlotLocation);
+            var spellIcon = new SpellIcon(spell, KeyMappings[Actions[spell.SlotLocation]]) { BoundingBox = new Rectangle(0,0,50,50)};
+            IconGrid.AddComponent(spellIcon, 0, spell.SlotLocation);
         }
     }
 }

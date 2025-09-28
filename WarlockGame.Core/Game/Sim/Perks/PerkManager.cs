@@ -1,59 +1,72 @@
+using System;
 using System.Collections.Generic;
-using WarlockGame.Core.Game.Util;
+using System.Linq;
+using WarlockGame.Core.Game.Log;
 
 namespace WarlockGame.Core.Game.Sim.Perks;
 
 class PerkManager {
+    public event Action<int, Perk>? PerkChosen;
+    
     private readonly Simulation _sim;
     
     private int _nextPerkId = 1;
     
-    private readonly Dictionary<int, Dictionary<Perk.PerkType, Perk>> _playerPerks = new();
-    private readonly List<Perk> _perks = new();
+    private readonly Dictionary<PerkType, Perk> _perks = new();
+    // private readonly List<Perk> _perks = new();
     
     public PerkManager(Simulation sim) {
         _sim = sim;
+        AddPerk(PerkType.SpeedBoostOnDamage);
+        AddPerk(PerkType.DamageBoost);
+        AddPerk(PerkType.Invisibility);
+        AddPerk(PerkType.Regeneration);
     }
 
     public void Update() {
-        foreach (var perk in _perks) {
+        foreach (var perk in _perks.Values) {
             perk.Update(_sim);
         }
     }
 
-    public void AddPerk(Perk perk) {
-        perk.Id = _nextPerkId++;
-        var currentPerks = _playerPerks.GetOrAdd(perk.ForceId, _ => new());
-        currentPerks.TryAdd(perk.Type, perk);
-        _perks.Add(perk);
-        perk.OnAdd(_sim);
+    public List<Perk> GetAvailablePerks(int forceId) {
+        return _perks.Values.ToList();
+    }
+
+    public void ChoosePerk(int forceId, PerkType perkType) {
+        if (_perks.TryGetValue(perkType, out var perk)) {
+            perk.OnChosen(forceId, _sim);
+            PerkChosen?.Invoke(forceId, perk);
+        }
+    }
+
+    public void AddPerk(PerkType perkType) {
+        Perk? perk = perkType switch {
+            PerkType.Invisibility => new PermanentInvisibilityPerk(),
+            PerkType.Regeneration => new PermanentRegenerationPerk(),
+            PerkType.DamageBoost => new PermanentDamageBoostPerk(),
+            PerkType.SpeedBoostOnDamage => new SpeedOnDamagedPerk(),
+            _ => null
+        };
+        if (perk == null) {
+            Logger.Error($"Invalid perk type: {perkType}");
+            return;
+        }
+        
+        AddPerk(perk);
     }
     
-    public Perk? GetPlayerPerk(int forceId, Perk.PerkType perkTypeId) {
-        if (_playerPerks.TryGetValue(forceId, out var perks)
-            && perks.TryGetValue(perkTypeId, out var perk)) {
-            return perk;
-        }
-        return null;
+    public void AddPerk(Perk perk) {
+        perk.Id = _nextPerkId++;
+        _perks.Add(perk.Type, perk);
     }
-}
-
-class Perk {
-    public Perk(int forceId, PerkType type) {
-        Type = type;
-        ForceId = forceId;
-    }
-    public int Id { get; set; }
-    public PerkType Type { get; set; }
-    public int ForceId { get; set; }
-    public virtual void Update(Simulation sim) { }
-    public virtual void OnAdd(Simulation sim) { }
-    public virtual void OnRemoved(Simulation sim) { }
-
-    public enum PerkType {
-        Invalid = 0,
-        Invisibility,
-        Regeneration,
-        DamageBoost
-    }
+    
+    // public Perk? GetPlayerPerk(int forceId, PerkType perkTypeId) {
+    //     if (_playerPerks.TryGetValue(forceId, out var perks)
+    //         && perks.TryGetValue(perkTypeId, out var perk)) {
+    //         return perk;
+    //     }
+    //     
+    //     return null;
+    // }
 }

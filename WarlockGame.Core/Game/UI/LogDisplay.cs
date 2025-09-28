@@ -7,7 +7,7 @@ using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.UI;
 
-class LogDisplay : InterfaceComponent {
+sealed class LogDisplay : InterfaceComponent {
 
     public static LogDisplay Instance { get; } = new LogDisplay();
 
@@ -32,10 +32,8 @@ class LogDisplay : InterfaceComponent {
     private readonly TextDisplay _textDisplay;
 
     private LogDisplay() {
-        _textDisplay = new TextDisplay
-        {
-            Bounds = new Rectangle(0,0, 900, 100)
-        };
+        BoundingBox = new Rectangle(0, 0, 900, 100);
+        _textDisplay = new TextDisplay();
 
         AddComponent(_textDisplay);
     }

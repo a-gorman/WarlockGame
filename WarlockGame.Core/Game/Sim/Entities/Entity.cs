@@ -14,9 +14,12 @@ namespace WarlockGame.Core.Game.Sim.Entities
 		public Sprite Sprite { get; }
 		public CollisionType CollisionType { get; }
 		public bool BlocksProjectiles { get; set; }
+
 		public BoundingRectangle BoundingRectangle { get; private set; }
-		public OrientedRectangle OrientedRectangle { get; private set; }	// used for polygon and rotated rectangle collision detection
-		public float Radius { get; }						// used for circular collision detection
+		// used for rotated rectangle collision detection
+		public OrientedRectangle OrientedRectangle { get; private set; }
+		// used for circular collision detection
+		public float Radius { get; }
 		public Vector2 Velocity { get; set; }
 
 		/// true if the entity was destroyed and should be deleted.

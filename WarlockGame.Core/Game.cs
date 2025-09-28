@@ -84,6 +84,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
         LogDisplay.Instance.DisplayLevel = Configuration.LogDisplayLevel;
         LogDisplay.Instance.Visible = Configuration.LogDisplayVisible;
+        Logger.DedupeLevel = Configuration.LogDedupeLevel;
         
         MessageDisplay.Display("Game Started");
         Logger.Info("Game initialized");
@@ -97,6 +98,8 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
             PlayerManager.AddLocalPlayer(Configuration.PlayerName ?? "Default", Configuration.PreferredColor);
             NetworkManager.StartServer();
         }
+        
+        Simulation.Initialize();
     }
 
     /// <summary>
@@ -171,7 +174,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
                 
                 var checksumMatched = tick.Checksum == result.Checksum;
                 if (!checksumMatched) {
-                    Logger.Warning($"Checksum does not match. Actual: '{result.Checksum}' Expected: '{tick.Checksum}'");
+                    Logger.Error($"Checksum does not match. Actual: '{result.Checksum}' Expected: '{tick.Checksum}'");
                 }
 
                 NetworkManager.Send(new ClientTickProcessed

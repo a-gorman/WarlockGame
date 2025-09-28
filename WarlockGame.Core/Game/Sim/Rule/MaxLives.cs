@@ -3,56 +3,86 @@ using System.Collections.Generic;
 using System.Linq;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Sim.Entities;
+using WarlockGame.Core.Game.Sim.Perks;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Sim.Rule;
 
-class MaxLives {
+class GameRules {
     public int InitialLives { get; }
     private readonly Simulation _simulation;
-    public Dictionary<int, int> PlayerLives { get; } = new();
-    public event Action<MaxLivesChanged>? OnChanged;
+    public Dictionary<int, PlayerStatus> Statuses { get; } = new();
 
-    public MaxLives(Simulation simulation, int initialLives) {
+    public int[] StartingSpells = [1, 4, 9];
+    
+    public PerkType[] StartingPerks = [
+        PerkType.Invisibility,
+        PerkType.DamageBoost,
+        PerkType.Regeneration
+    ];
+    
+    public readonly PerkType[] AvailablePerks =
+        [PerkType.Invisibility, PerkType.DamageBoost, PerkType.Regeneration];
+    
+    public event Action<LivesChanged>? OnChanged;
+
+    public GameRules(Simulation simulation, int initialLives) {
         _simulation = simulation;
         InitialLives = initialLives;
     }
+
+    public void Initialize() {
+        _simulation.PerkManager.PerkChosen += OnPerkChosen;
+    }
     
     public void Reset() {
-        PlayerLives.Clear();
+        Statuses.Clear();
         foreach (var player in PlayerManager.Players) {
-            PlayerLives.Add(player.Id, InitialLives);
+            Statuses.Add(player.Id, new PlayerStatus(InitialLives));
         }
 
-        OnChanged?.Invoke(new MaxLivesChanged { Reset = true });
+        OnChanged?.Invoke(new LivesChanged { Reset = true });
     }
 
     public void OnWarlockDestroyed(Warlock warlock) {
         int playerId = warlock.PlayerId!.Value;
-        PlayerLives[playerId] -= 1;
-        OnChanged?.Invoke(new MaxLivesChanged { PlayerId = playerId });
+        var status = Statuses[playerId];
+        status.Lives -= 1;
+        OnChanged?.Invoke(new LivesChanged { PlayerId = playerId });
 
-        if (PlayerLives[playerId] != 0) {
-            _simulation.EffectManager.AddDelayedEffect(() => {
-                var respawnPosition = Simulation.ArenaSize / 2 + new Vector2(250, 0).Rotated(_simulation.Random.NextAngle());
-                 _simulation.EntityManager.RespawnWarlock(playerId, respawnPosition);
-            }, SimTime.OfSeconds(5));
+        if (status.Lives != 0) {
+            status.ChoosingPerk = true;
         }
         
-        if (PlayerLives.Count(x => x.Value > 0) == 1) {
-            var winningPlayerId = PlayerLives.First(x => x.Value > 0).Key;
+        if (Statuses.Count(x => x.Value.Lives > 0) == 1) {
+            var winningPlayerId = Statuses.First(x => x.Value.Lives > 0).Key;
             var message = winningPlayerId == PlayerManager.LocalPlayer!.Id
                 ? "You Win!!"
                 : $"{ PlayerManager.GetPlayer(winningPlayerId)?.Name ?? "Another player" } has won the game!";
             SimDebug.Visualize(message, Simulation.ArenaSize / 2, 500);
         }
-        else if (PlayerLives.All(x => x.Value == 0)) {
+        else if (Statuses.All(x => x.Value.Lives == 0)) {
             SimDebug.Visualize("It's a draw!", Simulation.ArenaSize / 2, 500);
         }
     }
+
+    private void OnPerkChosen(int forceId, Perk _) {
+        if (!Statuses[forceId].ChoosingPerk) return;
+        
+        Statuses[forceId].ChoosingPerk = false;
+        _simulation.EffectManager.AddDelayedEffect(() => {
+            var respawnPosition = Simulation.ArenaSize / 2 + new Vector2(250, 0).Rotated(_simulation.Random.NextAngle());
+            _simulation.EntityManager.RespawnWarlock(forceId, respawnPosition);
+        }, SimTime.OfSeconds(1));
+    }
 }
 
-public struct MaxLivesChanged {
+public class PlayerStatus(int lives) {
+    public int Lives = lives;
+    public bool ChoosingPerk = true;
+}
+
+public struct LivesChanged {
     public bool Reset { get; set; }
     public int PlayerId { get; set; }
 }

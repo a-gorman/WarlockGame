@@ -13,7 +13,7 @@ public class MessageDisplay : InterfaceComponent
 {
     public static MessageDisplay Instance { get; } = new();
  
-    private readonly TextDisplay _messageDisplay = new() { Bounds = new Rectangle(50, 600, 400, 100), TextScale = 0.5f };
+    private readonly TextDisplay _messageDisplay = new() { BoundingBox = new Rectangle(50, 600, 400, 100), TextScale = 0.5f };
     
     private readonly LinkedList<Message> _messages = [];
 
