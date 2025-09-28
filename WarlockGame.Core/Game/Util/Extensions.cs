@@ -46,17 +46,6 @@ internal static class Extensions {
         return new Vector2(length * (float)Math.Cos(theta), length * (float)Math.Sin(theta));
     }
 
-    public static IEnumerable<Rectangle> Subdivide(this Rectangle rectangle, int rectanglesX, int rectanglesY) {
-        var rectangleWidth = rectangle.Width / rectanglesX;
-        var rectangleHeight = rectangle.Height / rectanglesY;
-
-        for (int y = 0; y < rectanglesY; y++) {
-            for (int x = 0; x < rectanglesX; x++) {
-                yield return new Rectangle(rectangleWidth * x, rectangleHeight * y, rectangleWidth, rectangleHeight);
-            }
-        }
-    }
-
     /// <summary>
     /// Coalesces null and empty strings to a default value
     /// </summary>
@@ -96,12 +85,57 @@ internal static class Extensions {
         }
     }
 
-    public static CastOrder.CastType ToSimType(this CastCommand.CastType source) {
-        return source switch {
-            CastCommand.CastType.Self => CastOrder.CastType.Self,
-            CastCommand.CastType.Location => CastOrder.CastType.Location,
-            CastCommand.CastType.Directional => CastOrder.CastType.Directional,
-            _ => throw new ArgumentOutOfRangeException(nameof(source), source, null)
-        };
+    extension(CastAction.CastType source) {
+        public CastOrder.CastType ToSimType() {
+            return source switch {
+                CastAction.CastType.Self => CastOrder.CastType.Self,
+                CastAction.CastType.Location => CastOrder.CastType.Location,
+                CastAction.CastType.Directional => CastOrder.CastType.Directional,
+                _ => throw new ArgumentOutOfRangeException(nameof(source), source, null)
+            };
+        }
+    }
+
+    extension(Rectangle source) {
+        public IEnumerable<Rectangle> Subdivide(int rectanglesX, int rectanglesY) {
+            var rectangleWidth = source.Width / rectanglesX;
+            var rectangleHeight = source.Height / rectanglesY;
+
+            for (int y = 0; y < rectanglesY; y++) {
+                for (int x = 0; x < rectanglesX; x++) {
+                    yield return new Rectangle(rectangleWidth * x, rectangleHeight * y, rectangleWidth, rectangleHeight);
+                }
+            }
+        }
+
+        public Rectangle WithMargin(int margin) {
+            return new Rectangle(
+                source.X + margin,
+                source.Y + margin,
+                source.Width - 2 * margin,
+                source.Height - 2 * margin);
+        }
+        
+        public Rectangle WithMargin(int marginX, int marginY) {
+            return new Rectangle(
+                source.X + marginX,
+                source.Y + marginY,
+                source.Width - 2 * marginX,
+                source.Height - 2 * marginY);
+        }
+        
+        public Rectangle AtOrigin() {
+            return new Rectangle(0, 0, source.Width, source.Height);
+        }
+    }
+    
+    extension<T>(T) where T: struct, Enum {
+        public static T? ParseOrNull(String s, bool caseInsensitive) {
+            if (Enum.TryParse(s, caseInsensitive, out T result)) {
+                return result;
+            }
+
+            return null;
+        }
     }
 }

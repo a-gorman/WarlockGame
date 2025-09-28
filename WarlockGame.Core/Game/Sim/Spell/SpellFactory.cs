@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Graphics;
@@ -15,7 +14,7 @@ using WarlockGame.Core.Game.Util;
 namespace WarlockGame.Core.Game.Sim.Spell;
 
 class SpellFactory {
-    private int _nextSpellId = 0;
+    private int _nextSpellId = 1;
     private readonly Simulation _simulation;
 
     public SpellFactory(Simulation simulation) {

@@ -6,11 +6,15 @@ namespace WarlockGame.Core.Game.UI.Components.Basic;
 public sealed class Grid : InterfaceComponent {
     public Cell[,] Cells { get; }
 
+    public Grid(Rectangle bounds, int nColumns, int nRows) :
+        this(bounds.X, bounds.Y, nColumns, bounds.Width / nColumns, nRows, bounds.Height / nRows) { }
+    
     public Grid(int x, int y, int nColumns, int columnWidth, int nRows, int rowHeight) {
         if (nColumns < 1 || nRows < 1) {
             Logger.Warning($"Added column with no cells, Columns: {nColumns}, Rows: {nRows}");
         }
 
+        BoundingBox = new Rectangle(x, y, nColumns * columnWidth, nRows * rowHeight);
         Cells = new Cell[nColumns, nRows];
         int currentWidth = 0;
         for (int c = 0; c < nColumns; c++) {
@@ -23,8 +27,6 @@ public sealed class Grid : InterfaceComponent {
             }
             currentWidth += columnWidth;
         }
-
-        BoundingBox = new Rectangle(x, y, nColumns * columnWidth, nRows * rowHeight);
     }
 
     public void AddComponent(InterfaceComponent component, int row, int column) {

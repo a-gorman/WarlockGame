@@ -18,7 +18,7 @@ class TextPrompt: InterfaceComponent, ITextInputConsumer {
 
     public string Text { get => _textDisplay.Text; set => _textDisplay.Text = value; }
 
-    public override Rectangle BoundingBox { get => _textDisplay.Bounds; set => _textDisplay.Bounds = value; }
+    public override Rectangle BoundingBox { get => _textDisplay.BoundingBox; set => _textDisplay.BoundingBox = value; }
     public int TextConsumerPriority { get; } = 1;
     public int MaxCharacters { get; } = 30;
     private Vector2 Position { get; }
@@ -32,7 +32,7 @@ class TextPrompt: InterfaceComponent, ITextInputConsumer {
 
         _textDisplay = new TextDisplay
         {
-            Bounds = boundingBox,
+            BoundingBox = boundingBox,
             Layer = 1
         };
 

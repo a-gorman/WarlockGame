@@ -36,8 +36,9 @@ class Server : INetEventListener {
 
         _packetProcessor.RegisterCustomNestedTypes();
 
-        _packetProcessor.SubscribeNetSerializable(OnGameCommandReceived, () => new MoveCommand());
-        _packetProcessor.SubscribeNetSerializable(OnGameCommandReceived, () => new CastCommand());
+        _packetProcessor.SubscribeNetSerializable(OnGameCommandReceived, () => new MoveAction());
+        _packetProcessor.SubscribeNetSerializable(OnGameCommandReceived, () => new CastAction());
+        _packetProcessor.SubscribeNetSerializable(OnGameCommandReceived, () => new SelectPerk());
         _packetProcessor.SubscribeReusable<ClientTickProcessed, NetPeer>(OnClientTickProcessed);
         _packetProcessor.SubscribeNetSerializable<JoinGameRequest, NetPeer>(OnJoinGameRequest);
     }
@@ -60,7 +61,7 @@ class Server : INetEventListener {
         }
     }
     
-    private void OnGameCommandReceived<T>(T request) where T : IPlayerCommand, INetSerializable, new() {
+    private void OnGameCommandReceived<T>(T request) where T : IPlayerAction, INetSerializable, new() {
         CommandManager.AddSimulationCommand(request);
     }
 

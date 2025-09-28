@@ -11,10 +11,10 @@ using WarlockGame.Core.Game.Util;
 namespace WarlockGame.Core.Game.Sim.Entities
 {
     class Warlock : Entity {
-        public const float Speed = 3.5f;
+        public float Speed { get; set; } = 3.5f;
         public const float RotationSpeed = 0.095f; // Radians per tick
 
-        public float MaxHealth => 60;
+        public float MaxHealth => 1;
         public float Health { get; set => field = float.Clamp(value, 0, MaxHealth); }
 
         /// Desired direction of travel. If set, the Warlock will move and rotate as needed
@@ -151,6 +151,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
         public void Respawn() {
             Health = MaxHealth;
             IsDead = false;
+            Velocity = Vector2.Zero;
             Respawned?.Invoke(this);
         }
         

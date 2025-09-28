@@ -19,7 +19,7 @@ class DestinationMoveOrder : IOrder {
     public void Update() {
         _active = true;
         
-        if (_player.Position.DistanceSquaredTo(_destination) < Warlock.Speed.Squared()) {
+        if (_player.Position.DistanceSquaredTo(_destination) < _player.Speed.Squared()) {
             Finished = true;
         }
         else {
