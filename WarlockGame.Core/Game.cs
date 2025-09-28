@@ -82,10 +82,8 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         UIManager.AddComponent(new SpellDisplay(Configuration.KeyMappings));
         UIManager.AddComponent(new MainView(Simulation));
 
-#if DEBUG
-        LogDisplay.Instance.DisplayLevel = Logger.Level.WARNING;
-        LogDisplay.Instance.Visible = true;
-#endif
+        LogDisplay.Instance.DisplayLevel = Configuration.LogDisplayLevel;
+        LogDisplay.Instance.Visible = Configuration.LogDisplayVisible;
         
         MessageDisplay.Display("Game Started");
         Logger.Info("Game initialized");

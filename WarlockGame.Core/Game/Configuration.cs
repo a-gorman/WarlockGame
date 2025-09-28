@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Xna.Framework.Input;
 using WarlockGame.Core.Game.Input;
+using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Util;
 using Color = Microsoft.Xna.Framework.Color;
 
@@ -20,6 +21,8 @@ static class Configuration {
     // Player Settings
     public static string? PlayerName { get; set; }
     public static Color? PreferredColor { get; set; }
+    public static Logger.Level LogDisplayLevel { get; set; }
+    public static bool LogDisplayVisible { get; set; }
 
     public static void ParseArgs(IConfigurationRoot args) {
         Client = args["autoStartClient"]?.Let(bool.Parse) ?? false;
@@ -45,6 +48,9 @@ static class Configuration {
             { ParseKey(args["keymap:pause"], Keys.P), InputAction.Pause },
             { ParseKey(args["keymap:openCommandInput"], Keys.Enter), InputAction.OpenCommandInput },
         };
+        
+        LogDisplayLevel = args["logDisplayLevel"]?.Let(x => Logger.Level.ParseOrNull(x, true)) ?? Logger.Level.ERROR;
+        LogDisplayVisible = args["logDisplayVisible"]?.Let(bool.Parse) ?? true;
     }
 
     
