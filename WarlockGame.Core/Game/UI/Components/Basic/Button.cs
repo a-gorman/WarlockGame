@@ -11,7 +11,7 @@ sealed class Button: InterfaceComponent {
     public Action<Vector2> RightClick = _ => { };
     
     public Button(Rectangle boundingBox, Texture2D texture) {
-        Clickable = ClickableState.Consume;
+        Clickable = ClickableState.Clickable;
         Texture = texture;
         BoundingBox = boundingBox;
     }

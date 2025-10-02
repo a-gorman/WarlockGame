@@ -39,6 +39,7 @@ class Simulation {
 
     public void Initialize() {
         GameRules.Initialize();
+        PerkManager.Initialize();
     }
 
     public TickResult Update(IEnumerable<IPlayerAction> inputs) {

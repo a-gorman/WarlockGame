@@ -42,6 +42,7 @@ class TextDisplay : InterfaceComponent {
 
     public TextDisplay(SpriteFont? font = null) {
         Font = font ?? Art.Font;
+        Clickable = ClickableState.Ignore;
     }
     
     public override void Draw(Vector2 location, SpriteBatch spriteBatch) {

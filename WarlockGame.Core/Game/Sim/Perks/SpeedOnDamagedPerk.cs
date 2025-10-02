@@ -1,11 +1,15 @@
+using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Sim.Buffs;
 using WarlockGame.Core.Game.Sim.Entities;
 
 namespace WarlockGame.Core.Game.Sim.Perks;
 
 class SpeedOnDamagedPerk: Perk {
-    public SpeedOnDamagedPerk() : base(PerkType.SpeedBoostOnDamage) {
-    }
+    public SpeedOnDamagedPerk() 
+        : base(type: PerkType.SpeedBoostOnDamage,
+            name: "Damage Boost",
+            description: "Permanently grants you invisibility from distant enemies",
+            texture: Art.DefianceIcon) { }
 
     public override void OnChosen(int forceId, Simulation sim) {
         var warlock = sim.EntityManager.GetWarlockByForceId(forceId);

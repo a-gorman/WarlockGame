@@ -100,14 +100,16 @@ static class UIManager {
                     if (consumed) return true;
                 }
                 return false;
-            case ClickableState.Consume:
+            case ClickableState.Clickable:
                 foreach (var nestedComponent in component.Components) {
                     var consumed = LeftClickComponent(nestedComponent, clickLocation - component.RelativeLocation);
                     if (consumed) return true;
                 }
                 component.OnLeftClick(clickLocation);
                 return true;
-            case ClickableState.Skip:
+            case ClickableState.Unclickable:
+                return true;
+            case ClickableState.Ignore:
                 return false;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -123,10 +125,16 @@ static class UIManager {
                     if (consumed) return true;
                 }
                 return false;
-            case ClickableState.Consume:
+            case ClickableState.Clickable:
+                foreach (var nestedComponent in component.Components) {
+                    var consumed = RightClickComponent(nestedComponent, clickLocation - component.RelativeLocation);
+                    if (consumed) return true;
+                }
                 component.OnRightClick(clickLocation);
                 return true;
-            case ClickableState.Skip:
+            case ClickableState.Unclickable:
+                return true;
+            case ClickableState.Ignore:
                 return false;
             default:
                 throw new ArgumentOutOfRangeException();

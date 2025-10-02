@@ -14,7 +14,7 @@ sealed class SpellIcon : InterfaceComponent {
     public SpellIcon(WarlockSpell spell, string hotkey) {
         _spell = spell;
         _hotkey = hotkey;
-        Clickable = ClickableState.Consume;
+        Clickable = ClickableState.Clickable;
     }
 
     public override void Draw(Vector2 location, SpriteBatch spriteBatch) {

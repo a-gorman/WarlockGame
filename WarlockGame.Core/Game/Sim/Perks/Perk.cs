@@ -1,9 +1,16 @@
-using System.Collections.Generic;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace WarlockGame.Core.Game.Sim.Perks;
 
 class Perk {
-    public Perk(PerkType type) {
+    public string Name { get; }
+    public string Description { get; }
+    public Texture2D Texture { get; }
+
+    public Perk(PerkType type, string name, string description, Texture2D texture) {
+        Name = name;
+        Description = description;
+        Texture = texture;
         Type = type;
     }
     public int Id { get; set; }

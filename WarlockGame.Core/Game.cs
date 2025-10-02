@@ -32,7 +32,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch = null!;
     private readonly BloomComponent _bloom;
-    internal Simulation Simulation { get; } = new();
+    internal Simulation Simulation { get; private set; } = null!;
     private readonly Queue<ServerTickProcessed> _serverTicks = new();
     // Map of player Ids to most recent tick processed
     private readonly Dictionary<int, int> _clientTicksProcessed = new();
@@ -59,23 +59,14 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
         Window.Position = Vector2.Zero.ToPoint();
     }
-    
-    protected override void Initialize()
-    {
-        Content.RootDirectory = "Content";
 
-        ParticleManager = new ParticleManager<ParticleState>(1024 * 20, ParticleState.UpdateParticle);
-
-        const int maxGridPoints = 1600;
-        Vector2 gridSpacing = new Vector2((float)Math.Sqrt(Viewport.Width * Viewport.Height / maxGridPoints));
-        Grid = new Grid(Viewport.Bounds, gridSpacing);
-
+    protected override void BeginRun() {
+        Simulation = new Simulation();
+        
         Ps4Input.Initialize(this);
         InputManager.Initialize(Configuration.KeyMappings);
 
         Window.TextInput += (_, textArgs) => InputManager.OnTextInput(textArgs);
-        
-        base.Initialize();
         
         UIManager.AddComponent(LogDisplay.Instance);
         UIManager.AddComponent(MessageDisplay.Instance);
@@ -102,10 +93,19 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         Simulation.Initialize();
     }
 
-    /// <summary>
-    /// LoadContent will be called once per game and is the place to load
-    /// all of your content.
-    /// </summary>
+    protected override void Initialize()
+    {
+        Content.RootDirectory = "Content";
+
+        ParticleManager = new ParticleManager<ParticleState>(1024 * 20, ParticleState.UpdateParticle);
+
+        const int maxGridPoints = 1600;
+        Vector2 gridSpacing = new Vector2((float)Math.Sqrt(Viewport.Width * Viewport.Height / maxGridPoints));
+        Grid = new Grid(Viewport.Bounds, gridSpacing);
+        
+        base.Initialize();
+    }
+    
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
