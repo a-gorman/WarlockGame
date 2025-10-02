@@ -1,3 +1,4 @@
+using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Sim.Buffs;
 
 namespace WarlockGame.Core.Game.Sim.Perks;
@@ -8,7 +9,10 @@ class PermanentInvisibilityPerk : PermanentBuffPerk {
     private const float VisibilityDecay = 0.004f;
 
     public PermanentInvisibilityPerk()
-        : base(type: PerkType.Invisibility) { }
+        : base(type: PerkType.Invisibility,
+            name: "Permanent Invisibility",
+            description: "Permanently grants you invisibility from distant enemies",
+            texture: Art.InvisibilityIcon) { }
 
     protected override Buff CreateBuff() {
         return new Invisibility(

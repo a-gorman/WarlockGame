@@ -13,20 +13,22 @@ class PerkManager {
     private int _nextPerkId = 1;
     
     private readonly Dictionary<PerkType, Perk> _perks = new();
-    // private readonly List<Perk> _perks = new();
     
     public PerkManager(Simulation sim) {
         _sim = sim;
-        AddPerk(PerkType.SpeedBoostOnDamage);
-        AddPerk(PerkType.DamageBoost);
-        AddPerk(PerkType.Invisibility);
-        AddPerk(PerkType.Regeneration);
     }
 
     public void Update() {
         foreach (var perk in _perks.Values) {
             perk.Update(_sim);
         }
+    }
+
+    public void Initialize() {
+        AddPerk(PerkType.SpeedBoostOnDamage);
+        AddPerk(PerkType.DamageBoost);
+        AddPerk(PerkType.Invisibility);
+        AddPerk(PerkType.Regeneration);
     }
 
     public List<Perk> GetAvailablePerks(int forceId) {
@@ -60,13 +62,4 @@ class PerkManager {
         perk.Id = _nextPerkId++;
         _perks.Add(perk.Type, perk);
     }
-    
-    // public Perk? GetPlayerPerk(int forceId, PerkType perkTypeId) {
-    //     if (_playerPerks.TryGetValue(forceId, out var perks)
-    //         && perks.TryGetValue(perkTypeId, out var perk)) {
-    //         return perk;
-    //     }
-    //     
-    //     return null;
-    // }
 }

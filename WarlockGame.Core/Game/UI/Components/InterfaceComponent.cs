@@ -15,7 +15,7 @@ public class InterfaceComponent {
     public int Layer { get; set; }
 
     public bool IsExpired { get; set; }
-    public ClickableState Clickable { get; set; } = ClickableState.Skip;
+    public ClickableState Clickable { get; set; } = ClickableState.Unclickable;
     public virtual bool Visible { get; set { IsDirty = true; field = value; } } = true;
     public bool IsDirty { get; set; } = true;
 
@@ -78,7 +78,8 @@ public class InterfaceComponent {
 }
 
 public enum ClickableState {
-    Skip,
-    Consume,
-    PassThrough
+    Unclickable,
+    Clickable,
+    PassThrough,
+    Ignore
 }

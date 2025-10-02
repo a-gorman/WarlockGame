@@ -23,7 +23,7 @@ sealed class MainView : InterfaceComponent {
     public MainView(Simulation sim) {
         _sim = sim;
         Layer = -1;
-        Clickable = ClickableState.Consume;
+        Clickable = ClickableState.Clickable;
         BoundingBox = new Rectangle(new Point(0, 0), WarlockGame.ScreenSize.ToPoint());
 
         _perkPicker = new PerkPicker(_sim, new Vector2(600, 400)) {Visible = false, Clickable = ClickableState.PassThrough};

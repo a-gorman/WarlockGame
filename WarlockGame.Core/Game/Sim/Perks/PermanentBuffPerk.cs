@@ -1,11 +1,13 @@
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Sim.Buffs;
 
 namespace WarlockGame.Core.Game.Sim.Perks;
 
 abstract class PermanentBuffPerk : Perk {
-    public PermanentBuffPerk(PerkType type) : base(type) { }
+    public PermanentBuffPerk(PerkType type, string name, string description, Texture2D texture) 
+        : base(type, name, description, texture) { }
 
     private readonly Dictionary<int, int> _playerBuffIds = new();
 

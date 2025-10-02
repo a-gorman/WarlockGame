@@ -36,6 +36,9 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D RefractionShieldIcon { get; set; } = null!;
 		public static Texture2D SoulShatterIcon { get; set; } = null!;
 		public static Texture2D HealIcon { get; set; } = null!;
+		public static Texture2D InvisibilityIcon { get; set; } = null!;
+		public static Texture2D DefianceIcon { get; set; } = null!;
+		public static Texture2D BigExplosionIcon { get; set; } = null!;
 
 		public static void Load(ContentManager content)
 		{
@@ -75,6 +78,9 @@ namespace WarlockGame.Core.Game.Graphics
 			BoomerangIcon = content.Load<Texture2D>("Art/Icons/Light_07_Wave_Of_Light");
 			
 			HealIcon = content.Load<Texture2D>("Art/Icons/General_02_Heal_T");
+			InvisibilityIcon = content.Load<Texture2D>("Art/Icons/Invis");
+			DefianceIcon = content.Load<Texture2D>("Art/Icons/Big_Explosion");
+			BigExplosionIcon = content.Load<Texture2D>("Art/Icons/Defiance");
 		}
 
 		public static Texture2D LoadTexture(string assetName)
