@@ -46,6 +46,7 @@ class SpellManager {
 
         if (GetSpell(forceId, definitionId) != null) {
             Logger.Warning($"Tried adding a spell that warlock already has! Force: {forceId} Definition: {definition}");
+            return;
         }
 
         AddSpell(forceId, _spellFactory.CreateWarlockSpell(definition));
