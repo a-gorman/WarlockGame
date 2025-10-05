@@ -32,7 +32,7 @@ sealed class PerkPicker: InterfaceComponent {
         }
     }
 
-    public void SetPerks(List<Perk> perks) {
+    private void SetPerks(IEnumerable<Perk> perks) {
         RemoveAllComponents();
         _perks = perks.ToList();
         var grid = new Basic.Grid(BoundingBox.AtOrigin().WithMargin(_marginX, _marginY), _perks.Count, 1) {

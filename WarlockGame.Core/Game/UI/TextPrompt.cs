@@ -13,26 +13,22 @@ using WarlockGame.Core.Game.UI.Components.Basic;
 
 namespace WarlockGame.Core.Game.UI;
 
-class TextPrompt: InterfaceComponent, ITextInputConsumer {
+sealed class TextPrompt: InterfaceComponent, ITextInputConsumer {
     public string Prompt { get; set; }
 
     public string Text { get => _textDisplay.Text; set => _textDisplay.Text = value; }
 
-    public override Rectangle BoundingBox { get => _textDisplay.BoundingBox; set => _textDisplay.BoundingBox = value; }
     public int TextConsumerPriority { get; } = 1;
     public int MaxCharacters { get; } = 30;
-    private Vector2 Position { get; }
     private Action<string> AcceptedCallback { get; }
     private Action<string>? CancelledCallback { get; }
     private readonly TextDisplay _textDisplay;
     
     public TextPrompt(string prompt, Action<string> acceptedCallback, Action<string>? cancelledCallback) {
-        Position = new Vector2(800, 800);
-        var boundingBox = new Rectangle(Position.ToPoint(), new Point(300, 35));
+        BoundingBox = new Rectangle(new Point(800, 800), new Point(300, 35));
 
         _textDisplay = new TextDisplay
         {
-            BoundingBox = boundingBox,
             Layer = 1
         };
 
@@ -82,7 +78,7 @@ class TextPrompt: InterfaceComponent, ITextInputConsumer {
         BoundingBox.Offset(location);
         spriteBatch.Draw(pointTexture, BoundingBox, Color.White);
 
-        spriteBatch.DrawString(Art.Font, Prompt, Position.Translate(0, -24) + location, Color.White);
+        spriteBatch.DrawString(Art.Font, Prompt, BoundingBox.Location.ToVector2().Translate(0, -24) + location, Color.White);
     }
     
     public override void OnLeftClick(Vector2 location) {

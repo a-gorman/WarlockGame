@@ -13,6 +13,7 @@ class PerkManager {
     private int _nextPerkId = 1;
     
     private readonly Dictionary<PerkType, Perk> _perks = new();
+    private readonly Dictionary<(int, PerkType), bool> _forcePerks = new();
     
     public PerkManager(Simulation sim) {
         _sim = sim;
@@ -31,12 +32,13 @@ class PerkManager {
         AddPerk(PerkType.Regeneration);
     }
 
-    public List<Perk> GetAvailablePerks(int forceId) {
-        return _perks.Values.ToList();
+    public IEnumerable<Perk> GetAvailablePerks(int forceId) {
+        return _perks.Values.Where(x => !_forcePerks.GetValueOrDefault((forceId, x.Type), false)).Take(3);
     }
 
     public void ChoosePerk(int forceId, PerkType perkType) {
         if (_perks.TryGetValue(perkType, out var perk)) {
+            _forcePerks[(forceId, perkType)] = true;
             perk.OnChosen(forceId, _sim);
             PerkChosen?.Invoke(forceId, perk);
         }
