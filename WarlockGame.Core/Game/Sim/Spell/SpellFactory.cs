@@ -21,10 +21,13 @@ class SpellFactory {
         _simulation = simulation;
     }
 
-    public WarlockSpell Fireball() {
-        return new WarlockSpell(_simulation) {
-            Id = _nextSpellId++,
-            SpellTypeId = 1,
+    public WarlockSpell CreateWarlockSpell(SpellDefinition definition) {
+        return new WarlockSpell(_nextSpellId++, definition, _simulation);
+    }
+
+    public SpellDefinition Fireball() {
+        return new SpellDefinition {
+            Id = 1,
             Name = "Fireball",
             CooldownTime = SimTime.OfSeconds(3),
             SpellIcon = Art.FireballIcon,
@@ -43,10 +46,9 @@ class SpellFactory {
         };
     }
 
-    public WarlockSpell Lightning() {
-        return new WarlockSpell(_simulation) {
-            Id = _nextSpellId++,
-            SpellTypeId = 2,
+    public SpellDefinition Lightning() {
+        return new SpellDefinition {
+            Id = 2,
             Name = "Lightning",
             CooldownTime = SimTime.OfSeconds(20),
             SpellIcon = Art.LightningIcon,
@@ -60,10 +62,9 @@ class SpellFactory {
         };
     }
 
-    public WarlockSpell Poison() {
-        return new WarlockSpell(_simulation) {
-            Id = _nextSpellId++,
-            SpellTypeId = 3,
+    public SpellDefinition Poison() {
+        return new SpellDefinition {
+            Id = 3,
             Name = "Poison",
             CooldownTime = SimTime.OfSeconds(6),
             SpellIcon = Art.PoisonIcon,
@@ -79,10 +80,9 @@ class SpellFactory {
         };
     }
 
-    public WarlockSpell Burst() {
-        return new WarlockSpell(_simulation) {
-            Id = _nextSpellId++,
-            SpellTypeId = 4,
+    public SpellDefinition Burst() {
+        return new SpellDefinition {
+            Id = 4,
             Name = "Burst",
             CooldownTime = SimTime.OfSeconds(6),
             SpellIcon = Art.BurstIcon,
@@ -102,10 +102,9 @@ class SpellFactory {
         };
     }
 
-    public WarlockSpell WindShield() {
-        return new WarlockSpell(_simulation) {
-            Id = _nextSpellId++,
-            SpellTypeId = 5,
+    public SpellDefinition WindShield() {
+        return new SpellDefinition {
+            Id = 5,
             Name = "Wind Shield",
             CooldownTime = SimTime.OfSeconds(16),
             SpellIcon = Art.WindWallIcon,
@@ -142,10 +141,9 @@ class SpellFactory {
         };
     }
 
-    public WarlockSpell SoulShatter() {
-        return new WarlockSpell(_simulation) {
-            Id = _nextSpellId++,
-            SpellTypeId = 6,
+    public SpellDefinition SoulShatter() {
+        return new SpellDefinition {
+            Id = 6,
             Name = "Soul Shatter",
             CooldownTime = SimTime.OfSeconds(6),
             SpellIcon = Art.SoulShatterIcon,
@@ -208,10 +206,9 @@ class SpellFactory {
         };
     }
 
-    public WarlockSpell RefractionShield() {
-        return new WarlockSpell(_simulation) {
-            Id = _nextSpellId++,
-            SpellTypeId = 7,
+    public SpellDefinition RefractionShield() {
+        return new SpellDefinition {
+            Id = 7,
             Name = "Refraction Shield",
             CooldownTime = SimTime.OfSeconds(16),
             SpellIcon = Art.RefractionShieldIcon,
@@ -262,10 +259,9 @@ class SpellFactory {
         };
     }
 
-    public WarlockSpell Homing() {
-        return new WarlockSpell(_simulation) {
-            Id = _nextSpellId++,
-            SpellTypeId = 8,
+    public SpellDefinition Homing() {
+        return new SpellDefinition {
+            Id = 8,
             Name = "Homing",
             CooldownTime = SimTime.OfSeconds(6),
             SpellIcon = Art.HomingIcon,
@@ -294,10 +290,9 @@ class SpellFactory {
         };
     }
 
-    public WarlockSpell Boomerang() {
-        return new WarlockSpell(_simulation) {
-            Id = _nextSpellId++,
-            SpellTypeId = 9,
+    public SpellDefinition Boomerang() {
+        return new SpellDefinition {
+            Id = 9,
             Name = "Boomerang",
             CooldownTime = SimTime.OfSeconds(6),
             SpellIcon = Art.BoomerangIcon,

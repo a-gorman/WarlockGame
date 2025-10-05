@@ -28,7 +28,7 @@ abstract class PermanentBuffPerk : Perk {
             Logger.Debug($"Added permanent buff. Type: {Type}. ForceId: {forceId}. BuffId: {buffId}");
         }
         else {
-            Logger.Warning($"Buff already exists. Could not add permanent buff. Type: {Type}. ForceId: ${forceId}.");
+            Logger.Warning($"Buff already exists. Could not add permanent buff. Type: {Type}. ForceId: {forceId}.");
         }
     }
 
