@@ -1,25 +1,24 @@
-using Microsoft.Xna.Framework.Graphics;
-using OneOf;
 using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Sim.Spell.Component;
 
 namespace WarlockGame.Core.Game.Sim.Spell;
 
 class WarlockSpell {
-    public required int Id { get; set; }
-    public required string Name { get; init; }
-    public required int SpellTypeId { get; init; }
+    public int Id { get; }
+    public SpellDefinition Definition { get; }
     public int SlotLocation { get; set; }
-    public required SimTime CooldownTime { get; init; }
-    public required Texture2D SpellIcon { get; init; }
-    public required OneOf<IDirectionalSpellComponent, ILocationSpellComponent, ISelfSpellComponent> Effect { get; init; }
+    
     public GameTimer Cooldown { get; set; } = GameTimer.FromTicks(0);
     public bool OnCooldown => !Cooldown.IsExpired;
 
+    public OneOf<IDirectionalSpellComponent, ILocationSpellComponent, ISelfSpellComponent> Effect => Definition.Effect;
+
     private readonly Simulation _simulation;
     
-    public WarlockSpell(Simulation simulation) {
+    public WarlockSpell(int id, SpellDefinition definition, Simulation simulation) {
+        Id = id;
         _simulation = simulation;
+        Definition = definition;
     }
 
     public void Update() {
@@ -27,13 +26,13 @@ class WarlockSpell {
     }
 
     public void DoCast(Warlock caster, Vector2? direction) {
-        Cooldown = CooldownTime.ToTimer();
+        Cooldown = Definition.CooldownTime.ToTimer();
         var context = new SpellContext
         {
             Caster = caster,
             Simulation = _simulation
         };
-        Effect.Switch(
+        Definition.Effect.Switch(
             directionalEffect => directionalEffect.Invoke(context, caster.Position, direction ?? Vector2.Zero),
             locationEffect => locationEffect.Invoke(context, direction ?? Vector2.Zero),
             selfEffect => selfEffect.Invoke(context)
