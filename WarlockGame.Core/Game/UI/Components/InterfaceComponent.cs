@@ -16,15 +16,16 @@ public class InterfaceComponent {
 
     public bool IsExpired { get; set; }
     public ClickableState Clickable { get; set; } = ClickableState.Unclickable;
-    public virtual bool Visible { get; set { IsDirty = true; field = value; } } = true;
-    public bool IsDirty { get; set; } = true;
+    public bool Visible { get; set { IsDirty = true; field = value; } } = true;
 
     /// <summary>
     /// The bounding box for determining if the component was clicked.
     /// Higher layers obscure clicks from lower layers.
     /// </summary>
-    public virtual Rectangle BoundingBox { get; set { IsDirty = true; field = value; } }
+    public Rectangle BoundingBox { get; set { IsDirty = true; field = value; } }
 
+    public bool IsDirty { get; set; } = true;
+    
     public Vector2 RelativeLocation => BoundingBox.Location.ToVector2();
 
     private readonly List<InterfaceComponent> _components = [];

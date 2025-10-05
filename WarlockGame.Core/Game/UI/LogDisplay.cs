@@ -1,5 +1,6 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.UI.Components;
 using WarlockGame.Core.Game.UI.Components.Basic;
@@ -15,19 +16,9 @@ sealed class LogDisplay : InterfaceComponent {
         get;
         set {
             field = value;
-            Refresh();
+            IsDirty = true;
         }
     } = Logger.Level.INFO;
-
-    public override bool Visible {
-        get;
-        set {
-            field = value;
-            if (value) {
-                Refresh();
-            }
-        }
-    } = false;
 
     private readonly TextDisplay _textDisplay;
 
@@ -37,7 +28,14 @@ sealed class LogDisplay : InterfaceComponent {
 
         AddComponent(_textDisplay);
     }
-    
+
+    public override void Draw(Vector2 location, SpriteBatch spriteBatch) {
+        if (IsDirty) {
+            Refresh();
+            IsDirty = false;
+        }
+    }
+
     public void Refresh() {
         if (!Visible) return;
         
