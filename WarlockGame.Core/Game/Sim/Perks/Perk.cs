@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 namespace WarlockGame.Core.Game.Sim.Perks;
 
 class Perk {
+    public int Id { get; set; }
+    public PerkType Type { get; set; }
     public string Name { get; }
     public string Description { get; }
     public Texture2D Texture { get; }
@@ -13,9 +15,7 @@ class Perk {
         Texture = texture;
         Type = type;
     }
-    public int Id { get; set; }
-    public PerkType Type { get; set; }
     public virtual void Update(Simulation sim) { }
-    public virtual void OnChosen(int forceId, Simulation sim) { }
-    public virtual void OnPerkRemoved(int forceId, Simulation sim) { }
+    public virtual void OnAdded(int forceId, Simulation sim) { }
+    public virtual void OnRemoved(int forceId, Simulation sim) { }
 }

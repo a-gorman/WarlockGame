@@ -11,7 +11,7 @@ class SpeedOnDamagedPerk: Perk {
             description: "Permanently grants you invisibility from distant enemies",
             texture: Art.DefianceIcon) { }
 
-    public override void OnChosen(int forceId, Simulation sim) {
+    public override void OnAdded(int forceId, Simulation sim) {
         var warlock = sim.EntityManager.GetWarlockByForceId(forceId);
         if (warlock == null) return;
 
