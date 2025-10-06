@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.UI;
+using WarlockGame.Core.Game.UI.Components;
 
 namespace WarlockGame.Core.Game.Networking; 
 

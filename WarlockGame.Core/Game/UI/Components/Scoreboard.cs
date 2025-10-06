@@ -2,10 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Sim.Rule;
-using WarlockGame.Core.Game.UI.Components;
 using WarlockGame.Core.Game.UI.Components.Basic;
 
-namespace WarlockGame.Core.Game.UI;
+namespace WarlockGame.Core.Game.UI.Components;
 
 sealed class Scoreboard : InterfaceComponent {
     private readonly GameRules _gameRule;

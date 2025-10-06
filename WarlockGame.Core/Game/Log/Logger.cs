@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using WarlockGame.Core.Game.UI;
+using WarlockGame.Core.Game.UI.Components;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Log; 

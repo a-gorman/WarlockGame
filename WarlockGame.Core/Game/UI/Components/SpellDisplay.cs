@@ -6,9 +6,8 @@ using Microsoft.Xna.Framework.Input;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Sim.Spell;
-using WarlockGame.Core.Game.UI.Components;
 
-namespace WarlockGame.Core.Game.UI; 
+namespace WarlockGame.Core.Game.UI.Components; 
 
 /// <summary>
 /// Assumes single active player (No local coop)

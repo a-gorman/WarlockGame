@@ -5,12 +5,11 @@ using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.Sim.Buffs;
 using WarlockGame.Core.Game.Sim.Entities;
-using WarlockGame.Core.Game.UI.Components;
 using WarlockGame.Core.Game.Util;
 using ZLinq;
 using Warlock = WarlockGame.Core.Game.Sim.Entities.Warlock;
 
-namespace WarlockGame.Core.Game.UI;
+namespace WarlockGame.Core.Game.UI.Components;
 
 sealed class MainView : InterfaceComponent {
     private readonly Simulation _sim;
