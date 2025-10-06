@@ -8,10 +8,9 @@ using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Input.Devices;
 using WarlockGame.Core.Game.Log;
-using WarlockGame.Core.Game.UI.Components;
 using WarlockGame.Core.Game.UI.Components.Basic;
 
-namespace WarlockGame.Core.Game.UI;
+namespace WarlockGame.Core.Game.UI.Components;
 
 sealed class TextPrompt: InterfaceComponent, ITextInputConsumer {
     public string Prompt { get; set; }

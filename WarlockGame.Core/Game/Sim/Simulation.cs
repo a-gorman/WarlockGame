@@ -9,6 +9,7 @@ using WarlockGame.Core.Game.Sim.Perks;
 using WarlockGame.Core.Game.Sim.Rule;
 using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.UI;
+using WarlockGame.Core.Game.UI.Components;
 using WarlockGame.Core.Game.Util;
 using Warlock = WarlockGame.Core.Game.Sim.Entities.Warlock;
 
