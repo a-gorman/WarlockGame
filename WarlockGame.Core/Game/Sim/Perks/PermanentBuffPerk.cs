@@ -13,7 +13,7 @@ abstract class PermanentBuffPerk : Perk {
 
     protected abstract Buff CreateBuff();
 
-    public override void OnChosen(int forceId, Simulation sim) {
+    public override void OnAdded(int forceId, Simulation sim) {
         var warlock = sim.EntityManager.GetWarlockLivingOrDeadByForceId(forceId);
         if (warlock == null) {
             Logger.Warning($"Could not add buff because warlock does not exist. Type: {Type}. ForceId: {forceId}");
@@ -32,7 +32,7 @@ abstract class PermanentBuffPerk : Perk {
         }
     }
 
-    public override void OnPerkRemoved(int forceId, Simulation sim) {
+    public override void OnRemoved(int forceId, Simulation sim) {
         var warlock = sim.EntityManager.GetWarlockLivingOrDeadByForceId(forceId);
         if (warlock != null && _playerBuffIds.TryGetValue(forceId, out var buffId)) {
             warlock.RemoveBuff(buffId);

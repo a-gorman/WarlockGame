@@ -1,18 +1,16 @@
-using System.Collections.Generic;
-using System.Linq;
+using WarlockGame.Core.Game.Sim.Spell;
 
 namespace WarlockGame.Core.Game.Sim.Perks;
 
-// class NewSpellPerk: Perk {
-//     private readonly int[] _spellTypeIds;
-//
-//     public NewSpellPerk(IEnumerable<int> spellTypeIds) : base(PerkType.NewSpells) {
-//         _spellTypeIds = spellTypeIds.ToArray();
-//     }
-//
-//     public override void OnChosen(int forceId, Simulation sim) {
-//         foreach (var spellTypeId in _spellTypeIds) {
-//             sim.SpellManager.AddSpell(forceId, spellTypeId);
-//         }
-//     }
-// }
+class NewSpellPerk: Perk {
+    private SpellDefinition SpellDefinition { get; }
+
+    public NewSpellPerk(SpellDefinition spell) 
+        : base(PerkType.NewSpells, spell.Name, spell.Name, spell.SpellIcon) {
+        SpellDefinition = spell;
+    }
+
+    public override void OnAdded(int forceId, Simulation sim) {
+        sim.SpellManager.AddSpell(forceId, SpellDefinition.Id);
+    }
+}

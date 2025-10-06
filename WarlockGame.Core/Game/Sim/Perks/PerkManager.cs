@@ -26,6 +26,7 @@ class PerkManager {
     }
 
     public void Initialize() {
+        AddPerk(PerkType.NewSpells);
         AddPerk(PerkType.SpeedBoostOnDamage);
         AddPerk(PerkType.DamageBoost);
         AddPerk(PerkType.Invisibility);
@@ -39,7 +40,7 @@ class PerkManager {
     public void ChoosePerk(int forceId, PerkType perkType) {
         if (_perks.TryGetValue(perkType, out var perk)) {
             _forcePerks[(forceId, perkType)] = true;
-            perk.OnChosen(forceId, _sim);
+            perk.OnAdded(forceId, _sim);
             PerkChosen?.Invoke(forceId, perk);
         }
     }
