@@ -8,7 +8,7 @@ using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace WarlockGame.Core.Game.UI.Components;
 
-public sealed class MessageDisplay : InterfaceComponent
+sealed class MessageDisplay : InterfaceComponent
 {
     public static MessageDisplay Instance { get; } = new();
  

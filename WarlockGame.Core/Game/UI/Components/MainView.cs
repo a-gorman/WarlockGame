@@ -1,5 +1,5 @@
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim;
@@ -7,6 +7,9 @@ using WarlockGame.Core.Game.Sim.Buffs;
 using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Util;
 using ZLinq;
+using Color = Microsoft.Xna.Framework.Color;
+using Point = Microsoft.Xna.Framework.Point;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using Warlock = WarlockGame.Core.Game.Sim.Entities.Warlock;
 
 namespace WarlockGame.Core.Game.UI.Components;
@@ -19,25 +22,35 @@ sealed class MainView : InterfaceComponent {
     private const int HpBarWidth = 80;
     private const int HpBarHeight = 3;
 
+    private const int ScrollBoundaryWidth = 50;
+    private const float SideScrollSpeed = 5f;
+    
+    public RectangleF ViewBounds { get; set; }
+    
     public MainView(Simulation sim) {
         _sim = sim;
         Layer = -1;
         Clickable = ClickableState.Clickable;
         BoundingBox = new Rectangle(new Point(0, 0), WarlockGame.ScreenSize.ToPoint());
+        ViewBounds = BoundingBox.ToRectangleF() with { X = 0, Y = 0 };
 
         _perkPicker = new PerkPicker(_sim, new Vector2(600, 400)) {Visible = false, Clickable = ClickableState.PassThrough};
         AddComponent(_perkPicker);
     }
 
     public override void OnRightClick(Vector2 location) {
+        var worldLocation = location - ViewBounds.Position;
+        
         var localPlayerId = PlayerManager.LocalPlayer?.Id;
         if (localPlayerId != null) {
-            InputManager.HandlePlayerAction(new MoveAction { PlayerId = localPlayerId.Value, Location = location });
+            InputManager.HandlePlayerAction(new MoveAction { PlayerId = localPlayerId.Value, Location = worldLocation });
         }
         InputManager.SelectedSpellId = null;
     }
 
     public override void OnLeftClick(Vector2 location) {
+        var worldLocation = location - ViewBounds.Position;
+        
         if (InputManager.SelectedSpellId != null) {
             var localPlayerId = PlayerManager.LocalPlayer?.Id;
             if (localPlayerId == null) return;
@@ -47,8 +60,8 @@ sealed class MainView : InterfaceComponent {
             if (!_sim.SpellManager.Spells.TryGetValue(InputManager.SelectedSpellId.Value, out var spell)) return;
 
             Vector2? castVector = spell.Effect.Match<Vector2?>(
-                _ => (location - warlock.Position).ToNormalizedOrZero(),
-                _ => location,
+                _ => (worldLocation - warlock.Position).ToNormalizedOrZero(),
+                _ => worldLocation,
                 _ => null
             );
 
@@ -71,20 +84,26 @@ sealed class MainView : InterfaceComponent {
         InputManager.SelectedSpellId = null;
     }
 
-    public override void Update() {
+    public override void Update(Vector2? mosPos) {
         var localPlayerId = PlayerManager.LocalPlayerId;
         if (localPlayerId != null && _sim.GameRules.Statuses.TryGetValue(localPlayerId.Value, out var status)) {
             _perkPicker.Visible = status.ChoosingPerk;
         }
-    }
 
-    public override void OnAdd() {
-        // _sim.GameRules.OnChanged.PerkChosen += (forceId, perk) => {
-        //     if (PlayerManager.IsLocal(forceId)) {
-        //         _perkSelection.Visible = false;
-        //         _perkSelection.Clickable = ClickableState.Skip;
-        //     }
-        // };
+        if (mosPos != null) {
+            if (mosPos.Value.X < ScrollBoundaryWidth) {
+                ViewBounds = ViewBounds with { X = ViewBounds.X - SideScrollSpeed };
+            }
+            if (mosPos.Value.X > BoundingBox.Width - ScrollBoundaryWidth) {
+                ViewBounds = ViewBounds with { X = ViewBounds.X + SideScrollSpeed };
+            }
+            if (mosPos.Value.Y < ScrollBoundaryWidth) {
+                ViewBounds = ViewBounds with { Y = ViewBounds.Y - SideScrollSpeed };
+            }
+            if (mosPos.Value.Y > BoundingBox.Height - ScrollBoundaryWidth) {
+                ViewBounds = ViewBounds with { Y = ViewBounds.Y + SideScrollSpeed };
+            }
+        }
     }
 
     public override void Draw(Vector2 location, SpriteBatch spriteBatch) {
@@ -98,10 +117,10 @@ sealed class MainView : InterfaceComponent {
             }
 
             if (entity is Warlock warlock) {
-                DrawWarlock(location, spriteBatch, entity, warlock);
+                DrawWarlock(location + ViewBounds.Position, spriteBatch, entity, warlock);
             }
             else {
-                entity.Sprite.Draw(spriteBatch, entity.Position, entity.Orientation);
+                entity.Sprite.Draw(spriteBatch, entity.Position + ViewBounds.Position, entity.Orientation);
             }
         }
     }
@@ -121,7 +140,7 @@ sealed class MainView : InterfaceComponent {
             }
         }
         
-        entity.Sprite.Draw(spriteBatch, entity.Position, entity.Orientation, opacity: opacity);
+        entity.Sprite.Draw(spriteBatch, entity.Position + location, entity.Orientation, opacity: opacity);
         DrawHealthBar(warlock, opacity, location, spriteBatch);
     }
 
@@ -134,7 +153,7 @@ sealed class MainView : InterfaceComponent {
         var unfilledTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
         unfilledTexture.SetData([Color.Black * opacity]);
 
-        var position = warlock.Position;
+        var position = warlock.Position + location;
         position.Y -= HpBarVerticalOffset;
 
         spriteBatch.Draw(unfilledTexture,

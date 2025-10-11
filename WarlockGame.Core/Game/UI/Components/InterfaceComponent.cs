@@ -7,7 +7,7 @@ using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.UI.Components;
 
-public class InterfaceComponent {
+class InterfaceComponent {
     /// <summary>
     /// Determines what is displayed on top of what.
     /// Higher layers are displayed on top of lower numbered layers.
@@ -36,7 +36,12 @@ public class InterfaceComponent {
 
     public virtual void Draw(Vector2 location, SpriteBatch spriteBatch) { IsDirty = false; }
 
-    public virtual void Update() { }
+    /// <summary>
+    /// Update function called each frame before drawing any components.
+    /// </summary>
+    /// <param name="mosPos">The position of the mouse inside the components bounding box. Null if the mouse is outside
+    /// </param>
+    public virtual void Update(Vector2? mosPos) { }
 
     public void AddComponent(InterfaceComponent component) {
         if (component.BoundingBox.IsEmpty) {
@@ -76,6 +81,11 @@ public class InterfaceComponent {
     public virtual void OnAdd() { }
 
     public virtual void OnRemove() { }
+
+    public struct UpdateArgs {
+        public Vector2? MousePos { get; set; }
+        public bool MouseInBounds { get; set; }
+    }
 }
 
 public enum ClickableState {

@@ -6,6 +6,7 @@ using WarlockGame.Core.Game.Input.Devices;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.UI;
+using WarlockGame.Core.Game.UI.Components;
 using WarlockGame.Core.Game.Util;
 using KeyboardInput = WarlockGame.Core.Game.Input.Devices.KeyboardInput;
 
@@ -22,20 +23,20 @@ static class InputManager {
     private static readonly List<ITextInputConsumer> _textInputConsumers = new();
     private static readonly InputState _inputState = new();
     private static readonly TextCommandHandler _commandHandler = new();
+
+    private const float ScrollSpeed = 7;
     
     private static readonly List<InputAction> SpellSelectionActions = new() {
         InputAction.Spell1, InputAction.Spell2, InputAction.Spell3, InputAction.Spell4, InputAction.Spell5, 
         InputAction.Spell6, InputAction.Spell7, InputAction.Spell8, InputAction.Spell9, InputAction.Spell10
     };
 
-
-
     public static void Initialize(Dictionary<Keys, InputAction> keyMappings) {
         _commandHandler.Initialize();
         _keyboard = new KeyboardInput(keyMappings);
     }
     
-    public static void Update() {
+    public static InputState Update() {
         _mouse.Update();
         _keyboard.Update();
 
@@ -51,6 +52,8 @@ static class InputManager {
         }
 
         _textInputConsumers.RemoveAll(x => x.IsExpired);
+
+        return _inputState;
     }
 
     public static void AddTextConsumer(ITextInputConsumer consumer) {
@@ -91,10 +94,29 @@ static class InputManager {
                     );
                 }
             }
+            
+            var mainView = UIManager.Components.OfType<MainView>().SingleOrDefault();
+            if (mainView != null) {
+                if (inputState.IsActionKeyDown(InputAction.MoveUp)) {
+                    mainView.ViewBounds = mainView.ViewBounds with { Y = mainView.ViewBounds.Y - ScrollSpeed };
+                }
+
+                if (inputState.IsActionKeyDown(InputAction.MoveDown)) {
+                    mainView.ViewBounds = mainView.ViewBounds with { Y = mainView.ViewBounds.Y + ScrollSpeed };
+                }
+
+                if (inputState.IsActionKeyDown(InputAction.MoveLeft)) {
+                    mainView.ViewBounds = mainView.ViewBounds with { X = mainView.ViewBounds.X - ScrollSpeed };
+                }
+
+                if (inputState.IsActionKeyDown(InputAction.MoveRight)) {
+                    mainView.ViewBounds = mainView.ViewBounds with { X = mainView.ViewBounds.X + ScrollSpeed };
+                }
+            }
         }
         
-        if(inputState.WasActionKeyPressed(InputAction.LeftClick)) UIManager.HandleLeftClick(inputState.GetAimPosition()!.Value);
-        if(inputState.WasActionKeyPressed(InputAction.RightClick)) UIManager.HandleRightClick(inputState.GetAimPosition()!.Value);
+        if(inputState.WasActionKeyPressed(InputAction.LeftClick)) UIManager.HandleLeftClick(inputState.GetMousePosition()!.Value);
+        if(inputState.WasActionKeyPressed(InputAction.RightClick)) UIManager.HandleRightClick(inputState.GetMousePosition()!.Value);
     }
 
     public static void HandlePlayerAction<T>(T command)  where T : IPlayerAction, new() {
@@ -138,7 +160,7 @@ static class InputManager {
             return (_mousePosition - relativeTo)?.ToNormalizedOrZero();
         }
 
-        public Vector2? GetAimPosition() {
+        public Vector2? GetMousePosition() {
             return _mousePosition;
         }
     }

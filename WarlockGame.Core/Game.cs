@@ -124,7 +124,8 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         StaticInput.Update();
 
         NetworkManager.Update();
-        InputManager.Update();
+        var inputState = InputManager.Update();
+        UIManager.Update(inputState);
         CommandManager.Update();
 
         switch (ClientType)
@@ -190,7 +191,6 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
             }
         }
         
-        UIManager.Update();
         ParticleManager.Update();
             
         Grid.Update();

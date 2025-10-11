@@ -25,6 +25,6 @@ sealed class Button: InterfaceComponent {
     }
 
     public override void Draw(Vector2 location, SpriteBatch spriteBatch) {
-        spriteBatch.Draw(Texture, BoundingBox.AtOffset(location), Color.White);
+        spriteBatch.Draw(Texture, BoundingBox.WithOffset(location), Color.White);
     }
 }

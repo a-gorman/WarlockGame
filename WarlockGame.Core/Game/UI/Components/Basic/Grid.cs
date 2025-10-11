@@ -3,7 +3,7 @@ using WarlockGame.Core.Game.Log;
 
 namespace WarlockGame.Core.Game.UI.Components.Basic;
 
-public sealed class Grid : InterfaceComponent {
+sealed class Grid : InterfaceComponent {
     public Cell[,] Cells { get; }
 
     public Grid(Rectangle bounds, int nColumns, int nRows) :

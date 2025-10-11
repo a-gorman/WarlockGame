@@ -18,4 +18,8 @@ public enum InputAction {
     Exit,
     Pause,
     OpenCommandInput,
+    MoveUp,
+    MoveDown,
+    MoveLeft,
+    MoveRight,
 }

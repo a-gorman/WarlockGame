@@ -12,7 +12,7 @@ namespace WarlockGame.Core.Game.UI.Components;
 /// <summary>
 /// Assumes single active player (No local coop)
 /// </summary>
-public sealed class SpellDisplay : InterfaceComponent {
+sealed class SpellDisplay : InterfaceComponent {
     public Dictionary<InputAction, string> KeyMappings { get; }
     public Components.Basic.Grid IconGrid { get; }
 

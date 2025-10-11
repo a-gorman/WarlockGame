@@ -20,7 +20,7 @@ sealed class SpellIcon : InterfaceComponent {
     public override void Draw(Vector2 location, SpriteBatch spriteBatch) {
         spriteBatch.Draw(
             _spell.Definition.SpellIcon,
-            BoundingBox.AtOffset(location),
+            BoundingBox.WithOffset(location),
             _spell.OnCooldown ? Color.Gray : Color.White);
         spriteBatch.DrawString(Art.Font, _hotkey, location + new Vector2(0, 0), Color.White);
     }

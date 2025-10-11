@@ -13,7 +13,7 @@ namespace WarlockGame.Core.Game.UI;
 /// </summary>
 // ReSharper disable once InconsistentNaming
 static class UIManager {
-    private static readonly List<InterfaceComponent> Components = new();
+    public static readonly List<InterfaceComponent> Components = new();
     
     public static void Draw(SpriteBatch spriteBatch) {
         
@@ -31,17 +31,23 @@ static class UIManager {
         spriteBatch.End();
     }
 
-    public static void Update() {
+    public static void Update(InputManager.InputState inputState) {
         Components.RemoveAll(x => x.IsExpired);
         foreach (var component in Components) {
-            UpdateComponent(component);
+            UpdateComponent(component, inputState.GetMousePosition());
         }
     }
 
-    private static void UpdateComponent(InterfaceComponent component) {
-        component.Update();
+    private static void UpdateComponent(InterfaceComponent component, Vector2? mousePos) {
+        if (mousePos != null && component.BoundingBox.Contains(mousePos.Value)) {
+            mousePos -= component.BoundingBox.Location.ToVector2();
+        } else {
+            mousePos = null;
+        }
+        
+        component.Update(mousePos);
         foreach (var nestedComponent in component.Components) {
-            UpdateComponent(nestedComponent);
+            UpdateComponent(nestedComponent, mousePos);
         }
     }
 

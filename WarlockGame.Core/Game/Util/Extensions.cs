@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+using System.Drawing;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim.Order;
+using Color = Microsoft.Xna.Framework.Color;
+using Point = Microsoft.Xna.Framework.Point;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace WarlockGame.Core.Game.Util;
 
@@ -125,10 +128,10 @@ internal static class Extensions {
         }
         
         public Rectangle AtOrigin() {
-            return new Rectangle(0, 0, source.Width, source.Height);
+            return source with { X = 0, Y = 0 };
         }
     }
-    
+
     extension<T>(T) where T: struct, Enum {
         public static T? ParseOrNull(String s, bool caseInsensitive) {
             if (Enum.TryParse(s, caseInsensitive, out T result)) {

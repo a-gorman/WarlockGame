@@ -25,7 +25,7 @@ sealed class PerkPicker: InterfaceComponent {
         BoundingBox = new Rectangle(location.ToPoint(), new Point(_width, _height));
     }
 
-    public override void Update() {
+    public override void Update(Vector2? mosPos) {
         if (IsDirty) {
             SetPerks(_sim.PerkManager.GetAvailablePerks(PlayerManager.LocalPlayerId ?? -1));
             IsDirty = false;
@@ -56,7 +56,7 @@ sealed class PerkPicker: InterfaceComponent {
     }
 
     public override void Draw(Vector2 location, SpriteBatch spriteBatch) {
-        DrawHollowRectangle(spriteBatch, BoundingBox.AtOffset(location), Color.White, 3);
+        DrawHollowRectangle(spriteBatch, BoundingBox.WithOffset(location), Color.White, 3);
     }
     
     private static void DrawHollowRectangle(SpriteBatch spriteBatch, Rectangle rectangle, Color color, int width = 1) {
