@@ -115,8 +115,8 @@ static class InputManager {
             }
         }
         
-        if(inputState.WasActionKeyPressed(InputAction.LeftClick)) UIManager.HandleLeftClick(inputState.GetMousePosition()!.Value);
-        if(inputState.WasActionKeyPressed(InputAction.RightClick)) UIManager.HandleRightClick(inputState.GetMousePosition()!.Value);
+        if(inputState.WasActionKeyPressed(InputAction.LeftClick)) UIManager.HandleLeftClick(inputState.GetMousePosition());
+        if(inputState.WasActionKeyPressed(InputAction.RightClick)) UIManager.HandleRightClick(inputState.GetMousePosition());
     }
 
     public static void HandlePlayerAction<T>(T command)  where T : IPlayerAction, new() {
@@ -131,19 +131,17 @@ static class InputManager {
     public class InputState {
         private HashSet<InputAction> _actions = new();
         private HashSet<InputAction> _previousActions = new();
-        private Vector2? _mousePosition = null;
-        private Vector2? _previousMousePosition = null;
+        private Vector2 _mousePosition;
+        private Vector2 _previousMousePosition;
 
         internal InputState() {}
         
         public void Clear() {
             _actions.Clear();
             _previousActions.Clear();
-            _mousePosition = null;
-            _previousMousePosition = null;
         }
 
-        public void Update(IEnumerable<InputAction> actions, Vector2? mouseLocation) {
+        public void Update(IEnumerable<InputAction> actions, Vector2 mouseLocation) {
             (_actions, _previousActions) = (_previousActions, _actions);
     
             _actions.Clear();
@@ -156,11 +154,11 @@ static class InputManager {
 
         public bool WasActionKeyPressed(InputAction action) => _actions.Contains(action) && !_previousActions.Contains(action);
         
-        public Vector2? GetAimDirection(Vector2 relativeTo) {
-            return (_mousePosition - relativeTo)?.ToNormalizedOrZero();
+        public Vector2 GetAimDirection(Vector2 relativeTo) {
+            return (_mousePosition - relativeTo).ToNormalizedOrZero();
         }
 
-        public Vector2? GetMousePosition() {
+        public Vector2 GetMousePosition() {
             return _mousePosition;
         }
     }

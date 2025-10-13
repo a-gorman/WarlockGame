@@ -25,7 +25,7 @@ sealed class PerkPicker: InterfaceComponent {
         BoundingBox = new Rectangle(location.ToPoint(), new Point(_width, _height));
     }
 
-    public override void Update(Vector2? mosPos) {
+    public override void Update(ref readonly UIManager.UpdateArgs args) {
         if (IsDirty) {
             SetPerks(_sim.PerkManager.GetAvailablePerks(PlayerManager.LocalPlayerId ?? -1));
             IsDirty = false;

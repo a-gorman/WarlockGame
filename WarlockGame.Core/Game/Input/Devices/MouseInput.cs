@@ -6,14 +6,12 @@ using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Input.Devices; 
 
-public class MouseInput : IInputDevice {
+public class MouseInput {
     private readonly Dictionary<InputAction, MouseMapping> _mappings;
     private MouseState _mouseState = Mouse.GetState();
     private readonly HashSet<InputAction> _actions = new();
 
-    public Vector2? Position => _mouseState.Position.ToVector2();
-    public Vector2? LeftStick => null;
-    public Vector2? RightStick => null;
+    public Vector2 Position => _mouseState.Position.ToVector2();
 
     public MouseInput() {
         _mappings = new List<MouseMapping>

@@ -24,7 +24,7 @@ sealed class MainView : InterfaceComponent {
 
     private const int ScrollBoundaryWidth = 50;
     private const float SideScrollSpeed = 5f;
-    
+
     public RectangleF ViewBounds { get; set; }
     
     public MainView(Simulation sim) {
@@ -84,25 +84,23 @@ sealed class MainView : InterfaceComponent {
         InputManager.SelectedSpellId = null;
     }
 
-    public override void Update(Vector2? mosPos) {
+    public override void Update(ref readonly UIManager.UpdateArgs args) {
         var localPlayerId = PlayerManager.LocalPlayerId;
         if (localPlayerId != null && _sim.GameRules.Statuses.TryGetValue(localPlayerId.Value, out var status)) {
             _perkPicker.Visible = status.ChoosingPerk;
         }
 
-        if (mosPos != null) {
-            if (mosPos.Value.X < ScrollBoundaryWidth) {
-                ViewBounds = ViewBounds with { X = ViewBounds.X - SideScrollSpeed };
-            }
-            if (mosPos.Value.X > BoundingBox.Width - ScrollBoundaryWidth) {
-                ViewBounds = ViewBounds with { X = ViewBounds.X + SideScrollSpeed };
-            }
-            if (mosPos.Value.Y < ScrollBoundaryWidth) {
-                ViewBounds = ViewBounds with { Y = ViewBounds.Y - SideScrollSpeed };
-            }
-            if (mosPos.Value.Y > BoundingBox.Height - ScrollBoundaryWidth) {
-                ViewBounds = ViewBounds with { Y = ViewBounds.Y + SideScrollSpeed };
-            }
+        if (args.Global.MousePosition.X < ScrollBoundaryWidth) {
+            ViewBounds = ViewBounds with { X = ViewBounds.X - SideScrollSpeed };
+        }
+        if (args.Global.MousePosition.X > BoundingBox.Width - ScrollBoundaryWidth) {
+            ViewBounds = ViewBounds with { X = ViewBounds.X + SideScrollSpeed };
+        }
+        if (args.Global.MousePosition.Y < ScrollBoundaryWidth) {
+            ViewBounds = ViewBounds with { Y = ViewBounds.Y - SideScrollSpeed };
+        }
+        if (args.Global.MousePosition.Y > BoundingBox.Height - ScrollBoundaryWidth) {
+            ViewBounds = ViewBounds with { Y = ViewBounds.Y + SideScrollSpeed };
         }
     }
 

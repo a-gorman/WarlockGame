@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
+using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.UI.Components;
 
 namespace WarlockGame.Core.Game.UI;
@@ -13,6 +14,8 @@ namespace WarlockGame.Core.Game.UI;
 /// </summary>
 // ReSharper disable once InconsistentNaming
 static class UIManager {
+    private static readonly UpdateArgs.GlobalProps _globalProps = new();
+    
     public static readonly List<InterfaceComponent> Components = new();
     
     public static void Draw(SpriteBatch spriteBatch) {
@@ -32,23 +35,33 @@ static class UIManager {
     }
 
     public static void Update(InputManager.InputState inputState) {
-        Components.RemoveAll(x => x.IsExpired);
+        _globalProps.MousePosition = inputState.GetMousePosition();
+        _globalProps.MouseInBounds = new Rectangle(Point.Zero, Simulation.ArenaSize.ToPoint()).Contains(inputState.GetMousePosition());
+        
+        var args = new UpdateArgs {
+            MousePosition = _globalProps.MousePosition,
+            Global = _globalProps
+        };
         foreach (var component in Components) {
-            UpdateComponent(component, inputState.GetMousePosition());
+            UpdateComponent(component, ref args);
         }
+        Components.RemoveAll(x => x.IsExpired);
     }
 
-    private static void UpdateComponent(InterfaceComponent component, Vector2? mousePos) {
+    private static void UpdateComponent(InterfaceComponent component, ref readonly UpdateArgs args) {
+        var mousePos = args.MousePosition;
         if (mousePos != null && component.BoundingBox.Contains(mousePos.Value)) {
             mousePos -= component.BoundingBox.Location.ToVector2();
         } else {
             mousePos = null;
         }
-        
-        component.Update(mousePos);
+
+        var updateArgs = args with { MousePosition = mousePos };
+        component.Update(ref updateArgs);
         foreach (var nestedComponent in component.Components) {
-            UpdateComponent(nestedComponent, mousePos);
+            UpdateComponent(nestedComponent, ref updateArgs);
         }
+        component.RemoveAllComponents(x => x.IsExpired);
     }
 
     /// <summary>
@@ -144,6 +157,17 @@ static class UIManager {
                 return false;
             default:
                 throw new ArgumentOutOfRangeException();
+        }
+    }
+    
+    public struct UpdateArgs {
+        public required Vector2? MousePosition { get; set; }
+
+        public required GlobalProps Global { get; set; }
+
+        public class GlobalProps {
+            public bool MouseInBounds { get; set; }
+            public Vector2 MousePosition { get; set; }
         }
     }
 }

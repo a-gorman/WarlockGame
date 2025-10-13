@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace WarlockGame.Core.Game.Input.Devices;
 
-public class KeyboardInput: IInputDevice {
+public class KeyboardInput {
     private static KeyboardState _keyboardState;
     private readonly IReadOnlyDictionary<Keys, InputAction> _mappings;
     public Vector2? Position => null;

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Util;
+using ZLinq;
 
 namespace WarlockGame.Core.Game.UI.Components;
 
@@ -41,7 +42,7 @@ class InterfaceComponent {
     /// </summary>
     /// <param name="mosPos">The position of the mouse inside the components bounding box. Null if the mouse is outside
     /// </param>
-    public virtual void Update(Vector2? mosPos) { }
+    public virtual void Update(ref readonly UIManager.UpdateArgs args) { }
 
     public void AddComponent(InterfaceComponent component) {
         if (component.BoundingBox.IsEmpty) {
@@ -77,15 +78,19 @@ class InterfaceComponent {
         }
         _components.Clear();
     }
+    
+    public void RemoveAllComponents(Predicate<InterfaceComponent> predicate) {
+        foreach (var component in _components) {
+            if (predicate(component)) {
+                component.OnRemove();
+            }
+        }
+        _components.RemoveAll(predicate);
+    }
 
     public virtual void OnAdd() { }
 
     public virtual void OnRemove() { }
-
-    public struct UpdateArgs {
-        public Vector2? MousePos { get; set; }
-        public bool MouseInBounds { get; set; }
-    }
 }
 
 public enum ClickableState {
