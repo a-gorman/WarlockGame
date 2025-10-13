@@ -17,7 +17,8 @@ public class MouseInput {
         _mappings = new List<MouseMapping>
         {
             new() { DisplayValue = "Left Mouse Button", ButtonSelector = x => x.LeftButton, Action = InputAction.LeftClick },
-            new() { DisplayValue = "Right Mouse Button", ButtonSelector = x => x.RightButton, Action = InputAction.RightClick }
+            new() { DisplayValue = "Right Mouse Button", ButtonSelector = x => x.RightButton, Action = InputAction.RightClick },
+            new() { DisplayValue = "Middle Mouse Button", ButtonSelector = x => x.MiddleButton, Action = InputAction.MouseLook },
         }.ToDictionary(x => x.Action);
     }
     
@@ -37,6 +38,6 @@ public class MouseInput {
     private struct MouseMapping {
         public string DisplayValue { get; set; }
         public InputAction Action { get; set; }
-        public Func<MouseState,ButtonState> ButtonSelector { get; set; }
+        public Func<MouseState, ButtonState> ButtonSelector { get; set; }
     }
 }

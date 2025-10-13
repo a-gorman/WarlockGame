@@ -14,9 +14,9 @@ namespace WarlockGame.Core.Game.UI;
 /// </summary>
 // ReSharper disable once InconsistentNaming
 static class UIManager {
-    private static readonly UpdateArgs.GlobalProps _globalProps = new();
-    
-    public static readonly List<InterfaceComponent> Components = new();
+    private static readonly UpdateArgs.GlobalProps GlobalProps = new();
+
+    private static readonly List<InterfaceComponent> Components = new();
     
     public static void Draw(SpriteBatch spriteBatch) {
         
@@ -35,12 +35,12 @@ static class UIManager {
     }
 
     public static void Update(InputManager.InputState inputState) {
-        _globalProps.MousePosition = inputState.GetMousePosition();
-        _globalProps.MouseInBounds = new Rectangle(Point.Zero, Simulation.ArenaSize.ToPoint()).Contains(inputState.GetMousePosition());
+        GlobalProps.MouseInBounds = new Rectangle(Point.Zero, Simulation.ArenaSize.ToPoint()).Contains(inputState.GetMousePosition());
+        GlobalProps.InputState = inputState;
         
         var args = new UpdateArgs {
-            MousePosition = _globalProps.MousePosition,
-            Global = _globalProps
+            MousePosition = GlobalProps.MousePosition,
+            Global = GlobalProps
         };
         foreach (var component in Components) {
             UpdateComponent(component, ref args);
@@ -167,7 +167,8 @@ static class UIManager {
 
         public class GlobalProps {
             public bool MouseInBounds { get; set; }
-            public Vector2 MousePosition { get; set; }
+            public Vector2 MousePosition => InputState.GetMousePosition();
+            public InputManager.InputState InputState { get; set; } = null!;
         }
     }
 }

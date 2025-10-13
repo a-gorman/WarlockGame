@@ -22,14 +22,23 @@ sealed class MainView : InterfaceComponent {
     private const int HpBarWidth = 80;
     private const int HpBarHeight = 3;
 
-    private const int ScrollBoundaryWidth = 50;
-    private const float SideScrollSpeed = 5f;
+    private int ScrollBoundaryWidth;
+    private float SideScrollSpeed;
+    private float KeyScrollSpeed;
+    private float MouseLookSensetivity;
 
+    private Vector2? _previousMousePos;
+    
     public RectangleF ViewBounds { get; set; }
     
     public MainView(Simulation sim) {
         _sim = sim;
         Layer = -1;
+        ScrollBoundaryWidth = Configuration.EdgeScrollWidth;
+        SideScrollSpeed = Configuration.EdgeScrollSpeed;
+        KeyScrollSpeed = Configuration.KeyScrollSpeed;
+        MouseLookSensetivity = Configuration.MouseLookSensitivity;
+        
         Clickable = ClickableState.Clickable;
         BoundingBox = new Rectangle(new Point(0, 0), WarlockGame.ScreenSize.ToPoint());
         ViewBounds = BoundingBox.ToRectangleF() with { X = 0, Y = 0 };
@@ -90,17 +99,52 @@ sealed class MainView : InterfaceComponent {
             _perkPicker.Visible = status.ChoosingPerk;
         }
 
-        if (args.Global.MousePosition.X < ScrollBoundaryWidth) {
-            ViewBounds = ViewBounds with { X = ViewBounds.X - SideScrollSpeed };
+        ScrollView(args);
+    }
+
+    private void ScrollView(UIManager.UpdateArgs args) {
+        var inputState = args.Global.InputState;
+        if (inputState.IsActionKeyDown(InputAction.MouseLook)) {
+            if (_previousMousePos != null) {
+                var newBounds = ViewBounds;
+                newBounds.Offset(MouseLookSensetivity * (args.Global.MousePosition - _previousMousePos.Value));
+                ViewBounds = newBounds;
+            }
+            _previousMousePos = args.Global.MousePosition;
         }
-        if (args.Global.MousePosition.X > BoundingBox.Width - ScrollBoundaryWidth) {
-            ViewBounds = ViewBounds with { X = ViewBounds.X + SideScrollSpeed };
-        }
-        if (args.Global.MousePosition.Y < ScrollBoundaryWidth) {
-            ViewBounds = ViewBounds with { Y = ViewBounds.Y - SideScrollSpeed };
-        }
-        if (args.Global.MousePosition.Y > BoundingBox.Height - ScrollBoundaryWidth) {
-            ViewBounds = ViewBounds with { Y = ViewBounds.Y + SideScrollSpeed };
+        else {
+            _previousMousePos = null;
+            if (args.Global.MousePosition.X < ScrollBoundaryWidth) {
+                ViewBounds = ViewBounds with { X = ViewBounds.X - SideScrollSpeed };
+            }
+
+            if (args.Global.MousePosition.X > BoundingBox.Width - ScrollBoundaryWidth) {
+                ViewBounds = ViewBounds with { X = ViewBounds.X + SideScrollSpeed };
+            }
+
+            if (args.Global.MousePosition.Y < ScrollBoundaryWidth) {
+                ViewBounds = ViewBounds with { Y = ViewBounds.Y - SideScrollSpeed };
+            }
+
+            if (args.Global.MousePosition.Y > BoundingBox.Height - ScrollBoundaryWidth) {
+                ViewBounds = ViewBounds with { Y = ViewBounds.Y + SideScrollSpeed };
+            }
+
+            if (inputState.IsActionKeyDown(InputAction.MoveUp)) {
+                ViewBounds = ViewBounds with { Y = ViewBounds.Y - KeyScrollSpeed };
+            }
+
+            if (inputState.IsActionKeyDown(InputAction.MoveDown)) {
+                ViewBounds = ViewBounds with { Y = ViewBounds.Y + KeyScrollSpeed };
+            }
+
+            if (inputState.IsActionKeyDown(InputAction.MoveLeft)) {
+                ViewBounds = ViewBounds with { X = ViewBounds.X - KeyScrollSpeed };
+            }
+
+            if (inputState.IsActionKeyDown(InputAction.MoveRight)) {
+                ViewBounds = ViewBounds with { X = ViewBounds.X + KeyScrollSpeed };
+            }
         }
     }
 

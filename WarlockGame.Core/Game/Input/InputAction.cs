@@ -14,6 +14,7 @@ public enum InputAction {
     Spell10,
     LeftClick,
     RightClick,
+    MouseLook,
     Cancel,
     Exit,
     Pause,

@@ -24,6 +24,10 @@ static class Configuration {
     public static Logger.Level LogDisplayLevel { get; set; }
     public static Logger.Level LogDedupeLevel { get; set; }
     public static bool LogDisplayVisible { get; set; }
+    public static int EdgeScrollWidth { get; set; }
+    public static float EdgeScrollSpeed { get; set; }
+    public static float KeyScrollSpeed { get; set; }
+    public static float MouseLookSensitivity { get; set; }
 
     public static void ParseArgs(IConfigurationRoot args) {
         Client = args["autoStartClient"]?.Let(bool.Parse) ?? false;
@@ -34,6 +38,10 @@ static class Configuration {
         ScreenWidth = args["screenWidth"]?.Let(int.Parse) ?? 1920;
         PlayerName = args["player:name"];
         PreferredColor = args["player:color"]?.Let(s => System.Drawing.Color.FromName(s).Let(c => new Color(c.R, c.G, c.B, c.A)));
+        EdgeScrollWidth = args["interface:edgeScrollWidth"]?.Let(int.Parse) ?? 40;
+        EdgeScrollSpeed = args["interface:edgeScrollSpeed"]?.Let(int.Parse) ?? 7;
+        KeyScrollSpeed = args["interface:keyScrollSpeed"]?.Let(int.Parse) ?? 6;
+        MouseLookSensitivity = args["interface:mouseLookSensitivity"]?.Let(int.Parse) ?? 1;
         KeyMappings = new Dictionary<Keys, InputAction> {
             { ParseKey(args["keymap:spell1"], Keys.Q), InputAction.Spell1 },
             { ParseKey(args["keymap:spell2"], Keys.W), InputAction.Spell2 },
