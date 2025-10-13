@@ -25,7 +25,7 @@ sealed class MainView : InterfaceComponent {
     private readonly int _scrollBoundaryWidth;
     private readonly float _sideScrollSpeed;
     private readonly float _keyScrollSpeed;
-    private readonly float _mouseLookSensetivity;
+    private readonly float _mouseLookSensitivity;
 
     private Vector2? _previousMousePos;
     
@@ -37,7 +37,7 @@ sealed class MainView : InterfaceComponent {
         _scrollBoundaryWidth = Configuration.EdgeScrollWidth;
         _sideScrollSpeed = Configuration.EdgeScrollSpeed;
         _keyScrollSpeed = Configuration.KeyScrollSpeed;
-        _mouseLookSensetivity = Configuration.MouseLookSensitivity;
+        _mouseLookSensitivity = Configuration.MouseLookSensitivity;
         
         Clickable = ClickableState.Clickable;
         BoundingBox = new Rectangle(new Point(0, 0), WarlockGame.ScreenSize.ToPoint());
@@ -107,7 +107,7 @@ sealed class MainView : InterfaceComponent {
         if (inputState.IsActionKeyDown(InputAction.MouseLook)) {
             if (_previousMousePos != null) {
                 var newBounds = ViewBounds;
-                newBounds.Offset(_mouseLookSensetivity * (args.Global.MousePosition - _previousMousePos.Value));
+                newBounds.Offset(_mouseLookSensitivity * (args.Global.MousePosition - _previousMousePos.Value));
                 ViewBounds = newBounds;
             }
             _previousMousePos = args.Global.MousePosition;
