@@ -82,22 +82,20 @@ static class UIManager {
         component.OnAdd();
     }
     
-    public static bool HandleLeftClick(Vector2 clickLocation) {
+    public static void HandleLeftClick(Vector2 clickLocation) {
         foreach (var component in Components) {
             if (LeftClickComponent(component, clickLocation)) {
-                return true;
+                return;
             }
         }
-        return false;
     }
     
-    public static bool HandleRightClick(Vector2 clickLocation) {
+    public static void HandleRightClick(Vector2 clickLocation) {
         foreach (var component in Components) {
             if (RightClickComponent(component, clickLocation)) {
-                return true;
+                return;
             }
         }
-        return false;
     }
 
     private static void DrawComponent(InterfaceComponent component, Vector2 globalLocation, SpriteBatch spriteBatch) {

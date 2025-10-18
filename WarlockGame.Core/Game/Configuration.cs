@@ -10,6 +10,7 @@ using Color = Microsoft.Xna.Framework.Color;
 namespace WarlockGame.Core.Game;
 
 static class Configuration {
+    public static string WindowName { get; set; } = null!;
     public static bool Server { get; set; }
     public static bool Client { get; set; }
     public static string JoinIp { get; set; } = null!;
@@ -30,6 +31,7 @@ static class Configuration {
     public static float MouseLookSensitivity { get; set; }
 
     public static void ParseArgs(IConfigurationRoot args) {
+        WindowName = args["windowName"] ?? "WarlockGame";
         Client = args["autoStartClient"]?.Let(bool.Parse) ?? false;
         Server = args["autoStartServer"]?.Let(bool.Parse) ?? false;
         RestartOnJoin = args["autoRestartOnJoin"]?.Let(bool.Parse) ?? false;
