@@ -8,6 +8,7 @@ using WarlockGame.Core.Game.Sim.Order;
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
+using RectangleF = MonoGame.Extended.RectangleF;
 
 namespace WarlockGame.Core.Game.Util;
 
@@ -129,6 +130,12 @@ internal static class Extensions {
         
         public Rectangle AtOrigin() {
             return source with { X = 0, Y = 0 };
+        }
+    }
+
+    extension(RectangleF source) {
+        public static RectangleF WithCenter(Vector2 center, Vector2 size) {
+            return RectangleF.CreateFrom(center - size / 2, center + size / 2);
         }
     }
 

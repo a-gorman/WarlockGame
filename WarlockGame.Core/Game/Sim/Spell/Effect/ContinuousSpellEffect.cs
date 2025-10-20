@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using OneOf;
+using WarlockGame.Core.Game.Sim.Effect;
 using WarlockGame.Core.Game.Sim.Spell.Component;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Effect;
@@ -28,5 +29,5 @@ class ContinuousSpellEffect : IEffect {
         }
     }
 
-    public void Draw(SpriteBatch spriteBatch) { }
+    public void Draw(Vector2 location, SpriteBatch spriteBatch) { }
 }

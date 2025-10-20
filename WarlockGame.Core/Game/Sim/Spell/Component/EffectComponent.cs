@@ -1,4 +1,5 @@
 using System;
+using WarlockGame.Core.Game.Sim.Effect;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Component;
 

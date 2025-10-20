@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.Sim.Spell.Component;
 using WarlockGame.Core.Game.Util;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace WarlockGame.Core.Game.Sim.Entities;
 
@@ -22,7 +23,7 @@ class Projectile : Entity {
         Context = context;
         Position = position;
         Velocity = velocity;
-        Orientation = Velocity.ToAngle();
+        Orientation = Extensions.ToAngle(Velocity);
         _effects = effects;
         BlocksProjectiles = true;
         PlayerId = context.Caster.PlayerId;
@@ -31,13 +32,13 @@ class Projectile : Entity {
     public override void Update()
     {
         if (Velocity.HasLength())
-            Orientation = Velocity.ToAngle();
+            Orientation = Extensions.ToAngle(Velocity);
 
         Position += Velocity;
         WarlockGame.Grid.ApplyExplosiveForce(0.5f * Velocity.Length(), Position, 80);
 
         // delete projectiles that go off-screen
-        if (!WarlockGame.Viewport.Bounds.Contains(Position.ToPoint()))
+        if (!new RectangleF(new Vector2(0), Simulation.ArenaSize).Contains(Position))
         {
             IsExpired = true;
 

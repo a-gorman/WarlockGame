@@ -30,7 +30,7 @@ public class Lightning : IEffect
         _timer.Decrement();
     }
     
-    public void Draw(SpriteBatch spriteBatch)
+    public void Draw(Vector2 location, SpriteBatch spriteBatch)
     {
         if (!_timer.IsExpired)
         {

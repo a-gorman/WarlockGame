@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Input;
@@ -26,6 +27,7 @@ sealed class MainView : InterfaceComponent {
     private readonly float _sideScrollSpeed;
     private readonly float _keyScrollSpeed;
     private readonly float _mouseLookSensitivity;
+    private readonly RectangleF _viewLimit;
 
     private Vector2? _previousMousePos;
     
@@ -38,17 +40,28 @@ sealed class MainView : InterfaceComponent {
         _sideScrollSpeed = Configuration.EdgeScrollSpeed;
         _keyScrollSpeed = Configuration.KeyScrollSpeed;
         _mouseLookSensitivity = Configuration.MouseLookSensitivity;
+        _viewLimit = new RectangleF(
+            -Configuration.MapEdgeScrollLimitBoundary,
+            -Configuration.MapEdgeScrollLimitBoundary,
+            Math.Max(Configuration.MapEdgeScrollLimitBoundary + _sim.GameRules.InitialArenaSize.X - WarlockGame.ScreenSize.X, 0),
+            Math.Max(Configuration.MapEdgeScrollLimitBoundary + _sim.GameRules.InitialArenaSize.Y - WarlockGame.ScreenSize.Y, 0)
+        );
         
         Clickable = ClickableState.Clickable;
         BoundingBox = new Rectangle(new Point(0, 0), WarlockGame.ScreenSize.ToPoint());
-        ViewBounds = BoundingBox.ToRectangleF() with { X = 0, Y = 0 };
+        ViewBounds = new RectangleF(
+            Math.Abs(WarlockGame.ScreenSize.X - _sim.GameRules.InitialArenaSize.X) / 2,
+            Math.Abs(WarlockGame.ScreenSize.Y - _sim.GameRules.InitialArenaSize.Y) / 2,
+            WarlockGame.ScreenSize.X,
+            WarlockGame.ScreenSize.Y
+        );
 
         _perkPicker = new PerkPicker(_sim, new Vector2(600, 400)) {Visible = false, Clickable = ClickableState.PassThrough};
         AddComponent(_perkPicker);
     }
 
     public override void OnRightClick(Vector2 location) {
-        var worldLocation = location - ViewBounds.Position;
+        var worldLocation = location + ViewBounds.Position;
         
         var localPlayerId = PlayerManager.LocalPlayer?.Id;
         if (localPlayerId != null) {
@@ -58,7 +71,7 @@ sealed class MainView : InterfaceComponent {
     }
 
     public override void OnLeftClick(Vector2 location) {
-        var worldLocation = location - ViewBounds.Position;
+        var worldLocation = location + ViewBounds.Position;
         
         if (InputManager.SelectedSpellId != null) {
             var localPlayerId = PlayerManager.LocalPlayer?.Id;
@@ -104,51 +117,61 @@ sealed class MainView : InterfaceComponent {
 
     private void ScrollView(UIManager.UpdateArgs args) {
         var inputState = args.Global.InputState;
+        var scrollAmount = Vector2.Zero;
         if (inputState.IsActionKeyDown(InputAction.MouseLook)) {
             if (_previousMousePos != null) {
-                var newBounds = ViewBounds;
-                newBounds.Offset(_mouseLookSensitivity * (args.Global.MousePosition - _previousMousePos.Value));
-                ViewBounds = newBounds;
+                scrollAmount -= _mouseLookSensitivity * (args.Global.MousePosition - _previousMousePos.Value);
             }
             _previousMousePos = args.Global.MousePosition;
         } else {
             _previousMousePos = null;
             if (args.Global.MousePosition.X < _scrollBoundaryWidth) {
-                ViewBounds = ViewBounds with { X = ViewBounds.X - _sideScrollSpeed };
+                scrollAmount += new Vector2(-_sideScrollSpeed, 0);
             }
 
             if (args.Global.MousePosition.X > BoundingBox.Width - _scrollBoundaryWidth) {
-                ViewBounds = ViewBounds with { X = ViewBounds.X + _sideScrollSpeed };
+                scrollAmount += new Vector2(_sideScrollSpeed, 0);
             }
 
             if (args.Global.MousePosition.Y < _scrollBoundaryWidth) {
-                ViewBounds = ViewBounds with { Y = ViewBounds.Y - _sideScrollSpeed };
+                scrollAmount += new Vector2(0, -_sideScrollSpeed);
             }
 
             if (args.Global.MousePosition.Y > BoundingBox.Height - _scrollBoundaryWidth) {
-                ViewBounds = ViewBounds with { Y = ViewBounds.Y + _sideScrollSpeed };
+                scrollAmount += new Vector2(0, _sideScrollSpeed);
             }
 
             if (inputState.IsActionKeyDown(InputAction.MoveUp)) {
-                ViewBounds = ViewBounds with { Y = ViewBounds.Y - _keyScrollSpeed };
+                scrollAmount += new Vector2(0, -_keyScrollSpeed);
             }
 
             if (inputState.IsActionKeyDown(InputAction.MoveDown)) {
-                ViewBounds = ViewBounds with { Y = ViewBounds.Y + _keyScrollSpeed };
+                scrollAmount += new Vector2(0, _keyScrollSpeed);
             }
 
             if (inputState.IsActionKeyDown(InputAction.MoveLeft)) {
-                ViewBounds = ViewBounds with { X = ViewBounds.X - _keyScrollSpeed };
+                scrollAmount += new Vector2(-_keyScrollSpeed, 0);
             }
 
             if (inputState.IsActionKeyDown(InputAction.MoveRight)) {
-                ViewBounds = ViewBounds with { X = ViewBounds.X + _keyScrollSpeed };
+                scrollAmount += new Vector2(_keyScrollSpeed, 0);
             }
+        }
+
+        if (scrollAmount != Vector2.Zero) {
+            ViewBounds = ViewBounds with {
+                X = Math.Clamp(ViewBounds.X + scrollAmount.X, _viewLimit.Left, _viewLimit.Right),
+                Y = Math.Clamp(ViewBounds.Y + scrollAmount.Y, _viewLimit.Top,  _viewLimit.Bottom)
+            };
         }
     }
 
     public override void Draw(Vector2 location, SpriteBatch spriteBatch) {
-        DrawEntities(location, spriteBatch);
+        var drawOffset = location - ViewBounds.Position;
+        DrawEntities(drawOffset, spriteBatch);
+        foreach (var effect in _sim.EffectManager.Effects) {
+            effect.Draw(drawOffset, spriteBatch);
+        }
     }
 
     private void DrawEntities(Vector2 location, SpriteBatch spriteBatch) {
@@ -158,10 +181,10 @@ sealed class MainView : InterfaceComponent {
             }
 
             if (entity is Warlock warlock) {
-                DrawWarlock(location + ViewBounds.Position, spriteBatch, entity, warlock);
+                DrawWarlock(location, spriteBatch, entity, warlock);
             }
             else {
-                entity.Sprite.Draw(spriteBatch, entity.Position + ViewBounds.Position, entity.Orientation);
+                entity.Sprite.Draw(spriteBatch, entity.Position + location, entity.Orientation);
             }
         }
     }

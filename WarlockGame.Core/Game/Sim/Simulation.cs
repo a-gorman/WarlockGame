@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim.Effect;
@@ -16,7 +18,7 @@ using Warlock = WarlockGame.Core.Game.Sim.Entities.Warlock;
 namespace WarlockGame.Core.Game.Sim;
 
 class Simulation {
-    public int Tick { get; set; }
+    public int Tick { get; private set; }
 
     public Random Random { get; private set; } = new();
     public EntityManager EntityManager { get; } = new();
@@ -27,14 +29,17 @@ class Simulation {
 
     public GameRules GameRules { get; }
 
-    public static Vector2 ArenaSize => new Vector2(1900, 1000);
+    public static Vector2 ArenaSize { get; private set; }
 
     public Simulation() {
+        GameRules = new GameRules(this, 3);
         EffectManager = new EffectManager();
         SpellFactory = new SpellFactory(this);
         SpellManager = new SpellManager(SpellFactory);
         PerkManager = new PerkManager(this);
-        GameRules = new GameRules(this, 3);
+
+        ArenaSize = GameRules.InitialArenaSize;
+        
         EntityManager.WarlockDestroyed += GameRules.OnWarlockDestroyed;
     }
 
@@ -70,7 +75,7 @@ class Simulation {
         
         var radiansPerPlayer = (float)(2 * Math.PI / PlayerManager.Players.Count);
         var warlocks = PlayerManager.Players.Select((x, i) => {
-            var spawnPos = ArenaSize / 2 + new Vector2(0, 250).Rotated(radiansPerPlayer * i);
+            var spawnPos = ArenaSize / 2 + new Vector2(0, 400).Rotated(radiansPerPlayer * i);
             var warlock = new Warlock(x.Id, spawnPos, this);
 
             warlock.Sprite.Color = PlayerManager.GetPlayer(x.Id)!.Color;
@@ -86,7 +91,7 @@ class Simulation {
             PerkManager.ChoosePerk(warlock.PlayerId!.Value, PerkType.SpeedBoostOnDamage);
         }
 
-
+        SimDebug.Visualize(new Rectangle(Vector2.Zero.ToPoint(), ArenaSize.ToPoint()), Color.MonoGameOrange, int.MaxValue);
     }
 
     private void ClearGameState() {

@@ -5,8 +5,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace WarlockGame.Core.Game.Sim.Effect
 {
-	internal class EffectManager
-	{
+	internal class EffectManager {
+		public IReadOnlyList<IEffect> Effects => _effects;
+		
 		private List<IEffect> _effects = new();
 
 		private bool _isUpdating;
@@ -45,12 +46,6 @@ namespace WarlockGame.Core.Game.Sim.Effect
 
 			_effects = _effects.Where(x => !x.IsExpired).ToList();
 		}
-		
-		public void Draw(SpriteBatch spriteBatch)
-		{
-			foreach (var effect in _effects)
-				effect.Draw(spriteBatch);
-		}
 
 		public void Clear() {
 			_effects.Clear();
@@ -68,7 +63,7 @@ namespace WarlockGame.Core.Game.Sim.Effect
 				}
 			}
 
-			public void Draw(SpriteBatch spriteBatch) { }
+			public void Draw(Vector2 location, SpriteBatch spriteBatch) { }
 		}
 	}
 }

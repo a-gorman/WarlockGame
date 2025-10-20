@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework.Graphics;
 
-namespace WarlockGame.Core.Game;
+namespace WarlockGame.Core.Game.Sim.Effect;
 
 public interface IEffect
 {
@@ -8,5 +8,5 @@ public interface IEffect
 
     void Update();
 
-    void Draw(SpriteBatch spriteBatch);
+    void Draw(Vector2 location, SpriteBatch spriteBatch);
 }

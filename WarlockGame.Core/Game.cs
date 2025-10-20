@@ -221,7 +221,6 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
         _spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive);
         // Simulation.EntityManager.Draw(_spriteBatch);
-        Simulation.EffectManager.Draw(_spriteBatch);
         _spriteBatch.End();
 
         _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
