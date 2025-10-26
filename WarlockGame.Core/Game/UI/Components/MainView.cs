@@ -43,8 +43,8 @@ sealed class MainView : InterfaceComponent {
         _viewLimit = new RectangleF(
             -Configuration.MapEdgeScrollLimitBoundary,
             -Configuration.MapEdgeScrollLimitBoundary,
-            Math.Max(Configuration.MapEdgeScrollLimitBoundary + _sim.GameRules.InitialArenaSize.X - WarlockGame.ScreenSize.X, 0),
-            Math.Max(Configuration.MapEdgeScrollLimitBoundary + _sim.GameRules.InitialArenaSize.Y - WarlockGame.ScreenSize.Y, 0)
+            Math.Max(2 * Configuration.MapEdgeScrollLimitBoundary + _sim.GameRules.InitialArenaSize.X - WarlockGame.ScreenSize.X, 0),
+            Math.Max(2 * Configuration.MapEdgeScrollLimitBoundary + _sim.GameRules.InitialArenaSize.Y - WarlockGame.ScreenSize.Y, 0)
         );
         
         Clickable = ClickableState.Clickable;
