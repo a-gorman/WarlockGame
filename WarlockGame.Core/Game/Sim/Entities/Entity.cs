@@ -99,9 +99,9 @@ namespace WarlockGame.Core.Game.Sim.Entities
 			}
 		}
 
-		public virtual void Damage(float damage, Entity source) {
+		public virtual void Damage(float damage, Entity? source) {
 			if (OnDamaged != null) {
-				var args = new OnDamagedEventArgs() {
+				var args = new OnDamagedEventArgs {
 					Amount = damage,
 					Source = this,
 					DamageSource = source

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim.Effect;
@@ -18,6 +18,7 @@ using Warlock = WarlockGame.Core.Game.Sim.Entities.Warlock;
 namespace WarlockGame.Core.Game.Sim;
 
 class Simulation {
+    private DamagingGround _damagingGround = null!;
     public int Tick { get; private set; }
 
     public Random Random { get; private set; } = new();
@@ -29,7 +30,14 @@ class Simulation {
 
     public GameRules GameRules { get; }
 
-    public static Vector2 ArenaSize { get; private set; }
+    public static Vector2 ArenaSize { 
+        get;
+        private set {
+            ArenaCenter = value / 2;
+            field = value;
+        }
+    }
+    public static Vector2 ArenaCenter { get; private set; }
 
     public Simulation() {
         GameRules = new GameRules(this, 3);
@@ -51,6 +59,8 @@ class Simulation {
     public TickResult Update(IEnumerable<IPlayerAction> inputs) {
         Tick++;
 
+        _damagingGround.Shape = _damagingGround.Shape with { Radius = _damagingGround.Shape.Radius - 0.1f };
+
         foreach (var command in inputs) {
             ProcessPlayerAction(command);
         }
@@ -59,7 +69,7 @@ class Simulation {
         EffectManager.Update();
         SpellManager.Update();
         PerkManager.Update();
-
+        
         return new TickResult
         {
             Tick = Tick,
@@ -88,8 +98,10 @@ class Simulation {
             foreach (var spellType in GameRules.StartingSpells) {
                 SpellManager.AddSpell(warlock.PlayerId!.Value, spellType);
             }
-            PerkManager.ChoosePerk(warlock.PlayerId!.Value, PerkType.SpeedBoostOnDamage);
         }
+        
+        _damagingGround = new DamagingGround(this, new CircleF(ArenaCenter, (ArenaSize / 2).Length()), 0.1f, inverted: true);
+        EffectManager.Add(_damagingGround);
 
         SimDebug.Visualize(new Rectangle(Vector2.Zero.ToPoint(), ArenaSize.ToPoint()), Color.MonoGameOrange, int.MaxValue);
     }

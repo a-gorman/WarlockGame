@@ -24,9 +24,9 @@ class Projectile : Entity {
         Position = position;
         Velocity = velocity;
         Orientation = Extensions.ToAngle(Velocity);
-        _effects = effects;
         BlocksProjectiles = true;
         PlayerId = context.Caster.PlayerId;
+        _effects = effects;
     }
 
     public override void Update()

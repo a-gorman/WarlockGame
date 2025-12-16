@@ -14,7 +14,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
         public float Speed { get; set; } = 3.5f;
         public const float RotationSpeed = 0.095f; // Radians per tick
 
-        public float MaxHealth => 1;
+        public float MaxHealth => 60;
         public float Health { get; set => field = float.Clamp(value, 0, MaxHealth); }
 
         /// Desired direction of travel. If set, the Warlock will move and rotate as needed
@@ -139,7 +139,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
             }
         }
         
-        public override void Damage(float damage, Entity source) {
+        public override void Damage(float damage, Entity? source) {
             Health -= damage;
             base.Damage(damage, source);
 
@@ -155,10 +155,10 @@ namespace WarlockGame.Core.Game.Sim.Entities
             Respawned?.Invoke(this);
         }
         
-        private void Destroy(Entity source) {
+        private void Destroy(Entity? source) {
             if (IsDead) return;
             
-            Logger.Info($"Warlock {Id} destroyed! Source: {source.Id} Force: {source.PlayerId}");
+            Logger.Info($"Warlock {Id} destroyed! Source: {source?.Id} Force: {source?.PlayerId}");
             IsDead = true;
             foreach (var buff in Buffs) {
                 if (buff.ClearedOnDeath) {

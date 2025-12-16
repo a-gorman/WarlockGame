@@ -45,7 +45,7 @@ static class Configuration {
         EdgeScrollWidth = args["interface:edgeScrollWidth"]?.Let(int.Parse) ?? 20;
         EdgeScrollSpeed = args["interface:edgeScrollSpeed"]?.Let(int.Parse) ?? 7;
         KeyScrollSpeed = args["interface:keyScrollSpeed"]?.Let(int.Parse) ?? 6;
-        MouseLookSensitivity = args["interface:mouseLookSensitivity"]?.Let(int.Parse) ?? 1;
+        MouseLookSensitivity = args["interface:middleMouseLookSensitivity"]?.Let(int.Parse) ?? 1;
         KeyMappings = new Dictionary<Keys, InputAction> {
             { ParseKey(args["keymap:spell1"], Keys.Q), InputAction.Spell1 },
             { ParseKey(args["keymap:spell2"], Keys.W), InputAction.Spell2 },
