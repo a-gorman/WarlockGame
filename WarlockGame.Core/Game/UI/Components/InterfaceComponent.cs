@@ -47,7 +47,7 @@ class InterfaceComponent {
     public void AddComponent(InterfaceComponent component) {
         if (component.BoundingBox.IsEmpty) {
             component.BoundingBox = BoundingBox.AtOrigin();
-            Logger.Debug($"Default bounding box assigned for interface component. {component.BoundingBox}");
+            Logger.Debug($"Default bounding box assigned for interface component. {component.BoundingBox}", Logger.LogType.Interface);
         } else {
             var originX = Math.Min(Math.Max(component.BoundingBox.X, 0), BoundingBox.Width);
             var originY = Math.Min(Math.Max(component.BoundingBox.Y, 0), BoundingBox.Height);
@@ -57,7 +57,7 @@ class InterfaceComponent {
             var newBounds = new Rectangle(originX, originY, oppositeX - originX, oppositeY - originY);
 
             if (newBounds != component.BoundingBox) {
-                Logger.Warning($"Nested component bounds are outside parent bounds. Adjusted '{component.BoundingBox}' to '{newBounds}'.");
+                Logger.Warning($"Nested component bounds are outside parent bounds. Adjusted '{component.BoundingBox}' to '{newBounds}'.", Logger.LogType.Interface);
                 component.BoundingBox = newBounds;
             }
         }

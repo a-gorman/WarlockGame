@@ -81,7 +81,7 @@ sealed class TextPrompt: InterfaceComponent, ITextInputConsumer {
     }
     
     public override void OnLeftClick(Vector2 location) {
-        Logger.Debug("Click on text prompt");
+        Logger.Debug("Click on text prompt", Logger.LogType.Interface | Logger.LogType.PlayerAction);
         // TODO: Move a cursor to the click location
     }
 

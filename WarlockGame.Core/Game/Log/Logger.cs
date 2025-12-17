@@ -14,23 +14,23 @@ public static class Logger {
     // Deduplicates sequential logs with the same message at this level or below
     public static Level DedupeLevel { get; set; } = Level.ERROR;
     
-    public static void Debug(string message) {
-        WriteLog(message, Level.DEBUG);
+    public static void Debug(string message, LogType logType) {
+        WriteLog(message, Level.DEBUG, logType);
     }
     
-    public static void Info(string message) {
-        WriteLog(message, Level.INFO);
+    public static void Info(string message, LogType logType) {
+        WriteLog(message, Level.INFO, logType);
     }
     
-    public static void Warning(string message) {
-        WriteLog(message, Level.WARNING);
+    public static void Warning(string message, LogType logType) {
+        WriteLog(message, Level.WARNING, logType);
     }
     
-    public static void Error(string message) {
-        WriteLog(message, Level.ERROR);
+    public static void Error(string message, LogType logType) {
+        WriteLog(message, Level.ERROR, logType);
     }
 
-    public static void WriteLog(string message, Level level) {
+    public static void WriteLog(string message, Level level, LogType logType) {
         if (!_logs.IsEmpty && level <= DedupeLevel && _logs.Front().Message == message) {
              _logs.Front().Apply(x =>
              {
@@ -46,6 +46,7 @@ public static class Logger {
                 Level = level,
                 Message = message,
                 Tick = WarlockGame.Instance.Simulation.Tick,
+                Type = logType,
                 Timestamp = DateTime.Now
             });
         }
@@ -54,13 +55,14 @@ public static class Logger {
     }
 
     public class Log {
-        public required String Message { get; init; }
+        public required string Message { get; init; }
         public required DateTime Timestamp { get; set; }
         public required int Tick { get; set; }
         public required Level Level { get; init; }
+        public required LogType Type { get; init; }
         public int DedupCount { get; set; } = 0;
 
-        public String LevelString() {
+        public string LevelString() {
             return Level switch
             {
                 Level.DEBUG => "DEBUG",
@@ -79,5 +81,15 @@ public static class Logger {
         WARNING = 2,
         ERROR = 3,
         FATAL = 4
+    }
+
+    [Flags]
+    public enum LogType {
+        None = 0,
+        Interface = 1,
+        PlayerAction = 2,
+        Network = 4,
+        Simulation = 8,
+        Program = 16
     }
 }

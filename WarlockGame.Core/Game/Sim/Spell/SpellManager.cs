@@ -40,12 +40,12 @@ class SpellManager {
 
     public void AddSpell(int forceId, int definitionId) {
         if (!Definitions.TryGetValue(definitionId, out var definition)) {
-            Logger.Error($"Tried to add spell type that does not exist! Force: {forceId} Definition {definitionId}");
+            Logger.Error($"Tried to add spell type that does not exist! Force: {forceId} Definition {definitionId}", Logger.LogType.Simulation);
             return;
         }
 
         if (GetSpell(forceId, definitionId) != null) {
-            Logger.Warning($"Tried adding a spell that warlock already has! Force: {forceId} Definition: {definition}");
+            Logger.Warning($"Tried adding a spell that warlock already has! Force: {forceId} Definition: {definition}", Logger.LogType.Simulation);
             return;
         }
 

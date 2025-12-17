@@ -31,9 +31,9 @@ class Server : INetEventListener {
             AutoRecycle = true
         };
 
-        Logger.Info("Starting server");
+        Logger.Info("Starting server", Logger.LogType.Network);
         _server.Start(6112);
-        Logger.Info($"Server stated. IPAddress: { NetUtils.GetLocalIpList(LocalAddrType.IPv4).JoinToString() }");
+        Logger.Info($"Server stated. IPAddress: { NetUtils.GetLocalIpList(LocalAddrType.IPv4).JoinToString() }", Logger.LogType.Network);
 
         _packetProcessor.RegisterCustomNestedTypes();
 
@@ -67,7 +67,7 @@ class Server : INetEventListener {
     }
 
     public void OnConnectionRequest(ConnectionRequest request) {
-        Logger.Info($"Incoming connection from {request.RemoteEndPoint}");
+        Logger.Info($"Incoming connection from {request.RemoteEndPoint}", Logger.LogType.Network);
         request.Accept();
     }
 
@@ -108,14 +108,14 @@ class Server : INetEventListener {
     }
 
     public void OnPeerConnected(NetPeer peer) {
-        Logger.Info($"Peer connected: {peer.Id}");
+        Logger.Info($"Peer connected: {peer.Id}", Logger.LogType.Network);
         MessageDisplay.Display($"Peer connected: {peer.Id}");
         _clients.Add(peer.Id, new ClientPeer { NetPeer = peer });
         CalculateLatency();
     }
 
     public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo) {
-        Logger.Info($"Peer disconnected: {peer.Id}");
+        Logger.Info($"Peer disconnected: {peer.Id}", Logger.LogType.Network);
         MessageDisplay.Display($"Peer disconnected: {peer.Id}");
         _clients.Remove(peer.Id);
         Latency = CalculateLatency();

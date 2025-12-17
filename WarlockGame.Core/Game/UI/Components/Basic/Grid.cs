@@ -11,7 +11,7 @@ sealed class Grid : InterfaceComponent {
     
     public Grid(int x, int y, int nColumns, int columnWidth, int nRows, int rowHeight) {
         if (nColumns < 1 || nRows < 1) {
-            Logger.Warning($"Added column with no cells, Columns: {nColumns}, Rows: {nRows}");
+            Logger.Warning($"Added column with no cells, Columns: {nColumns}, Rows: {nRows}", Logger.LogType.Interface);
         }
 
         BoundingBox = new Rectangle(x, y, nColumns * columnWidth, nRows * rowHeight);

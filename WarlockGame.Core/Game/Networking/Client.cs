@@ -25,7 +25,7 @@ sealed class Client : INetEventListener {
 
     public void Connect(string address, Action clientConnectedCallback) {
         if (_clientConnectedCallback != null) {
-            Logger.Warning("Tried connecting to server while already trying to connect");
+            Logger.Warning("Tried connecting to server while already trying to connect", Logger.LogType.Network);
             return;
         }
         
@@ -35,7 +35,7 @@ sealed class Client : INetEventListener {
         };
 
         _client.Start();
-        Logger.Info($"Connecting to {address}");
+        Logger.Info($"Connecting to {address}", Logger.LogType.Network);
         _client.Connect(address, 6112, "");
         
         _packetProcessor.RegisterCustomNestedTypes();
@@ -62,7 +62,7 @@ sealed class Client : INetEventListener {
     
     private void OnJoinResponse(JoinGameResponse response) {
         MessageDisplay.Display("Joining game");
-        Logger.Info("Joining game");
+        Logger.Info("Joining game", Logger.LogType.Network);
         
         foreach (var player in response.Players) {
             if (player.Id == response.PlayerId) {
@@ -95,7 +95,7 @@ sealed class Client : INetEventListener {
     }
 
     public void OnPeerConnected(NetPeer peer) {
-        Logger.Info("Connected to server");
+        Logger.Info("Connected to server", Logger.LogType.Network);
         _server = peer;
 
         _clientConnectedCallback?.Invoke();
@@ -104,7 +104,7 @@ sealed class Client : INetEventListener {
 
     public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo) {
         MessageDisplay.Display("Server disconnected");
-        Logger.Info($"Peer disconnected. Reason: {(int)disconnectInfo.Reason}: {disconnectInfo.Reason.ToString()}. Socket error code: {disconnectInfo.SocketErrorCode}");
+        Logger.Info($"Peer disconnected. Reason: {(int)disconnectInfo.Reason}: {disconnectInfo.Reason.ToString()}. Socket error code: {disconnectInfo.SocketErrorCode}", Logger.LogType.Network);
         NetworkManager.Disconnect();
     }
 

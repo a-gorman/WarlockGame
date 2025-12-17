@@ -49,6 +49,8 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     public WarlockGame(params string[] args) {
         Configuration.ParseArgs(new ConfigurationBuilder().AddIniFile("settings.ini").AddCommandLine(args).Build());
 
+        Logger.Info($"Settings loaded with command line arguments: {args}", Logger.LogType.Program);
+        
         Instance = this;
         _graphics = new GraphicsDeviceManager(this);
         _graphics.PreferredBackBufferWidth = Configuration.ScreenWidth;
@@ -82,7 +84,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         Logger.DedupeLevel = Configuration.LogDedupeLevel;
         
         MessageDisplay.Display("Game Started");
-        Logger.Info("Game initialized");
+        Logger.Info("Game initialized", Logger.LogType.Program);
 
         if (Configuration.Client) {
             NetworkManager.ConnectToServer(Configuration.JoinIp, 
@@ -179,7 +181,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
                 
                 var checksumMatched = tick.Checksum == result.Checksum;
                 if (!checksumMatched) {
-                    Logger.Error($"Checksum does not match. Actual: '{result.Checksum}' Expected: '{tick.Checksum}'");
+                    Logger.Error($"Checksum does not match. Actual: '{result.Checksum}' Expected: '{tick.Checksum}'", Logger.LogType.Network);
                 }
 
                 NetworkManager.Send(new ClientTickProcessed
@@ -201,7 +203,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     }
 
     public void RestartGame(int seed) {
-        Logger.Info("Restarting game");
+        Logger.Info("Restarting game", Logger.LogType.Program);
         
         CommandManager.Clear();
         ParticleManager.Clear();
@@ -236,7 +238,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     public void ClientTickProcessed(int playerId, ClientTickProcessed clientTickProcessed) {
         _clientTicksProcessed[playerId] = clientTickProcessed.Tick;
         if (!clientTickProcessed.ChecksumMatched) {
-            Logger.Error($"Client {playerId} checksum has diverged.");
+            Logger.Error($"Client {playerId} checksum has diverged.", Logger.LogType.Network);
         }
     }
 

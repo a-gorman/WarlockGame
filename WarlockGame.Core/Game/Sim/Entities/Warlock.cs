@@ -158,7 +158,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
         private void Destroy(Entity? source) {
             if (IsDead) return;
             
-            Logger.Info($"Warlock {Id} destroyed! Source: {source?.Id} Force: {source?.PlayerId}");
+            Logger.Info($"Warlock {Id} destroyed! Source: {source?.Id} Force: {source?.PlayerId}", Logger.LogType.Simulation);
             IsDead = true;
             foreach (var buff in Buffs) {
                 if (buff.ClearedOnDeath) {

@@ -23,7 +23,7 @@ sealed class MessageDisplay : InterfaceComponent
 
     public static void Display(string message)
     {
-        Logger.Debug("Displayed Message: " + message);
+        Logger.Debug("Displayed Message: " + message, Logger.LogType.Interface);
         
         var wrapper = new Message
         {

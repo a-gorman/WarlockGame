@@ -53,7 +53,7 @@ static class NetworkManager {
     public static void JoinGame(string playerName, Color? colorPreference) {
         if(!IsClient) throw new ConstraintException("Can't get join game when not connected to server");
 
-        Logger.Info("Joining game");
+        Logger.Info("Joining game", Logger.LogType.Network);
         MessageDisplay.Display("Joined new game");
         
         _client!.SendSerializable(new JoinGameRequest { PlayerName = playerName, ColorPreference = colorPreference}); 

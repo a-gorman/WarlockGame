@@ -16,7 +16,7 @@ abstract class PermanentBuffPerk : Perk {
     public override void OnAdded(int forceId, Simulation sim) {
         var warlock = sim.EntityManager.GetWarlockLivingOrDeadByForceId(forceId);
         if (warlock == null) {
-            Logger.Warning($"Could not add buff because warlock does not exist. Type: {Type}. ForceId: {forceId}");
+            Logger.Warning($"Could not add buff because warlock does not exist. Type: {Type}. ForceId: {forceId}", Logger.LogType.Simulation);
             return;
         }
 
@@ -25,10 +25,10 @@ abstract class PermanentBuffPerk : Perk {
         buff.Timer = null;
         int buffId = warlock.AddBuff(buff);
         if (_playerBuffIds.TryAdd(forceId, buffId)) {
-            Logger.Debug($"Added permanent buff. Type: {Type}. ForceId: {forceId}. BuffId: {buffId}");
+            Logger.Debug($"Added permanent buff. Type: {Type}. ForceId: {forceId}. BuffId: {buffId}", Logger.LogType.Simulation);
         }
         else {
-            Logger.Warning($"Buff already exists. Could not add permanent buff. Type: {Type}. ForceId: {forceId}.");
+            Logger.Warning($"Buff already exists. Could not add permanent buff. Type: {Type}. ForceId: {forceId}.", Logger.LogType.Simulation);
         }
     }
 
@@ -36,10 +36,10 @@ abstract class PermanentBuffPerk : Perk {
         var warlock = sim.EntityManager.GetWarlockLivingOrDeadByForceId(forceId);
         if (warlock != null && _playerBuffIds.TryGetValue(forceId, out var buffId)) {
             warlock.RemoveBuff(buffId);
-            Logger.Debug($"Removed permanent buff. Type: {Type}. ForceId: {forceId}");
+            Logger.Debug($"Removed permanent buff. Type: {Type}. ForceId: {forceId}", Logger.LogType.Simulation);
         }
         else {
-            Logger.Warning($"Could not remove buff because warlock does not exist, or buff does not exist. Type: {Type}. ForceId: {forceId}");
+            Logger.Warning($"Could not remove buff because warlock does not exist, or buff does not exist. Type: {Type}. ForceId: {forceId}", Logger.LogType.Simulation);
         }
     }
 }

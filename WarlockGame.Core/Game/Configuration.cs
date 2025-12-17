@@ -71,8 +71,6 @@ static class Configuration {
         LogDedupeLevel = args["logDedupeLevel"]?.Let(x => Logger.Level.ParseOrNull(x, true)) ?? Logger.Level.ERROR;
     }
 
-    
-    
     private static Keys ParseKey(string? str, Keys defaultValue) {
         return Enum.TryParse(str, true, out Keys key) ? key : defaultValue;
     }

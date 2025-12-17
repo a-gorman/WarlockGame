@@ -18,7 +18,7 @@ class DamageComponent : ITargetComponent {
 
             target.Entity.Damage(damageToInflict, context.Caster);
             
-            Logger.Debug($"Dealt {damageToInflict} damage!");
+            Logger.Debug($"Dealt {damageToInflict} damage!", Logger.LogType.Simulation);
         }
     }
 }

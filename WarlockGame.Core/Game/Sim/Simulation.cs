@@ -93,7 +93,7 @@ class Simulation {
             return warlock;
         });
         foreach (var warlock in warlocks) {
-            Logger.Info($"Creating warlock at: {warlock.Position}");
+            Logger.Info($"Creating warlock at: {warlock.Position}", Logger.LogType.Simulation);
             EntityManager.Add(warlock);
             foreach (var spellType in GameRules.StartingSpells) {
                 SpellManager.AddSpell(warlock.PlayerId!.Value, spellType);
@@ -118,7 +118,7 @@ class Simulation {
     }
     
     private void ProcessPlayerAction(IPlayerAction action) {
-        Logger.Debug($"Issuing {action.GetSerializerType()} command for player {action.PlayerId}");
+        Logger.Debug($"Issuing {action.GetSerializerType()} command for player {action.PlayerId}", Logger.LogType.PlayerAction | Logger.LogType.Simulation);
         switch (action) {
             case MoveAction move:
                 EntityManager.GetWarlockByForceId(move.PlayerId)

@@ -54,7 +54,7 @@ class PerkManager {
             _ => null
         };
         if (perk == null) {
-            Logger.Error($"Invalid perk type: {perkType}");
+            Logger.Error($"Invalid perk type: {perkType}", Logger.LogType.Simulation);
             return;
         }
         

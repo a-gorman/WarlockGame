@@ -213,7 +213,7 @@ namespace WarlockGame.Core.Game
 				WarlockDestroyed?.Invoke(warlock);
 			}
 			else {
-				Logger.Warning($"Tried to destroy warlock more than once. Id: {warlock.Id}");
+				Logger.Warning($"Tried to destroy warlock more than once. Id: {warlock.Id}", Logger.LogType.Simulation);
 			}
 		}
 
@@ -225,11 +225,11 @@ namespace WarlockGame.Core.Game
 					_livingWarlocks.Add(warlock);
 				}
 				else {
-					Logger.Warning($"Tried to respawn a warlock that is already alive for force {forceId}");
+					Logger.Warning($"Tried to respawn a warlock that is already alive for force {forceId}", Logger.LogType.Simulation);
 				}
 			}
 			else {
-				Logger.Warning($"Tried to respawn warlock for force that does not exist! Id: {forceId}");
+				Logger.Warning($"Tried to respawn warlock for force that does not exist! Id: {forceId}", Logger.LogType.Simulation);
 			}
 		}
 	}
