@@ -14,7 +14,7 @@ class GameRules {
     
     public Dictionary<int, PlayerStatus> Statuses { get; } = new();
 
-    public int[] StartingSpells = [1, 4, 9];
+    public readonly int[] StartingSpells = [1, 4, 9];
     
     public PerkType[] StartingPerks = [
         PerkType.Invisibility,

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using WarlockGame.Core.Game.UI;
-using WarlockGame.Core.Game.UI.Components;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Log; 
@@ -10,6 +8,8 @@ public static class Logger {
     private static readonly CircularBuffer<Log> _logs = new(1000);
 
     public static IEnumerable<Log> Logs => _logs;
+
+    public static event Action<Log>? LogCreated;
 
     // Deduplicates sequential logs with the same message at this level or below
     public static Level DedupeLevel { get; set; } = Level.ERROR;
@@ -45,13 +45,13 @@ public static class Logger {
             {
                 Level = level,
                 Message = message,
-                Tick = WarlockGame.Instance.Simulation.Tick,
+                Tick = WarlockGame.Instance?.Simulation.Tick ?? 0,
                 Type = logType,
                 Timestamp = DateTime.Now
             });
         }
 
-        LogDisplay.Instance?.Refresh();
+        LogCreated?.Invoke(_logs.Front());
     }
 
     public class Log {

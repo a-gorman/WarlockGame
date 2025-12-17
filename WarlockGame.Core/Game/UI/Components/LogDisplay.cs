@@ -28,6 +28,15 @@ sealed class LogDisplay : InterfaceComponent {
         AddComponent(_textDisplay);
     }
 
+    public override void OnAdd() {
+        Logger.LogCreated += OnLogAdded;
+        Refresh();
+    }
+
+    public override void OnRemove() {
+        Logger.LogCreated -= OnLogAdded;
+    }
+
     public override void Draw(Vector2 location, SpriteBatch spriteBatch) {
         if (IsDirty) {
             Refresh();
@@ -35,7 +44,11 @@ sealed class LogDisplay : InterfaceComponent {
         }
     }
 
-    public void Refresh() {
+    private void OnLogAdded(Logger.Log _) {
+        Refresh();
+    }
+    
+    private void Refresh() {
         if (!Visible) return;
         
         var logs = Logger.Logs
@@ -48,13 +61,11 @@ sealed class LogDisplay : InterfaceComponent {
 
     private string FormatLog(Logger.Log log)
     {
-        if (log.DedupCount == 0)
-        {
-            return string.Join(": ", log.LevelString(), log.Tick, log.Message);
+        if (log.DedupCount == 0) {
+            return $"{log.LevelString()} [{log.Type}] {log.Tick}: {log.Message}";
         }
-        else
-        {
-            return string.Join(": ", log.LevelString(), log.Tick, $"{log.Message} x{log.DedupCount + 1}");
+        else {
+            return $"{log.LevelString()} [{log.Type}] {log.Tick}: {log.Message} x{log.DedupCount + 1}";
         }
     }
 }

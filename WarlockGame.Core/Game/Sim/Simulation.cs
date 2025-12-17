@@ -47,13 +47,14 @@ class Simulation {
         PerkManager = new PerkManager(this);
 
         ArenaSize = GameRules.InitialArenaSize;
-        
-        EntityManager.WarlockDestroyed += GameRules.OnWarlockDestroyed;
     }
 
     public void Initialize() {
         GameRules.Initialize();
         PerkManager.Initialize();
+        EntityManager.WarlockDestroyed += GameRules.OnWarlockDestroyed;
+        
+        Logger.Info("Simulation initialized", Logger.LogType.Program);
     }
 
     public TickResult Update(IEnumerable<IPlayerAction> inputs) {
