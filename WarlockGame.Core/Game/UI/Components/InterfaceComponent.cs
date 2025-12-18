@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Util;
-using ZLinq;
 
 namespace WarlockGame.Core.Game.UI.Components;
 
