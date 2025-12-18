@@ -134,7 +134,7 @@ static class UIManager {
     }
     
     private static bool RightClickComponent(InterfaceComponent component, Vector2 clickLocation) {
-        if (!component.BoundingBox.Contains(clickLocation)) return false;
+        if (!component.Visible || !component.BoundingBox.Contains(clickLocation)) return false;
         switch (component.Clickable) {
             case ClickableState.PassThrough:
                 foreach (var nestedComponent in component.Components) {
