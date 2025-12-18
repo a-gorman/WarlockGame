@@ -25,10 +25,10 @@ sealed class PerkPicker: InterfaceComponent {
     }
 
     public override void Update(ref readonly UIManager.UpdateArgs args) {
-        if (IsDirty) {
+        if (IsBoundsDirty) {
             // Temp: We shouldn't do this on the dirty check
             SetPerks(_sim.PerkManager.GetAvailablePerks(PlayerManager.LocalPlayerId ?? -1));
-            IsDirty = false;
+            IsBoundsDirty = false;
         }
     }
 
@@ -55,7 +55,7 @@ sealed class PerkPicker: InterfaceComponent {
         }
     }
 
-    public override void Draw(Vector2 location, SpriteBatch spriteBatch) {
+    protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
         DrawHollowRectangle(spriteBatch, BoundingBox.WithOffset(location), Color.White, 3);
     }
     

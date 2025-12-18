@@ -166,7 +166,7 @@ sealed class MainView : InterfaceComponent {
         }
     }
 
-    public override void Draw(Vector2 location, SpriteBatch spriteBatch) {
+    protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
         var drawOffset = location - ViewBounds.Position;
         DrawEntities(drawOffset, spriteBatch);
         foreach (var effect in _sim.EffectManager.Effects) {

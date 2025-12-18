@@ -100,7 +100,7 @@ static class UIManager {
 
     private static void DrawComponent(InterfaceComponent component, Vector2 globalLocation, SpriteBatch spriteBatch) {
         if (component.Visible) {
-            component.Draw(globalLocation, spriteBatch);
+            component.DrawComponent(globalLocation, spriteBatch);
             foreach (var nestedComponent in component.Components) {
                 DrawComponent(nestedComponent, globalLocation + component.BoundingBox.Location.ToVector2(),
                     spriteBatch);

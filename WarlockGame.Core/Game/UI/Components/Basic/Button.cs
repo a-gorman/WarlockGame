@@ -24,7 +24,7 @@ sealed class Button: InterfaceComponent {
         RightClick.Invoke(location);
     }
 
-    public override void Draw(Vector2 location, SpriteBatch spriteBatch) {
+    protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
         spriteBatch.Draw(Texture, BoundingBox.WithOffset(location), Color.White);
     }
 }

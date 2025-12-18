@@ -21,7 +21,7 @@ class InterfaceComponent {
         get;
         set {
             if (value != field) {
-                IsDirty = true;
+                IsVisibilityDirty = true;
                 field = value;
             }
         }
@@ -34,13 +34,16 @@ class InterfaceComponent {
     public Rectangle BoundingBox { get;
         set {
             if (field != value) {
-                IsDirty = true; 
+                IsBoundsDirty = true; 
                 field = value;
             }
         } 
     }
 
-    public bool IsDirty { get; set; } = true;
+    protected bool IsBoundsDirty { get; set; } = true;
+    protected bool IsVisibilityDirty { get; set; } = true;
+
+    protected bool WasMadeVisible => IsVisibilityDirty && Visible;
     
     public Vector2 RelativeLocation => BoundingBox.Location.ToVector2();
 
@@ -50,10 +53,19 @@ class InterfaceComponent {
     public virtual void OnLeftClick(Vector2 location) { }
     public virtual void OnRightClick(Vector2 location) { }
 
-    public virtual void Draw(Vector2 location, SpriteBatch spriteBatch) { IsDirty = false; }
+    public void DrawComponent(Vector2 location, SpriteBatch spriteBatch) {
+        Draw(location, spriteBatch);
+        IsVisibilityDirty = false;
+        IsBoundsDirty = false;
+    }
+    
+    protected virtual void Draw(Vector2 location, SpriteBatch spriteBatch) {
+        IsBoundsDirty = false;
+    }
 
     /// <summary>
     /// Update function called each frame before drawing any components.
+    /// Called only if the 
     /// </summary>
     /// <param name="mosPos">The position of the mouse inside the components bounding box. Null if the mouse is outside
     /// </param>

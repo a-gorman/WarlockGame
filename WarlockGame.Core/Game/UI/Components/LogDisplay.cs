@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,15 +9,17 @@ namespace WarlockGame.Core.Game.UI.Components;
 
 sealed class LogDisplay : InterfaceComponent {
     public static LogDisplay Instance { get; } = new();
+    
+    private const int MaxDisplayedLogs = 5;
 
-    private readonly Queue<Logger.Log> _displayedLogs = new();
+    private readonly CircularBuffer<Logger.Log> _displayedLogs = new(MaxDisplayedLogs);
 
     // Log types are bit flags. Each type is on or off at the given level given by its flag bit at that level.
     private readonly Logger.LogType[] _logTypeDisplayLevels = new Logger.LogType[5];
-
-    private const int MaxDisplayedLogs = 5;
-
+    
     private readonly TextDisplay _textDisplay;
+
+    private bool _logsDirty = true;
     
     private LogDisplay() {
         BoundingBox = new Rectangle(0, 0, 900, 100);
@@ -47,33 +48,34 @@ sealed class LogDisplay : InterfaceComponent {
             }
         }
 
-        IsDirty = true;
+        _logsDirty = true;
     }
 
     public override void OnAdd() {
         Logger.LogCreated += OnLogAdded;
-        IsDirty = true;
+        _logsDirty = true;
     }
 
     public override void OnRemove() {
         Logger.LogCreated -= OnLogAdded;
     }
 
-    public override void Draw(Vector2 location, SpriteBatch spriteBatch) {
-        if (IsDirty) {
+    protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
+        if (WasMadeVisible) {
             Refresh();
-            IsDirty = false;
+        } else if (_logsDirty) {
+            RecalculateDisplayText();
         }
+        _logsDirty = false;
     }
 
     private void OnLogAdded(Logger.Log log) {
-        if (ShouldDisplay(log)) {
-            if (_displayedLogs.Count == MaxDisplayedLogs) {
-                _displayedLogs.Dequeue();
-            }
-            
-            _displayedLogs.Enqueue(log);
-            RecalculateDisplayText();
+        if (!_displayedLogs.IsEmpty && log == _displayedLogs.Front()) {
+            _logsDirty = true;
+        } 
+        else if (ShouldDisplay(log)) {
+            _displayedLogs.PushFront(log);
+            _logsDirty = true;
         }
     }
     
@@ -83,7 +85,7 @@ sealed class LogDisplay : InterfaceComponent {
         _displayedLogs.Clear();
         foreach (var log in Logger.Logs.Where(ShouldDisplay).Take(MaxDisplayedLogs))
         {
-            _displayedLogs.Enqueue(log);
+            _displayedLogs.PushFront(log);
         }
 
         RecalculateDisplayText();

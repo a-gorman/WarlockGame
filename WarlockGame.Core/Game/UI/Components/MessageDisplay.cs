@@ -41,7 +41,7 @@ sealed class MessageDisplay : InterfaceComponent
         Instance.Recalculate();
     }
 
-    public override void Draw(Vector2 location, SpriteBatch spriteBatch)
+    protected override void Draw(Vector2 location, SpriteBatch spriteBatch)
     {
         foreach (var message in _messages)
         {

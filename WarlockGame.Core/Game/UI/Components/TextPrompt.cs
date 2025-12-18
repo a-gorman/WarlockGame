@@ -70,7 +70,7 @@ sealed class TextPrompt: InterfaceComponent, ITextInputConsumer {
         }
     }
 
-    public override void Draw(Vector2 location, SpriteBatch spriteBatch) {
+    protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
         var pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
         pointTexture.SetData([Color.DarkSlateGray]);
 

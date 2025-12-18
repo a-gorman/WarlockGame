@@ -21,23 +21,22 @@ namespace WarlockGame.Core.Game.Util
         private readonly T[] _buffer;
 
         /// <summary>
-        /// The _start. Index of the first element in buffer.
+        /// Index of the first element in buffer.
         /// </summary>
         private int _start;
 
         /// <summary>
-        /// The _end. Index after the last element in the buffer.
+        /// Index after the last element in the buffer.
         /// </summary>
         private int _end;
 
         /// <summary>
-        /// The _size. Buffer size.
+        /// Buffer size.
         /// </summary>
         private int _size;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CircularBuffer{T}"/> class.
-        /// 
         /// </summary>
         /// <param name='capacity'>
         /// Buffer capacity. Must be positive.

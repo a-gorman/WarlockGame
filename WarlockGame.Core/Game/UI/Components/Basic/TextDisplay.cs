@@ -12,7 +12,7 @@ class TextDisplay : InterfaceComponent {
         get => _text;
         set {
             _text = value;
-            IsDirty = true;
+            _textDirty = true;
         }
     }
 
@@ -23,7 +23,7 @@ class TextDisplay : InterfaceComponent {
         get;
         set {
             field = value;
-            IsDirty = true;
+            _textDirty = true;
         }
     } = "";
 
@@ -32,23 +32,24 @@ class TextDisplay : InterfaceComponent {
         set {
             field = value;
             _fontHeight = value.MeasureString(" ").Y;
-            IsDirty = true;
+            _textDirty = true;
         }
     }
 
     private float _fontHeight;
     private string _text = string.Empty;
     private string _wrappedText = string.Empty;
+    private bool _textDirty = false;
 
     public TextDisplay(SpriteFont? font = null) {
         Font = font ?? Art.Font;
         Clickable = ClickableState.Ignore;
     }
     
-    public override void Draw(Vector2 location, SpriteBatch spriteBatch) {
-        if(IsDirty) {
+    protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
+        if(IsBoundsDirty || _textDirty) {
             RecalculateWrappedText();
-            IsDirty = false;
+            IsBoundsDirty = false;
         }
 
         spriteBatch.DrawString(Art.Font, _wrappedText, BoundingBox.Location.ToVector2() + location, TextColor,

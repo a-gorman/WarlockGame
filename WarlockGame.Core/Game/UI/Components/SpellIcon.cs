@@ -17,7 +17,7 @@ sealed class SpellIcon : InterfaceComponent {
         Clickable = ClickableState.Clickable;
     }
 
-    public override void Draw(Vector2 location, SpriteBatch spriteBatch) {
+    protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
         spriteBatch.Draw(
             _spell.Definition.SpellIcon,
             BoundingBox.WithOffset(location),

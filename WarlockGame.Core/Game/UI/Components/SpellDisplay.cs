@@ -42,7 +42,7 @@ sealed class SpellDisplay : InterfaceComponent {
         WarlockGame.Instance.Simulation.SpellManager.SpellAdded += AddSpell;
     }
 
-    public override void Draw(Vector2 location, SpriteBatch spriteBatch) {
+    protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
         DrawHollowRectangle(spriteBatch, BoundingBox, Color.White);
     }
 
