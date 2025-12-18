@@ -90,6 +90,7 @@ public static class Logger {
         PlayerAction = 2,
         Network = 4,
         Simulation = 8,
-        Program = 16
+        Program = 16,
+        All = Interface | PlayerAction | Network | Simulation | Program
     }
 }

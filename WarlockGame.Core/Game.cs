@@ -79,7 +79,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         UIManager.AddComponent(new SpellDisplay(Configuration.KeyMappings));
         UIManager.AddComponent(new MainView(Simulation));
 
-        LogDisplay.Instance.DisplayLevel = Configuration.LogDisplayLevel;
+        LogDisplay.Instance.SetDisplayLevel(Configuration.LogDisplayLevel);
         LogDisplay.Instance.Visible = Configuration.LogDisplayVisible;
         Logger.DedupeLevel = Configuration.LogDedupeLevel;
         

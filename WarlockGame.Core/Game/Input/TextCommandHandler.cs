@@ -27,7 +27,7 @@ class TextCommandHandler {
         RegisterTextCommand("join", _ => Join());
         RegisterTextCommand("check", ["checksum"],
             _ => MessageDisplay.Display($"Checksum is: {WarlockGame.Instance.Simulation?.CalculateChecksum() ?? 0}"));
-        RegisterTextCommand("logs", Logs, "Args: on | off | debug | info | warn | error");
+        RegisterTextCommand("logs", ["log"], Logs, "Args: on | off | debug | info | warn | error");
         RegisterTextCommand("ip", 
             _ => MessageDisplay.Display($"IP Address is: {NetUtils.GetLocalIpList(LocalAddrType.IPv4).JoinToString()}"));
     }
@@ -125,42 +125,40 @@ class TextCommandHandler {
     private static void Logs(string[] args) {
         switch (args.ElementAtOrDefault(0)?.ToLowerInvariant()) {
             case "level":
-                switch (args.ElementAtOrDefault(1)?.ToLowerInvariant())
-                {
-                    case "debug":
-                        LogDisplay.Instance.DisplayLevel = Logger.Level.DEBUG;
-                        return;
-                    case "info":
-                        LogDisplay.Instance.DisplayLevel = Logger.Level.INFO;
-                        return;
-                    case "warn" or "warning":
-                        LogDisplay.Instance.DisplayLevel = Logger.Level.WARNING;
-                        return;
-                    case "error":
-                        LogDisplay.Instance.DisplayLevel = Logger.Level.ERROR;
-                        return;
-                    case null:
-                        return;
+                if (args.Length == 2) {
+                    var level = GetLogLevel(args.ElementAt(1));
+                    if (level.HasValue) {
+                        LogDisplay.Instance.SetDisplayLevel(level.Value);
+                    }
+                } else if (args.Length > 2) {
+                    var level = GetLogLevel(args.ElementAt(1));
+                    if (level.HasValue) {
+                        foreach (var typeString in args.Skip(2)) {
+                            if (int.TryParse(typeString, out var typeInt)) {
+                                LogDisplay.Instance.SetDisplayLevelForTypes((Logger.LogType)typeInt, level.Value);
+                            }
+
+                            Logger.LogType? type = typeString.ToLowerInvariant() switch {
+                                "playeraction" or "player" => Logger.LogType.PlayerAction,
+                                "interface" or "ui" => Logger.LogType.Interface,
+                                "network" => Logger.LogType.Network,
+                                "simulation" or "sim" => Logger.LogType.Simulation,
+                                "program" => Logger.LogType.Program,
+                                _ => null
+                            };
+                            if (type.HasValue) {
+                                LogDisplay.Instance.SetDisplayLevelForTypes(type.Value, level.Value);
+                            }
+                        }
+                    }
                 }
                 return;
             case "dedupe":
-                switch (args.ElementAtOrDefault(1)?.ToLowerInvariant())
-                {
-                    case "debug" or "0":
-                        Logger.DedupeLevel = Logger.Level.DEBUG;
-                        return;
-                    case "info" or "1":
-                        Logger.DedupeLevel = Logger.Level.INFO;
-                        return;
-                    case "warning" or "2":
-                        Logger.DedupeLevel = Logger.Level.WARNING;
-                        return;
-                    case "error" or "3":
-                        Logger.DedupeLevel = Logger.Level.NONE;
-                        return;
-                    case null or "off" or "-1":
-                        Logger.DedupeLevel = Logger.Level.NONE;
-                        return;
+                if (args.Length == 2) {
+                    var level = GetLogLevel(args.ElementAt(1));
+                    if (level.HasValue) {
+                        Logger.DedupeLevel = level.Value;
+                    }
                 }
                 return;
             case "on" or "visible":
@@ -172,6 +170,24 @@ class TextCommandHandler {
             case null:
                 LogDisplay.Instance.Visible = !LogDisplay.Instance.Visible;
                 return;
+        }
+    }
+
+    private static Logger.Level? GetLogLevel(string input) {
+        switch (input.ToLowerInvariant())
+        {
+            case "debug" or "0":
+                return Logger.Level.DEBUG;
+            case "info" or "1":
+                return Logger.Level.INFO;
+            case "warning" or "warn" or "2":
+                return Logger.Level.WARNING;
+            case "error" or "3":
+                return Logger.Level.ERROR;
+            case "off" or "-1":
+                return Logger.Level.NONE;
+            default:
+                return null;
         }
     }
 }
