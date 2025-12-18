@@ -9,7 +9,7 @@ using WarlockGame.Core.Game.Util;
 namespace WarlockGame.Core.Game.UI.Components;
 
 sealed class LogDisplay : InterfaceComponent {
-    public static LogDisplay Instance { get; } = new LogDisplay();
+    public static LogDisplay Instance { get; } = new();
 
     private readonly Queue<Logger.Log> _displayedLogs = new();
 

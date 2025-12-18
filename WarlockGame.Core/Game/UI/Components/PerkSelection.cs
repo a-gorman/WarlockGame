@@ -26,6 +26,7 @@ sealed class PerkPicker: InterfaceComponent {
 
     public override void Update(ref readonly UIManager.UpdateArgs args) {
         if (IsDirty) {
+            // Temp: We shouldn't do this on the dirty check
             SetPerks(_sim.PerkManager.GetAvailablePerks(PlayerManager.LocalPlayerId ?? -1));
             IsDirty = false;
         }
