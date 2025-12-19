@@ -71,7 +71,7 @@ class Warlock : Entity {
         PlayerId = playerId;
         BlocksProjectiles = true;
 
-        _slidingFriction = new Friction(a: 0.003f, b: 0.1f, c: 0.1f);
+        _slidingFriction = new Friction(a: 0.001f, b: 0.12f, c: 0.02f);
         
         OnPushed += HandlePushed;
         AddBehaviors(new Pushable());
@@ -113,12 +113,6 @@ class Warlock : Entity {
     }
 
     private void Move() {
-        // if (Velocity.LengthSquared() < Speed.Squared()) {
-        //     Velocity = Vector2.Zero;
-        // }
-        // else {
-        //     Velocity -= Velocity.WithLength(Speed);
-        // }
         switch (_moveState) {
             case MoveState.Sliding: {
                 if (Velocity == Vector2.Zero) {
