@@ -98,6 +98,13 @@ namespace WarlockGame.Core.Game.Sim.Entities
 				Behaviors.Add(behavior);
 			}
 		}
+		
+		public void RemoveBehaviors(params Behavior[] behaviors) {
+			foreach (var behavior in behaviors) {
+				behavior.OnRemove(this);
+				Behaviors.Remove(behavior);
+			}
+		}
 
 		public virtual void Damage(float damage, Entity? source) {
 			if (OnDamaged != null) {
