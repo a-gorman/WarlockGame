@@ -200,7 +200,7 @@ class Warlock : Entity {
         Respawned?.Invoke(this);
     }
         
-    private void Destroy(Entity? source) {
+    public void Destroy(Entity? source) {
         if (IsDead) return;
             
         Logger.Info($"Warlock {Id} destroyed! Source: {source?.Id} Force: {source?.PlayerId}", Logger.LogType.Simulation);

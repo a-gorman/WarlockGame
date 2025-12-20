@@ -6,7 +6,8 @@ namespace WarlockGame.Core.Game.Sim.Perks;
 
 class SpeedOnDamagedPerk: Perk {
     public SpeedOnDamagedPerk() 
-        : base(type: PerkType.SpeedBoostOnDamage,
+        : base(
+            id: 4,
             name: "Damage Boost",
             description: "Permanently grants you invisibility from distant enemies",
             texture: Art.DefianceIcon) { }

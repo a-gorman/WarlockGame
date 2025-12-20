@@ -5,7 +5,8 @@ namespace WarlockGame.Core.Game.Sim.Perks;
 
 class PermanentRegenerationPerk : PermanentBuffPerk {
     public PermanentRegenerationPerk() 
-        : base(type: PerkType.Regeneration,
+        : base(
+            id: 3,
             name: "Permanent Regeneration",
             description: "Permanently grants you health regeneration",
             texture: Art.HealIcon) { }

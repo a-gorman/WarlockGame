@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Util;
 
@@ -19,17 +20,17 @@ class SpellManager {
 
     public SpellManager(SpellFactory spellFactory) {
         _spellFactory = spellFactory;
-        Definitions = new Dictionary<int, SpellDefinition> {
-            { 1, _spellFactory.Fireball() },
-            { 2, _spellFactory.Lightning() },
-            { 3, _spellFactory.Poison() },
-            { 4, _spellFactory.Burst() },
-            { 5, _spellFactory.WindShield() },
-            { 6, _spellFactory.SoulShatter() },
-            { 7, _spellFactory.RefractionShield() },
-            { 8, _spellFactory.Homing() },
-            { 9, _spellFactory.Boomerang() }
-        };
+        Definitions = new[] {
+            _spellFactory.Fireball(),
+            _spellFactory.Lightning(),
+            _spellFactory.Poison(),
+            _spellFactory.Burst(),
+            _spellFactory.WindShield(),
+            _spellFactory.SoulShatter(),
+            _spellFactory.RefractionShield(),
+            _spellFactory.Homing(),
+            _spellFactory.Boomerang()
+        }.ToDictionary(x => x.Id, x => x);
     }
     
     public void Update() {

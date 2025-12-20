@@ -16,14 +16,14 @@ class GameRules {
 
     public readonly int[] StartingSpells = [1, 4, 9];
     
-    public PerkType[] StartingPerks = [
-        PerkType.Invisibility,
-        PerkType.DamageBoost,
-        PerkType.Regeneration
-    ];
-    
-    public readonly PerkType[] AvailablePerks =
-        [PerkType.Invisibility, PerkType.DamageBoost, PerkType.Regeneration];
+    // public PerkType[] StartingPerks = [
+    //     PerkType.Invisibility,
+    //     PerkType.DamageBoost,
+    //     PerkType.Regeneration
+    // ];
+    //
+    // public readonly PerkType[] AvailablePerks =
+    //     [PerkType.Invisibility, PerkType.DamageBoost, PerkType.Regeneration];
     
     public event Action<LivesChanged>? OnChanged;
 

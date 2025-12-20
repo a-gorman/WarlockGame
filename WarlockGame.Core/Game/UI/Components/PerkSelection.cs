@@ -46,7 +46,7 @@ sealed class PerkPicker: InterfaceComponent {
                     var playerId = PlayerManager.LocalPlayerId;
                     if (playerId == null) return;
 
-                    InputManager.HandlePlayerAction(new SelectPerk { PlayerId = playerId.Value, PerkType = perk.Type });
+                    InputManager.HandlePlayerAction(new SelectPerk { PlayerId = playerId.Value, PerkId = perk.Id });
                 }
             };
 

@@ -5,7 +5,8 @@ namespace WarlockGame.Core.Game.Sim.Perks;
 
 class PermanentDamageBoostPerk : PermanentBuffPerk {
     public PermanentDamageBoostPerk()
-        : base(type: PerkType.DamageBoost,
+        : base(
+            id: 1,
             name: "2x Damage",
             description: "Permanently doubles the damage you deal",
             texture: Art.BigExplosionIcon) { }

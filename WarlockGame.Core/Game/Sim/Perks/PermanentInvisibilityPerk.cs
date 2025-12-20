@@ -9,7 +9,8 @@ class PermanentInvisibilityPerk : PermanentBuffPerk {
     private const float VisibilityDecay = 0.004f;
 
     public PermanentInvisibilityPerk()
-        : base(type: PerkType.Invisibility,
+        : base(
+            id: 2,
             name: "Permanent Invisibility",
             description: "Permanently grants you invisibility from distant enemies",
             texture: Art.InvisibilityIcon) { }

@@ -130,7 +130,7 @@ class Simulation {
                              ?.GiveOrder(x => new CastOrder(cast.SpellId, cast.CastVector, x, cast.Type.ToSimType()));
                 break;
             case SelectPerk selectPerk:
-                PerkManager.ChoosePerk(selectPerk.PlayerId, selectPerk.PerkType);
+                PerkManager.ChoosePerk(selectPerk.PlayerId, selectPerk.PerkId);
                 break;
         }
     }

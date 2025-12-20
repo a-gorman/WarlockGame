@@ -70,17 +70,17 @@ public class CastAction : IPlayerAction {
 
 class SelectPerk : IPlayerAction {
     public int PlayerId { get; set; }
-    public PerkType PerkType { get; set; }
+    public int PerkId { get; set; }
 
     public IPlayerAction.Type GetSerializerType() => IPlayerAction.Type.SelectPerk;
 
     public void Serialize(NetDataWriter writer) {
         writer.Put(PlayerId);
-        writer.Put((char) PerkType);
+        writer.Put(PerkId);
     }
 
     public void Deserialize(NetDataReader reader) {
         PlayerId = reader.GetInt();
-        PerkType = (PerkType)reader.GetChar();
+        PerkId = reader.GetInt();
     }
 }

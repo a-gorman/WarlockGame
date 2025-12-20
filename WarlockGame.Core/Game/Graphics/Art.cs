@@ -39,6 +39,7 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D InvisibilityIcon { get; set; } = null!;
 		public static Texture2D DefianceIcon { get; set; } = null!;
 		public static Texture2D BigExplosionIcon { get; set; } = null!;
+		public static Texture2D ReducedBoundaryDamageIcon { get; set; } = null!;
 
 		public static void Load(ContentManager content)
 		{
@@ -81,6 +82,7 @@ namespace WarlockGame.Core.Game.Graphics
 			InvisibilityIcon = content.Load<Texture2D>("Art/Icons/Invis");
 			DefianceIcon = content.Load<Texture2D>("Art/Icons/Big_Explosion");
 			BigExplosionIcon = content.Load<Texture2D>("Art/Icons/Defiance");
+			ReducedBoundaryDamageIcon = content.Load<Texture2D>("Art/Icons/rpg_skill_42");
 		}
 
 		public static Texture2D LoadTexture(string assetName)
