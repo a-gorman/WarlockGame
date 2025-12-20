@@ -25,11 +25,17 @@ class TextCommandHandler {
         RegisterTextCommand("restart", ["rm"], _ => Restart());
         RegisterTextCommand("host", _ => Host());
         RegisterTextCommand("join", _ => Join());
-        RegisterTextCommand("check", ["checksum"],
+        RegisterTextCommand("checksum",
             _ => MessageDisplay.Display($"Checksum is: {WarlockGame.Instance.Simulation?.CalculateChecksum() ?? 0}"));
         RegisterTextCommand("logs", ["log"], Logs, "Args: on | off | debug | info | warn | error");
         RegisterTextCommand("ip", 
             _ => MessageDisplay.Display($"IP Address is: {NetUtils.GetLocalIpList(LocalAddrType.IPv4).JoinToString()}"));
+        #if DEBUG
+        RegisterTextCommand("kill", args => {
+            if (int.TryParse(args.FirstOrDefault(""), out var forceId))
+                WarlockGame.Instance.Simulation.EntityManager.GetWarlockByForceId(forceId)?.Destroy(null);
+        });
+        #endif
     }
 
     public void HandleCommand(string command) {
