@@ -23,11 +23,11 @@ class PerkManager {
     }
 
     public void Initialize() {
+        AddPerk(new HomingSpellPerk(_sim.SpellFactory));
         AddPerk(new PermanentInvisibilityPerk());
         AddPerk(new PermanentRegenerationPerk());
         AddPerk(new PermanentDamageBoostPerk());
         AddPerk(new SpeedOnDamagedPerk());
-        AddPerk(new HomingSpellPerk(_sim.SpellFactory));
     }
 
     public IEnumerable<Perk> GetAvailablePerks(int forceId) {

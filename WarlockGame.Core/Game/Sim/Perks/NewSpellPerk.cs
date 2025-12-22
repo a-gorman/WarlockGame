@@ -13,6 +13,10 @@ abstract class NewSpellPerk : Perk {
     public override void OnAdded(int forceId, Simulation sim) {
         sim.SpellManager.AddSpell(forceId, SpellDefinition.Id);
     }
+
+    public override void OnRemoved(int forceId, Simulation sim) {
+        sim.SpellManager.RemoveSpell(forceId, SpellDefinition.Id);
+    }
 }
 
 class HomingSpellPerk : NewSpellPerk {

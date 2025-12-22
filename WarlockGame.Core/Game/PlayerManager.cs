@@ -7,7 +7,6 @@ namespace WarlockGame.Core.Game;
 
 static class PlayerManager {
     public static List<Player> Players { get; } = new();
-    private static int _nextPlayerId = 1;
     
     public static Player? LocalPlayer { get; private set; }
     public static int? LocalPlayerId { get; private set; }
@@ -25,7 +24,7 @@ static class PlayerManager {
 
 
     public static Player AddRemotePlayer(string name, Color? color, int? id = null) {
-        id ??= Players.Select(x => x.Id).DefaultIfEmpty().Max() + 1;
+        id ??= GetNextPlayerId();
 
         return CreatePlayer(id.Value, name, color ?? GetColor(id.Value), false);
     }

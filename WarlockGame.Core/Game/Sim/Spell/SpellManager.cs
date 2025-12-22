@@ -52,6 +52,13 @@ class SpellManager {
 
         AddSpell(forceId, _spellFactory.CreateWarlockSpell(definition));
     }
+
+    public void RemoveSpell(int forceId, int definitionId) {
+        var removed = PlayerSpells.TryGetValue(forceId, out var spellBook) && spellBook.Remove(definitionId);
+        if (!removed) {
+            Logger.Warning($"Tried removing a spell from a player that does not have that spell. Force: {forceId} Definition: {definitionId}", Logger.LogType.Simulation);
+        }
+    }
     
     public void AddSpell(int forceId, WarlockSpell spell) {
         var spellbook = PlayerSpells.GetOrAdd(forceId, _ => new Dictionary<int, WarlockSpell>());
