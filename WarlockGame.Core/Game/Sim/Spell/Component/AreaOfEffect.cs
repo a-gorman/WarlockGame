@@ -6,7 +6,7 @@ namespace WarlockGame.Core.Game.Sim.Spell.Component;
 class LocationAreaOfEffect: ILocationSpellComponent {
 
     public required ILocationShape Shape { get; init; } 
-    public required IReadOnlyCollection<ITargetComponent> Components { get; init; }
+    public required IReadOnlyCollection<IEntityComponent> Components { get; init; }
 
     public void Invoke(SpellContext context, Vector2 invokeLocation) {
         foreach (var effect in Components) {
@@ -18,7 +18,7 @@ class LocationAreaOfEffect: ILocationSpellComponent {
 class DirectionalAreaOfEffect: IDirectionalSpellComponent {
 
     public required IDirectionalShape Shape { get; init; } 
-    public required IReadOnlyCollection<ITargetComponent> Effects { get; init; }
+    public required IReadOnlyCollection<IEntityComponent> Effects { get; init; }
 
     public void Invoke(SpellContext context, Vector2 castLocation, Vector2 invokeDirection) {
         foreach (var effect in Effects) {
@@ -30,7 +30,7 @@ class DirectionalAreaOfEffect: IDirectionalSpellComponent {
 class SelfAreaOfEffect: ISelfSpellComponent {
 
     public required ILocationShape Shape { get; init; } 
-    public required IReadOnlyCollection<ITargetComponent> Components { get; init; }
+    public required IReadOnlyCollection<IEntityComponent> Components { get; init; }
 
     public void Invoke(SpellContext context) {
         foreach (var effect in Components) {

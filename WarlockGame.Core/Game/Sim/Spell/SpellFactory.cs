@@ -2,6 +2,7 @@ using System.Linq;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Sim.Buffs;
+using WarlockGame.Core.Game.Sim.Effect.Display;
 using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Sim.Entities.Behaviors;
 using WarlockGame.Core.Game.Sim.Entities.Behaviors.CollisionBehaviors;
@@ -26,13 +27,13 @@ class SpellFactory {
     }
 
     public SpellDefinition Fireball() {
-        return new SpellDefinition {
-            Id = 1,
-            Name = "Fireball",
-            CooldownTime = SimTime.OfSeconds(3),
-            SpellIcon = Art.FireballIcon,
-            Effect = new ProjectileComponent(
-                sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, 10, scale: .12f),
+        return new SpellDefinition(
+            id: 1,
+            name: "Fireball",
+            cooldownTime: SimTime.OfSeconds(3),
+            spellIcon: Art.FireballIcon,
+            effects: new ProjectileComponent(
+                sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
                 [
                     new LocationAreaOfEffect {
                         Shape = new CircleTarget { Radius = 30 },
@@ -43,32 +44,32 @@ class SpellFactory {
                     }
                 ]
             )
-        };
+        );
     }
 
     public SpellDefinition Lightning() {
-        return new SpellDefinition {
-            Id = 2,
-            Name = "Lightning",
-            CooldownTime = SimTime.OfSeconds(20),
-            SpellIcon = Art.LightningIcon,
-            Effect = new DirectionalAreaOfEffect {
+        return new SpellDefinition(
+            id: 2,
+            name: "Lightning",
+            cooldownTime: SimTime.OfSeconds(20),
+            spellIcon: Art.LightningIcon,
+            effects: new DirectionalAreaOfEffect {
                 Shape = new LineTarget { Length = 600, IgnoreCaster = true, Texture = Art.Lightning },
                 Effects = [
                     new DamageComponent { Damage = 15 },
                     new PushComponent { Force = 100 }
                 ]
             }
-        };
+        );
     }
 
     public SpellDefinition Poison() {
-        return new SpellDefinition {
-            Id = 3,
-            Name = "Poison",
-            CooldownTime = SimTime.OfSeconds(6),
-            SpellIcon = Art.PoisonIcon,
-            Effect = new ProjectileComponent(
+        return new SpellDefinition(
+            id: 3,
+            name: "Poison",
+            cooldownTime: SimTime.OfSeconds(6),
+            spellIcon: Art.PoisonIcon,
+            effects: new ProjectileComponent(
                 sprite: new Sprite(Art.PoisonBall) { Scale = 0.80f },
                 [
                     new LocationAreaOfEffect {
@@ -77,18 +78,18 @@ class SpellFactory {
                     }
                 ]
             )
-        };
+        );
     }
 
     public SpellDefinition Burst() {
-        return new SpellDefinition {
-            Id = 4,
-            Name = "Burst",
-            CooldownTime = SimTime.OfSeconds(6),
-            SpellIcon = Art.BurstIcon,
-            Effect = new SelfAreaOfEffect {
+        return new SpellDefinition(
+            id: 4,
+            name: "Burst",
+            cooldownTime: SimTime.OfSeconds(6),
+            spellIcon: Art.BurstIcon,
+            effects: new SelfAreaOfEffect {
                 Shape = new CircleTarget { Radius = 200 },
-                Components = new ITargetComponent[] {
+                Components = [
                     new DamageComponent {
                         Damage = 10,
                         SelfFactor = 0.25f
@@ -97,18 +98,18 @@ class SpellFactory {
                         Force = 150,
                         SelfFactor = 0
                     }
-                }
+                ]
             }
-        };
+        );
     }
 
     public SpellDefinition WindShield() {
-        return new SpellDefinition {
-            Id = 5,
-            Name = "Wind Shield",
-            CooldownTime = SimTime.OfSeconds(16),
-            SpellIcon = Art.WindWallIcon,
-            Effect = new SelfCastPositionComponent {
+        return new SpellDefinition(
+            id: 5,
+            name: "Wind Shield",
+            cooldownTime: SimTime.OfSeconds(16),
+            spellIcon: Art.WindWallIcon,
+            effects: new SelfCastPositionComponent {
                 Components = [
                     new EffectComponent(
                         (spellContext, location) => new ContinuousSpellEffect {
@@ -138,22 +139,22 @@ class SpellFactory {
                     )
                 ]
             }
-        };
+        );
     }
 
     public SpellDefinition SoulShatter() {
-        return new SpellDefinition {
-            Id = 6,
-            Name = "Soul Shatter",
-            CooldownTime = SimTime.OfSeconds(6),
-            SpellIcon = Art.SoulShatterIcon,
-            Effect = new ProjectileComponent(Sprite.FromGridSpriteSheet(Art.PowerBall, 4, 4, 10),
+        return new SpellDefinition(
+            id: 6,
+            name: "Soul Shatter",
+            cooldownTime: SimTime.OfSeconds(6),
+            spellIcon: Art.SoulShatterIcon,
+            effects: new ProjectileComponent(Sprite.FromGridSpriteSheet(Art.PowerBall, 4, 4, SimTime.OfTicks(10)),
             [
                 new LocationAreaOfEffect {
                     Shape = new CircleTarget { Radius = 20 },
                     Components = [
                         new DamageComponent { Damage = 5 },
-                        new TargetLocationComponent {
+                        new EntityLocationComponent {
                             DynamicComponents = [
                                 targetInfo =>
                                     new EntityComponent {
@@ -203,16 +204,16 @@ class SpellFactory {
                     ]
                 }
             ])
-        };
+        );
     }
 
     public SpellDefinition RefractionShield() {
-        return new SpellDefinition {
-            Id = 7,
-            Name = "Refraction Shield",
-            CooldownTime = SimTime.OfSeconds(16),
-            SpellIcon = Art.RefractionShieldIcon,
-            Effect = new SelfCastPositionComponent {
+        return new SpellDefinition(
+            id: 7,
+            name: "Refraction Shield",
+            cooldownTime: SimTime.OfSeconds(16),
+            spellIcon: Art.RefractionShieldIcon,
+            effects: new SelfCastPositionComponent {
                 Components = [
                     new EntityComponent {
                         EntityConstructor = (spellContext, location) => {
@@ -256,17 +257,17 @@ class SpellFactory {
                     }
                 ]
             }
-        };
+        );
     }
 
     public SpellDefinition Homing() {
-        return new SpellDefinition {
-            Id = 8,
-            Name = "Homing",
-            CooldownTime = SimTime.OfSeconds(6),
-            SpellIcon = Art.HomingIcon,
-            Effect = new ProjectileComponent(
-                sprite: Sprite.FromGridSpriteSheet(Art.EnergySpark, 4, 4, 10, scale: 2f, rotates: false),
+        return new SpellDefinition(
+            id: 8,
+            name: "Homing",
+            cooldownTime: SimTime.OfSeconds(6),
+            spellIcon: Art.HomingIcon,
+            effects: new ProjectileComponent(
+                sprite: Sprite.FromGridSpriteSheet(Art.EnergySpark, 4, 4, SimTime.OfTicks(10), scale: 2f, rotates: false),
                 effects: [
                     new LocationAreaOfEffect {
                         Shape = new CircleTarget { Radius = 30 },
@@ -287,21 +288,22 @@ class SpellFactory {
                     new TimedLife(SimTime.OfSeconds(6))
                 ]
             )
-        };
+        );
     }
 
     public SpellDefinition Boomerang() {
-        return new SpellDefinition {
-            Id = 9,
-            Name = "Boomerang",
-            CooldownTime = SimTime.OfSeconds(6),
-            SpellIcon = Art.BoomerangIcon,
-            Effect = new ProjectileComponent(
-                sprite: Sprite.FromGridSpriteSheet(Art.Triple, 4, 4, 2, scale: 2f, rotates: false),
+        return new SpellDefinition(
+            id: 9,
+            name: "Boomerang",
+            cooldownTime: SimTime.OfSeconds(6),
+            spellIcon: Art.BoomerangIcon,
+            effects: new ProjectileComponent(
+                sprite: Sprite.FromGridSpriteSheet(Art.Triple, 4, 4, SimTime.OfTicks(2), scale: 2f, rotates: false),
                 speed: 18,
+                radius: 16,
                 effects: [
                     new LocationAreaOfEffect {
-                        Shape = new CircleTarget { Radius = 50 },
+                        Shape = new CircleTarget { Radius = 18 },
                         Components = [
                             new DamageComponent { Damage = 10 },
                             new PushComponent { Force = 100 }
@@ -327,19 +329,46 @@ class SpellFactory {
                         })
                     ];
                 })
-        };
+        );
     }
-    
-    public SpellDefinition asdf() {
-        return new SpellDefinition {
-            Id = 9,
-            Name = "Boomerang",
-            CooldownTime = SimTime.OfSeconds(20),
-            SpellIcon = Art.BoomerangIcon,
-            CastRange = 700,
-            Effect = new EffectComponent(
-                
+
+    public SpellDefinition FlameStrike() {
+        var radius = 150;
+        var delaySeconds = 1.25f;
+        var animationDurationSeconds = 0.8f;
+        return new SpellDefinition(
+            id: 10,
+            name: "Light strike",
+            cooldownTime: SimTime.OfSeconds(20),
+            spellIcon: Art.LightStrike,
+            new EffectComponent(location =>
+                new CircleTimingIndicator(new CircleF(location, radius), SimTime.OfSeconds(delaySeconds))),
+            new DelayedSpellComponent(
+                SimTime.OfSeconds(delaySeconds),
+                new LocationAreaOfEffect {
+                    Shape = new CircleTarget { Radius = radius },
+                    Components = [
+                        new DamageComponent { Damage = 40 },
+                        new PushComponent { Force = 200 }
+                    ]
+                }
+            ),
+            new DelayedSpellComponent(
+                SimTime.OfSeconds(delaySeconds - animationDurationSeconds / 4),
+                new EffectComponent(location => {
+                    var flameStrikeSprite = Sprite.FromGridSpriteSheet(
+                        Art.FlameStrike,
+                        subdivisionsX: 9,
+                        subdivisionsY: 1,
+                        timeBetweenTransitions: SimTime.OfSeconds(animationDurationSeconds / 6),
+                        scale: 1 / 25f * radius
+                    );
+                    return new SpriteEffect(flameStrikeSprite, location, SimTime.OfSeconds(animationDurationSeconds))
+                    {
+                        Origin = new Vector2(flameStrikeSprite.Size.X / 2, flameStrikeSprite.Size.Y / 1.3f)
+                    };
+                })
             )
-        };
+        ) { CastRange = 700 };
     }
 }

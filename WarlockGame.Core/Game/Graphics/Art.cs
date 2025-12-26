@@ -20,6 +20,8 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D Pointer { get; private set; } = null!;
 		public static Texture2D BlackHole { get; private set; } = null!;
 
+		public static Texture2D FlameStrike { get; private set; } = null!;
+
 		public static Texture2D LineParticle { get; private set; } = null!;
 		public static Texture2D Glow { get; private set; } = null!;
 		public static Texture2D Pixel { get; private set; } = null!;		// a single white pixel
@@ -32,6 +34,7 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D BurstIcon { get; private set; } = null!;
 		public static Texture2D WindWallIcon { get; private set; } = null!;
 		public static Texture2D BoomerangIcon { get; set; } = null!;
+		public static Texture2D LightStrike { get; set; } = null!;
 		public static Texture2D HomingIcon { get; set; } = null!;
 		public static Texture2D RefractionShieldIcon { get; set; } = null!;
 		public static Texture2D SoulShatterIcon { get; set; } = null!;
@@ -60,6 +63,8 @@ namespace WarlockGame.Core.Game.Graphics
 			LineParticle = content.Load<Texture2D>("Art/Laser");
 			Glow = content.Load<Texture2D>("Art/Glow");
 
+			FlameStrike = content.Load<Texture2D>("Art/flame_strike");
+
 			Pixel = new Texture2D(Player.GraphicsDevice, 1, 1);
 			Pixel.SetData(new[] { Color.White });
 
@@ -78,6 +83,7 @@ namespace WarlockGame.Core.Game.Graphics
 			RefractionShieldIcon = LoadIcon(content, "Light_05_Bouncing_Light");
 			HomingIcon = LoadIcon(content, "Water_08_Ball_Of_Water");
 			BoomerangIcon = LoadIcon(content, "paladin_skill_24");
+			LightStrike = LoadIcon(content, "rpg_skill_71");
 			
 			HealIcon = LoadIcon(content, "General_02_Heal_T");
 			InvisibilityIcon = LoadIcon(content, "Invis");

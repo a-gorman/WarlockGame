@@ -29,7 +29,8 @@ class SpellManager {
             _spellFactory.SoulShatter(),
             _spellFactory.RefractionShield(),
             _spellFactory.Homing(),
-            _spellFactory.Boomerang()
+            _spellFactory.Boomerang(),
+            _spellFactory.FlameStrike(),
         }.ToDictionary(x => x.Id, x => x);
     }
     

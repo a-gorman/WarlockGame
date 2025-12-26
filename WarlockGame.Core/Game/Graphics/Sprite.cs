@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Graphics;
@@ -17,7 +18,7 @@ public class Sprite
     public float Scale { get; set; } = 1f;
     public bool Rotates { get; set; } = true;
 
-    private readonly List<Rectangle> _sourceRectangles;
+    private readonly Rectangle[] _sourceRectangles;
     private int _activeSourceRectangleIndex = 0;
 
     private readonly int _framesBetweenTransitions = 1;
@@ -28,13 +29,10 @@ public class Sprite
     public Sprite(Texture2D image)
     {
         _image = image;
-        _sourceRectangles = new List<Rectangle>()
-        {
-            image.Bounds
-        };
+        _sourceRectangles = [image.Bounds];
     }
 
-    private Sprite(Texture2D image, List<Rectangle> sourceRectangles, int framesBetweenTransitions)
+    private Sprite(Texture2D image, Rectangle[] sourceRectangles, int framesBetweenTransitions)
     {
         _image = image;
         _sourceRectangles = sourceRectangles;
@@ -63,7 +61,7 @@ public class Sprite
     
     private void NextSpriteFrame()
     {
-        if (_activeSourceRectangleIndex == _sourceRectangles.Count - 1)
+        if (_activeSourceRectangleIndex == _sourceRectangles.Length - 1)
         {
             _activeSourceRectangleIndex = 0;
         }
@@ -76,12 +74,13 @@ public class Sprite
     public static Sprite FromGridSpriteSheet(Texture2D image,
         int subdivisionsX,
         int subdivisionsY,
-        int framesBetweenTransitions,
+        SimTime timeBetweenTransitions,
         float scale = 1f,
         bool rotates = true)
     {
-        var sprite = new Sprite(image, image.Bounds.Subdivide(subdivisionsX, subdivisionsY).ToList(),
-            framesBetweenTransitions) {
+        var sprite = new Sprite(image, 
+            image.Bounds.Subdivide(subdivisionsX, subdivisionsY).ToArray(),
+            timeBetweenTransitions.Ticks) {
             Scale = scale,
             Rotates = rotates
         };

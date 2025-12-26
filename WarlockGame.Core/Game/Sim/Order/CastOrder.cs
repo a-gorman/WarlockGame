@@ -30,18 +30,17 @@ class CastOrder: IOrder {
 
     public void Update() {
         if (Type == CastType.Directional) {
-            var targetAngle = _castDirection.ToAngle();
-            if(Math.Abs(_caster.Orientation - targetAngle) > AngleTolerance)
-            {
-                _caster.DesiredOrientation = targetAngle;
+            var targetOrientation = _castDirection.ToAngle();
+            if(Math.Abs(_caster.Orientation - targetOrientation) > AngleTolerance) {
+                _caster.DesiredOrientation = targetOrientation;
                 return;
             }
         }
 
         if (Type == CastType.Location) {
-            var displacement = _caster.Position - _castDirection;
+            var displacement = _castDirection - _caster.Position;
             var targetOrientation = displacement.ToAngle();
-            if (Math.Abs(_caster.Orientation - _castDirection.ToAngle()) > AngleTolerance) {
+            if (Math.Abs(_caster.Orientation - targetOrientation) > AngleTolerance) {
                 _caster.DesiredOrientation = targetOrientation;
                 return;
             }

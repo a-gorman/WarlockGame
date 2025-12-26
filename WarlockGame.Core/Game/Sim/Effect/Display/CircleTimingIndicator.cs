@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
+using WarlockGame.Core.Game.Log;
 
 namespace WarlockGame.Core.Game.Sim.Effect.Display;
 
@@ -18,6 +19,10 @@ class CircleTimingIndicator : IEffect {
     
     public void Update() {
         _timer = _timer.Decrement();
+
+        if (_timer.IsExpired) {
+            Logger.Debug("Circle expired", Logger.LogType.Simulation);
+        }
     }
     
     public void Draw(Vector2 viewOffset, SpriteBatch spriteBatch) {

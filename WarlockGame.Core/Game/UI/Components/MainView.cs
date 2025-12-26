@@ -187,6 +187,14 @@ sealed class MainView : InterfaceComponent {
                 entity.Sprite.Draw(spriteBatch, entity.Position + location, entity.Orientation);
             }
         }
+        
+        if (Configuration.DebugBoundingBoxVisualize) {
+            foreach (var entity in _sim.EntityManager.EntitiesLivingOrDead) {
+                if (!entity.IsDead) {
+                    SimDebug.VisualizeCircle(entity.Radius, entity.Position, Color.White);
+                }
+            }
+        }
     }
 
     private void DrawWarlock(Vector2 location, SpriteBatch spriteBatch, Entity entity, Warlock warlock) {

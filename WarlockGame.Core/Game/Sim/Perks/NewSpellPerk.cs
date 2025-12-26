@@ -19,6 +19,6 @@ abstract class NewSpellPerk : Perk {
     }
 }
 
-class HomingSpellPerk : NewSpellPerk {
-    public HomingSpellPerk(SpellFactory spellFactory) : base(6, spellFactory.Homing()) { }
+class FlameStrikeSpellPerk : NewSpellPerk {
+    public FlameStrikeSpellPerk(SpellFactory spellFactory) : base(6, spellFactory.FlameStrike()) { }
 }

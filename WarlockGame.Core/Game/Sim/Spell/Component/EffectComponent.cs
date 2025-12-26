@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using WarlockGame.Core.Game.Sim.Effect;
+using ZLinq;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Component;
 
@@ -11,6 +13,12 @@ class EffectComponent : ILocationSpellComponent {
     
     public EffectComponent(params Func<SpellContext, Vector2, IEffect>[] effectConstructors) {
         EffectConstructors = effectConstructors;
+    }
+    
+    public EffectComponent(params Func<Vector2, IEffect>[] effectConstructors) {
+        EffectConstructors = effectConstructors
+            .Select(func => new Func<SpellContext, Vector2, IEffect>((_, loc) => func.Invoke(loc)))
+            .ToArray();
     }
     
     public void Invoke(SpellContext context, Vector2 invokeLocation) {

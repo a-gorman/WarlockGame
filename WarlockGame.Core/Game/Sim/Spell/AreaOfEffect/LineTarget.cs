@@ -3,8 +3,10 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Geometry;
+using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Sim.Effect.Display;
 using WarlockGame.Core.Game.Util;
+using SpriteEffect = WarlockGame.Core.Game.Sim.Effect.Display.SpriteEffect;
 
 namespace WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
 
@@ -18,9 +20,16 @@ class LineTarget : IDirectionalShape {
     public List<TargetInfo> GatherTargets(SpellContext context, Vector2 castLocation, Vector2 invokeDirection) {
         var startPoint = castLocation + context.Caster.Radius * invokeDirection.ToNormalized();
         var endPoint = startPoint + invokeDirection * Length;
-        
+
         // TODO: Make this scale in size
-        Texture?.Run(x => context.EffectManager.Add(new Lightning(x, castLocation, invokeDirection.ToAngle())));
+        Texture?.Run(x => {
+            var sprite = new Sprite(x);
+            context.EffectManager.Add(
+                new SpriteEffect(sprite, castLocation, duration: SimTime.OfTicks(10), orientation: invokeDirection.ToAngle()) 
+                {
+                    Origin = new Vector2(0, sprite.Size.Y / 2)
+                });
+        });
 
         var lineSegment = new LineSegment(startPoint, endPoint);
         

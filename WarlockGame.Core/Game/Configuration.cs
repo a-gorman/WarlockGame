@@ -30,6 +30,8 @@ static class Configuration {
     public static float KeyScrollSpeed { get; set; }
     public static float MouseLookSensitivity { get; set; }
     public static int MapEdgeScrollLimitBoundary { get; set; }
+    
+    public static bool DebugBoundingBoxVisualize { get; set; }
 
     public static void ParseArgs(IConfigurationRoot args) {
         WindowName = args["windowName"] ?? "WarlockGame";
@@ -69,6 +71,8 @@ static class Configuration {
         LogDisplayLevel = args["logDisplayLevel"]?.Let(x => Logger.Level.ParseOrNull(x, true)) ?? Logger.Level.ERROR;
         LogDisplayVisible = args["logDisplayVisible"]?.Let(bool.Parse) ?? true;
         LogDedupeLevel = args["logDedupeLevel"]?.Let(x => Logger.Level.ParseOrNull(x, true)) ?? Logger.Level.ERROR;
+        
+        DebugBoundingBoxVisualize = args["debug:boundingBoxVisualize"]?.Let(bool.Parse) ?? false;
     }
 
     private static Keys ParseKey(string? str, Keys defaultValue) {

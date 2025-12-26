@@ -23,7 +23,7 @@ class PerkManager {
     }
 
     public void Initialize() {
-        AddPerk(new HomingSpellPerk(_sim.SpellFactory));
+        AddPerk(new FlameStrikeSpellPerk(_sim.SpellFactory));
         AddPerk(new ReducedBoundsDamagePerk());
         AddPerk(new PermanentInvisibilityPerk());
         AddPerk(new PermanentRegenerationPerk());
