@@ -72,12 +72,12 @@ namespace WarlockGame.Core.Game.Graphics
 			LightningIcon = LoadIcon(content, "Air_07_Call_Lightning");
 			FireballIcon = LoadIcon(content, "Fire_03_Meteor");
 			PoisonIcon = LoadIcon(content, "Nature_01_Missile");
-			BurstIcon = LoadIcon(content, "Light_08_Divine_Body");
+			BurstIcon = LoadIcon(content, "warlock_skill_43");
 			WindWallIcon = LoadIcon(content, "Water_10_Aura_Of_Cold");
 			SoulShatterIcon = LoadIcon(content, "General_15_Blur");
 			RefractionShieldIcon = LoadIcon(content, "Light_05_Bouncing_Light");
 			HomingIcon = LoadIcon(content, "Water_08_Ball_Of_Water");
-			BoomerangIcon = LoadIcon(content, "warlock_skill_43");
+			BoomerangIcon = LoadIcon(content, "paladin_skill_24");
 			
 			HealIcon = LoadIcon(content, "General_02_Heal_T");
 			InvisibilityIcon = LoadIcon(content, "Invis");

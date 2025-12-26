@@ -6,6 +6,7 @@ using MonoGame.Extended;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim.Effect;
+using WarlockGame.Core.Game.Sim.Effect.Display;
 using WarlockGame.Core.Game.Sim.Order;
 using WarlockGame.Core.Game.Sim.Perks;
 using WarlockGame.Core.Game.Sim.Rule;
@@ -105,6 +106,8 @@ class Simulation {
         EffectManager.Add(_damagingGround);
 
         SimDebug.Visualize(new Rectangle(Vector2.Zero.ToPoint(), ArenaSize.ToPoint()), Color.MonoGameOrange, int.MaxValue);
+        EffectManager.Add(new CircleTimingIndicator(new CircleF(ArenaCenter, 50), SimTime.OfSeconds(2)));
+        
     }
 
     private void ClearGameState() {

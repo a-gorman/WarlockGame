@@ -28,5 +28,5 @@ class ContinuousSpellEffect : IEffect {
         }
     }
 
-    public void Draw(Vector2 location, SpriteBatch spriteBatch) { }
+    public void Draw(Vector2 viewOffset, SpriteBatch spriteBatch) { }
 }

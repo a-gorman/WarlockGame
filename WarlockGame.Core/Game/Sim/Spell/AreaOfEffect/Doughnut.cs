@@ -40,7 +40,7 @@ class Doughnut : ILocationShape {
         return new TargetInfo
         {
             Entity = target,
-            DisplacementAxis1 = displacementAxis1,
+            OriginTargetDisplacement = displacementAxis1,
             DisplacementAxis2 = displacementAxis2,
             FalloffFactor = FalloffFactor.Invoke((displacementAxis1, Width), (displacementAxis2, Width), target.Radius)
         };

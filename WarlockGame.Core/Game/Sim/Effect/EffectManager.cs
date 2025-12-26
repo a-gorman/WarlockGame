@@ -63,7 +63,7 @@ namespace WarlockGame.Core.Game.Sim.Effect
 				}
 			}
 
-			public void Draw(Vector2 location, SpriteBatch spriteBatch) { }
+			public void Draw(Vector2 viewOffset, SpriteBatch spriteBatch) { }
 		}
 	}
 }

@@ -31,5 +31,5 @@ class DamagingGround : IEffect {
         SimDebug.VisualizeCircle(Shape.Radius, Shape.Position, Color.GhostWhite);
     }
 
-    public void Draw(Vector2 location, SpriteBatch spriteBatch) { }
+    public void Draw(Vector2 viewOffset, SpriteBatch spriteBatch) { }
 }

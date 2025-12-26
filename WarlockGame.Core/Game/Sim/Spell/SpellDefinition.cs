@@ -8,5 +8,6 @@ class SpellDefinition {
     public required string Name { get; init; }
     public required SimTime CooldownTime { get; init; }
     public required Texture2D SpellIcon { get; init; }
+    public float? CastRange { get; init; }
     public required OneOf<IDirectionalSpellComponent, ILocationSpellComponent, ISelfSpellComponent> Effect { get; init; }
 }

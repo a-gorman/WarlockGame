@@ -8,5 +8,5 @@ public interface IEffect
 
     void Update();
 
-    void Draw(Vector2 location, SpriteBatch spriteBatch);
+    void Draw(Vector2 viewOffset, SpriteBatch spriteBatch);
 }

@@ -27,12 +27,12 @@ public class VectorEffect : IEffect {
         _timer.Decrement();
     }
 
-    public void Draw(Vector2 location, SpriteBatch spriteBatch) {
+    public void Draw(Vector2 viewOffset, SpriteBatch spriteBatch) {
         if (!_timer.IsExpired) {
             var pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
             pointTexture.SetData(new[] { Color.White });
 
-            Extensions.DrawLine(spriteBatch, _start + location, _end + location, _color);
+            Extensions.DrawLine(spriteBatch, _start + viewOffset, _end + viewOffset, _color);
         }
     }
 }
@@ -55,12 +55,12 @@ public class PointEffect : IEffect {
         _timer = _timer.Decrement();
     }
 
-    public void Draw(Vector2 location, SpriteBatch spriteBatch) {
+    public void Draw(Vector2 viewOffset, SpriteBatch spriteBatch) {
         if (!_timer.IsExpired) {
             var pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 3, 3);
             pointTexture.SetData(new[] { Color.White });
 
-            spriteBatch.Draw(pointTexture, _position + location, null, _color);
+            spriteBatch.Draw(pointTexture, _position + viewOffset, null, _color);
         }
     }
 }
@@ -85,8 +85,8 @@ public class StringEffect : IEffect {
         _timer = _timer.Decrement();
     }
 
-    public void Draw(Vector2 location, SpriteBatch spriteBatch) {
-        spriteBatch.DrawString(Art.Font, _displayString, _position + location, _color);
+    public void Draw(Vector2 viewOffset, SpriteBatch spriteBatch) {
+        spriteBatch.DrawString(Art.Font, _displayString, _position + viewOffset, _color);
     }
 }
 
@@ -108,8 +108,8 @@ public class CircleEffect : IEffect {
         _timer = _timer.Decrement();
     }
 
-    public void Draw(Vector2 location, SpriteBatch spriteBatch) {
-        spriteBatch.DrawCircle(_circle with { Position = _circle.Position + location }, 30, _color);
+    public void Draw(Vector2 viewOffset, SpriteBatch spriteBatch) {
+        spriteBatch.DrawCircle(_circle with { Position = _circle.Position + viewOffset }, 30, _color);
     }
 }
 
@@ -131,7 +131,7 @@ public class PolygonEffect : IEffect {
         _timer = _timer.Decrement();
     }
 
-    public void Draw(Vector2 location, SpriteBatch spriteBatch) {
-        spriteBatch.DrawPolygon(location, _polygon, _color);
+    public void Draw(Vector2 viewOffset, SpriteBatch spriteBatch) {
+        spriteBatch.DrawPolygon(viewOffset, _polygon, _color);
     }
 }

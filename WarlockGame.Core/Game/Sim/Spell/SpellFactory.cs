@@ -110,8 +110,8 @@ class SpellFactory {
             SpellIcon = Art.WindWallIcon,
             Effect = new SelfCastPositionComponent {
                 Components = [
-                    new EffectComponent {
-                        EffectConstructor = (spellContext, location) => new ContinuousSpellEffect {
+                    new EffectComponent(
+                        (spellContext, location) => new ContinuousSpellEffect {
                             Context = spellContext,
                             Location = location,
                             RepeatEvery = 5,
@@ -135,7 +135,7 @@ class SpellFactory {
                                 }
                             ]
                         }
-                    }
+                    )
                 ]
             }
         };
@@ -170,7 +170,7 @@ class SpellFactory {
                                                 new TimedLife(SimTime.OfSeconds(3.5f)),
                                                 new Shadow(targetInfo.Entity.Id, sim),
                                                 new Yoyo(sim,
-                                                    -targetInfo.DisplacementAxis1.WithLength(160).Rotated(float.Pi / 6),
+                                                    -targetInfo.OriginTargetDisplacement.WithLength(160).Rotated(float.Pi / 6),
                                                     SimTime.OfSeconds(0.5f),
                                                     SimTime.OfSeconds(3)));
                                             return image;
@@ -191,7 +191,7 @@ class SpellFactory {
                                                 new TimedLife(SimTime.OfSeconds(3.5f)),
                                                 new Shadow(targetInfo.Entity.Id, sim),
                                                 new Yoyo(sim,
-                                                    -targetInfo.DisplacementAxis1.WithLength(160)
+                                                    -targetInfo.OriginTargetDisplacement.WithLength(160)
                                                         .Rotated(-float.Pi / 6),
                                                     SimTime.OfSeconds(0.5f),
                                                     SimTime.OfSeconds(3)));
@@ -327,6 +327,19 @@ class SpellFactory {
                         })
                     ];
                 })
+        };
+    }
+    
+    public SpellDefinition asdf() {
+        return new SpellDefinition {
+            Id = 9,
+            Name = "Boomerang",
+            CooldownTime = SimTime.OfSeconds(20),
+            SpellIcon = Art.BoomerangIcon,
+            CastRange = 700,
+            Effect = new EffectComponent(
+                
+            )
         };
     }
 }

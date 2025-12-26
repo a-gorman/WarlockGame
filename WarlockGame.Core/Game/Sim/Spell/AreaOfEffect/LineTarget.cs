@@ -40,7 +40,7 @@ class LineTarget : IDirectionalShape {
             yield return new TargetInfo
             {
                 Entity = entity,
-                DisplacementAxis1 = displacement1,
+                OriginTargetDisplacement = displacement1,
                 DisplacementAxis2 = displacement2,
                 FalloffFactor = FalloffFactor.Invoke((displacement1, Length), (displacement2, Width), entity.Radius)
             };

@@ -11,14 +11,12 @@ class CircleTarget : ILocationShape {
     public Falloff.FalloffFactor FalloffFactor { get; init; } = Falloff.Linear;
     
     public List<TargetInfo> GatherTargets(SpellContext context, Vector2 origin) {
-        // Texture?.Run(x => EffectManager.Add(new CircleEffect());
-        
         return context.EntityManager.GetNearbyEntities(origin, Radius)
                             .Where(x => !IgnoreCaster || x != context.Caster)
                             .Select(x => new TargetInfo
                             {
                                 Entity = x,
-                                DisplacementAxis1 = x.Position - origin,
+                                OriginTargetDisplacement = x.Position - origin,
                                 DisplacementAxis2 = x.Position - origin,
                                 FalloffFactor = FalloffFactor.Invoke(x.Position - origin, Radius, x.Radius)
                             })
