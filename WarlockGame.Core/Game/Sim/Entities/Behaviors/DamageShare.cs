@@ -20,7 +20,9 @@ class DamageShare : Behavior {
     private void ShareDamage(OnDamagedEventArgs args) {
         var target = _simulation.EntityManager.GetEntity(_targetId);
         if (target is not null) {
-            target.Damage(args.Amount, args.DamageSource);
+            if (!args.DamageTypes.HasType(DamageType.Shared)) {
+                target.Damage(args.Amount, args.DamageTypes | DamageType.Shared, args.DamageSource);
+            }
         }
         else {
             IsExpired = true;

@@ -5,7 +5,7 @@ namespace WarlockGame.Core.Game.Sim.Perks;
 abstract class NewSpellPerk : Perk {
     private SpellDefinition SpellDefinition { get; }
 
-    public NewSpellPerk(int id, SpellDefinition spell)
+    protected NewSpellPerk(int id, SpellDefinition spell)
         : base(id, spell.Name, spell.Name, spell.SpellIcon) {
         SpellDefinition = spell;
     }

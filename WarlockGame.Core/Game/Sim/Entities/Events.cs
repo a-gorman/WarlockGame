@@ -4,6 +4,7 @@ class OnDamagedEventArgs {
     public required Entity Source { get; init; }
     public required Entity? DamageSource { get; init; }
     public required float Amount { get; init; }
+    public required DamageType DamageTypes { get; init; }
 }
 
 struct OnCollisionEventArgs {

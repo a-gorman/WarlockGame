@@ -106,12 +106,13 @@ namespace WarlockGame.Core.Game.Sim.Entities
 			}
 		}
 
-		public virtual void Damage(float damage, Entity? source) {
+		public virtual void Damage(float damage, DamageType damageTypes, Entity? source) {
 			if (OnDamaged != null) {
 				var args = new OnDamagedEventArgs {
 					Amount = damage,
 					Source = this,
-					DamageSource = source
+					DamageSource = source,
+					DamageTypes = damageTypes
 				};
 				
 				OnDamaged.Invoke(args);

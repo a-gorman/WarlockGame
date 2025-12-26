@@ -301,7 +301,7 @@ class SpellFactory {
                 speed: 18,
                 effects: [
                     new LocationAreaOfEffect {
-                        Shape = new CircleTarget { Radius = 30 },
+                        Shape = new CircleTarget { Radius = 50 },
                         Components = [
                             new DamageComponent { Damage = 10 },
                             new PushComponent { Force = 100 }

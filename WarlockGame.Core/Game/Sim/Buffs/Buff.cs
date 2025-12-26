@@ -10,7 +10,7 @@ class Buff {
     public bool ClearedOnDeath { get; set; } = true;
     public bool IsExpired { get; set; }
 
-    public Buff(BuffType type, SimTime? duration) {
+    protected Buff(BuffType type, SimTime? duration) {
         Type = type;
         Timer = duration?.ToTimer();
     }
@@ -32,6 +32,7 @@ class Buff {
         DamageOverTime,
         Regeneration,
         DamageBoost,
-        SpeedBoost
+        SpeedBoost,
+        Defense
     }
 }

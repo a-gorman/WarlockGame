@@ -24,7 +24,7 @@ class DamagingGround : IEffect {
     public void Update() {
         foreach (var warlock in _sim.EntityManager.Warlocks) {
             if (Inverted ^ Shape.Contains(warlock.Position)) {
-                warlock.Damage(DamagePerTick, null);
+                warlock.Damage(DamagePerTick, DamageType.Bounds, null);
             }
         }
 

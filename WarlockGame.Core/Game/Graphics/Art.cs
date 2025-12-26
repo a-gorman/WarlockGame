@@ -40,6 +40,7 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D DefianceIcon { get; set; } = null!;
 		public static Texture2D BigExplosionIcon { get; set; } = null!;
 		public static Texture2D ReducedBoundaryDamageIcon { get; set; } = null!;
+		public static Texture2D ReducedAllDamageIcon { get; set; } = null!;
 
 		public static void Load(ContentManager content)
 		{
@@ -68,21 +69,26 @@ namespace WarlockGame.Core.Game.Graphics
 		}
 
 		private static void LoadIcons(ContentManager content) {
-			LightningIcon = content.Load<Texture2D>("Art/Icons/Air_07_Call_Lightning");
-			FireballIcon = content.Load<Texture2D>("Art/Icons/Fire_03_Meteor");
-			PoisonIcon = content.Load<Texture2D>("Art/Icons/Nature_01_Missile");
-			BurstIcon = content.Load<Texture2D>("Art/Icons/Light_08_Divine_Body");
-			WindWallIcon = content.Load<Texture2D>("Art/Icons/Water_10_Aura_Of_Cold");
-			SoulShatterIcon = content.Load<Texture2D>("Art/Icons/General_15_Blur");
-			RefractionShieldIcon = content.Load<Texture2D>("Art/Icons/Light_05_Bouncing_Light");
-			HomingIcon = content.Load<Texture2D>("Art/Icons/Water_08_Ball_Of_Water");
-			BoomerangIcon = content.Load<Texture2D>("Art/Icons/Light_07_Wave_Of_Light");
+			LightningIcon = LoadIcon(content, "Air_07_Call_Lightning");
+			FireballIcon = LoadIcon(content, "Fire_03_Meteor");
+			PoisonIcon = LoadIcon(content, "Nature_01_Missile");
+			BurstIcon = LoadIcon(content, "Light_08_Divine_Body");
+			WindWallIcon = LoadIcon(content, "Water_10_Aura_Of_Cold");
+			SoulShatterIcon = LoadIcon(content, "General_15_Blur");
+			RefractionShieldIcon = LoadIcon(content, "Light_05_Bouncing_Light");
+			HomingIcon = LoadIcon(content, "Water_08_Ball_Of_Water");
+			BoomerangIcon = LoadIcon(content, "warlock_skill_43");
 			
-			HealIcon = content.Load<Texture2D>("Art/Icons/General_02_Heal_T");
-			InvisibilityIcon = content.Load<Texture2D>("Art/Icons/Invis");
-			DefianceIcon = content.Load<Texture2D>("Art/Icons/Big_Explosion");
-			BigExplosionIcon = content.Load<Texture2D>("Art/Icons/Defiance");
-			ReducedBoundaryDamageIcon = content.Load<Texture2D>("Art/Icons/rpg_skill_42");
+			HealIcon = LoadIcon(content, "General_02_Heal_T");
+			InvisibilityIcon = LoadIcon(content, "Invis");
+			DefianceIcon = LoadIcon(content, "Big_Explosion");
+			BigExplosionIcon = LoadIcon(content, "Defiance");
+			ReducedBoundaryDamageIcon = LoadIcon(content, "rpg_skill_42");
+			ReducedAllDamageIcon = LoadIcon(content, "paladin_skill_34");
+		}
+
+		private static Texture2D LoadIcon(ContentManager content, string iconName) {
+			return content.Load<Texture2D>($"Art/Icons/{iconName}");
 		}
 
 		public static Texture2D LoadTexture(string assetName)

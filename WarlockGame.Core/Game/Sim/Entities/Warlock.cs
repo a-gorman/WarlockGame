@@ -42,6 +42,11 @@ class Warlock : Entity {
 
     public float DamageMultiplier { get; set; } = 1;
 
+    public float GenericDefense { get; set; } = 1;
+    public float PlayerDefense { get; set; } = 1;
+    public float EnvironmentDefense { get; set; } = 1;
+    public float BoundsDefense { get; set; } = 1;
+    
     private bool Sliding { get;
         set {
             if (value != field) {
@@ -184,9 +189,19 @@ class Warlock : Entity {
         }
     }
         
-    public override void Damage(float damage, Entity? source) {
-        Health -= damage;
-        base.Damage(damage, source);
+    public override void Damage(float damage, DamageType damageTypes, Entity? source) {
+        var effectiveDamage = damage * GenericDefense;
+        if (damageTypes.HasType(DamageType.Player)) {
+            effectiveDamage *= PlayerDefense;
+        }
+        if (damageTypes.HasType(DamageType.Bounds)) {
+            effectiveDamage *= BoundsDefense;
+        }
+        if (damageTypes.HasType(DamageType.Environment)) {
+            effectiveDamage *= EnvironmentDefense;
+        }
+        Health -= effectiveDamage;
+        base.Damage(damage, damageTypes, source);
 
         if (Health <= 0) {
             Destroy(source);

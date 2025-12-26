@@ -13,7 +13,7 @@ class DamageOverTime : Buff {
     }
     
     public override void Update(Warlock target) {
-        target.Damage(_damagePerTick, _spellContext.Caster);
+        target.Damage(_damagePerTick, DamageType.Player, _spellContext.Caster);
         base.Update(target);
     }
 }
