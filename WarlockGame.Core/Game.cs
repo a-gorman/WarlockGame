@@ -97,6 +97,8 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         }
         
         Simulation.Initialize();
+        
+        UIManager.AddComponent(new Scoreboard(Simulation.GameRules));
     }
 
     protected override void Initialize()

@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Input;
+using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.Sim.Perks;
@@ -26,8 +27,12 @@ sealed class PerkPicker: InterfaceComponent {
 
     public override void Update(ref readonly UIManager.UpdateArgs args) {
         if (WasMadeVisible) {
-            SetPerks(_sim.PerkManager.GetAvailablePerks(PlayerManager.LocalPlayerId ?? -1));
-            IsBoundsDirty = false;
+            var perks = _sim.PerkManager.GetAvailablePerks(PlayerManager.LocalPlayerId ?? -1);
+            if (perks != null && perks.Count > 0) {
+                SetPerks(perks);
+            } else {
+                Logger.Error("Could not get perks for local player!", Logger.LogType.Interface | Logger.LogType.Simulation);
+            }
         }
     }
 

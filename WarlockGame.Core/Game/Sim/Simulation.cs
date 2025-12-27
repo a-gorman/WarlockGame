@@ -6,13 +6,10 @@ using MonoGame.Extended;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim.Effect;
-using WarlockGame.Core.Game.Sim.Effect.Display;
 using WarlockGame.Core.Game.Sim.Order;
 using WarlockGame.Core.Game.Sim.Perks;
 using WarlockGame.Core.Game.Sim.Rule;
 using WarlockGame.Core.Game.Sim.Spell;
-using WarlockGame.Core.Game.UI;
-using WarlockGame.Core.Game.UI.Components;
 using WarlockGame.Core.Game.Util;
 using Warlock = WarlockGame.Core.Game.Sim.Entities.Warlock;
 
@@ -30,6 +27,8 @@ class Simulation {
     public PerkManager PerkManager { get; }
 
     public GameRules GameRules { get; }
+
+    public int[] Forces { get; private set; } = [];
 
     public static Vector2 ArenaSize { 
         get;
@@ -82,15 +81,16 @@ class Simulation {
     public void Restart(int seed) {
         ClearGameState();
         Random = new Random(seed);
+        Forces = PlayerManager.Players.Select(x => x.Id).ToArray();
         GameRules.Reset();
-        UIManager.AddComponent(new Scoreboard(GameRules));
+        PerkManager.Reset();
         
-        var radiansPerPlayer = (float)(2 * Math.PI / PlayerManager.Players.Count);
-        var warlocks = PlayerManager.Players.Select((x, i) => {
+        var radiansPerPlayer = (float)(2 * Math.PI / Forces.Length);
+        var warlocks = Forces.Select((x, i) => {
             var spawnPos = ArenaSize / 2 + new Vector2(0, 400).Rotated(radiansPerPlayer * i);
-            var warlock = new Warlock(x.Id, spawnPos, this);
+            var warlock = new Warlock(x, spawnPos, this);
 
-            warlock.Sprite.Color = PlayerManager.GetPlayer(x.Id)!.Color;
+            warlock.Sprite.Color = PlayerManager.GetPlayer(x)!.Color;
         
             return warlock;
         });

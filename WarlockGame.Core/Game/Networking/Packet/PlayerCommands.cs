@@ -1,5 +1,4 @@
 using LiteNetLib.Utils;
-using WarlockGame.Core.Game.Sim.Perks;
 
 namespace WarlockGame.Core.Game.Networking.Packet;
 

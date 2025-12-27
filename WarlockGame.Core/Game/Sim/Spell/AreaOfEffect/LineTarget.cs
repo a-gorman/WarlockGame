@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Geometry;
 using WarlockGame.Core.Game.Graphics;
-using WarlockGame.Core.Game.Sim.Effect.Display;
 using WarlockGame.Core.Game.Util;
 using SpriteEffect = WarlockGame.Core.Game.Sim.Effect.Display.SpriteEffect;
 

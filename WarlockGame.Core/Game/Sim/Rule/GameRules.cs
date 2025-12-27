@@ -40,8 +40,8 @@ class GameRules {
     
     public void Reset() {
         Statuses.Clear();
-        foreach (var player in PlayerManager.Players) {
-            Statuses.Add(player.Id, new PlayerStatus(InitialLives));
+        foreach (var force in _simulation.Forces) {
+            Statuses.Add(force, new PlayerStatus(InitialLives));
         }
 
         OnChanged?.Invoke(new LivesChanged { Reset = true });
