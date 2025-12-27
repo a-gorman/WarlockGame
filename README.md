@@ -6,7 +6,7 @@ you will need to acquire those assets or provide your own replacements. Ask if y
 access these assets.
 
 To build, install the latest .net SDK, then `run dotnet tool install -g dotnet-mgcb` to install the monogame content
-builder (MGCB).
+builder (MGCB). Run MGCB to compile the assets into .xnb files.
 
 To run, use `dotnet run` in subfolder corresponding to your operating system (ex. WarlockGame.WindowsDX for windows users)
 or you can ask me for a published .exe (can be self-contained if you don't want to install .net runtime).

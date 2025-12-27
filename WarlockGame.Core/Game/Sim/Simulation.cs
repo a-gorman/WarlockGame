@@ -54,7 +54,7 @@ class Simulation {
         GameRules.Initialize();
         PerkManager.Initialize();
         EntityManager.WarlockDestroyed += GameRules.OnWarlockDestroyed;
-        
+
         Logger.Info("Simulation initialized", Logger.LogType.Program);
     }
 
@@ -106,8 +106,6 @@ class Simulation {
         EffectManager.Add(_damagingGround);
 
         SimDebug.Visualize(new Rectangle(Vector2.Zero.ToPoint(), ArenaSize.ToPoint()), Color.MonoGameOrange, int.MaxValue);
-        EffectManager.Add(new CircleTimingIndicator(new CircleF(ArenaCenter, 50), SimTime.OfSeconds(2)));
-        
     }
 
     private void ClearGameState() {
@@ -116,21 +114,21 @@ class Simulation {
         EffectManager.Clear();
         SpellManager.Clear();
     }
-    
+
     public int CalculateChecksum() {
         return (int)EntityManager.EntitiesLivingOrDead.Sum(x => x.Position.X + x.Position.Y);
     }
-    
+
     private void ProcessPlayerAction(IPlayerAction action) {
         Logger.Debug($"Issuing {action.GetSerializerType()} command for player {action.PlayerId}", Logger.LogType.PlayerAction | Logger.LogType.Simulation);
         switch (action) {
             case MoveAction move:
                 EntityManager.GetWarlockByForceId(move.PlayerId)
-                             ?.GiveOrder(x => new DestinationMoveOrder(move.Location, x));
+                    ?.GiveOrder(x => new DestinationMoveOrder(move.Location, x));
                 break;
             case CastAction cast:
                 EntityManager.GetWarlockByForceId(cast.PlayerId)
-                             ?.GiveOrder(x => new CastOrder(cast.SpellId, cast.CastVector, x, cast.Type.ToSimType()));
+                    ?.GiveOrder(x => new CastOrder(cast.SpellId, cast.CastVector, x, cast.Type.ToSimType()));
                 break;
             case SelectPerk selectPerk:
                 PerkManager.ChoosePerk(selectPerk.PlayerId, selectPerk.PerkId);
