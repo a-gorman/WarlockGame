@@ -8,12 +8,10 @@ namespace WarlockGame.Core.Game.UI.Components;
 
 sealed class Scoreboard : InterfaceComponent {
     private readonly GameRules _gameRule;
-    private Components.Basic.Grid _grid;
+    private Components.Basic.Grid? _grid;
     private readonly Dictionary<int, TextDisplay> _playerLifeDisplays = new();
 
     public Scoreboard(GameRules gameRule) {
-        _grid = new Basic.Grid(0, 0, 1, 1, 1, 1);
-        AddComponent(_grid);
         _gameRule = gameRule;
     }
 
@@ -30,7 +28,8 @@ sealed class Scoreboard : InterfaceComponent {
             var columnWidth = 90;
             var rowHeight = 25;
 
-            RemoveComponent(_grid);
+            if(_grid != null) RemoveComponent(_grid);
+            
             var playerIds = _gameRule.Statuses.Keys.ToList();
             _grid = new Components.Basic.Grid(0, 0, 2, columnWidth, playerIds.Count, rowHeight);
             for (int i = 0; i < playerIds.Count; i++) {
