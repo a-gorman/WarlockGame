@@ -65,10 +65,7 @@ class InterfaceComponent {
 
     /// <summary>
     /// Update function called each frame before drawing any components.
-    /// Called only if the 
     /// </summary>
-    /// <param name="mosPos">The position of the mouse inside the components bounding box. Null if the mouse is outside
-    /// </param>
     public virtual void Update(ref readonly UIManager.UpdateArgs args) { }
 
     public void AddComponent(InterfaceComponent component) {
