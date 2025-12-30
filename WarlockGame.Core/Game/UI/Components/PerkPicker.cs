@@ -45,7 +45,7 @@ sealed class PerkPicker: InterfaceComponent {
         AddComponent(grid);
         for (var index = 0; index < _perks.Count; index++) {
             var perk = _perks[index];
-            var button = new Button(new Rectangle(0,0, 90, 90), perk.Texture) {
+            var button = new Button(new Rectangle(0, 0, 90, 90), perk.Texture) {
                 LeftClick = _ => {
                     var playerId = PlayerManager.LocalPlayerId;
                     if (playerId == null) return;

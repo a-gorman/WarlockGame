@@ -31,7 +31,18 @@ class InterfaceComponent {
     /// The bounding box for determining if the component was clicked.
     /// Higher layers obscure clicks from lower layers.
     /// </summary>
-    public Rectangle BoundingBox { get;
+    public Rectangle BoundingBox { 
+        get;
+        set {
+            if (field != value) {
+                IsBoundsDirty = true; 
+                field = value;
+            }
+        } 
+    }
+
+    public Alignment? Alignment {
+        get;
         set {
             if (field != value) {
                 IsBoundsDirty = true; 
@@ -53,15 +64,13 @@ class InterfaceComponent {
     public virtual void OnLeftClick(Vector2 location) { }
     public virtual void OnRightClick(Vector2 location) { }
 
-    public void DrawComponent(Vector2 location, SpriteBatch spriteBatch) {
+    public void DrawComponent(Vector2 location, SpriteBatch spriteBatch, Vector2 parentSize) {
         Draw(location, spriteBatch);
         IsVisibilityDirty = false;
         IsBoundsDirty = false;
     }
     
-    protected virtual void Draw(Vector2 location, SpriteBatch spriteBatch) {
-        IsBoundsDirty = false;
-    }
+    protected virtual void Draw(Vector2 location, SpriteBatch spriteBatch) { }
 
     /// <summary>
     /// Update function called each frame before drawing any components.
@@ -115,6 +124,50 @@ class InterfaceComponent {
     public virtual void OnAdd() { }
 
     public virtual void OnRemove() { }
+
+    private Rectangle CalculateBounds(Vector2 maxSize) {
+        if (Alignment == null) {
+            return BoundingBox;
+        }
+        
+        float? leftBound = null;
+        float? rightBound = null;
+        float? topBound = null;
+        float? bottomBound = null;
+
+        if (Alignment & AlignmentFlags.FillHorizontal != 0) {
+            leftBound = 0;
+            rightBound = maxSize.X;
+        } else if ((Alignment & AlignmentFlags.Left) != 0) {
+            leftBound = 0;
+        }
+        else if ((Alignment & AlignmentFlags.Right) != 0) {
+            rightBound = maxSize.X;
+        }
+
+        if ((Alignment & AlignmentFlags.Top) != 0) {
+            topBound = 0;
+        }
+        if ((Alignment & AlignmentFlags.Bottom) != 0) {
+            bottomBound = maxSize.Y;
+        }
+    }
+}
+
+[Flags]
+public enum AlignmentFlags {
+    Center = 0,
+    Left = 1 << 0,
+    Right = 1 << 1,
+    Top = 1 << 2,
+    Bottom = 1 << 3,
+    Fill = Left | Right | Top | Bottom,
+    BottomLeft = Left | Bottom,
+    BottomRight = Right | Bottom,
+    TopLeft = Left | Top,
+    TopRight = Right | Top,
+    FillHorizontal = Right | Left,
+    FillVertical = Top | Bottom,
 }
 
 public enum ClickableState {
