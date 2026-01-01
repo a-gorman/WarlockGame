@@ -9,7 +9,7 @@ using WarlockGame.Core.Game.UI.Components.Basic;
 namespace WarlockGame.Core.Game.UI.Components;
 
 class SpellPicker : InterfaceComponent {
-
+    private readonly Button _confirmButton;
     private Basic.Grid _grid;
     private const int Spacing = 5;
     private readonly Vector2 _iconSize = new Vector2(90, 90);
@@ -20,9 +20,12 @@ class SpellPicker : InterfaceComponent {
     
     public SpellPicker(IEnumerable<SpellDefinition> spells, int selections) {
         _spells = spells.ToArray();
-        BoundingBox = new Rectangle(0, 0, 200, 600);
+        BoundingBox = new Rectangle(0, 0, 400, 600);
         _grid = CreateGrid();
         _maxSelections = selections;
+        var width = 80;
+        var height = 40;
+        _confirmButton = new Button(new Rectangle(400-width-10, 600-height-10, width, height));
     }
 
     private Basic.Grid CreateGrid() {
@@ -47,11 +50,13 @@ class SpellPicker : InterfaceComponent {
 
     private void LeftClick(int spellIndex) {
         if (!_selections.Remove(spellIndex)) {
+            _confirmButton.IsActive = false;
+        } else {
             _selections.Add(spellIndex);
         }
 
         if (_selections.Count == _maxSelections) {
-            // TODO
+            _confirmButton.IsActive = true;
         }
     }
 }

@@ -7,24 +7,33 @@ namespace WarlockGame.Core.Game.UI.Components.Basic;
 
 sealed class Button: InterfaceComponent {
     public Texture2D Texture { get; set; }
-    public Action<Vector2> LeftClick = _ => { };
-    public Action<Vector2> RightClick = _ => { };
-    
-    public Button(Rectangle boundingBox, Texture2D texture) {
+    public Texture2D? InactiveTexture { get; set; }
+    public Action<Vector2>? LeftClick { get; set; };
+    public Action<Vector2>? RightClick { get; set; };
+    public bool IsActive { get; set; } = true;
+
+    public Button(Rectangle boundingBox, Texture2D texture, Texture2D? inactiveTexture = null) {
         Clickable = ClickableState.Clickable;
         Texture = texture;
         BoundingBox = boundingBox;
+        InactiveTexture = inactiveTexture
     }
-    
+
     public override void OnLeftClick(Vector2 location) {
-        LeftClick.Invoke(location);
+        if (IsActive)
+            LeftClick?.Invoke(location);
     }
 
     public override void OnRightClick(Vector2 location) {
-        RightClick.Invoke(location);
+        if (IsActive)
+            RightClick?.Invoke(location);
     }
 
     protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
-        spriteBatch.Draw(Texture, BoundingBox.WithOffset(location), Color.White);
+        if(IsActive) {
+            spriteBatch.Draw(Texture, BoundingBox.WithOffset(location), Color.White);
+        } else if(InactiveTexture != null) {
+            spriteBatch.Draw(InactiveTexture, BoundingBox.WithOffset(location), Color.White);
+        }
     }
 }

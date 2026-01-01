@@ -154,20 +154,30 @@ class InterfaceComponent {
     }
 }
 
+public data class Alignment {
+    public bool AutoSizeHorizontal { get; init; }
+    public bool AutoSizeVertical { get; init; }
+    public bool AutoPosition { get; init; }5
+
+}
+
 [Flags]
 public enum AlignmentFlags {
-    Center = 0,
-    Left = 1 << 0,
-    Right = 1 << 1,
-    Top = 1 << 2,
-    Bottom = 1 << 3,
-    Fill = Left | Right | Top | Bottom,
-    BottomLeft = Left | Bottom,
-    BottomRight = Right | Bottom,
-    TopLeft = Left | Top,
-    TopRight = Right | Top,
-    FillHorizontal = Right | Left,
-    FillVertical = Top | Bottom,
+    None = 0,
+    AutoSize = 1 << 0,
+    AutoPosition = 1 << 1,
+    Left = 1 << 2,
+    Right = 1 << 3,
+    Top = 1 << 4,
+    Bottom = 1 << 5,
+    Center = Left | Right | Top | Bottom | AutoPosition,
+    BottomLeft = Left | Bottom | AutoPosition,
+    BottomRight = Right | Bottom | AutoPosition,
+    TopLeft = Left | Top | AutoPosition,
+    TopRight = Right | Top | AutoPosition,
+    Fill = Left | Right | Top | Bottom | AutoSize | AutoPosition,
+    FillHorizontal = Right | Left | AutoPosition | AutoSize,
+    FillVertical = Top | Bottom | AutoPosition | AutoSize,
 }
 
 public enum ClickableState {
