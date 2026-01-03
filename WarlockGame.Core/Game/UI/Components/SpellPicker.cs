@@ -2,11 +2,14 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
+using MonoGame.Extended.Graphics;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.UI.Components.Basic;
+using WarlockGame.Core.Game.Util;
 using ZLinq;
 
 namespace WarlockGame.Core.Game.UI.Components;
@@ -23,7 +26,7 @@ class SpellPicker : InterfaceComponent {
     
     public SpellPicker(int selections) {
         Clickable = ClickableState.PassThrough;
-        BoundingBox = new Rectangle(200, 200, 600, 300);
+        BoundingBox = new Rectangle(600, 400, 600, 300);
         _maxSelections = selections;
         var width = 80;
         var height = 40;
@@ -39,7 +42,7 @@ class SpellPicker : InterfaceComponent {
                 var playerId = PlayerManager.LocalPlayerId;
                 if (playerId == null) return;
                 
-                InputManager.HandlePlayerAction(new SelectSpells { PlayerId = playerId.Value, SpellIds = _spells!.Select(x => x.Id).ToArray() });
+                InputManager.HandlePlayerAction(new SelectSpells { PlayerId = playerId.Value, SpellIds = _selections.Select(x => _spells![x].Id).ToArray() });
                 Visible = false;
             }
         };
@@ -80,7 +83,7 @@ class SpellPicker : InterfaceComponent {
     private Basic.Grid CreateGrid() {
         var rows = _spells!.Length / _columns + 1;
 
-        var grid = new Basic.Grid(BoundingBox, _columns, rows) { Clickable = ClickableState.PassThrough };
+        var grid = new Basic.Grid(BoundingBox.AtLocation(20, 20), _columns, rows) { Clickable = ClickableState.PassThrough };
         for (var i = 0; i < _spells.Length; i++) {
             var spell = _spells[i];
             var iColumn = i % _columns;
@@ -98,14 +101,14 @@ class SpellPicker : InterfaceComponent {
     }
 
     private void LeftClick(int spellIndex) {
-        if (_selections.Remove(spellIndex)) {
-            _confirmButton.IsActive = false;
-        } else {
+        if (!_selections.Remove(spellIndex)) {
             _selections.Add(spellIndex);
         }
 
-        if (_selections.Count == _maxSelections) {
-            _confirmButton.IsActive = true;
-        }
+        _confirmButton.IsActive = _selections.Count == _maxSelections;
+    }
+
+    protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
+        spriteBatch.Draw(Art.Pixel, BoundingBox.WithOffset(location), Color.Maroon);
     }
 }

@@ -51,7 +51,14 @@ class SpellManager {
             return;
         }
 
-        AddSpell(forceId, _spellFactory.CreateWarlockSpell(definition));
+        Logger.Error($"Spell added {forceId} {definitionId}", Logger.LogType.Simulation);
+        
+        WarlockSpell spell = _spellFactory.CreateWarlockSpell(definition);
+        var spellbook = PlayerSpells.GetOrAdd(forceId, _ => new Dictionary<int, WarlockSpell>());
+        spellbook.Add(spell.Definition.Id, spell);
+        Spells[spell.Id] = spell;
+        spell.SlotLocation = spellbook.Count - 1;
+        SpellAdded?.Invoke(forceId, spell);
     }
 
     public void RemoveSpell(int forceId, int definitionId) {
@@ -59,14 +66,6 @@ class SpellManager {
         if (!removed) {
             Logger.Warning($"Tried removing a spell from a player that does not have that spell. Force: {forceId} Definition: {definitionId}", Logger.LogType.Simulation);
         }
-    }
-    
-    public void AddSpell(int forceId, WarlockSpell spell) {
-        var spellbook = PlayerSpells.GetOrAdd(forceId, _ => new Dictionary<int, WarlockSpell>());
-        spellbook.Add(spell.Definition.Id, spell);
-        Spells[spell.Id] = spell;
-        spell.SlotLocation = spellbook.Count - 1;
-        SpellAdded?.Invoke(forceId, spell);
     }
 
     public WarlockSpell? GetSpell(int forceId, int definitionId) {
