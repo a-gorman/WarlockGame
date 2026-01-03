@@ -57,7 +57,7 @@ class PerkManager {
 
     public void Reset() {
         foreach (var force in _sim.Forces) {
-            ReselectPerksForForce(force);
+            ReselectPerksForForce(force.Id);
         }
     }
     

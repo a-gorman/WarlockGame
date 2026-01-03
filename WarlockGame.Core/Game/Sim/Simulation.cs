@@ -16,7 +16,7 @@ using Warlock = WarlockGame.Core.Game.Sim.Entities.Warlock;
 namespace WarlockGame.Core.Game.Sim;
 
 class Simulation {
-    private DamagingGround _damagingGround = null!;
+    private DamagingGround? _damagingGround;
     public int Tick { get; private set; }
 
     public Random Random { get; private set; } = new();
@@ -28,7 +28,7 @@ class Simulation {
 
     public GameRules GameRules { get; }
 
-    public int[] Forces { get; private set; } = [];
+    public Force[] Forces { get; private set; } = [];
 
     public static Vector2 ArenaSize { 
         get;
@@ -60,7 +60,7 @@ class Simulation {
     public TickResult Update(IEnumerable<IPlayerAction> inputs) {
         Tick++;
 
-        _damagingGround.Shape = _damagingGround.Shape with { Radius = _damagingGround.Shape.Radius - 0.1f };
+        _damagingGround?.Shape = _damagingGround.Shape with { Radius = _damagingGround.Shape.Radius - 0.1f };
 
         foreach (var command in inputs) {
             ProcessPlayerAction(command);
@@ -81,31 +81,9 @@ class Simulation {
     public void Restart(int seed) {
         ClearGameState();
         Random = new Random(seed);
-        Forces = PlayerManager.Players.Select(x => x.Id).ToArray();
+        Forces = PlayerManager.Players.Select(x => new Force {Id = x.Id }).ToArray();
         GameRules.Reset();
         PerkManager.Reset();
-        
-        var radiansPerPlayer = (float)(2 * Math.PI / Forces.Length);
-        var warlocks = Forces.Select((x, i) => {
-            var spawnPos = ArenaSize / 2 + new Vector2(0, 400).Rotated(radiansPerPlayer * i);
-            var warlock = new Warlock(x, spawnPos, this);
-
-            warlock.Sprite.Color = PlayerManager.GetPlayer(x)!.Color;
-        
-            return warlock;
-        });
-        foreach (var warlock in warlocks) {
-            Logger.Info($"Creating warlock at: {warlock.Position}", Logger.LogType.Simulation);
-            EntityManager.Add(warlock);
-            foreach (var spellType in GameRules.StartingSpells) {
-                SpellManager.AddSpell(warlock.PlayerId!.Value, spellType);
-            }
-        }
-        
-        _damagingGround = new DamagingGround(this, new CircleF(ArenaCenter, (ArenaSize / 2).Length()), 0.1f, inverted: true);
-        EffectManager.Add(_damagingGround);
-
-        SimDebug.Visualize(new Rectangle(Vector2.Zero.ToPoint(), ArenaSize.ToPoint()), Color.MonoGameOrange, int.MaxValue);
     }
 
     private void ClearGameState() {
@@ -133,11 +111,64 @@ class Simulation {
             case SelectPerk selectPerk:
                 PerkManager.ChoosePerk(selectPerk.PlayerId, selectPerk.PerkId);
                 break;
+            case SelectSpells selectSpells:
+                var force = Forces.FirstOrDefault(x => x.Id == selectSpells.PlayerId);
+
+                if (force == null) {
+                    Logger.Error($"Tried choosing spells for invalid force! {selectSpells.PlayerId}", Logger.LogType.Simulation | Logger.LogType.PlayerAction);
+                    break;
+                }
+                
+                if (force.AreSpellsChosen) {
+                    Logger.Error($"Spells have been chosen more than once! {selectSpells.PlayerId}", Logger.LogType.Simulation | Logger.LogType.PlayerAction);
+                    break;
+                }
+                
+                foreach (var spell in selectSpells.SpellIds) {
+                    SpellManager.AddSpell(force.Id, spell);
+                    Logger.Info($"Spell chosen! {force.Id} chose {spell}", Logger.LogType.Simulation | Logger.LogType.PlayerAction);
+                }
+
+                force.AreSpellsChosen = true;
+                
+                if (Forces.All(x => x.AreSpellsChosen)) {
+                    StartRound();
+                }
+                break;
         }
+    }
+
+    private void StartRound() {
+        var radiansPerPlayer = (float)(2 * Math.PI / Forces.Length);
+        var warlocks = Forces.Select((x, i) => {
+            var spawnPos = ArenaSize / 2 + new Vector2(0, 400).Rotated(radiansPerPlayer * i);
+            var warlock = new Warlock(x.Id, spawnPos, this);
+
+            warlock.Sprite.Color = PlayerManager.GetPlayer(x.Id)!.Color;
+        
+            return warlock;
+        });
+        foreach (var warlock in warlocks) {
+            Logger.Info($"Creating warlock at: {warlock.Position}", Logger.LogType.Simulation);
+            EntityManager.Add(warlock);
+            foreach (var spellType in GameRules.StartingSpells) {
+                SpellManager.AddSpell(warlock.PlayerId!.Value, spellType);
+            }
+        }
+        
+        _damagingGround = new DamagingGround(this, new CircleF(ArenaCenter, (ArenaSize / 2).Length()), 0.1f, inverted: true);
+        EffectManager.Add(_damagingGround);
+
+        SimDebug.Visualize(new Rectangle(Vector2.Zero.ToPoint(), ArenaSize.ToPoint()), Color.MonoGameOrange, int.MaxValue);
     }
 
     public ref struct TickResult {
         public int Tick { get; init; }
         public int Checksum { get; init; }
+    }
+
+    public class Force {
+        public required int Id { get; init; }
+        public bool AreSpellsChosen { get; set; }
     }
 }

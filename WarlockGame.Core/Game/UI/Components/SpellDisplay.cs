@@ -9,9 +9,6 @@ using WarlockGame.Core.Game.Sim.Spell;
 
 namespace WarlockGame.Core.Game.UI.Components; 
 
-/// <summary>
-/// Assumes single active player (No local coop)
-/// </summary>
 sealed class SpellDisplay : InterfaceComponent {
     public Dictionary<InputAction, string> KeyMappings { get; }
     public Components.Basic.Grid IconGrid { get; }
@@ -33,7 +30,7 @@ sealed class SpellDisplay : InterfaceComponent {
         AddComponent(IconGrid);
         Clickable = ClickableState.PassThrough;
     }
-    
+
     public override void OnLeftClick(Vector2 location) {
         Logger.Info("Click the spell display!", Logger.LogType.Interface | Logger.LogType.PlayerAction);
     }
@@ -55,7 +52,7 @@ sealed class SpellDisplay : InterfaceComponent {
         spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Right, rectangle.Top, width, rectangle.Height), color);  // Right line
         spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Left, rectangle.Top, rectangle.Width, width), color);    // Top line
     }
-    
+
     private void AddSpell(int playerId, WarlockSpell spell) {
         if (PlayerManager.IsLocal(playerId)) {
             var spellIcon = new SpellIcon(spell, KeyMappings[Actions[spell.SlotLocation]]) { BoundingBox = new Rectangle(0,0,50,50)};

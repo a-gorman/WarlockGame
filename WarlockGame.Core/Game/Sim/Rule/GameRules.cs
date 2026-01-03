@@ -16,6 +16,8 @@ class GameRules {
 
     public readonly int[] StartingSpells = [1, 4, 9];
     
+    public readonly int[] AvailableSpells = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    
     // public PerkType[] StartingPerks = [
     //     PerkType.Invisibility,
     //     PerkType.DamageBoost,
@@ -41,7 +43,7 @@ class GameRules {
     public void Reset() {
         Statuses.Clear();
         foreach (var force in _simulation.Forces) {
-            Statuses.Add(force, new PlayerStatus(InitialLives));
+            Statuses.Add(force.Id, new PlayerStatus(InitialLives));
         }
 
         OnChanged?.Invoke(new LivesChanged { Reset = true });

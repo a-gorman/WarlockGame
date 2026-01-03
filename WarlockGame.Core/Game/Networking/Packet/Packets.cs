@@ -173,6 +173,9 @@ public class ServerTickProcessed : INetSerializable {
                 case IPlayerAction.Type.SelectPerk:
                     list.Add(reader.Get<SelectPerk>());
                     break;
+                case IPlayerAction.Type.SelectSpells:
+                    list.Add(reader.Get<SelectSpells>());
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

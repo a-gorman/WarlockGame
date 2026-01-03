@@ -49,7 +49,6 @@ class TextDisplay : InterfaceComponent {
     protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
         if(IsBoundsDirty || _textDirty) {
             RecalculateWrappedText();
-            IsBoundsDirty = false;
         }
 
         spriteBatch.DrawString(Art.Font, _wrappedText, BoundingBox.Location.ToVector2() + location, TextColor,

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using LiteNetLib.Utils;
 
 namespace WarlockGame.Core.Game.Networking.Packet;
@@ -12,7 +14,8 @@ public interface IPlayerAction : INetSerializable {
     enum Type {
         MoveCommand,
         CastCommand,
-        SelectPerk
+        SelectPerk,
+        SelectSpells
     }
 
     Type GetSerializerType();
@@ -81,5 +84,22 @@ class SelectPerk : IPlayerAction {
     public void Deserialize(NetDataReader reader) {
         PlayerId = reader.GetInt();
         PerkId = reader.GetInt();
+    }
+}
+
+class SelectSpells : IPlayerAction {
+    public int PlayerId { get; set; }
+    public int[] SpellIds { get; set; } = null!;
+
+    public IPlayerAction.Type GetSerializerType() => IPlayerAction.Type.SelectSpells;
+
+    public void Serialize(NetDataWriter writer) {
+        writer.Put(PlayerId);
+        writer.PutArray(SpellIds);
+    }
+
+    public void Deserialize(NetDataReader reader) {
+        PlayerId = reader.GetInt();
+        SpellIds = reader.GetIntArray();
     }
 }

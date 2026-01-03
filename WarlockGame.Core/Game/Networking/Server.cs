@@ -39,6 +39,7 @@ class Server : INetEventListener {
         _packetProcessor.SubscribeNetSerializable(OnGameCommandReceived, () => new MoveAction());
         _packetProcessor.SubscribeNetSerializable(OnGameCommandReceived, () => new CastAction());
         _packetProcessor.SubscribeNetSerializable(OnGameCommandReceived, () => new SelectPerk());
+        _packetProcessor.SubscribeNetSerializable(OnGameCommandReceived, () => new SelectSpells());
         _packetProcessor.SubscribeReusable<ClientTickProcessed, NetPeer>(OnClientTickProcessed);
         _packetProcessor.SubscribeNetSerializable<JoinGameRequest, NetPeer>(OnJoinGameRequest);
     }

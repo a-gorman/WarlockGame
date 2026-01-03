@@ -99,6 +99,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         Simulation.Initialize();
         
         UIManager.AddComponent(new Scoreboard(Simulation.GameRules));
+        UIManager.AddComponent(new SpellPicker(3));
     }
 
     protected override void Initialize()

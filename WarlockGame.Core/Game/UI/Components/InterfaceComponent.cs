@@ -31,7 +31,8 @@ class InterfaceComponent {
     /// The bounding box for determining if the component was clicked.
     /// Higher layers obscure clicks from lower layers.
     /// </summary>
-    public Rectangle BoundingBox { get;
+    public Rectangle BoundingBox { 
+        get;
         set {
             if (field != value) {
                 IsBoundsDirty = true; 
@@ -40,8 +41,8 @@ class InterfaceComponent {
         } 
     }
 
-    protected bool IsBoundsDirty { get; set; } = true;
-    protected bool IsVisibilityDirty { get; set; } = true;
+    protected bool IsBoundsDirty { get; private set; } = true;
+    protected bool IsVisibilityDirty { get; private set; } = true;
 
     protected bool WasMadeVisible => IsVisibilityDirty && Visible;
     
