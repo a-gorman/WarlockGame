@@ -206,6 +206,7 @@ namespace WarlockGame.Core.Game
 			_projectiles.Clear();
 			_addedEntities.Clear();
 			_warlocks.Clear();
+			_livingWarlocks.Clear();
 		}
 
 		private void OnWarlockDestroyed(Warlock warlock) {

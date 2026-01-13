@@ -33,4 +33,9 @@
   <ItemGroup>
     <ProjectReference Include="..\WarlockGame.Core\WarlockGame.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="..\WarlockGame.Core\Content\bin\Windows\WarlockGame\Art\">
+      <Link>Content\Art</Link>
+    </Folder>
+  </ItemGroup>
 </Project>

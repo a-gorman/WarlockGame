@@ -51,8 +51,6 @@ class SpellManager {
             return;
         }
 
-        Logger.Error($"Spell added {forceId} {definitionId}", Logger.LogType.Simulation);
-        
         WarlockSpell spell = _spellFactory.CreateWarlockSpell(definition);
         var spellbook = PlayerSpells.GetOrAdd(forceId, _ => new Dictionary<int, WarlockSpell>());
         spellbook.Add(spell.Definition.Id, spell);
