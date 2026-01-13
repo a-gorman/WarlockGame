@@ -55,7 +55,13 @@ class PerkManager {
         ReselectPerksForForce(forceId);
     }
 
-    public void Reset() {
+    public void Clear() {
+        foreach (var perk in _perks.Values) {
+            perk.Clear(_sim);
+        }
+        
+        _forcePerks.Clear();
+        
         foreach (var force in _sim.Forces) {
             ReselectPerksForForce(force.Id);
         }

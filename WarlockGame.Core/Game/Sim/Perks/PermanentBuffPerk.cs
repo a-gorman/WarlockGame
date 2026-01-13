@@ -6,7 +6,7 @@ using WarlockGame.Core.Game.Sim.Buffs;
 namespace WarlockGame.Core.Game.Sim.Perks;
 
 abstract class PermanentBuffPerk : Perk {
-    public PermanentBuffPerk(int id, string name, string description, Texture2D texture) 
+    protected PermanentBuffPerk(int id, string name, string description, Texture2D texture) 
         : base(id, name, description, texture) { }
 
     private readonly Dictionary<int, int> _playerBuffIds = new();
@@ -41,5 +41,9 @@ abstract class PermanentBuffPerk : Perk {
         else {
             Logger.Warning($"Could not remove buff because warlock does not exist, or buff does not exist. Type: {Id}. ForceId: {forceId}", Logger.LogType.Simulation);
         }
+    }
+
+    public override void Clear(Simulation _) {
+        _playerBuffIds.Clear();
     }
 }

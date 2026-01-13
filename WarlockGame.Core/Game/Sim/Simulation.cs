@@ -81,16 +81,16 @@ class Simulation {
     public void Restart(int seed) {
         ClearGameState();
         Random = new Random(seed);
-        Forces = PlayerManager.Players.Select(x => new Force {Id = x.Id }).ToArray();
+        Forces = PlayerManager.Players.Select(x => new Force { Id = x.Id }).ToArray();
         GameRules.Reset();
-        PerkManager.Reset();
     }
 
     private void ClearGameState() {
         Tick = 0;
+        PerkManager.Clear();
+        SpellManager.Clear();
         EntityManager.Clear();
         EffectManager.Clear();
-        SpellManager.Clear();
     }
 
     public int CalculateChecksum() {
