@@ -30,6 +30,7 @@ class TextCommandHandler {
         RegisterTextCommand("logs", ["log"], Logs, "Args: on | off | debug | info | warn | error");
         RegisterTextCommand("ip", 
             _ => MessageDisplay.Display($"IP Address is: {NetUtils.GetLocalIpList(LocalAddrType.IPv4).JoinToString()}"));
+        RegisterTextCommand("version", ["v"], _ => DisplayVersion(), "Display version information");
         #if DEBUG
         RegisterTextCommand("kill", args => {
             if (int.TryParse(args.FirstOrDefault(""), out var forceId))
@@ -109,6 +110,10 @@ class TextCommandHandler {
             });
     }
 
+    private static void DisplayVersion() {
+        MessageDisplay.Display(System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "");
+    }
+    
     private static void Help() {
         var sb = new StringBuilder("Available commands:");
 
