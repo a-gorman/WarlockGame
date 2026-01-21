@@ -5,7 +5,7 @@ in this repository, and are instead kept in a separate, private repository. Befo
 you will need to acquire those assets or provide your own replacements. Ask if you believe you should be allowed to
 access these assets.
 
-To build, install the latest .net SDK, then `run dotnet tool install -g dotnet-mgcb` to install the monogame content
+To build, install the latest .net SDK, then `run dotnet tool install dotnet-mgcb` to install the monogame content
 builder (MGCB). Run MGCB to compile the assets into .xnb files.
 
 To run, use `dotnet run` in subfolder corresponding to your operating system (ex. WarlockGame.WindowsDX for windows users)

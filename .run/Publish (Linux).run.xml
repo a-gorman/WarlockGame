@@ -1,0 +1,15 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Publish (Linux)" type="DotNetFolderPublish" factoryName="Publish to folder">
+    <riderPublish configuration="Release" delete_existing_files="true" platform="Any CPU" produce_single_file="true" self_contained="true" target_folder="$USER_HOME$/Desktop/WarlockGame_linux" target_framework="net8.0" uuid_high="-5688787583820740829" uuid_low="-5361022912964527584">
+      <runtimes>
+        <item value="linux-x64" />
+        <item value="linux-musl-x64" />
+        <item value="linux-arm" />
+        <item value="linux-arm64" />
+        <item value="osx-x64" />
+        <item value="osx-arm64" />
+      </runtimes>
+    </riderPublish>
+    <method v="2" />
+  </configuration>
+</component>
