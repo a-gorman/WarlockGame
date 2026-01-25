@@ -9,8 +9,9 @@ class LocationAreaOfEffect: ILocationSpellComponent {
     public required IReadOnlyCollection<IEntityComponent> Components { get; init; }
 
     public void Invoke(SpellContext context, Vector2 invokeLocation) {
+        var targetsHit = Shape.GatherTargets(context, invokeLocation);
         foreach (var effect in Components) {
-            effect.Invoke(context, Shape.GatherTargets(context, invokeLocation));
+            effect.Invoke(context, targetsHit);
         }
     }
 }
@@ -21,8 +22,9 @@ class DirectionalAreaOfEffect: IDirectionalSpellComponent {
     public required IReadOnlyCollection<IEntityComponent> Effects { get; init; }
 
     public void Invoke(SpellContext context, Vector2 castLocation, Vector2 invokeDirection) {
+        var entitiesHit = Shape.GatherTargets(context, castLocation, invokeDirection);
         foreach (var effect in Effects) {
-            effect.Invoke(context, Shape.GatherTargets(context, castLocation, invokeDirection));
+            effect.Invoke(context, entitiesHit);
         }
     }
 }
@@ -33,8 +35,9 @@ class SelfAreaOfEffect: ISelfSpellComponent {
     public required IReadOnlyCollection<IEntityComponent> Components { get; init; }
 
     public void Invoke(SpellContext context) {
+        var entitiesHit = Shape.GatherTargets(context, context.Caster.Position);
         foreach (var effect in Components) {
-            effect.Invoke(context, Shape.GatherTargets(context, context.Caster.Position));
+            effect.Invoke(context, entitiesHit);
         }
     }
 }
