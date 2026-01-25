@@ -60,7 +60,7 @@ class Simulation {
     public TickResult Update(IEnumerable<IPlayerAction> inputs) {
         Tick++;
 
-        _damagingGround?.Shape = _damagingGround.Shape with { Radius = _damagingGround.Shape.Radius - 0.1f };
+        _damagingGround?.Shape = _damagingGround.Shape with { Radius = Math.Max(_damagingGround.Shape.Radius - 0.1f, 300) };
 
         foreach (var command in inputs) {
             ProcessPlayerAction(command);
