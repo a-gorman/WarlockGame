@@ -38,8 +38,8 @@ class SpellFactory {
                     new LocationAreaOfEffect {
                         Shape = new CircleTarget { Radius = 30 },
                         Components = [
-                            new DamageComponent { Damage = 10 },
-                            new PushComponent { Force = 100 }
+                            new DamageComponent { Damage = 20 },
+                            new PushComponent { Force = 150 }
                         ]
                     }
                 ]
@@ -148,8 +148,10 @@ class SpellFactory {
             name: "Soul Shatter",
             cooldownTime: SimTime.OfSeconds(6),
             spellIcon: Art.SoulShatterIcon,
-            effects: new ProjectileComponent(Sprite.FromGridSpriteSheet(Art.PowerBall, 4, 4, SimTime.OfTicks(10)),
-            [
+            effects: new ProjectileComponent(
+                sprite: Sprite.FromGridSpriteSheet(Art.PowerBall, 4, 4, SimTime.OfTicks(10)),
+                speed: 16,
+                effects: [
                 new LocationAreaOfEffect {
                     Shape = new CircleTarget { Radius = 20 },
                     Components = [
@@ -172,8 +174,8 @@ class SpellFactory {
                                                 new Shadow(targetInfo.Entity.Id, sim),
                                                 new Yoyo(sim,
                                                     -targetInfo.OriginTargetDisplacement.WithLength(160).Rotated(float.Pi / 6),
-                                                    SimTime.OfSeconds(0.5f),
-                                                    SimTime.OfSeconds(3)));
+                                                    outwardsTime: SimTime.OfSeconds(0.5f),
+                                                    inwardsTime: SimTime.OfSeconds(3)));
                                             return image;
                                         }
                                     },
@@ -207,20 +209,21 @@ class SpellFactory {
         );
     }
 
-    public SpellDefinition RefractionShield() {
+    public SpellDefinition DeflectionShield() {
         return new SpellDefinition(
             id: 7,
-            name: "Refraction Shield",
-            cooldownTime: SimTime.OfSeconds(16),
+            name: "Deflection Shield",
+            cooldownTime: SimTime.OfSeconds(1),
             spellIcon: Art.RefractionShieldIcon,
-            effects: new SelfCastPositionComponent {
+            effects: new DirectionalComponent {
                 Components = [
                     new EntityComponent {
-                        EntityConstructor = (spellContext, location) => {
+                        EntityConstructor = (spellContext, direction) => {
                             var caster = spellContext.Caster;
-                            var wallLoc = location + new Vector2(80, 40).Rotated(caster.Orientation);
+                            var angle = Extensions.ToAngle(direction);
+                            var wallLoc = caster.Position + new Vector2(80, 40).Rotated(angle);
 
-                            return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, caster.Orientation + float.Pi / 6) {
+                            return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, angle + float.Pi / 6) {
                                     PlayerId = caster.PlayerId
                                 }
                                 .Also(x => x.AddBehaviors(
@@ -230,17 +233,18 @@ class SpellFactory {
                                     new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies),
                                     new DeflectProjectiles {
                                         DeflectionFunc = (e, p) =>
-                                            DeflectProjectiles.OrientedRectangleDiffraction(e, p, 0.4f)
+                                            DeflectProjectiles.OrientedRectangleReflection(e, p, 0.4f)
                                     }
                                 ));
                         }
                     },
                     new EntityComponent {
-                        EntityConstructor = (spellContext, location) => {
+                        EntityConstructor = (spellContext, direction) => {
                             var caster = spellContext.Caster;
-                            var wallLoc = location + new Vector2(80, -40).Rotated(caster.Orientation);
+                            var angle = Extensions.ToAngle(direction);
+                            var wallLoc = caster.Position + new Vector2(80, -40).Rotated(angle);
 
-                            return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, caster.Orientation - float.Pi / 6) {
+                            return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, angle - float.Pi / 6) {
                                     PlayerId = caster.PlayerId
                                 }
                                 .Also(x => x.AddBehaviors(
@@ -250,7 +254,7 @@ class SpellFactory {
                                     new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies),
                                     new DeflectProjectiles {
                                         DeflectionFunc = (e, p) =>
-                                            DeflectProjectiles.OrientedRectangleDiffraction(e, p, 0.4f)
+                                            DeflectProjectiles.OrientedRectangleReflection(e, p, 0.4f)
                                     }
                                 ));
                         }
@@ -264,7 +268,7 @@ class SpellFactory {
         return new SpellDefinition(
             id: 8,
             name: "Homing",
-            cooldownTime: SimTime.OfSeconds(6),
+            cooldownTime: SimTime.OfSeconds(8),
             spellIcon: Art.HomingIcon,
             effects: new ProjectileComponent(
                 sprite: Sprite.FromGridSpriteSheet(Art.EnergySpark, 4, 4, SimTime.OfTicks(10), scale: 2f, rotates: false),

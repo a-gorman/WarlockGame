@@ -27,7 +27,7 @@ class SpellManager {
             _spellFactory.Burst(),
             _spellFactory.WindShield(),
             _spellFactory.SoulShatter(),
-            _spellFactory.RefractionShield(),
+            _spellFactory.DeflectionShield(),
             _spellFactory.Homing(),
             _spellFactory.Boomerang(),
             _spellFactory.FlameStrike(),
