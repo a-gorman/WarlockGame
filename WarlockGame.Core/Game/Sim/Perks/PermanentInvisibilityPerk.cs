@@ -4,8 +4,8 @@ using WarlockGame.Core.Game.Sim.Buffs;
 namespace WarlockGame.Core.Game.Sim.Perks;
 
 class PermanentInvisibilityPerk : PermanentBuffPerk { 
-    private const float FadeInDistanceMin = 1000;
-    private const float FadeInDistanceMax = 1300;
+    private const float FadeInDistanceMin = 300;
+    private const float FadeInDistanceMax = 500;
     private readonly SimTime _visibilityFadeTime = SimTime.OfSeconds(2.5f);
 
     public PermanentInvisibilityPerk()
