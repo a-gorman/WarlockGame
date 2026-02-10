@@ -4,7 +4,7 @@ using WarlockGame.Core.Game.Sim.Buffs;
 namespace WarlockGame.Core.Game.Sim.Perks;
 
 class ReducedAllDamagePerk : PermanentBuffPerk {
-    private const float Factor = 0.70f;
+    private const float Factor = 0.60f;
 
     protected override Buff CreateBuff() {
         return new DefenseBuff(duration: null) {
