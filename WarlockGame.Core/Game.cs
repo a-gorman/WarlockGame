@@ -62,7 +62,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         _bloom.Visible = false;
 
         Window.Position = Vector2.Zero.ToPoint();
-        Window.IsBorderless = true;
+        Window.IsBorderless = Configuration.BorderlessWindow;
         Window.Title = Configuration.WindowName;
     }
 

@@ -23,7 +23,10 @@ sealed class MainView : InterfaceComponent {
     private const int HpBarWidth = 80;
     private const int HpBarHeight = 3;
 
-    private readonly int _scrollBoundaryWidth;
+    private readonly int _scrollBoundaryWidthTop;
+    private readonly int _scrollBoundaryWidthBottom;
+    private readonly int _scrollBoundaryWidthLeft;
+    private readonly int _scrollBoundaryWidthRight;
     private readonly float _sideScrollSpeed;
     private readonly float _keyScrollSpeed;
     private readonly float _mouseLookSensitivity;
@@ -36,7 +39,10 @@ sealed class MainView : InterfaceComponent {
     public MainView(Simulation sim) {
         _sim = sim;
         Layer = -1;
-        _scrollBoundaryWidth = Configuration.EdgeScrollWidth;
+        _scrollBoundaryWidthTop = Configuration.EdgeScrollWidthTop;
+        _scrollBoundaryWidthBottom = Configuration.EdgeScrollWidthBottom;
+        _scrollBoundaryWidthLeft = Configuration.EdgeScrollWidthLeft;
+        _scrollBoundaryWidthRight = Configuration.EdgeScrollWidthRight;
         _sideScrollSpeed = Configuration.EdgeScrollSpeed;
         _keyScrollSpeed = Configuration.KeyScrollSpeed;
         _mouseLookSensitivity = Configuration.MouseLookSensitivity;
@@ -125,19 +131,19 @@ sealed class MainView : InterfaceComponent {
             _previousMousePos = args.Global.MousePosition;
         } else {
             _previousMousePos = null;
-            if (args.Global.MousePosition.X < _scrollBoundaryWidth) {
+            if (args.Global.MousePosition.X < _scrollBoundaryWidthLeft) {
                 scrollAmount += new Vector2(-_sideScrollSpeed, 0);
             }
 
-            if (args.Global.MousePosition.X > BoundingBox.Width - _scrollBoundaryWidth) {
+            if (args.Global.MousePosition.X > BoundingBox.Width - _scrollBoundaryWidthRight) {
                 scrollAmount += new Vector2(_sideScrollSpeed, 0);
             }
 
-            if (args.Global.MousePosition.Y < _scrollBoundaryWidth) {
+            if (args.Global.MousePosition.Y < _scrollBoundaryWidthTop) {
                 scrollAmount += new Vector2(0, -_sideScrollSpeed);
             }
 
-            if (args.Global.MousePosition.Y > BoundingBox.Height - _scrollBoundaryWidth) {
+            if (args.Global.MousePosition.Y > BoundingBox.Height - _scrollBoundaryWidthBottom) {
                 scrollAmount += new Vector2(0, _sideScrollSpeed);
             }
 

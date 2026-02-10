@@ -10,41 +10,49 @@ using Color = Microsoft.Xna.Framework.Color;
 namespace WarlockGame.Core.Game;
 
 static class Configuration {
+    // Window settings
     public static string WindowName { get; set; } = null!;
-    public static bool Server { get; set; }
-    public static bool Client { get; set; }
-    public static string JoinIp { get; set; } = null!;
     public static int ScreenWidth { get; set; }
     public static int ScreenHeight { get; set; }
-    public static Dictionary<Keys, InputAction> KeyMappings { get; set; } = null!;
-    public static bool RestartOnJoin { get; set; }
+    public static bool BorderlessWindow { get; set; }
     
     // Player Settings
     public static string? PlayerName { get; set; }
     public static Color? PreferredColor { get; set; }
-    public static Logger.Level LogDisplayLevel { get; set; }
-    public static Logger.Level LogDedupeLevel { get; set; }
+    
+    // Interface settings
+    public static Dictionary<Keys, InputAction> KeyMappings { get; set; } = null!;
     public static bool LogDisplayVisible { get; set; }
-    public static int EdgeScrollWidth { get; set; }
+    public static int EdgeScrollWidthTop { get; set; }
+    public static int EdgeScrollWidthBottom { get; set; }
+    public static int EdgeScrollWidthLeft { get; set; }
+    public static int EdgeScrollWidthRight { get; set; }
     public static float EdgeScrollSpeed { get; set; }
     public static float KeyScrollSpeed { get; set; }
     public static float MouseLookSensitivity { get; set; }
     public static int MapEdgeScrollLimitBoundary { get; set; }
     
+    // Debug settings
+    public static bool Server { get; set; }
+    public static bool Client { get; set; }
+    public static string JoinIp { get; set; } = null!;
+    public static bool RestartOnJoin { get; set; }
+    public static Logger.Level LogDisplayLevel { get; set; }
+    public static Logger.Level LogDedupeLevel { get; set; }
     public static bool DebugBoundingBoxVisualize { get; set; }
 
     public static void ParseArgs(IConfigurationRoot args) {
         WindowName = args["windowName"] ?? "WarlockGame";
-        Client = args["autoStartClient"]?.Let(bool.Parse) ?? false;
-        Server = args["autoStartServer"]?.Let(bool.Parse) ?? false;
-        RestartOnJoin = args["autoRestartOnJoin"]?.Let(bool.Parse) ?? false;
-        JoinIp = args["joinIp"] ?? "localhost";
         ScreenHeight = args["screenHeight"]?.Let(int.Parse) ?? 1080;
         ScreenWidth = args["screenWidth"]?.Let(int.Parse) ?? 1920;
+        BorderlessWindow = args["borderlessWindow"]?.Let(bool.Parse) ?? true;
         PlayerName = args["player:name"];
         PreferredColor = args["player:color"]?.Let(s => System.Drawing.Color.FromName(s).Let(c => new Color(c.R, c.G, c.B, c.A)));
         MapEdgeScrollLimitBoundary = args["interface:mapEdgeScrollLimitBoundary"]?.Let(int.Parse) ?? 0;
-        EdgeScrollWidth = args["interface:edgeScrollWidth"]?.Let(int.Parse) ?? 20;
+        EdgeScrollWidthTop = args["interface:edgeScrollWidthTop"]?.Let(int.Parse) ?? 20;
+        EdgeScrollWidthBottom = args["interface:edgeScrollWidthBottom"]?.Let(int.Parse) ?? 20;
+        EdgeScrollWidthLeft = args["interface:edgeScrollWidthLeft"]?.Let(int.Parse) ?? 20;
+        EdgeScrollWidthRight = args["interface:edgeScrollWidthRight"]?.Let(int.Parse) ?? 20;
         EdgeScrollSpeed = args["interface:edgeScrollSpeed"]?.Let(int.Parse) ?? 7;
         KeyScrollSpeed = args["interface:keyScrollSpeed"]?.Let(int.Parse) ?? 6;
         MouseLookSensitivity = args["interface:middleMouseLookSensitivity"]?.Let(int.Parse) ?? 1;
@@ -72,6 +80,10 @@ static class Configuration {
         LogDisplayVisible = args["logDisplayVisible"]?.Let(bool.Parse) ?? true;
         LogDedupeLevel = args["logDedupeLevel"]?.Let(x => Logger.Level.ParseOrNull(x, true)) ?? Logger.Level.ERROR;
         
+        Client = args["autoStartClient"]?.Let(bool.Parse) ?? false;
+        Server = args["autoStartServer"]?.Let(bool.Parse) ?? false;
+        RestartOnJoin = args["autoRestartOnJoin"]?.Let(bool.Parse) ?? false;
+        JoinIp = args["joinIp"] ?? "localhost";
         DebugBoundingBoxVisualize = args["debug:boundingBoxVisualize"]?.Let(bool.Parse) ?? false;
     }
 
