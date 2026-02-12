@@ -35,7 +35,7 @@ class PerkManager {
         AddPerk(new PermanentInvisibilityPerk());
         AddPerk(new PermanentRegenerationPerk());
         AddPerk(new PermanentDamageBoostPerk());
-        AddPerk(new SpeedOnDamagedPerk());
+        AddPerk(new PowerFromDamagePerk());
     }
 
     public List<Perk>? GetAvailablePerks(int forceId) {

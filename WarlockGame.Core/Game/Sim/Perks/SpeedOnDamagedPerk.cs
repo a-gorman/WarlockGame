@@ -1,15 +1,16 @@
+using System.Linq;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Sim.Buffs;
 using WarlockGame.Core.Game.Sim.Entities;
 
 namespace WarlockGame.Core.Game.Sim.Perks;
 
-class SpeedOnDamagedPerk : Perk {
-    public SpeedOnDamagedPerk()
+class PowerFromDamagePerk : Perk {
+    public PowerFromDamagePerk()
         : base(
             id: 4,
-            name: "Damage Boost",
-            description: "Permanently grants you invisibility from distant enemies",
+            name: "Power from damage",
+            description: "Damage gives you a temporary power boost",
             texture: Art.DefianceIcon) { }
 
     public override void OnAdded(int forceId, Simulation sim) {
@@ -37,14 +38,22 @@ class SpeedOnDamagedPerk : Perk {
     }
 
     private class SpeedBoost : Buff {
-        public SpeedBoost(SimTime? duration) : base(BuffType.SpeedBoost, duration) { }
-
+        public SpeedBoost(SimTime? duration) : base(BuffType.PowerFromDamage, duration) {
+            Stacking = StackingType.Refreshes;
+        }
+        
         public override void OnAdd(Warlock target) {
             target.Speed *= 4;
+            target.GenericDefense *= 0.5f;
+            target.BoundsDefense *= 2f;
+            target.DamageMultiplier *= 2f;
         }
 
         public override void OnRemove(Warlock target) {
             target.Speed /= 4;
+            target.GenericDefense /= 0.5f;
+            target.BoundsDefense /= 2f;
+            target.DamageMultiplier /= 2f;
         }
     }
 }

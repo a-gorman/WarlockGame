@@ -9,7 +9,8 @@ class Buff {
     
     public bool ClearedOnDeath { get; set; } = true;
     public bool IsExpired { get; set; }
-
+    public StackingType Stacking { get; set; } = StackingType.Refreshes;
+    
     protected Buff(BuffType type, SimTime? duration) {
         Type = type;
         Timer = duration?.ToTimer();
@@ -32,7 +33,13 @@ class Buff {
         DamageOverTime,
         Regeneration,
         DamageBoost,
-        SpeedBoost,
+        PowerFromDamage,
         Defense
+    }
+
+    internal enum StackingType {
+        Invalid = 0,
+        Refreshes = 1,
+        Stacks = 2
     }
 }

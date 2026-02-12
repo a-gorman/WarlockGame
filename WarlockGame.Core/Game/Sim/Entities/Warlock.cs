@@ -174,9 +174,17 @@ class Warlock : Entity {
     }
 
     public int AddBuff(Buff buff) {
-        buff.Id = _nextBuffId++;
-        Buffs.Add(buff);
-        buff.OnAdd(this);
+        var existingBuff = Buffs.FirstOrDefault(x => x.Type == buff.Type);
+        if (existingBuff == null || buff.Stacking == Buff.StackingType.Stacks) {
+            buff.Id = _nextBuffId++;
+            Buffs.Add(buff);
+            buff.OnAdd(this);
+        } else if (buff.Stacking == Buff.StackingType.Refreshes && existingBuff.Timer != null) {
+            Logger.Debug($"Refreshing {existingBuff.Type} buff {existingBuff.Id}", Logger.LogType.Simulation);
+            existingBuff.Timer = buff.Timer?.Let(x =>
+                GameTimer.FromTicks(Math.Max(x.TicksRemaining, existingBuff.Timer!.Value.TicksRemaining)));
+        }
+
         return buff.Id;
     }
         
