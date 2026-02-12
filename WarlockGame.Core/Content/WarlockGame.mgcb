@@ -109,6 +109,18 @@
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Icons/Air_07_Call_Lightning.png;Art/Icons/Air_07_Call_Lightning.png
 
+#begin ../../../../GameContent/Art/Icons/Air_07_Call_Lightning.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/Air_07_Call_Lightning.png;Art/Icons/Air_07_Call_Lightning.png
+
 #begin ../../../../GameContent/Art/Icons/Big_Explosion.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -120,6 +132,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Icons/Big_Explosion.png;Art/Icons/Big_Explosion.png
+
+#begin ../../../../GameContent/Art/Icons/Big_Explosion.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/Big_Explosion.png;Art/Icons/Big_Explosion.png
+
+#begin ../../../../GameContent/Art/Icons/Defiance.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/Defiance.png;Art/Icons/Defiance.png
 
 #begin ../../../../GameContent/Art/Icons/Defiance.png
 /importer:TextureImporter
@@ -145,6 +181,18 @@
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Icons/Fire_03_Meteor.png;Art/Icons/Fire_03_Meteor.png
 
+#begin ../../../../GameContent/Art/Icons/Fire_03_Meteor.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/Fire_03_Meteor.png;Art/Icons/Fire_03_Meteor.png
+
 #begin ../../../../GameContent/Art/Icons/General_02_Heal_T.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -156,6 +204,42 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Icons/General_02_Heal_T.png;Art/Icons/General_02_Heal_T.png
+
+#begin ../../../../GameContent/Art/Icons/General_02_Heal_T.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/General_02_Heal_T.png;Art/Icons/General_02_Heal_T.png
+
+#begin ../../../../GameContent/Art/Icons/General_14_Teleport.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/General_14_Teleport.png;Art/Icons/General_14_Teleport.png
+
+#begin ../../../../GameContent/Art/Icons/General_15_Blur.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/General_15_Blur.png;Art/Icons/General_15_Blur.png
 
 #begin ../../../../GameContent/Art/Icons/General_15_Blur.png
 /importer:TextureImporter
@@ -181,6 +265,18 @@
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Icons/Invis.png;Art/Icons/Invis.png
 
+#begin ../../../../GameContent/Art/Icons/Invis.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/Invis.png;Art/Icons/Invis.png
+
 #begin ../../../../GameContent/Art/Icons/Light_05_Bouncing_Light.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -192,6 +288,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Icons/Light_05_Bouncing_Light.png;Art/Icons/Light_05_Bouncing_Light.png
+
+#begin ../../../../GameContent/Art/Icons/Light_05_Bouncing_Light.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/Light_05_Bouncing_Light.png;Art/Icons/Light_05_Bouncing_Light.png
+
+#begin ../../../../GameContent/Art/Icons/Light_06_Missile_Large.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/Light_06_Missile_Large.png;Art/Icons/Light_06_Missile_Large.png
 
 #begin ../../../../GameContent/Art/Icons/Light_06_Missile_Large.png
 /importer:TextureImporter
@@ -217,6 +337,18 @@
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Icons/Light_07_Wave_Of_Light.png;Art/Icons/Light_07_Wave_Of_Light.png
 
+#begin ../../../../GameContent/Art/Icons/Light_07_Wave_Of_Light.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/Light_07_Wave_Of_Light.png;Art/Icons/Light_07_Wave_Of_Light.png
+
 #begin ../../../../GameContent/Art/Icons/Light_08_Divine_Body.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -228,6 +360,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Icons/Light_08_Divine_Body.png;Art/Icons/Light_08_Divine_Body.png
+
+#begin ../../../../GameContent/Art/Icons/Light_08_Divine_Body.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/Light_08_Divine_Body.png;Art/Icons/Light_08_Divine_Body.png
+
+#begin ../../../../GameContent/Art/Icons/Nature_01_Missile.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/Nature_01_Missile.png;Art/Icons/Nature_01_Missile.png
 
 #begin ../../../../GameContent/Art/Icons/Nature_01_Missile.png
 /importer:TextureImporter
@@ -253,6 +409,18 @@
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Icons/paladin_skill_24.png;Art/Icons/paladin_skill_24.png
 
+#begin ../../../../GameContent/Art/Icons/paladin_skill_24.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/paladin_skill_24.png;Art/Icons/paladin_skill_24.png
+
 #begin ../../../../GameContent/Art/Icons/paladin_skill_34.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -264,6 +432,42 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Icons/paladin_skill_34.png;Art/Icons/paladin_skill_34.png
+
+#begin ../../../../GameContent/Art/Icons/paladin_skill_34.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/paladin_skill_34.png;Art/Icons/paladin_skill_34.png
+
+#begin ../../../../GameContent/Art/Icons/priest_skill_33.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/priest_skill_33.png;Art/Icons/priest_skill_33.png
+
+#begin ../../../../GameContent/Art/Icons/pyromancer_11.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/pyromancer_11.png;Art/Icons/pyromancer_11.png
 
 #begin ../../../../GameContent/Art/Icons/pyromancer_11.png
 /importer:TextureImporter
@@ -289,6 +493,30 @@
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Icons/rpg_skill_42.png;Art/Icons/rpg_skill_42.png
 
+#begin ../../../../GameContent/Art/Icons/rpg_skill_42.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/rpg_skill_42.png;Art/Icons/rpg_skill_42.png
+
+#begin ../../../../GameContent/Art/Icons/rpg_skill_71.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/rpg_skill_71.png;Art/Icons/rpg_skill_71.png
+
 #begin ../../../../GameContent/Art/Icons/rpg_skill_71.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -313,6 +541,18 @@
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Icons/warlock_skill_43.png;Art/Icons/warlock_skill_43.png
 
+#begin ../../../../GameContent/Art/Icons/warlock_skill_43.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/warlock_skill_43.png;Art/Icons/warlock_skill_43.png
+
 #begin ../../../../GameContent/Art/Icons/Water_08_Ball_Of_Water.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -324,6 +564,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Icons/Water_08_Ball_Of_Water.png;Art/Icons/Water_08_Ball_Of_Water.png
+
+#begin ../../../../GameContent/Art/Icons/Water_08_Ball_Of_Water.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/Water_08_Ball_Of_Water.png;Art/Icons/Water_08_Ball_Of_Water.png
+
+#begin ../../../../GameContent/Art/Icons/Water_10_Aura_Of_Cold.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Icons/Water_10_Aura_Of_Cold.png;Art/Icons/Water_10_Aura_Of_Cold.png
 
 #begin ../../../../GameContent/Art/Icons/Water_10_Aura_Of_Cold.png
 /importer:TextureImporter

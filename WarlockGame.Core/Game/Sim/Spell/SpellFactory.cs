@@ -412,4 +412,14 @@ class SpellFactory {
             effects: projectileEffects
         );
     }
+    
+    public SpellDefinition Blink() {
+        return new SpellDefinition(
+            id: 12,
+            name: "Teleport",
+            cooldownTime: SimTime.OfSeconds(20),
+            spellIcon: Art.TeleportIcon,
+            effects: new TeleportComponent()
+        );
+    }
 }

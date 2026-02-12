@@ -45,6 +45,7 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D ReducedBoundaryDamageIcon { get; set; } = null!;
 		public static Texture2D ReducedAllDamageIcon { get; set; } = null!;
 		public static Texture2D FireSprayIcon { get; set; } = null!;
+		public static Texture2D TeleportIcon { get; set; } = null!;
 
 		public static void Load(ContentManager content)
 		{
@@ -81,18 +82,19 @@ namespace WarlockGame.Core.Game.Graphics
 			BurstIcon = LoadIcon(content, "warlock_skill_43");
 			WindWallIcon = LoadIcon(content, "Water_10_Aura_Of_Cold");
 			SoulShatterIcon = LoadIcon(content, "General_15_Blur");
-			RefractionShieldIcon = LoadIcon(content, "Light_05_Bouncing_Light");
+			RefractionShieldIcon = LoadIcon(content, "paladin_skill_34");
 			HomingIcon = LoadIcon(content, "Water_08_Ball_Of_Water");
 			BoomerangIcon = LoadIcon(content, "paladin_skill_24");
 			LightStrikeIcon = LoadIcon(content, "rpg_skill_71");
 			FireSprayIcon = LoadIcon(content, "pyromancer_11");
+			TeleportIcon = LoadIcon(content, "General_14_Teleport");
 			
 			HealIcon = LoadIcon(content, "General_02_Heal_T");
 			InvisibilityIcon = LoadIcon(content, "Invis");
 			DefianceIcon = LoadIcon(content, "Big_Explosion");
 			BigExplosionIcon = LoadIcon(content, "Defiance");
 			ReducedBoundaryDamageIcon = LoadIcon(content, "rpg_skill_42");
-			ReducedAllDamageIcon = LoadIcon(content, "paladin_skill_34");
+			ReducedAllDamageIcon = LoadIcon(content, "priest_skill_33");
 		}
 
 		private static Texture2D LoadIcon(ContentManager content, string iconName) {
