@@ -16,7 +16,7 @@ class GameRules {
 
     public readonly int[] StartingSpells = [1, 4, 9];
     
-    public readonly int[] AvailableSpells = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    public readonly int[] AvailableSpells = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11];
     
     // public PerkType[] StartingPerks = [
     //     PerkType.Invisibility,

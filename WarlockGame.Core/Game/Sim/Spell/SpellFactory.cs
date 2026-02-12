@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Graphics;
@@ -34,7 +35,7 @@ class SpellFactory {
             spellIcon: Art.FireballIcon,
             effects: new ProjectileComponent(
                 sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
-                [
+                effects: [
                     new LocationAreaOfEffect {
                         Shape = new CircleTarget { Radius = 30 },
                         Components = [
@@ -344,10 +345,10 @@ class SpellFactory {
             id: 10,
             name: "Light strike",
             cooldownTime: SimTime.OfSeconds(20),
-            spellIcon: Art.LightStrike,
+            spellIcon: Art.LightStrikeIcon,
             new EffectComponent(location =>
                 new CircleTimingIndicator(new CircleF(location, radius), SimTime.OfSeconds(delaySeconds))),
-            new DelayedSpellComponent(
+            new DelayedLocationComponent(
                 SimTime.OfSeconds(delaySeconds),
                 new LocationAreaOfEffect {
                     Shape = new CircleTarget { Radius = radius },
@@ -357,7 +358,7 @@ class SpellFactory {
                     ]
                 }
             ),
-            new DelayedSpellComponent(
+            new DelayedLocationComponent(
                 SimTime.OfSeconds(delaySeconds - animationDurationSeconds / 4),
                 new EffectComponent(location => {
                     var flameStrikeSprite = Sprite.FromGridSpriteSheet(
@@ -374,5 +375,41 @@ class SpellFactory {
                 })
             )
         ) { CastRange = 700 };
+    }
+    
+    public SpellDefinition FireSpray() {
+        var projectiles = 9;
+        var projectileEffects = new IDirectionalSpellComponent[projectiles];
+        var spreadAngle = Single.Pi / 20;
+        for (int i = 0; i < projectiles; i++) {
+            projectileEffects[i] = new DelayedDirectionalComponent(
+                SimTime.OfMillis(50*i),
+                direction: direction => direction.Rotated(_simulation.Random.NextSingle(-spreadAngle, spreadAngle)),
+                components: [new ProjectileComponent(
+                    sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfMillis(100), scale: .12f),
+                    speed: 10,
+                    behaviors: () => [
+                        new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies)
+                    ],
+                    effects: [
+                        new LocationAreaOfEffect {
+                            Shape = new CircleTarget { Radius = 20 },
+                            Components = [
+                                new DamageComponent { Damage = 6 },
+                                new PushComponent { Force = 10 }
+                            ]
+                        }
+                    ]
+                ),
+            ]);
+        }
+        
+        return new SpellDefinition(
+            id: 11,
+            name: "Fire Spray",
+            cooldownTime: SimTime.OfSeconds(11),
+            spellIcon: Art.FireSprayIcon,
+            effects: projectileEffects
+        );
     }
 }

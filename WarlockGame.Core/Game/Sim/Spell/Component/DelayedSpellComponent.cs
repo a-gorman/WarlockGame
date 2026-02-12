@@ -2,11 +2,11 @@ using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Component;
 
-class DelayedSpellComponent : ILocationSpellComponent {
+class DelayedLocationComponent : ILocationSpellComponent {
     private readonly SimTime _delay;
     private readonly ILocationSpellComponent[] _components;
 
-    public DelayedSpellComponent(SimTime delay, params ILocationSpellComponent[] components) {
+    public DelayedLocationComponent(SimTime delay, params ILocationSpellComponent[] components) {
         _delay = delay;
         _components = components;
     }

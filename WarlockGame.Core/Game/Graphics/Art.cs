@@ -34,7 +34,7 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D BurstIcon { get; private set; } = null!;
 		public static Texture2D WindWallIcon { get; private set; } = null!;
 		public static Texture2D BoomerangIcon { get; set; } = null!;
-		public static Texture2D LightStrike { get; set; } = null!;
+		public static Texture2D LightStrikeIcon { get; set; } = null!;
 		public static Texture2D HomingIcon { get; set; } = null!;
 		public static Texture2D RefractionShieldIcon { get; set; } = null!;
 		public static Texture2D SoulShatterIcon { get; set; } = null!;
@@ -44,6 +44,7 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D BigExplosionIcon { get; set; } = null!;
 		public static Texture2D ReducedBoundaryDamageIcon { get; set; } = null!;
 		public static Texture2D ReducedAllDamageIcon { get; set; } = null!;
+		public static Texture2D FireSprayIcon { get; set; } = null!;
 
 		public static void Load(ContentManager content)
 		{
@@ -83,7 +84,8 @@ namespace WarlockGame.Core.Game.Graphics
 			RefractionShieldIcon = LoadIcon(content, "Light_05_Bouncing_Light");
 			HomingIcon = LoadIcon(content, "Water_08_Ball_Of_Water");
 			BoomerangIcon = LoadIcon(content, "paladin_skill_24");
-			LightStrike = LoadIcon(content, "rpg_skill_71");
+			LightStrikeIcon = LoadIcon(content, "rpg_skill_71");
+			FireSprayIcon = LoadIcon(content, "pyromancer_11");
 			
 			HealIcon = LoadIcon(content, "General_02_Heal_T");
 			InvisibilityIcon = LoadIcon(content, "Invis");
