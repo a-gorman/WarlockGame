@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
@@ -18,7 +19,7 @@ namespace WarlockGame.Core.Game
 		/// <summary>
 		/// Map between player Ids and warlocks. Contains dead warlocks!
 		/// </summary>
-		private readonly Dictionary<int, Warlock> _warlocks = new();
+		private readonly Dictionary<int, Warlock> _warlocksLivingOrDead = new();
 
 		private readonly HashSet<Warlock> _livingWarlocks = new();
 
@@ -47,7 +48,7 @@ namespace WarlockGame.Core.Game
 					_projectiles.Add(projectile);
 					break;
 				case Warlock warlock:
-					if (_warlocks.TryAdd(warlock.PlayerId!.Value, warlock)) {
+					if (_warlocksLivingOrDead.TryAdd(warlock.PlayerId!.Value, warlock)) {
 						_livingWarlocks.Add(warlock);
 						warlock.Destroyed += OnWarlockDestroyed;
 					}
@@ -71,14 +72,23 @@ namespace WarlockGame.Core.Game
 
 			_entities.RemoveAll((_,x) => x.IsExpired);
 			_projectiles.RemoveAll(x => x.IsExpired);
-			_warlocks.RemoveAll((_, v) => v.IsExpired);
+			_warlocksLivingOrDead.RemoveAll((_, v) => v.IsExpired);
 		}
 
 		public Warlock? GetWarlockByForceId(int forceId) {
-			if (_warlocks.TryGetValue(forceId, out var warlock) && !warlock.IsDead) {
+			if (_warlocksLivingOrDead.TryGetValue(forceId, out var warlock) && !warlock.IsDead) {
 				return warlock;
 			}
 			return null;
+		}
+		
+		public bool TryGetWarlockByForceId(int forceId, out Warlock? warlock) {
+			if (_warlocksLivingOrDead.TryGetValue(forceId, out warlock) && !warlock.IsDead) {
+				return true;
+			}
+
+			warlock = null;
+			return false;
 		}
 		
 		/// <summary>
@@ -86,7 +96,7 @@ namespace WarlockGame.Core.Game
 		/// Will also get dead warlocks, which is useful for "metagame" functionality
 		/// </summary>
 		public Warlock? GetWarlockLivingOrDeadByForceId(int forceId) {
-			_warlocks.TryGetValue(forceId, out var warlock);
+			_warlocksLivingOrDead.TryGetValue(forceId, out var warlock);
 			return warlock;
 		}
 
@@ -205,7 +215,7 @@ namespace WarlockGame.Core.Game
 			_entities.Clear();
 			_projectiles.Clear();
 			_addedEntities.Clear();
-			_warlocks.Clear();
+			_warlocksLivingOrDead.Clear();
 			_livingWarlocks.Clear();
 		}
 
@@ -219,7 +229,7 @@ namespace WarlockGame.Core.Game
 		}
 
 		public void RespawnWarlock(int forceId, Vector2 location) {
-			if (_warlocks.TryGetValue(forceId, out var warlock)) {
+			if (_warlocksLivingOrDead.TryGetValue(forceId, out var warlock)) {
 				if (!_livingWarlocks.Contains(warlock)) {
 					warlock.Position = location;
 					warlock.Respawn();

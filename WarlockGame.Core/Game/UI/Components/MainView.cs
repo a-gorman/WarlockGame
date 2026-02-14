@@ -174,6 +174,13 @@ sealed class MainView : InterfaceComponent {
 
     protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
         var drawOffset = location - ViewBounds.Position;
+        if (InputManager.SelectedSpellId != null 
+            && _sim.SpellManager.Spells.TryGetValue(InputManager.SelectedSpellId.Value, out var spell)
+            && spell.Definition.CastRange != null
+            && _sim.EntityManager.TryGetWarlockByForceId(PlayerManager.LocalPlayerId!.Value, out var warlock)) {
+            SimDebug.VisualizeCircle(spell.Definition.CastRange.Value, warlock!.Position, Color.Fuchsia);
+        }
+        
         DrawEntities(drawOffset, spriteBatch);
         foreach (var effect in _sim.EffectManager.Effects) {
             effect.Draw(drawOffset, spriteBatch);

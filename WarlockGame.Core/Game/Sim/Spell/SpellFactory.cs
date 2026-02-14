@@ -420,6 +420,6 @@ class SpellFactory {
             cooldownTime: SimTime.OfSeconds(20),
             spellIcon: Art.TeleportIcon,
             effects: new TeleportComponent()
-        ) { CastRange = 700 };
+        ) { CastRange = 600 };
     }
 }
