@@ -6,13 +6,11 @@ using WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Component;
 
-class ApplyBuff : IEntityComponent {
-    private readonly int _radius;
+class BuffComponent : IEntityComponent {
     private readonly Func<SpellContext,Buff> _buffConstructor;
     public bool IgnoreCaster { get; init; } = false;
     
-    public ApplyBuff(int radius, Func<SpellContext,Buff> buffConstructor) {
-        _radius = radius;
+    public BuffComponent(Func<SpellContext,Buff> buffConstructor) {
         _buffConstructor = buffConstructor;
     }
 

@@ -34,7 +34,8 @@ class Buff {
         Regeneration,
         DamageBoost,
         PowerFromDamage,
-        Defense
+        Defense,
+        Slow,
     }
 
     internal enum StackingType {

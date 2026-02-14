@@ -75,7 +75,7 @@ class SpellFactory {
                 [
                     new LocationAreaOfEffect {
                         Shape = new CircleTarget { Radius = 20 },
-                        Components = [new ApplyBuff(10, caster => new DamageOverTime(caster, SimTime.OfSeconds(5), 2.5f / 60))]
+                        Components = [new BuffComponent(caster => new DamageOverTime(caster, SimTime.OfSeconds(5), 2.5f / 60))]
                     }
                 ]
             )
@@ -157,6 +157,7 @@ class SpellFactory {
                     Shape = new CircleTarget { Radius = 20 },
                     Components = [
                         new DamageComponent { Damage = 5 },
+                        new BuffComponent(context => new Slow(0.66f, SimTime.OfSeconds(3.5f))),
                         new EntityLocationComponent {
                             DynamicComponents = [
                                 targetInfo =>
