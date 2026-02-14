@@ -75,10 +75,10 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
         Window.TextInput += (_, textArgs) => InputManager.OnTextInput(textArgs);
         
-        UIManager.AddComponent(LogDisplay.Instance);
-        UIManager.AddComponent(MessageDisplay.Instance);
-        UIManager.AddComponent(new SpellDisplay(Configuration.KeyMappings), InterfaceComponent.Alignment.BottomCenter);
-        UIManager.AddComponent(new MainView(Simulation));
+        UIManager.AddComponent(LogDisplay.Instance, Alignment.TopLeft);
+        UIManager.AddComponent(MessageDisplay.Instance, Alignment.CenterLeft);
+        UIManager.AddComponent(new SpellDisplay(Configuration.KeyMappings), Alignment.BottomCenter);
+        UIManager.AddComponent(new MainView(Simulation), Alignment.TopLeft);
 
         LogDisplay.Instance.SetDisplayLevel(Configuration.LogDisplayLevel);
         LogDisplay.Instance.Visible = Configuration.LogDisplayVisible;
@@ -99,8 +99,9 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         
         Simulation.Initialize();
         
-        UIManager.AddComponent(new Scoreboard(Simulation.GameRules));
-        UIManager.AddComponent(new SpellPicker(GameRules.SpellSelections));
+        // Scoreboard has some funky special case handling. Hmmm...
+        UIManager.AddComponent(new Scoreboard(Simulation.GameRules), Alignment.TopLeft);
+        UIManager.AddComponent(new SpellPicker(GameRules.SpellSelections), Alignment.Center);
     }
 
     protected override void Initialize()

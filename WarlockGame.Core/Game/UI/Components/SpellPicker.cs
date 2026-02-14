@@ -26,7 +26,7 @@ class SpellPicker : InterfaceComponent {
     
     public SpellPicker(int selections) {
         Clickable = ClickableState.PassThrough;
-        BoundingBox = new Rectangle(600, 400, 600, 300);
+        BoundingBox = new Rectangle(0, 0, 600, 300);
         _maxSelections = selections;
 
         var activeTexture = new Texture2D(Art.Pixel.GraphicsDevice, 1, 1);

@@ -17,7 +17,7 @@ sealed class MessageDisplay : InterfaceComponent
     private readonly LinkedList<Message> _messages = [];
 
     public MessageDisplay() {
-        BoundingBox = new Rectangle(50, 600, 400, 100);
+        BoundingBox = new Rectangle(50, 0, 400, 100);
         AddComponent(_messageDisplay);
     }
 

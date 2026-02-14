@@ -173,18 +173,18 @@ class InterfaceComponent {
     public virtual void OnAdd() { }
 
     public virtual void OnRemove() { }
-    
-    public enum Alignment {
-        TopLeft,
-        TopCenter,
-        TopRight,
-        CenterLeft,
-        Center,
-        CenterRight,
-        BottomLeft,
-        BottomCenter,
-        BottomRight
-    }
+}
+
+public enum Alignment {
+    TopLeft,
+    TopCenter,
+    TopRight,
+    CenterLeft,
+    Center,
+    CenterRight,
+    BottomLeft,
+    BottomCenter,
+    BottomRight
 }
 
 public enum ClickableState {
