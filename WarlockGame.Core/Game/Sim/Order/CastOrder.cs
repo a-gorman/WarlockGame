@@ -8,7 +8,7 @@ class CastOrder: IOrder {
     private readonly Warlock _caster;
     private readonly int _spellId;
     private readonly Vector2 _castTarget;
-    private const float AngleTolerance = Single.Pi / 6;
+    private const float AngleTolerance = Single.Pi / 12;
 
     public readonly CastType Type;
 
