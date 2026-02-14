@@ -7,7 +7,7 @@ namespace WarlockGame.Core.Game.Sim.Order;
 class CastOrder: IOrder {
     private readonly Warlock _caster;
     private readonly int _spellId;
-    private readonly Vector2 _castDirection;
+    private readonly Vector2 _castTarget;
     private const float AngleTolerance = Single.Pi / 6;
 
     public readonly CastType Type;
@@ -21,16 +21,16 @@ class CastOrder: IOrder {
     
     public bool Finished { get; private set; }
     
-    public CastOrder(int spellId, Vector2 castDirection, Warlock caster, CastType type) {
+    public CastOrder(int spellId, Vector2 castTarget, Warlock caster, CastType type) {
         _spellId = spellId;
-        _castDirection = castDirection;
+        _castTarget = castTarget;
         _caster = caster;
         Type = type;
     }
 
     public void Update() {
         if (Type == CastType.Directional) {
-            var targetOrientation = _castDirection.ToAngle();
+            var targetOrientation = _castTarget.ToAngle();
             if(Math.Abs(_caster.Orientation - targetOrientation) > AngleTolerance) {
                 _caster.DesiredOrientation = targetOrientation;
                 return;
@@ -38,7 +38,7 @@ class CastOrder: IOrder {
         }
 
         if (Type == CastType.Location) {
-            var displacement = _castDirection - _caster.Position;
+            var displacement = _castTarget - _caster.Position;
             var targetOrientation = displacement.ToAngle();
             if (Math.Abs(_caster.Orientation - targetOrientation) > AngleTolerance) {
                 _caster.DesiredOrientation = targetOrientation;
@@ -46,7 +46,7 @@ class CastOrder: IOrder {
             }
         }
         
-        _caster.CastSpell(_spellId, _castDirection);
+        _caster.CastSpell(_spellId, _castTarget);
         Finished = true;
     }
 

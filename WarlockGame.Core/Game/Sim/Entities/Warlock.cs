@@ -166,9 +166,9 @@ class Warlock : Entity {
         Position = Vector2.Clamp(Position, Sprite.Size / 2, Simulation.ArenaSize - Sprite.Size / 2);
     }
         
-    public void CastSpell(int spellId, Vector2? castDirection) {
+    public void CastSpell(int spellId, Vector2 castTarget) {
         if (_sim.SpellManager.Spells.TryGetValue(spellId, out var spell) && !spell.OnCooldown) {
-            spell.DoCast(this, castDirection);
+            spell.DoCast(this, castTarget);
             SpellCast?.Invoke(this);
         }
     }

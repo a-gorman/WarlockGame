@@ -26,7 +26,7 @@ class WarlockSpell {
         Cooldown = Cooldown.Decrement();
     }
 
-    public void DoCast(Warlock caster, Vector2? direction) {
+    public void DoCast(Warlock caster, Vector2 castTarget) {
         Cooldown = Definition.CooldownTime.ToTimer();
         var context = new SpellContext
         {
@@ -34,8 +34,15 @@ class WarlockSpell {
             Simulation = _simulation
         };
         Definition.Effects.Switch(
-            directionalEffect => directionalEffect.ForEach(x => x.Invoke(context, caster.Position, direction ?? Vector2.Zero)),
-            locationEffect => locationEffect.ForEach(x => x.Invoke(context, direction ?? Vector2.Zero)),
+            directionalEffect => directionalEffect.ForEach(x => x.Invoke(context, caster.Position, castTarget)),
+            locationEffect => {
+                var castLocation = castTarget;
+                if(Definition.CastRange.HasValue) {
+                    // Cast the spell at it's max range (or shorter)
+                    castLocation = caster.Position + (castLocation - caster.Position).WithMaxLength(Definition.CastRange.Value);
+                }
+                locationEffect.ForEach(x => x.Invoke(context, castLocation));
+            },
             selfEffect => selfEffect.ForEach(x => x.Invoke(context))
         );
     }
