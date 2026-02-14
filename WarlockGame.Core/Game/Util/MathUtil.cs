@@ -31,33 +31,35 @@ internal static class MathUtil {
 		return double.IsNaN(number);
 	}
 
-	public static Rectangle WithOffset(this Rectangle source, Vector2 offset) {
-		source.Offset(offset);
-		return source;
-	}
-	
-	public static Rectangle WithOffset(this Rectangle source, Point offset) {
-		source.Offset(offset);
-		return source;
-	}
-	
-	public static Rectangle WithOffset(this Rectangle source, int x, int y) {
-		source.Offset(x, y);
-		return source;
-	}
-	
-	public static Rectangle AtLocation(this Rectangle source, Vector2 location) {
-		source.Location = location.ToPoint();
-		return source;
-	}
-	
-	public static Rectangle AtLocation(this Rectangle source, Point location) {
-		source.Location = location;
-		return source;
-	}
-	
-	public static Rectangle AtLocation(this Rectangle source, int x, int y) {
-		source.Location = new Point(x, y);
-		return source;
+	extension(Rectangle source) {
+		public Rectangle WithOffset(Vector2 offset) {
+			source.Offset(offset);
+			return source;
+		}
+
+		public Rectangle WithOffset(Point offset) {
+			source.Offset(offset);
+			return source;
+		}
+
+		public Rectangle WithOffset(int x, int y) {
+			source.Offset(x, y);
+			return source;
+		}
+
+		public Rectangle AtLocation(Vector2 location) {
+			source.Location = location.ToPoint();
+			return source;
+		}
+
+		public Rectangle AtLocation(Point location) {
+			source.Location = location;
+			return source;
+		}
+
+		public Rectangle AtLocation(int x, int y) {
+			source.Location = new Point(x, y);
+			return source;
+		}
 	}
 }

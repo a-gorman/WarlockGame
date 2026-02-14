@@ -16,6 +16,7 @@ using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim;
+using WarlockGame.Core.Game.Sim.Rule;
 using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.UI.Components;
 
@@ -99,7 +100,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         Simulation.Initialize();
         
         UIManager.AddComponent(new Scoreboard(Simulation.GameRules));
-        UIManager.AddComponent(new SpellPicker(3));
+        UIManager.AddComponent(new SpellPicker(GameRules.SpellSelections));
     }
 
     protected override void Initialize()

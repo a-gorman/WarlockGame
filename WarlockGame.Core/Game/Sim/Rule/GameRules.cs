@@ -14,7 +14,9 @@ class GameRules {
     
     public Dictionary<int, PlayerStatus> Statuses { get; } = new();
 
-    public readonly int[] StartingSpells = [1, 4, 9];
+    public const int SpellSelections = 4;
+    
+    public readonly int[] StartingSpells = [1, 4];
     
     public readonly int[] AvailableSpells = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12];
     

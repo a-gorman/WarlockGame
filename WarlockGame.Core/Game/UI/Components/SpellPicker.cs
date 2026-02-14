@@ -83,7 +83,7 @@ class SpellPicker : InterfaceComponent {
     private Basic.Grid CreateGrid() {
         var rows = _spells!.Length / _columns + 1;
 
-        var grid = new Basic.Grid(BoundingBox.AtLocation(20, 20), _columns, rows) { Clickable = ClickableState.PassThrough };
+        var grid = new Basic.Grid(BoundingBox.AtLocation(0, 0).WithMargin(20), _columns, rows) { Clickable = ClickableState.PassThrough };
         for (var i = 0; i < _spells.Length; i++) {
             var spell = _spells[i];
             var iColumn = i % _columns;
