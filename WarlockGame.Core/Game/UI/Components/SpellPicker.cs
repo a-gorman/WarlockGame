@@ -28,15 +28,13 @@ class SpellPicker : InterfaceComponent {
         Clickable = ClickableState.PassThrough;
         BoundingBox = new Rectangle(600, 400, 600, 300);
         _maxSelections = selections;
-        var width = 80;
-        var height = 40;
 
         var activeTexture = new Texture2D(Art.Pixel.GraphicsDevice, 1, 1);
         activeTexture.SetData([Color.Green]);
         var inactiveTexture = new Texture2D(Art.Pixel.GraphicsDevice, 1, 1);
         inactiveTexture.SetData([Color.DarkGray]);
         
-        _confirmButton = new Button(new Rectangle(600-width-10, 300-height-10, width, height), activeTexture, inactiveTexture) {
+        _confirmButton = new Button(new Rectangle(-10, -10, 80, 40), activeTexture, inactiveTexture) {
             IsActive = false,
             LeftClick = _ => {
                 var playerId = PlayerManager.LocalPlayerId;
@@ -46,7 +44,7 @@ class SpellPicker : InterfaceComponent {
                 Visible = false;
             }
         };
-        AddComponent(_confirmButton);
+        AddComponent(_confirmButton, Alignment.BottomRight);
         
         _confirmButton.AddComponent(new TextDisplay { Text = "Confirm", TextScale = 0.5f });
     }
@@ -70,7 +68,7 @@ class SpellPicker : InterfaceComponent {
                 RemoveComponent(_grid);
             }
             _grid = CreateGrid();
-            AddComponent(_grid);
+            AddComponent(_grid, Alignment.Center);
             Visible = true;
             return;
         }
@@ -83,7 +81,7 @@ class SpellPicker : InterfaceComponent {
     private Basic.Grid CreateGrid() {
         var rows = _spells!.Length / _columns + 1;
 
-        var grid = new Basic.Grid(BoundingBox.AtLocation(0, 0).WithMargin(20), _columns, rows) { Clickable = ClickableState.PassThrough };
+        var grid = new Basic.Grid(BoundingBox.AtOrigin().WithMargin(20), _columns, rows) { Clickable = ClickableState.PassThrough };
         for (var i = 0; i < _spells.Length; i++) {
             var spell = _spells[i];
             var iColumn = i % _columns;

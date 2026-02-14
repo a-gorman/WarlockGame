@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Sim.Spell;
+using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.UI.Components; 
 
@@ -23,7 +24,7 @@ sealed class SpellDisplay : InterfaceComponent {
     public SpellDisplay(Dictionary<Keys, InputAction> keyMappings) {
         KeyMappings = keyMappings.Where(x => Actions.Contains(x.Value)).ToDictionary(x => x.Value, x => x.Key.ToString());
         Layer = 2;
-        BoundingBox = new Rectangle(20, 925, 1880, 90);
+        BoundingBox = new Rectangle(0, -30, 1880, 90);
         IconGrid = new Components.Basic.Grid(55, 20, Actions.Length, SpellSpacing, 1, 70) {
             Clickable = ClickableState.PassThrough
         };
@@ -40,7 +41,7 @@ sealed class SpellDisplay : InterfaceComponent {
     }
 
     protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
-        DrawHollowRectangle(spriteBatch, BoundingBox, Color.White);
+        DrawHollowRectangle(spriteBatch, BoundingBox.WithOffset(location), Color.White);
     }
 
     private static void DrawHollowRectangle(SpriteBatch spriteBatch, Rectangle rectangle, Color color, int width = 1) {

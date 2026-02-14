@@ -69,6 +69,63 @@ class InterfaceComponent {
     /// </summary>
     public virtual void Update(ref readonly UIManager.UpdateArgs args) { }
 
+    public void AddComponent(InterfaceComponent component, Alignment alignment) {
+        int xOffset;
+        int yOffset;
+        switch (alignment) {
+            case Alignment.TopLeft:
+                xOffset = 0;
+                yOffset = 0;
+                break;
+            case Alignment.TopCenter:
+                xOffset = CenterOffset(BoundingBox.Width, component.BoundingBox.Width);
+                yOffset = 0;
+                break;
+            case Alignment.TopRight:
+                xOffset = OppositeSideOffset(BoundingBox.Width, component.BoundingBox.Width);
+                yOffset = 0;
+                break;
+            case Alignment.CenterLeft:
+                xOffset = 0;
+                yOffset = CenterOffset(BoundingBox.Height, component.BoundingBox.Height);
+                break;
+            case Alignment.Center:
+                xOffset = CenterOffset(BoundingBox.Width, component.BoundingBox.Width);
+                yOffset = CenterOffset(BoundingBox.Height, component.BoundingBox.Height);
+                break;
+            case Alignment.CenterRight:
+                xOffset = OppositeSideOffset(BoundingBox.Width, component.BoundingBox.Width);
+                yOffset = CenterOffset(BoundingBox.Height, component.BoundingBox.Height);
+                break;
+            case Alignment.BottomLeft:
+                xOffset = 0;
+                yOffset = OppositeSideOffset(BoundingBox.Height, component.BoundingBox.Height);
+                break;
+            case Alignment.BottomCenter:
+                xOffset = CenterOffset(BoundingBox.Width, component.BoundingBox.Width);
+                yOffset = OppositeSideOffset(BoundingBox.Height, component.BoundingBox.Height);
+                break;
+            case Alignment.BottomRight:
+                xOffset = OppositeSideOffset(BoundingBox.Width, component.BoundingBox.Width);
+                yOffset = OppositeSideOffset(BoundingBox.Height, component.BoundingBox.Height);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(alignment), alignment, null);
+        }
+
+        component.BoundingBox = component.BoundingBox.WithOffset(xOffset, yOffset);
+        AddComponent(component);
+
+        // Nested functions
+        int CenterOffset(int parentSideLength, int childSideLength) {
+            return Math.Abs(parentSideLength - childSideLength) / 2;
+        }
+        
+        int OppositeSideOffset(int parentSideLength, int childSideLength) {
+            return Math.Abs(parentSideLength - childSideLength);
+        }
+    }
+    
     public void AddComponent(InterfaceComponent component) {
         if (component.BoundingBox.IsEmpty) {
             component.BoundingBox = BoundingBox.AtOrigin();
@@ -116,6 +173,18 @@ class InterfaceComponent {
     public virtual void OnAdd() { }
 
     public virtual void OnRemove() { }
+    
+    public enum Alignment {
+        TopLeft,
+        TopCenter,
+        TopRight,
+        CenterLeft,
+        Center,
+        CenterRight,
+        BottomLeft,
+        BottomCenter,
+        BottomRight
+    }
 }
 
 public enum ClickableState {

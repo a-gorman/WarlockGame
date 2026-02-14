@@ -70,14 +70,14 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     protected override void BeginRun() {
         Simulation = new Simulation();
         
-        Ps4Input.Initialize(this);
+        UIManager.Initialize();
         InputManager.Initialize(Configuration.KeyMappings);
 
         Window.TextInput += (_, textArgs) => InputManager.OnTextInput(textArgs);
         
         UIManager.AddComponent(LogDisplay.Instance);
         UIManager.AddComponent(MessageDisplay.Instance);
-        UIManager.AddComponent(new SpellDisplay(Configuration.KeyMappings));
+        UIManager.AddComponent(new SpellDisplay(Configuration.KeyMappings), InterfaceComponent.Alignment.BottomCenter);
         UIManager.AddComponent(new MainView(Simulation));
 
         LogDisplay.Instance.SetDisplayLevel(Configuration.LogDisplayLevel);

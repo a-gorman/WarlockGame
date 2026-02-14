@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
@@ -16,15 +15,17 @@ namespace WarlockGame.Core.Game.UI;
 static class UIManager {
     private static readonly UpdateArgs.GlobalProps GlobalProps = new();
 
-    private static readonly List<InterfaceComponent> Components = new();
+    private static InterfaceComponent _view = new() { Clickable = ClickableState.PassThrough };
+
+    public static void Initialize() {
+        _view.BoundingBox = new Rectangle(0, 0, Configuration.ScreenWidth, Configuration.ScreenHeight);
+    }
     
     public static void Draw(SpriteBatch spriteBatch) {
         
         spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-        foreach (var component in Components) {
-            DrawComponent(component, Vector2.Zero, spriteBatch);
-        }
+        DrawComponent(_view, Vector2.Zero, spriteBatch);
         spriteBatch.End();
 
         // draw the custom mouse cursor
@@ -42,10 +43,8 @@ static class UIManager {
             MousePosition = GlobalProps.MousePosition,
             Global = GlobalProps
         };
-        foreach (var component in Components) {
-            UpdateComponent(component, ref args);
-        }
-        Components.RemoveAll(x => x.IsExpired);
+        
+        UpdateComponent(_view, ref args);
     }
 
     private static void UpdateComponent(InterfaceComponent component, ref readonly UpdateArgs args) {
@@ -70,32 +69,22 @@ static class UIManager {
     /// <param name="promptText">The text to display to the user that explains the box</param>
     /// <param name="acceptedCallback"> Callback with entered text called when text box is closed normally (with enter key)  </param>
     /// <param name="cancelledCallback"> Callback called when text box is closed in a way that does not indicate acceptance (such as clicking away) </param>
-    public static void OpenTextPrompt(string promptText, Action<string> acceptedCallback, Action<string>? cancelledCallback = null) {
+    public static void OpenTextPrompt(string promptText, Action<string> acceptedCallback, Action<string>? cancelledCallback = null, InterfaceComponent.Alignment alignment = InterfaceComponent.Alignment.TopLeft) {
         var prompt = new TextPrompt(promptText, acceptedCallback, cancelledCallback);
-        AddComponent(prompt);
+        AddComponent(prompt, alignment);
         InputManager.AddTextConsumer(prompt);
     }
 
-    public static void AddComponent(InterfaceComponent component) {
-        Components.Add(component);
-        Components.Sort((first, second) => second.Layer.CompareTo(first.Layer));
-        component.OnAdd();
+    public static void AddComponent(InterfaceComponent component, InterfaceComponent.Alignment alignment = InterfaceComponent.Alignment.TopLeft) {
+        _view.AddComponent(component, alignment);
     }
     
     public static void HandleLeftClick(Vector2 clickLocation) {
-        foreach (var component in Components) {
-            if (LeftClickComponent(component, clickLocation)) {
-                return;
-            }
-        }
+        LeftClickComponent(_view, clickLocation);
     }
     
     public static void HandleRightClick(Vector2 clickLocation) {
-        foreach (var component in Components) {
-            if (RightClickComponent(component, clickLocation)) {
-                return;
-            }
-        }
+        RightClickComponent(_view, clickLocation);
     }
 
     private static void DrawComponent(InterfaceComponent component, Vector2 globalLocation, SpriteBatch spriteBatch) {
