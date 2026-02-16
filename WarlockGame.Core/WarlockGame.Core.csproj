@@ -48,9 +48,6 @@
     </AssemblyAttribute>
 </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PS4Mono\PS4Mono.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="..\.gitignore">
       <Link>.gitignore</Link>
     </Content>
