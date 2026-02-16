@@ -15,8 +15,6 @@ namespace WarlockGame.Core.Game.UI.Components;
 class SpellPicker : InterfaceComponent {
     private readonly Button _confirmButton;
     private Basic.Grid? _grid;
-    private const int Spacing = 5;
-    private readonly Vector2 _iconSize = new Vector2(90, 90);
     private readonly int _columns = 5;
     private SpellDefinition[]? _spells;
     private readonly HashSet<int> _selections = [];
