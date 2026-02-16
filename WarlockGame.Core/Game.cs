@@ -38,6 +38,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     private readonly Queue<ServerTickProcessed> _serverTicks = new();
     // Map of player Ids to most recent tick processed
     private readonly Dictionary<int, int> _clientTicksProcessed = new();
+    private readonly SpellDisplay _spellDisplay;
 
     public enum GameState { WaitingToStart, Running }
     public enum ClientTypeState { Local, Client, Server }
@@ -56,6 +57,8 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         _graphics.PreferredBackBufferWidth = Configuration.ScreenWidth;
         _graphics.PreferredBackBufferHeight = Configuration.ScreenHeight;
 
+        _spellDisplay = new SpellDisplay(Configuration.KeyMappings);
+        
         _bloom = new BloomComponent(this);
         Components.Add(_bloom);
         _bloom.Settings = new BloomSettings("", 0.25f, 4, 2, 1, 1.5f, 1);
@@ -76,7 +79,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         
         UIManager.AddComponent(LogDisplay.Instance, Alignment.TopLeft);
         UIManager.AddComponent(MessageDisplay.Instance, Alignment.CenterLeft);
-        UIManager.AddComponent(new SpellDisplay(Configuration.KeyMappings), Alignment.BottomCenter);
+        UIManager.AddComponent(_spellDisplay, Alignment.BottomCenter);
         UIManager.AddComponent(new MainView(Simulation), Alignment.TopLeft);
 
         LogDisplay.Instance.SetDisplayLevel(Configuration.LogDisplayLevel);
@@ -210,6 +213,8 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         Logger.Info("Restarting game", Logger.LogType.Program);
         
         CommandManager.Clear();
+        _spellDisplay.Reset();
+        
         ParticleManager.Clear();
         Simulation.Restart(seed);
         State = GameState.Running;

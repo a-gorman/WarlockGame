@@ -32,6 +32,12 @@ sealed class SpellDisplay : InterfaceComponent {
         Clickable = ClickableState.PassThrough;
     }
 
+    public void Reset() {
+        foreach (var cell in IconGrid.Cells) {
+            cell.RemoveAllComponents();
+        }
+    }
+
     public override void OnLeftClick(Vector2 location) {
         Logger.Info("Click the spell display!", Logger.LogType.Interface | Logger.LogType.PlayerAction);
     }
