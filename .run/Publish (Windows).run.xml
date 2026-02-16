@@ -1,6 +1,6 @@
 ﻿<component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Publish (Windows)" type="DotNetFolderPublish" factoryName="Publish to folder">
-    <riderPublish configuration="Release" delete_existing_files="true" platform="Any CPU" target_folder="$USER_HOME$/Desktop/WarlockGame" target_framework="net8.0-windows" uuid_high="-174676090052981520" uuid_low="-7120166770370968417" />
+    <riderPublish configuration="Release" delete_existing_files="true" platform="Any CPU" target_folder="$USER_HOME$/Desktop/WarlockGame_windows" target_framework="net8.0-windows" uuid_high="-174676090052981520" uuid_low="-7120166770370968417" />
     <method v="2" />
   </configuration>
 </component>
