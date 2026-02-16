@@ -6,6 +6,8 @@
     <TieredCompilation>false</TieredCompilation>
     <Nullable>enable</Nullable>
     <LangVersion>12</LangVersion>
+    <AssemblyName>WarlockGame.DesktopGL</AssemblyName>
+    <RootNamespace>WarlockGame.DesktopGL</RootNamespace>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>

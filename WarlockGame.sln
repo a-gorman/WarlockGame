@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30406.217
@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WarlockGame.Core", "Warlock
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarlockGame.Core.Test", "WarlockGame.Core.Test\WarlockGame.Core.Test.csproj", "{762EA61A-3B3F-4E1F-845F-C118C24D561A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeonShooter.DesktopGL", "NeonShooter.DesktopGL\NeonShooter.DesktopGL.csproj", "{B10D5DD5-3FB6-4723-B599-D2108804FA20}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarlockGame.DesktopGL", "WarlockGame.DesktopGL\WarlockGame.DesktopGL.csproj", "{B10D5DD5-3FB6-4723-B599-D2108804FA20}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
