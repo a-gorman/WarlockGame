@@ -83,6 +83,12 @@ class Simulation {
         Random = new Random(seed);
         Forces = PlayerManager.Players.Select(x => new Force { Id = x.Id }).ToArray();
         GameRules.Reset();
+        
+        foreach (var force in Forces) {
+            foreach (var spellType in GameRules.StartingSpells) {
+                SpellManager.AddSpell(force.Id, spellType);
+            }
+        }
     }
 
     private void ClearGameState() {
@@ -151,9 +157,6 @@ class Simulation {
         foreach (var warlock in warlocks) {
             Logger.Info($"Creating warlock at: {warlock.Position}", Logger.LogType.Simulation);
             EntityManager.Add(warlock);
-            foreach (var spellType in GameRules.StartingSpells) {
-                SpellManager.AddSpell(warlock.PlayerId!.Value, spellType);
-            }
         }
         
         _damagingGround = new DamagingGround(this, new CircleF(ArenaCenter, (ArenaSize / 2).Length()), 0.1f, inverted: true);
