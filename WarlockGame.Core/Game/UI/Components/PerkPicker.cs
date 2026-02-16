@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Collections;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
@@ -13,6 +15,8 @@ using WarlockGame.Core.Game.Util;
 namespace WarlockGame.Core.Game.UI.Components;
 
 sealed class PerkPicker: InterfaceComponent {
+    private const int PerkSelections = 3;
+    
     private readonly Simulation _sim;
     private List<Perk> _perks = new();
     private readonly int _width = 600;
@@ -28,8 +32,9 @@ sealed class PerkPicker: InterfaceComponent {
     public override void Update(ref readonly UIManager.UpdateArgs args) {
         if (WasMadeVisible) {
             var perks = _sim.PerkManager.GetAvailablePerks(PlayerManager.LocalPlayerId ?? -1);
-            if (perks != null && perks.Count > 0) {
-                SetPerks(perks);
+            if (perks.Length > 0) {
+                perks.Shuffle(Random.Shared);
+                SetPerks(perks.Take(PerkSelections));
             } else {
                 Logger.Error("Could not get perks for local player!", Logger.LogType.Interface | Logger.LogType.Simulation);
             }

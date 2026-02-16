@@ -9,14 +9,10 @@ namespace WarlockGame.Core.Game.Sim.Perks;
 class PerkManager {
     public event Action<int, Perk>? PerkChosen;
     
-    private const int PerkSelections = 3;
-    
     private readonly Simulation _sim;
     
     private readonly Dictionary<int, Perk> _perks = new();
     private readonly Dictionary<(int forceId, int perkTypeId), bool> _forcePerks = new();
-
-    private readonly Dictionary<int, List<Perk>> _availablePerks = new();
     
     public PerkManager(Simulation sim) {
         _sim = sim;
@@ -38,9 +34,10 @@ class PerkManager {
         AddPerk(new PowerFromDamagePerk());
     }
 
-    public List<Perk>? GetAvailablePerks(int forceId) {
-        _availablePerks.TryGetValue(forceId, out var selections);
-        return selections;
+    public Perk[] GetAvailablePerks(int forceId) {
+        return _perks.Where(x => !_forcePerks.GetValueOrDefault((forceId, x.Key), false))
+            .Select(x => x.Value)
+            .ToArray();
     }
 
     public void ChoosePerk(int forceId, int perkId) {
@@ -51,8 +48,6 @@ class PerkManager {
         } else { 
             Logger.Warning($"Tried to choose perk that does not exist: {perkId}", Logger.LogType.Simulation | Logger.LogType.PlayerAction);  
         }
-
-        ReselectPerksForForce(forceId);
     }
 
     public void Clear() {
@@ -61,20 +56,8 @@ class PerkManager {
         }
         
         _forcePerks.Clear();
-        
-        foreach (var force in _sim.Forces) {
-            ReselectPerksForForce(force.Id);
-        }
     }
     
-    private void ReselectPerksForForce(int forceId) {
-        var perks = _perks.Values.ToArray();
-        _sim.Random.Shuffle(perks);
-        var selections = _availablePerks.GetOrAdd(forceId, _ => []);
-        selections.Clear();
-        selections.AddRange(perks.Where(x => !HasPerk(forceId, x.Id)).Take(PerkSelections));
-    }
-
     private bool HasPerk(int forceId, int perkId) {
         return _forcePerks.GetValueOrDefault((forceId, perkId), false);
     }
