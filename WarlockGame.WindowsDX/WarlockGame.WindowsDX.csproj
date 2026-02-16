@@ -6,6 +6,8 @@
     <UseWindowsForms>true</UseWindowsForms>
     <TargetFramework>net8.0-windows</TargetFramework>
     <LangVersion>preview</LangVersion>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
