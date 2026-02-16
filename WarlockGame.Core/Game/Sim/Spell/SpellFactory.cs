@@ -311,7 +311,7 @@ class SpellFactory {
                     new LocationAreaOfEffect {
                         Shape = new CircleTarget { Radius = 18 },
                         Components = [
-                            new DamageComponent { Damage = 10 },
+                            new DamageComponent { Damage = 15 },
                             new PushComponent { Force = 100 }
                         ]
                     }
