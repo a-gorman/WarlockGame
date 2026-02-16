@@ -2,8 +2,6 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
-using MonoGame.Extended.Graphics;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Networking.Packet;

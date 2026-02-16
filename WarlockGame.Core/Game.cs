@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
-using PS4Mono;
 using WarlockGame.Core.Game;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
