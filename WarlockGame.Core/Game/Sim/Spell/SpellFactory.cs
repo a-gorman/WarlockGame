@@ -57,7 +57,7 @@ class SpellFactory {
             effects: new DirectionalAreaOfEffect {
                 Shape = new LineTarget { Length = 600, IgnoreCaster = true, Texture = Art.Lightning },
                 Effects = [
-                    new DamageComponent { Damage = 15 },
+                    new DamageComponent { Damage = 20 },
                     new PushComponent { Force = 100 }
                 ]
             }
@@ -78,7 +78,7 @@ class SpellFactory {
                         Components = [
                             new BuffComponent(
                                 caster => new DamageOverTime(caster, SimTime.OfSeconds(6), 2f / 60),
-                                caster => new DefenseBuff(SimTime.OfSeconds(6)) { GenericDefenseModifier = 1.5f })
+                                _ => new DefenseBuff(SimTime.OfSeconds(6)) { GenericDefenseModifier = 1.5f })
                         ]
                     }
                 ]
@@ -161,7 +161,7 @@ class SpellFactory {
                     Shape = new CircleTarget { Radius = 20 },
                     Components = [
                         new DamageComponent { Damage = 5 },
-                        new BuffComponent(context => new Slow(0.66f, SimTime.OfSeconds(3.5f))),
+                        new BuffComponent(_ => new Slow(0.66f, SimTime.OfSeconds(3.5f))),
                         new EntityLocationComponent {
                             DynamicComponents = [
                                 targetInfo =>
