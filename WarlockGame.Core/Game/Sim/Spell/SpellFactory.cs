@@ -75,7 +75,11 @@ class SpellFactory {
                 [
                     new LocationAreaOfEffect {
                         Shape = new CircleTarget { Radius = 20 },
-                        Components = [new BuffComponent(caster => new DamageOverTime(caster, SimTime.OfSeconds(5), 2.5f / 60))]
+                        Components = [
+                            new BuffComponent(
+                                caster => new DamageOverTime(caster, SimTime.OfSeconds(6), 2f / 60),
+                                caster => new DefenseBuff(SimTime.OfSeconds(6)) { GenericDefenseModifier = 1.5f })
+                        ]
                     }
                 ]
             )
