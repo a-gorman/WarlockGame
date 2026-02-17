@@ -12,7 +12,7 @@ class PushShare : Behavior {
     private void Push(OnPushedEventArgs args) {
         var target = _simulation.EntityManager.GetEntity(_targetId);
         if (target is not null) {
-            target.Velocity += args.Force;
+            target.Push(args.Force);
         }
     }
     
