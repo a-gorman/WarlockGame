@@ -19,17 +19,19 @@ class SpellPicker : InterfaceComponent {
     private SpellDefinition[]? _spells;
     private readonly HashSet<int> _selections = [];
     private readonly int _maxSelections;
-    
+
     public SpellPicker(int selections) {
         Clickable = ClickableState.PassThrough;
         BoundingBox = new Rectangle(0, 0, 600, 300);
         _maxSelections = selections;
+        var descriptionText = $"Select {selections} spells";
 
         var activeTexture = new Texture2D(Art.Pixel.GraphicsDevice, 1, 1);
         activeTexture.SetData([Color.Green]);
         var inactiveTexture = new Texture2D(Art.Pixel.GraphicsDevice, 1, 1);
         inactiveTexture.SetData([Color.DarkGray]);
         
+        AddComponent(new TextDisplay { Text = descriptionText, TextScale = 0.75f });
         _confirmButton = new Button(new Rectangle(-10, -10, 80, 40), activeTexture, inactiveTexture) {
             IsActive = false,
             LeftClick = _ => {
