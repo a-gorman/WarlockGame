@@ -67,6 +67,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         Window.Position = Vector2.Zero.ToPoint();
         Window.IsBorderless = Configuration.BorderlessWindow;
         Window.Title = Configuration.WindowName;
+        TargetElapsedTime = TimeSpan.FromTicks((long)(166667L / Configuration.SpeedFactor));
     }
 
     protected override void BeginRun() {

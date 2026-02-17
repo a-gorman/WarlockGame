@@ -31,6 +31,7 @@ static class Configuration {
     public static float KeyScrollSpeed { get; set; }
     public static float MouseLookSensitivity { get; set; }
     public static int MapEdgeScrollLimitBoundary { get; set; }
+    public static float SpeedFactor { get; set; }
     
     // Debug settings
     public static bool Server { get; set; }
@@ -46,6 +47,7 @@ static class Configuration {
         ScreenHeight = args["screenHeight"]?.Let(int.Parse) ?? 1080;
         ScreenWidth = args["screenWidth"]?.Let(int.Parse) ?? 1920;
         BorderlessWindow = args["borderlessWindow"]?.Let(bool.Parse) ?? true;
+        SpeedFactor = args["speedFactor"]?.Let(float.Parse) ?? 1.0f;
         PlayerName = args["player:name"];
         PreferredColor = args["player:color"]?.Let(s => System.Drawing.Color.FromName(s).Let(c => new Color(c.R, c.G, c.B, c.A)));
         MapEdgeScrollLimitBoundary = args["interface:mapEdgeScrollLimitBoundary"]?.Let(int.Parse) ?? 0;
