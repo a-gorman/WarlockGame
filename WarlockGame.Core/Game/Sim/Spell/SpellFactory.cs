@@ -158,7 +158,7 @@ class SpellFactory {
                 speed: 16,
                 effects: [
                 new LocationAreaOfEffect {
-                    Shape = new CircleTarget { Radius = 20 },
+                    Shape = new CircleTarget { Radius = 20, IgnoreProjectiles = true },
                     Components = [
                         new DamageComponent { Damage = 5 },
                         new BuffComponent(_ => new Slow(0.66f, SimTime.OfSeconds(3.5f))),
