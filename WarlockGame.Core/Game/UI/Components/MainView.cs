@@ -212,9 +212,9 @@ sealed class MainView : InterfaceComponent {
 
     private void DrawWarlock(Vector2 location, SpriteBatch spriteBatch, Entity entity, Warlock warlock) {
         float opacity = 1;
-        if (entity.PlayerId != PlayerManager.LocalPlayerId) {
-            var invisBuffs = warlock.Buffs.AsValueEnumerable().OfType<Invisibility>();
-            if (invisBuffs.Any()) {
+        var invisBuffs = warlock.Buffs.AsValueEnumerable().OfType<Invisibility>();
+        if (invisBuffs.Any()) {
+            if (entity.PlayerId != PlayerManager.LocalPlayerId) {
                 var localPlayerPos = _sim.EntityManager.GetWarlockByForceId(PlayerManager.LocalPlayerId!.Value)
                     ?.Position;
                 if (localPlayerPos != null) {
@@ -223,7 +223,12 @@ sealed class MainView : InterfaceComponent {
                         .Min();
                 }
             }
+            else {
+                var circleRadius = invisBuffs.MinBy(x => x.FadeInDistanceMax)!.FadeInDistanceMax;
+                SimDebug.VisualizeCircle(circleRadius, entity.Position, Color.BlueViolet);
+            }
         }
+        
         
         entity.Sprite.Draw(spriteBatch, entity.Position + location, entity.Orientation, opacity: opacity);
         DrawHealthBar(warlock, opacity, location, spriteBatch);
