@@ -215,7 +215,7 @@ class SpellFactory {
         return new SpellDefinition(
             id: 7,
             name: "Deflection Shield",
-            cooldownTime: SimTime.OfSeconds(1),
+            cooldownTime: SimTime.OfSeconds(8),
             spellIcon: Art.RefractionShieldIcon,
             effects: new DirectionalComponent {
                 Components = [
@@ -381,7 +381,7 @@ class SpellFactory {
     public SpellDefinition FireSpray() {
         var projectiles = 9;
         var projectileEffects = new IDirectionalSpellComponent[projectiles];
-        var spreadAngle = Single.Pi / 20;
+        var spreadAngle = Single.Pi / 14;
         for (int i = 0; i < projectiles; i++) {
             projectileEffects[i] = new DelayedDirectionalComponent(
                 SimTime.OfMillis(50*i),
