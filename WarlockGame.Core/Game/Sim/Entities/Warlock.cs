@@ -222,6 +222,9 @@ class Warlock : Entity {
             effectiveDamage *= EnvironmentDefense;
         }
         Health -= effectiveDamage;
+        
+        Logger.Debug($"Dealt {effectiveDamage} damage to {Id}!", Logger.LogType.Simulation);
+        
         base.Damage(damage, damageTypes, source);
 
         if (Health <= 0) {
