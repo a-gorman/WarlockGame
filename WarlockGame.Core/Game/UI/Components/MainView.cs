@@ -178,7 +178,7 @@ sealed class MainView : InterfaceComponent {
             && _sim.SpellManager.Spells.TryGetValue(InputManager.SelectedSpellId.Value, out var spell)
             && spell.Definition.CastRange != null
             && _sim.EntityManager.TryGetWarlockByForceId(PlayerManager.LocalPlayerId!.Value, out var warlock)) {
-            SimDebug.VisualizeCircle(spell.Definition.CastRange.Value, warlock!.Position, Color.Fuchsia);
+            SimDebug.VisualizeCircle(spell.Definition.CastRange.Value, warlock!.Position, Color.LightSeaGreen);
         }
         
         DrawEntities(drawOffset, spriteBatch);
