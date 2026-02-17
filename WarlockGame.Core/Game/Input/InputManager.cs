@@ -81,9 +81,8 @@ static class InputManager {
         if (!HasTextConsumers) {
             var sim = WarlockGame.Instance.Simulation;
             foreach (var actionType in SpellSelectionActions) {
-                if (inputState.WasActionKeyPressed(actionType)) {
-                    var selectedSpell = sim.SpellManager.PlayerSpells[LocalPlayerId.Value]
-                        .FirstOrDefault(x => x.Value.SlotLocation == SpellSelectionActions.IndexOf(actionType)).Value;
+                if (inputState.WasActionKeyPressed(actionType) && sim.SpellManager.PlayerSpells.TryGetValue(LocalPlayerId.Value, out var localPlayerSpells)) {
+                    var selectedSpell = localPlayerSpells?.FirstOrDefault(x => x.Value.SlotLocation == SpellSelectionActions.IndexOf(actionType)).Value;
                     selectedSpell?.Effect.Switch(
                         _ => SelectedSpellId = selectedSpell.Id,
                         _ => SelectedSpellId = selectedSpell.Id,
