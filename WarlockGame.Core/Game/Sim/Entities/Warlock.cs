@@ -38,6 +38,8 @@ class Warlock : Entity {
         }
     }
 
+    private bool _updatingBuffs = false;
+    private List<Buff> _addedBuffs = [];
     public List<Buff> Buffs { get; } = new();
 
     public float DamageMultiplier { get; set; } = 1;
@@ -86,13 +88,19 @@ class Warlock : Entity {
         Orders.FirstOrDefault()?.Update();
 
         Move();
-            
+
+        _updatingBuffs = true;
         foreach (var buff in Buffs) {
             buff.Update(this);
             if(buff.IsExpired) { buff.OnRemove(this); }
         }
         Buffs.RemoveAll(x => x.IsExpired);
-
+        _updatingBuffs = false;
+        foreach (var newBuff in _addedBuffs) {
+            AddBuff(newBuff);
+        }
+        _addedBuffs.Clear();
+        
         if (Orders.FirstOrDefault()?.Finished ?? false) {
             Orders.First!.Value.OnFinish();
             Orders.RemoveFirst();
@@ -174,6 +182,11 @@ class Warlock : Entity {
     }
 
     public int AddBuff(Buff buff) {
+        if (_updatingBuffs) {
+            buff.Id = _nextBuffId++;
+            _addedBuffs.Add(buff);
+        }
+        
         var existingBuff = Buffs.FirstOrDefault(x => x.Type == buff.Type);
         if (existingBuff == null || buff.Stacking == Buff.StackingType.Stacks) {
             buff.Id = _nextBuffId++;
