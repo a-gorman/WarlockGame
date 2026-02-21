@@ -25,9 +25,8 @@ public struct GameTimer
         return new GameTimer((int) (TicksPerSecond * seconds));
     }
     
-    public GameTimer Decrement()
+    public GameTimer Decremented()
     {
-        TicksRemaining = Math.Max(0, TicksRemaining - 1);
-        return this;
+        return new GameTimer(Math.Max(0, TicksRemaining - 1));
     }
 }

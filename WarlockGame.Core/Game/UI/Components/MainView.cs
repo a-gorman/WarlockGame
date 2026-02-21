@@ -214,7 +214,7 @@ sealed class MainView : InterfaceComponent {
         float opacity = 1;
         var invisBuffs = warlock.Buffs.AsValueEnumerable().OfType<Invisibility>();
         if (invisBuffs.Any()) {
-            if (entity.PlayerId != PlayerManager.LocalPlayerId) {
+            if (entity.ForceId != PlayerManager.LocalPlayerId) {
                 var localPlayerPos = _sim.EntityManager.GetWarlockByForceId(PlayerManager.LocalPlayerId!.Value)
                     ?.Position;
                 if (localPlayerPos != null) {

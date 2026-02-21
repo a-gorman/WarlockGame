@@ -26,7 +26,7 @@ class Projectile : Entity {
         Velocity = velocity;
         Orientation = Extensions.ToAngle(Velocity);
         BlocksProjectiles = true;
-        PlayerId = context.Caster.PlayerId;
+        ForceId = context.Caster.ForceId;
         _effects = effects;
     }
 

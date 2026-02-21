@@ -23,7 +23,7 @@ class WarlockSpell {
     }
 
     public void Update() {
-        Cooldown = Cooldown.Decrement();
+        Cooldown = Cooldown.Decremented();
     }
 
     public void DoCast(Warlock caster, Vector2 castTarget) {

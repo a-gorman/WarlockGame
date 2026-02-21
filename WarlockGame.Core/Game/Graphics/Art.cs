@@ -46,6 +46,7 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D ReducedAllDamageIcon { get; set; } = null!;
 		public static Texture2D FireSprayIcon { get; set; } = null!;
 		public static Texture2D TeleportIcon { get; set; } = null!;
+		public static Texture2D ShockwaveIcon { get; set; } = null!;
 
 		public static void Load(ContentManager content)
 		{
@@ -88,6 +89,7 @@ namespace WarlockGame.Core.Game.Graphics
 			LightStrikeIcon = LoadIcon(content, "rpg_skill_71");
 			FireSprayIcon = LoadIcon(content, "pyromancer_11");
 			TeleportIcon = LoadIcon(content, "General_14_Teleport");
+			ShockwaveIcon = LoadIcon(content, "aeromancer_15");
 			
 			HealIcon = LoadIcon(content, "General_02_Heal_T");
 			InvisibilityIcon = LoadIcon(content, "Invis");

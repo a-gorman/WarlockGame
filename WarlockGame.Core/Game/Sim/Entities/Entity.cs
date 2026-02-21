@@ -10,7 +10,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
 	class Entity
 	{
 		public int Id { get; set; }
-		public int? PlayerId { get; set; }
+		public int? ForceId { get; set; }
 		public Sprite Sprite { get; }
 		public CollisionType CollisionType { get; }
 		public bool BlocksProjectiles { get; set; }

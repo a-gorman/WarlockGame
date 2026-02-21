@@ -31,14 +31,14 @@ class Yoyo : Behavior {
     public override void Update(Entity entity) {
         if (_state == State.Outwards) {
             Velocity += _outwardsAccel;
-            OutwardsTime = OutwardsTime.Decrement();
+            OutwardsTime = OutwardsTime.Decremented();
             if (OutwardsTime.IsExpired) {
                 _state = State.Inwards;
             }
         }
         else {
             Velocity += _inwardsAccel;
-            InwardsTime = InwardsTime.Decrement();
+            InwardsTime = InwardsTime.Decremented();
             if (InwardsTime.IsExpired) {
                 IsExpired = true;
             }

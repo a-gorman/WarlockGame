@@ -18,7 +18,7 @@ class CircleTimingIndicator : IEffect {
     }
     
     public void Update() {
-        _timer = _timer.Decrement();
+        _timer = _timer.Decremented();
 
         if (_timer.IsExpired) {
             Logger.Debug("Circle expired", Logger.LogType.Simulation);

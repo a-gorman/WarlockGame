@@ -57,7 +57,7 @@ namespace WarlockGame.Core.Game.Sim.Effect
 			public required Action Action { get; init; }
 			public bool IsExpired => Timer.IsExpired;
 			public void Update() {
-				Timer = Timer.Decrement();
+				Timer = Timer.Decremented();
 				if (Timer.IsExpired) {
 					Action.Invoke();
 				}

@@ -28,9 +28,9 @@ class ProjectileComponent: IDirectionalSpellComponent {
         _effects = effects.ToArray();
     }
 
-    public void Invoke(SpellContext context, Vector2 castLocation, Vector2 invokeDirection) {
+    public void Invoke(SpellContext context, Vector2 invokeLocation, Vector2 invokeDirection) {
         context.EntityManager.Add(new Projectile(
-            position: castLocation, 
+            position: invokeLocation, 
             velocity: invokeDirection.ToNormalized() * _speed,
             radius: _radius,
             context: context,

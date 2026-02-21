@@ -3,6 +3,7 @@ using System.Linq;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Sim.Buffs;
+using WarlockGame.Core.Game.Sim.Effect;
 using WarlockGame.Core.Game.Sim.Effect.Display;
 using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Sim.Entities.Behaviors;
@@ -116,7 +117,7 @@ class SpellFactory {
             spellIcon: Art.WindWallIcon,
             effects: new SelfCastPositionComponent {
                 Components = [
-                    new EffectComponent(
+                    new LocationEffectComponent(
                         (spellContext, location) => new ContinuousSpellEffect {
                             Context = spellContext,
                             Location = location,
@@ -132,7 +133,7 @@ class SpellFactory {
                                     },
                                     Components = [
                                         new PushComponent {
-                                            Force = 5f,
+                                            Force = 6f,
                                             SelfFactor = 0,
                                             ProjectileFactor = 1,
                                             DisplacementTransform = (axis1, _) => axis1.PerpendicularClockwise()
@@ -171,7 +172,7 @@ class SpellFactory {
 
                                             var image = new Entity(new Sprite(Art.Player), location) {
                                                 BlocksProjectiles = true,
-                                                PlayerId = spellContext.Caster.PlayerId
+                                                ForceId = spellContext.Caster.ForceId
                                             };
                                             image.AddBehaviors(
                                                 new PushShare(targetInfo.Entity.Id, sim),
@@ -192,7 +193,7 @@ class SpellFactory {
 
                                             var image = new Entity(new Sprite(Art.Player), location) {
                                                 BlocksProjectiles = true,
-                                                PlayerId = spellContext.Caster.PlayerId
+                                                ForceId = spellContext.Caster.ForceId
                                             };
                                             image.AddBehaviors(
                                                 new PushShare(targetInfo.Entity.Id, sim),
@@ -230,7 +231,7 @@ class SpellFactory {
                             var wallLoc = caster.Position + new Vector2(80, 40).Rotated(angle);
 
                             return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, angle + float.Pi / 6) {
-                                    PlayerId = caster.PlayerId
+                                    ForceId = caster.ForceId
                                 }
                                 .Also(x => x.AddBehaviors(
                                     new DebugVisualize(),
@@ -251,7 +252,7 @@ class SpellFactory {
                             var wallLoc = caster.Position + new Vector2(80, -40).Rotated(angle);
 
                             return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, angle - float.Pi / 6) {
-                                    PlayerId = caster.PlayerId
+                                    ForceId = caster.ForceId
                                 }
                                 .Also(x => x.AddBehaviors(
                                     new DebugVisualize(),
@@ -291,7 +292,7 @@ class SpellFactory {
                     new AccelerateTowards(0.22f,
                         targetLocation: projectile =>
                             _simulation.EntityManager.Warlocks
-                                .Where(x => x.PlayerId != projectile.PlayerId)
+                                .Where(x => x.ForceId != projectile.ForceId)
                                 .MinBy(x => x.Position.DistanceSquaredTo(projectile.Position))
                                 ?.Position),
                     new Friction(0.001f, 0.001f, 0.08f),
@@ -326,7 +327,7 @@ class SpellFactory {
                         new AccelerateTowards(0.18f,
                             targetLocation: projectile =>
                                 _simulation.EntityManager.Warlocks
-                                    .FirstOrDefault(x => x.PlayerId == projectile.PlayerId)
+                                    .FirstOrDefault(x => x.ForceId == projectile.ForceId)
                                     ?.Position),
                         new Friction(c: 0.1f),
                         new TimedLife(SimTime.OfSeconds(9)),
@@ -351,7 +352,7 @@ class SpellFactory {
             name: "Light strike",
             cooldownTime: SimTime.OfSeconds(20),
             spellIcon: Art.LightStrikeIcon,
-            new EffectComponent(location =>
+            new LocationEffectComponent(location =>
                 new CircleTimingIndicator(new CircleF(location, radius), SimTime.OfSeconds(delaySeconds))),
             new DelayedLocationComponent(
                 SimTime.OfSeconds(delaySeconds),
@@ -365,7 +366,7 @@ class SpellFactory {
             ),
             new DelayedLocationComponent(
                 SimTime.OfSeconds(delaySeconds - animationDurationSeconds / 4),
-                new EffectComponent(location => {
+                new LocationEffectComponent(location => {
                     var flameStrikeSprite = Sprite.FromGridSpriteSheet(
                         Art.FlameStrike,
                         subdivisionsX: 9,
@@ -426,5 +427,20 @@ class SpellFactory {
             spellIcon: Art.TeleportIcon,
             effects: new TeleportComponent()
         ) { CastRange = 600 };
+    }
+    
+    public SpellDefinition Shockwave() {
+        return new SpellDefinition(
+            id: 13,
+            name: "Shockwave",
+            cooldownTime: SimTime.OfSeconds(7),
+            spellIcon: Art.ShockwaveIcon,
+            effects: new DirectionalEffectComponent((spellContext, castLoc, direction) => 
+                new ShockwaveEffect(spellContext, 
+                    castLoc, 
+                    distance: 1500, 
+                    velocity: direction.WithLength(6),
+                    pushAmount: 4.25f))
+        );
     }
 }

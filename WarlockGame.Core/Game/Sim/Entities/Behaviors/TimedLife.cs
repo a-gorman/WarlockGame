@@ -8,7 +8,7 @@ class TimedLife : Behavior {
     }
 
     public override void Update(Entity entity) {
-        _timeToLive = _timeToLive.Decrement();
+        _timeToLive = _timeToLive.Decremented();
         if (_timeToLive.IsExpired) {
             entity.IsExpired = true;
         }

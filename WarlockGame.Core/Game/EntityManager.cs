@@ -47,7 +47,7 @@ namespace WarlockGame.Core.Game
 					_projectiles.Add(projectile);
 					break;
 				case Warlock warlock:
-					if (_warlocksLivingOrDead.TryAdd(warlock.PlayerId!.Value, warlock)) {
+					if (_warlocksLivingOrDead.TryAdd(warlock.ForceId!.Value, warlock)) {
 						_livingWarlocks.Add(warlock);
 						warlock.Destroyed += OnWarlockDestroyed;
 					}

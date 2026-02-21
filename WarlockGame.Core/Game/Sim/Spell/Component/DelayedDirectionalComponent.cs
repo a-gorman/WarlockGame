@@ -17,7 +17,7 @@ class DelayedDirectionalComponent : IDirectionalSpellComponent {
         _direction = direction ?? (x => x);
     }
     
-    public void Invoke(SpellContext context, Vector2 castLocation, Vector2 invokeDirection) {
-        context.EffectManager.AddDelayedEffect(() => _components.ForEach(x => x.Invoke(context, castLocation, _direction.Invoke(invokeDirection))), _delay);
+    public void Invoke(SpellContext context, Vector2 invokeLocation, Vector2 invokeDirection) {
+        context.EffectManager.AddDelayedEffect(() => _components.ForEach(x => x.Invoke(context, invokeLocation, _direction.Invoke(invokeDirection))), _delay);
     }
 }

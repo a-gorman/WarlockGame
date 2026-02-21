@@ -18,7 +18,7 @@ class GameRules {
     
     public readonly int[] StartingSpells = [1, 4];
     
-    public readonly int[] AvailableSpells = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12];
+    public readonly int[] AvailableSpells = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13];
     
     public event Action<LivesChanged>? OnChanged;
 
@@ -43,7 +43,7 @@ class GameRules {
     }
 
     public void OnWarlockDestroyed(Warlock warlock) {
-        int playerId = warlock.PlayerId!.Value;
+        int playerId = warlock.ForceId!.Value;
         var status = Statuses[playerId];
         status.Lives -= 1;
         OnChanged?.Invoke(new LivesChanged { PlayerId = playerId });

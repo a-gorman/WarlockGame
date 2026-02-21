@@ -16,5 +16,6 @@ class SimpleCollisionFilter(params List<CollisionFilter> filters) : Behavior {
         }
     }
 
-    public static bool IgnoreFriendlies(Entity source, Entity other) => source.PlayerId != other.PlayerId;
+    public static bool IgnoreFriendlies(Entity source, Entity other) => source.ForceId != other.ForceId;
+    public static bool None(Entity source, Entity other) => false;
 }

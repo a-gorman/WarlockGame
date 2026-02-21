@@ -21,8 +21,8 @@ class DirectionalAreaOfEffect: IDirectionalSpellComponent {
     public required IDirectionalShape Shape { get; init; } 
     public required IReadOnlyCollection<IEntityComponent> Effects { get; init; }
 
-    public void Invoke(SpellContext context, Vector2 castLocation, Vector2 invokeDirection) {
-        var entitiesHit = Shape.GatherTargets(context, castLocation, invokeDirection);
+    public void Invoke(SpellContext context, Vector2 invokeLocation, Vector2 invokeDirection) {
+        var entitiesHit = Shape.GatherTargets(context, invokeLocation, invokeDirection);
         foreach (var effect in Effects) {
             effect.Invoke(context, entitiesHit);
         }

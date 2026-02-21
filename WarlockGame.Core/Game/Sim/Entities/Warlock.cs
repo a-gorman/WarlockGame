@@ -71,11 +71,11 @@ class Warlock : Entity {
     private LinkedList<IOrder> Orders { get; } = new();
 
 
-    public Warlock(int playerId, Vector2 position, Simulation simulation):
+    public Warlock(int forceId, Vector2 position, Simulation simulation):
         base(new Sprite(Art.Player), position, radius: 20) {
         _sim = simulation;
         Health = MaxHealth;
-        PlayerId = playerId;
+        ForceId = forceId;
         BlocksProjectiles = true;
 
         _slidingFriction = new Friction(a: 0.001f, b: 0.12f, c: 0.02f);
@@ -242,7 +242,7 @@ class Warlock : Entity {
     public void Destroy(Entity? source) {
         if (IsDead) return;
             
-        Logger.Info($"Warlock {Id} destroyed! Source: {source?.Id} Force: {source?.PlayerId}", Logger.LogType.Simulation);
+        Logger.Info($"Warlock {Id} destroyed! Source: {source?.Id} Force: {source?.ForceId}", Logger.LogType.Simulation);
         IsDead = true;
         foreach (var buff in Buffs) {
             if (buff.ClearedOnDeath) {

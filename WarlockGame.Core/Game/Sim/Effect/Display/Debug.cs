@@ -24,7 +24,7 @@ public class VectorEffect : IEffect {
     }
 
     public void Update() {
-        _timer.Decrement();
+        _timer.Decremented();
     }
 
     public void Draw(Vector2 viewOffset, SpriteBatch spriteBatch) {
@@ -52,7 +52,7 @@ public class PointEffect : IEffect {
     }
 
     public void Update() {
-        _timer = _timer.Decrement();
+        _timer = _timer.Decremented();
     }
 
     public void Draw(Vector2 viewOffset, SpriteBatch spriteBatch) {
@@ -82,7 +82,7 @@ public class StringEffect : IEffect {
     }
 
     public void Update() {
-        _timer = _timer.Decrement();
+        _timer = _timer.Decremented();
     }
 
     public void Draw(Vector2 viewOffset, SpriteBatch spriteBatch) {
@@ -105,7 +105,7 @@ public class CircleEffect : IEffect {
     }
 
     public void Update() {
-        _timer = _timer.Decrement();
+        _timer = _timer.Decremented();
     }
 
     public void Draw(Vector2 viewOffset, SpriteBatch spriteBatch) {
@@ -128,7 +128,7 @@ public class PolygonEffect : IEffect {
     }
 
     public void Update() {
-        _timer = _timer.Decrement();
+        _timer = _timer.Decremented();
     }
 
     public void Draw(Vector2 viewOffset, SpriteBatch spriteBatch) {

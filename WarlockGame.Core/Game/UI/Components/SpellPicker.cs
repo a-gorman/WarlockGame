@@ -45,6 +45,7 @@ class SpellPicker : InterfaceComponent {
         AddComponent(_confirmButton, Alignment.BottomRight);
         
         _confirmButton.AddComponent(new TextDisplay { Text = "Confirm", TextScale = 0.5f });
+        Visible = false;
     }
 
     public override void Update(ref readonly UIManager.UpdateArgs args) {
@@ -67,8 +68,6 @@ class SpellPicker : InterfaceComponent {
             }
             _grid = CreateGrid();
             AddComponent(_grid, Alignment.Center);
-            Visible = true;
-            return;
         }
         
         var force = sim.Forces.AsValueEnumerable().FirstOrDefault(x => x.Id == playerId);

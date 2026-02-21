@@ -28,7 +28,7 @@ public class SpriteEffect : IEffect
 
     public void Update()
     {
-        _timer.Decrement();
+        _timer.Decremented();
     }
     
     public void Draw(Vector2 viewOffset, SpriteBatch spriteBatch)

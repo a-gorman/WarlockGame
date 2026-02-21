@@ -17,7 +17,7 @@ class Buff {
     }
     
     public virtual void Update(Warlock target) {
-        Timer = Timer?.Decrement() ?? null;
+        Timer = Timer?.Decremented() ?? null;
         IsExpired |= Timer?.IsExpired ?? false;
     }
 

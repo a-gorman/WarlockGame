@@ -15,7 +15,7 @@ class ContinuousSpellEffect : IEffect {
     public int RepeatEvery { get; init; } = 1;
     
     public void Update() {
-        Timer = Timer.Decrement();
+        Timer = Timer.Decremented();
         IsExpired |= Timer.IsExpired;
 
         // TODO: This Doesn't consistently start on the first tick
