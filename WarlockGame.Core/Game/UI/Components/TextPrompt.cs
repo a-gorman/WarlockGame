@@ -63,7 +63,7 @@ sealed class TextPrompt: InterfaceComponent, ITextInputConsumer {
                 }
                 break;
             default:
-                if (Text.Length < MaxCharacters) {
+                if (Text.Length < MaxCharacters && IsStandardCharacter(textEvent.Character)) {
                     Text += textEvent.Character;
                 }
                 break;
@@ -93,5 +93,10 @@ sealed class TextPrompt: InterfaceComponent, ITextInputConsumer {
             CancelledCallback?.Invoke(Text);
         }
         IsExpired = true;
+    }
+
+    private bool IsStandardCharacter(char character) {
+        // Space to ~ in UTF-16
+        return character >= 0x20 && character <= 0x7e;
     }
 }
