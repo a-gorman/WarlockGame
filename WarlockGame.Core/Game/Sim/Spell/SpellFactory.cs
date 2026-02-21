@@ -440,7 +440,8 @@ class SpellFactory {
                     castLoc, 
                     distance: 1500, 
                     velocity: direction.WithLength(6),
-                    pushAmount: 4.25f))
+                    pushAmount: 4.25f,
+                    radius: 80))
         );
     }
 }

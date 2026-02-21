@@ -14,13 +14,14 @@ class ShockwaveEffect: IEffect {
     private SpellContext _context;
     private readonly Vector2 _velocity;
     private readonly Vector2 _pushVector;
-    private readonly int _radius = 60;
+    private readonly int _radius;
 
     public bool IsExpired { get; set; }
     
-    public ShockwaveEffect(SpellContext context, Vector2 position, int distance, Vector2 velocity, float pushAmount) {
+    public ShockwaveEffect(SpellContext context, Vector2 position, int distance, Vector2 velocity, float pushAmount, int radius) {
         _context = context;
         _velocity = velocity;
+        _radius = radius;
         Position = position;
         _timer = GameTimer.FromTicks((int)(distance / velocity.Length()));
         _pushVector = velocity.WithLength(pushAmount);
