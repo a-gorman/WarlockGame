@@ -30,6 +30,8 @@ class Simulation {
 
     public Force[] Forces { get; private set; } = [];
 
+    public event Action? SimRestarted;
+
     public static Vector2 ArenaSize { 
         get;
         private set {
@@ -89,6 +91,8 @@ class Simulation {
                 SpellManager.AddSpell(force.Id, spellType);
             }
         }
+        
+        SimRestarted?.Invoke();
     }
 
     private void ClearGameState() {

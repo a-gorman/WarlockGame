@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Networking.Packet;
+using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.UI.Components.Basic;
 using WarlockGame.Core.Game.Util;
@@ -19,11 +20,13 @@ class SpellPicker : InterfaceComponent {
     private SpellDefinition[]? _spells;
     private readonly HashSet<int> _selections = [];
     private readonly int _maxSelections;
+    private readonly Simulation _sim;
 
-    public SpellPicker(int selections) {
+    public SpellPicker(int selections, Simulation sim) {
         Clickable = ClickableState.PassThrough;
         BoundingBox = new Rectangle(0, 0, 600, 300);
         _maxSelections = selections;
+        _sim = sim;
         var descriptionText = $"Select {selections} spells";
 
         var activeTexture = new Texture2D(Art.Pixel.GraphicsDevice, 1, 1);
@@ -52,27 +55,7 @@ class SpellPicker : InterfaceComponent {
         var playerId = PlayerManager.LocalPlayerId;
         if (playerId == null) {
             Visible = false;
-            return;
         }
-
-        var sim = WarlockGame.Instance.Simulation;
-
-        if (WasMadeVisible || _spells == null) {
-            _spells = sim.GameRules.AvailableSpells
-                .Where(x => !sim.GameRules.StartingSpells.Contains(x))
-                .Select(x => sim.SpellManager.Definitions[x])
-                .ToArray();
-
-            if (_grid != null) {
-                RemoveComponent(_grid);
-            }
-            _grid = CreateGrid();
-            AddComponent(_grid, Alignment.Center);
-        }
-        
-        var force = sim.Forces.AsValueEnumerable().FirstOrDefault(x => x.Id == playerId);
-
-        Visible = (!force?.AreSpellsChosen ?? false) && _spells != null;
     }
 
     private Basic.Grid CreateGrid() {
@@ -86,7 +69,7 @@ class SpellPicker : InterfaceComponent {
 
             var spellIndex = i;
             var selectionBox = new ToggleSelection(new Rectangle(0, 0, 80, 80), spell.SpellIcon, Color.LimeGreen) {
-                LeftClick = _ => LeftClick(spellIndex)
+                LeftClick = _ => OnLeftClickSelection(spellIndex)
             };
             
             grid.AddComponent(selectionBox, iRow, iColumn);
@@ -95,7 +78,7 @@ class SpellPicker : InterfaceComponent {
         return grid;
     }
 
-    private void LeftClick(int spellIndex) {
+    private void OnLeftClickSelection(int spellIndex) {
         if (!_selections.Remove(spellIndex)) {
             _selections.Add(spellIndex);
         }
@@ -105,5 +88,31 @@ class SpellPicker : InterfaceComponent {
 
     protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
         spriteBatch.Draw(Art.Pixel, BoundingBox.WithOffset(location), Color.Maroon);
+    }
+
+    public override void OnAdd() {
+        _sim.SimRestarted += OnGameRestart;
+    }
+
+    public override void OnRemove() {
+        _sim.SimRestarted -= OnGameRestart;
+    }
+
+    private void OnGameRestart() {
+        _spells = _sim.GameRules.AvailableSpells
+            .Where(x => !_sim.GameRules.StartingSpells.Contains(x))
+            .Select(x => _sim.SpellManager.Definitions[x])
+            .ToArray();
+
+        if (_grid != null) {
+            RemoveComponent(_grid);
+        }
+
+        _confirmButton.IsActive = false;
+        _selections.Clear();
+        _grid = CreateGrid();
+        AddComponent(_grid, Alignment.Center);
+
+        Visible = true;
     }
 }

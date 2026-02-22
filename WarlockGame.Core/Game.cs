@@ -104,7 +104,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         
         // Scoreboard has some funky special case handling. Hmmm...
         UIManager.AddComponent(new Scoreboard(Simulation.GameRules), Alignment.TopLeft);
-        UIManager.AddComponent(new SpellPicker(GameRules.SpellSelections), Alignment.Center);
+        UIManager.AddComponent(new SpellPicker(GameRules.SpellSelections, Simulation), Alignment.Center);
     }
 
     protected override void Initialize()

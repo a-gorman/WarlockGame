@@ -70,9 +70,9 @@ static class UIManager {
     /// <param name="acceptedCallback">Callback with entered text called when text box is closed normally (with enter key)  </param>
     /// <param name="cancelledCallback">Callback called when text box is closed in a way that does not indicate acceptance (such as clicking away) </param>
     /// <param name="alignment">Determines where the text prompt should be drawn relative to</param>
-    public static void OpenTextPrompt(string promptText, Action<string> acceptedCallback, Action<string>? cancelledCallback = null, Alignment alignment = Alignment.TopLeft) {
+    public static void OpenTextPrompt(string promptText, Action<string> acceptedCallback, Action<string>? cancelledCallback = null) {
         var prompt = new TextPrompt(promptText, acceptedCallback, cancelledCallback);
-        AddComponent(prompt, alignment);
+        AddComponent(prompt, Alignment.Center);
         InputManager.AddTextConsumer(prompt);
     }
 

@@ -24,7 +24,7 @@ sealed class TextPrompt: InterfaceComponent, ITextInputConsumer {
     private readonly TextDisplay _textDisplay;
     
     public TextPrompt(string prompt, Action<string> acceptedCallback, Action<string>? cancelledCallback) {
-        BoundingBox = new Rectangle(new Point(800, 800), new Point(300, 35));
+        BoundingBox = new Rectangle(new Point(0, 220), new Point(300, 35));
 
         _textDisplay = new TextDisplay
         {
