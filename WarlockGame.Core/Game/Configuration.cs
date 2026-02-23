@@ -41,6 +41,7 @@ static class Configuration {
     public static Logger.Level LogDisplayLevel { get; set; }
     public static Logger.Level LogDedupeLevel { get; set; }
     public static bool DebugBoundingBoxVisualize { get; set; }
+    public static string LogFileName { get; set; } = "logs";
 
     public static void ParseArgs(IConfigurationRoot args) {
         WindowName = args["windowName"] ?? "WarlockGame";
@@ -87,6 +88,7 @@ static class Configuration {
         RestartOnJoin = args["autoRestartOnJoin"]?.Let(bool.Parse) ?? false;
         JoinIp = args["joinIp"] ?? "localhost";
         DebugBoundingBoxVisualize = args["debug:boundingBoxVisualize"]?.Let(bool.Parse) ?? false;
+        LogFileName = args["debug:logFileName"] ?? LogFileName;
     }
 
     private static Keys ParseKey(string? str, Keys defaultValue) {

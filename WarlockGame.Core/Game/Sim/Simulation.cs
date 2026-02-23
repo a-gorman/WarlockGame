@@ -134,7 +134,7 @@ class Simulation {
                     break;
                 }
                 
-                foreach (var spell in selectSpells.SpellIds) {
+                foreach (var spell in selectSpells.SpellDefIds) {
                     SpellManager.AddSpell(force.Id, spell);
                     Logger.Info($"Spell chosen! {force.Id} chose {spell}", Logger.LogType.Simulation | Logger.LogType.PlayerAction);
                 }

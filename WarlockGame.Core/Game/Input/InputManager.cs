@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using WarlockGame.Core.Game.Input.Devices;
+using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.UI;
@@ -88,6 +89,7 @@ static class InputManager {
                         _ => SelectedSpellId = selectedSpell.Id,
                         _ => HandlePlayerAction(new CastAction { PlayerId = LocalPlayerId.Value, Type = CastAction.CastType.Self, SpellId = selectedSpell.Id })
                     );
+                    Logger.Debug($"Selected spell: Id: {selectedSpell?.Id} Name: {selectedSpell?.Definition.Name}", Logger.LogType.PlayerAction | Logger.LogType.Interface);
                 }
             }
         }

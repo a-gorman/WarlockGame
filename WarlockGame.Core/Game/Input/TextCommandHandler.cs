@@ -178,7 +178,10 @@ class TextCommandHandler {
             case "off" or "hide":
                 LogDisplay.Instance.Visible = false;
                 return;
-            case null:
+            case "dump" or "write":
+                Logger.WriteLogsToFile(Configuration.LogFileName);
+                break;
+            case null or "":
                 LogDisplay.Instance.Visible = !LogDisplay.Instance.Visible;
                 return;
         }

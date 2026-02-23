@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Log; 
 
 public static class Logger {
-    private static readonly CircularBuffer<Log> _logs = new(1000);
+    private static readonly CircularBuffer<Log> _logs = new(2000);
+    private static bool _firstError = true;
 
     public static IEnumerable<Log> Logs => _logs;
 
@@ -28,6 +31,10 @@ public static class Logger {
     
     public static void Error(string message, LogType logType) {
         WriteLog(message, Level.ERROR, logType);
+        if (_firstError) {
+            _firstError = false;
+            WriteLogsToFile(Configuration.LogFileName);
+        }
     }
 
     public static void WriteLog(string message, Level level, LogType logType) {
@@ -39,19 +46,29 @@ public static class Logger {
                  x.DedupCount++;
              });
         }
-        else
-        {
-            _logs.PushFront(new Log
-            {
+        else {
+            var log = new Log {
                 Level = level,
                 Message = message,
                 Tick = WarlockGame.Instance?.Simulation.Tick ?? 0,
                 Type = logType,
                 Timestamp = DateTime.Now
-            });
+            };
+
+            _logs.PushFront(log);
         }
 
         LogCreated?.Invoke(_logs.Front());
+    }
+
+    public static void WriteLogsToFile(string filename) {
+        string filepath = Path.GetFileNameWithoutExtension(filename) + ".txt";
+        var logs = _logs
+            .OrderBy(x => x.Tick)
+            .Select(x => $"{x.LevelString()} [{x.Type}] {x.Tick}: {x.Message}")
+            .JoinToString('\n');
+        
+        File.WriteAllText(filepath, logs);
     }
 
     public class Log {

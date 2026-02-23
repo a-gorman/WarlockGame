@@ -17,15 +17,14 @@ using WarlockGame.Core.Game.Util;
 namespace WarlockGame.Core.Game.Sim.Spell;
 
 class SpellFactory {
-    private int _nextSpellId = 1;
     private readonly Simulation _simulation;
 
     public SpellFactory(Simulation simulation) {
         _simulation = simulation;
     }
 
-    public WarlockSpell CreateWarlockSpell(SpellDefinition definition) {
-        return new WarlockSpell(_nextSpellId++, definition, _simulation);
+    public WarlockSpell CreateWarlockSpell(SpellDefinition definition, int id) {
+        return new WarlockSpell(id, definition, _simulation);
     }
 
     public SpellDefinition Fireball() {

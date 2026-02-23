@@ -7,6 +7,8 @@ namespace WarlockGame.Core.Game.Sim.Spell;
 
 class SpellManager {
     private readonly SpellFactory _spellFactory;
+
+    private int _nextSpellId = 1;
     
     public Dictionary<int, SpellDefinition> Definitions { get; set; }
 
@@ -54,11 +56,14 @@ class SpellManager {
             return;
         }
 
-        WarlockSpell spell = _spellFactory.CreateWarlockSpell(definition);
+        WarlockSpell spell = _spellFactory.CreateWarlockSpell(definition, _nextSpellId++);
         var spellbook = PlayerSpells.GetOrAdd(forceId, _ => new Dictionary<int, WarlockSpell>());
         spellbook.Add(spell.Definition.Id, spell);
         Spells[spell.Id] = spell;
         spell.SlotLocation = spellbook.Count - 1;
+        
+        Logger.Info($"Added spell {spell.Definition.Name} with id {spell.Id} at slot {spell.SlotLocation} to force {forceId}", Logger.LogType.Simulation);
+        
         SpellAdded?.Invoke(forceId, spell);
     }
 
@@ -77,5 +82,7 @@ class SpellManager {
 
     public void Clear() {
         PlayerSpells.Clear();
+        Spells.Clear();
+        _nextSpellId = 1;
     }
 }

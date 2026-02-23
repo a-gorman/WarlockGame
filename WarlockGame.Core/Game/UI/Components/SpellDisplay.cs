@@ -38,10 +38,6 @@ sealed class SpellDisplay : InterfaceComponent {
         }
     }
 
-    public override void OnLeftClick(Vector2 location) {
-        Logger.Info("Click the spell display!", Logger.LogType.Interface | Logger.LogType.PlayerAction);
-    }
-
     public override void OnAdd() {
         WarlockGame.Instance.Simulation.SpellManager.SpellAdded += AddSpell;
     }

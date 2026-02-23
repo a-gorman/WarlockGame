@@ -82,7 +82,7 @@ public class SerializingTests {
             PlayerCommands = [
                 new CastAction { SpellId = 3, PlayerId = 4, Type = CastAction.CastType.Directional, CastVector = new Vector2(5, 6) },
                 new MoveAction { PlayerId = 7, Location = new Vector2(8, 9) },
-                new SelectSpells { PlayerId = 5, SpellIds = [1, 2, 7] },
+                new SelectSpells { PlayerId = 5, SpellDefIds = [1, 2, 7] },
                 new SelectPerk { PlayerId = 5, PerkId = 11 }
             ],
             ServerCommands = [

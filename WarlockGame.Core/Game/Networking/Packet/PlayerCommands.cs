@@ -87,17 +87,17 @@ class SelectPerk : IPlayerAction {
 
 class SelectSpells : IPlayerAction {
     public int PlayerId { get; set; }
-    public int[] SpellIds { get; set; } = null!;
+    public int[] SpellDefIds { get; set; } = null!;
 
     public IPlayerAction.Type GetSerializerType() => IPlayerAction.Type.SelectSpells;
 
     public void Serialize(NetDataWriter writer) {
         writer.Put(PlayerId);
-        writer.PutArray(SpellIds);
+        writer.PutArray(SpellDefIds);
     }
 
     public void Deserialize(NetDataReader reader) {
         PlayerId = reader.GetInt();
-        SpellIds = reader.GetIntArray();
+        SpellDefIds = reader.GetIntArray();
     }
 }

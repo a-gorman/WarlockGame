@@ -9,7 +9,6 @@ using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.UI.Components.Basic;
 using WarlockGame.Core.Game.Util;
-using ZLinq;
 
 namespace WarlockGame.Core.Game.UI.Components;
 
@@ -41,7 +40,7 @@ class SpellPicker : InterfaceComponent {
                 var playerId = PlayerManager.LocalPlayerId;
                 if (playerId == null) return;
                 
-                InputManager.HandlePlayerAction(new SelectSpells { PlayerId = playerId.Value, SpellIds = _selections.Select(x => _spells![x].Id).ToArray() });
+                InputManager.HandlePlayerAction(new SelectSpells { PlayerId = playerId.Value, SpellDefIds = _selections.Select(x => _spells![x].Id).ToArray() });
                 Visible = false;
             }
         };
