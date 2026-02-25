@@ -4,19 +4,18 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using WarlockGame.Core.Game.Input;
-using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.UI.Components; 
 
 sealed class SpellDisplay : InterfaceComponent {
-    public Dictionary<InputAction, string> KeyMappings { get; }
-    public Components.Basic.Grid IconGrid { get; }
+    private Dictionary<InputAction, string> KeyMappings { get; }
+    private Components.Basic.Grid IconGrid { get; }
 
     private const int SpellSpacing = 100;
 
-    private static readonly InputAction[] Actions = [ 
+    private static readonly InputAction[] Actions = [
         InputAction.Spell1, InputAction.Spell2, InputAction.Spell3, InputAction.Spell4, InputAction.Spell5, 
         InputAction.Spell6, InputAction.Spell7, InputAction.Spell8, InputAction.Spell9, InputAction.Spell10
     ];
@@ -51,8 +50,8 @@ sealed class SpellDisplay : InterfaceComponent {
         pointTexture.SetData([Color.Red, Color.Blue, Color.White, Color.Green]);
         
         spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Left, rectangle.Bottom, rectangle.Width, width), color); // Bottom line
-        spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Left, rectangle.Top, width, rectangle.Height), color);   // Left line
-        spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Right, rectangle.Top, width, rectangle.Height), color);  // Right line
+        spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Left, rectangle.Top, width, rectangle.Height), color);         // Left line
+        spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Right, rectangle.Top, width, rectangle.Height), color);        // Right line
         spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Left, rectangle.Top, rectangle.Width, width), color);    // Top line
     }
 
