@@ -37,7 +37,7 @@ class SpellFactory {
                 sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
                 effects: [
                     new LocationAreaOfEffect {
-                        Shape = new CircleTarget { Radius = 30 },
+                        Shape = new CircleTarget { InnerRadius = 30 },
                         Components = [
                             new DamageComponent { Damage = 20 },
                             new PushComponent { Force = 150 }
@@ -74,7 +74,7 @@ class SpellFactory {
                 sprite: new Sprite(Art.PoisonBall) { Scale = 0.80f },
                 [
                     new LocationAreaOfEffect {
-                        Shape = new CircleTarget { Radius = 20 },
+                        Shape = new CircleTarget { InnerRadius = 8, OuterRadius = 20 },
                         Components = [
                             new BuffComponent(
                                 caster => new DamageOverTime(caster, SimTime.OfSeconds(6), 2f / 60),
