@@ -37,7 +37,7 @@ class SpellFactory {
                 sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
                 effects: [
                     new LocationAreaOfEffect {
-                        Shape = new CircleTarget { InnerRadius = 30 },
+                        Shape = new CircleTarget(innerRadius: 8, outerRadius: 30),
                         Components = [
                             new DamageComponent { Damage = 20 },
                             new PushComponent { Force = 150 }
@@ -74,7 +74,7 @@ class SpellFactory {
                 sprite: new Sprite(Art.PoisonBall) { Scale = 0.80f },
                 [
                     new LocationAreaOfEffect {
-                        Shape = new CircleTarget { InnerRadius = 8, OuterRadius = 20 },
+                        Shape = new CircleTarget(innerRadius: 8, outerRadius: 20),
                         Components = [
                             new BuffComponent(
                                 caster => new DamageOverTime(caster, SimTime.OfSeconds(6), 2f / 60),
@@ -93,7 +93,7 @@ class SpellFactory {
             cooldownTime: SimTime.OfSeconds(6),
             spellIcon: Art.BurstIcon,
             effects: new SelfAreaOfEffect {
-                Shape = new CircleTarget { Radius = 200 },
+                Shape = new CircleTarget(innerRadius: 50),
                 Components = [
                     new DamageComponent {
                         Damage = 10,
@@ -158,7 +158,7 @@ class SpellFactory {
                 speed: 16,
                 effects: [
                 new LocationAreaOfEffect {
-                    Shape = new CircleTarget { Radius = 20, IgnoreProjectiles = true },
+                    Shape = new CircleTarget(innerRadius: 8, outerRadius: 20) { IgnoreProjectiles = true },
                     Components = [
                         new DamageComponent { Damage = 5 },
                         new BuffComponent(_ => new Slow(0.66f, SimTime.OfSeconds(3.5f))),
@@ -280,7 +280,7 @@ class SpellFactory {
                 sprite: Sprite.FromGridSpriteSheet(Art.EnergySpark, 4, 4, SimTime.OfTicks(10), scale: 2f, rotates: false),
                 effects: [
                     new LocationAreaOfEffect {
-                        Shape = new CircleTarget { Radius = 30 },
+                        Shape = new CircleTarget(innerRadius: 8, outerRadius: 30),
                         Components = [
                             new DamageComponent { Damage = 10 },
                             new PushComponent { Force = 100 }
@@ -313,7 +313,7 @@ class SpellFactory {
                 radius: 16,
                 effects: [
                     new LocationAreaOfEffect {
-                        Shape = new CircleTarget { Radius = 18 },
+                        Shape = new CircleTarget(innerRadius: 16, outerRadius: 18),
                         Components = [
                             new DamageComponent { Damage = 15 },
                             new PushComponent { Force = 100 }
@@ -356,7 +356,7 @@ class SpellFactory {
             new DelayedLocationComponent(
                 SimTime.OfSeconds(delaySeconds),
                 new LocationAreaOfEffect {
-                    Shape = new CircleTarget { Radius = radius },
+                    Shape = new CircleTarget(outerRadius: radius),
                     Components = [
                         new DamageComponent { Damage = 40 },
                         new PushComponent { Force = 200 }
@@ -381,32 +381,33 @@ class SpellFactory {
             )
         ) { CastRange = 700 };
     }
-    
+
     public SpellDefinition FireSpray() {
         var projectiles = 9;
         var projectileEffects = new IDirectionalSpellComponent[projectiles];
         var spreadAngle = Single.Pi / 14;
         for (int i = 0; i < projectiles; i++) {
             projectileEffects[i] = new DelayedDirectionalComponent(
-                SimTime.OfMillis(50*i),
+                SimTime.OfMillis(50 * i),
                 direction: direction => direction.Rotated(_simulation.Random.NextSingle(-spreadAngle, spreadAngle)),
-                components: [new ProjectileComponent(
-                    sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfMillis(100), scale: .12f),
-                    speed: 10,
-                    behaviors: () => [
-                        new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies)
-                    ],
-                    effects: [
-                        new LocationAreaOfEffect {
-                            Shape = new CircleTarget { Radius = 20 },
-                            Components = [
-                                new DamageComponent { Damage = 6 },
-                                new PushComponent { Force = 10 }
-                            ]
-                        }
-                    ]
-                ),
-            ]);
+                components: [
+                    new ProjectileComponent(
+                        sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfMillis(100), scale: .12f),
+                        speed: 10,
+                        behaviors: () => [
+                            new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies)
+                        ],
+                        effects: [
+                            new LocationAreaOfEffect {
+                                Shape = new CircleTarget(innerRadius: 8, outerRadius: 20),
+                                Components = [
+                                    new DamageComponent { Damage = 6 },
+                                    new PushComponent { Force = 10 }
+                                ]
+                            }
+                        ]
+                    ),
+                ]);
         }
         
         return new SpellDefinition(

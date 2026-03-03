@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
+using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Sim.Entities;
 
 namespace WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
@@ -13,12 +14,12 @@ class CircleTarget : ILocationShape {
     public Texture2D? Texture { get; init; }
     public Falloff.FalloffFactor FalloffFactor { get; init; } = Falloff.Linear;
 
-    public CircleTarget(int innerRadius, int? outerRadius = null) {
+    public CircleTarget(int innerRadius = 0, int? outerRadius = null) {
         InnerRadius = innerRadius;
         OuterRadius = outerRadius ?? innerRadius;
 
         if(InnerRadius > OuterRadius) {
-            Logger.Warn("Inner radius is greater than outer radius. Expanding outer radius to match.")
+            Logger.Warning("Inner radius is greater than outer radius. Expanding outer radius to match.", Logger.LogType.Simulation);
             OuterRadius = InnerRadius;
         }
     }
@@ -31,7 +32,7 @@ class CircleTarget : ILocationShape {
                                 Entity = x,
                                 OriginTargetDisplacement = x.Position - origin,
                                 DisplacementAxis2 = x.Position - origin,
-                                FalloffFactor = FalloffFactor.Invoke(x.Position - origin, InnerRadius, x.Radius)
+                                FalloffFactor = FalloffFactor.Invoke(x.Position - origin, OuterRadius, InnerRadius, x.Radius)
                             })
                             .ToList();
     }

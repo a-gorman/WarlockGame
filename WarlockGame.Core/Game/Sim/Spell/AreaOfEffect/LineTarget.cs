@@ -50,7 +50,10 @@ class LineTarget : IDirectionalShape {
                 Entity = entity,
                 OriginTargetDisplacement = displacement1,
                 DisplacementAxis2 = displacement2,
-                FalloffFactor = FalloffFactor.Invoke((displacement1, Length), (displacement2, Width), entity.Radius)
+                FalloffFactor = FalloffFactor.Invoke(
+                    new Falloff.Axis(displacement1, Length, 0), 
+                    new Falloff.Axis(displacement1, Width, 0), 
+                    entity.Radius)
             };
         }
     }
