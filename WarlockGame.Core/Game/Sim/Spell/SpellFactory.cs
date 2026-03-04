@@ -343,8 +343,8 @@ class SpellFactory {
     }
 
     public SpellDefinition FlameStrike() {
-        var radius = 150;
-        var delaySeconds = 1.25f;
+        var radius = 180;
+        var delaySeconds = 1.35f;
         var animationDurationSeconds = 0.8f;
         return new SpellDefinition(
             id: 10,
@@ -358,7 +358,7 @@ class SpellFactory {
                 new LocationAreaOfEffect {
                     Shape = new CircleTarget(outerRadius: radius),
                     Components = [
-                        new DamageComponent { Damage = 40 },
+                        new DamageComponent { Damage = 80 },
                         new PushComponent { Force = 200 }
                     ]
                 }
