@@ -14,7 +14,7 @@ class Warlock : Entity {
     public float Speed { get; set; } = 3.0f;
     public const float RotationSpeed = 0.15f; // Radians per tick
 
-    public float MaxHealth => 60;
+    public float MaxHealth => 100;
     public float Health { get; set => field = float.Clamp(value, 0, MaxHealth); }
 
     /// Desired direction of travel. If set, the Warlock will move and rotate as needed
