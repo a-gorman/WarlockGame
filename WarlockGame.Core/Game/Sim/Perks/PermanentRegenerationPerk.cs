@@ -11,7 +11,7 @@ class PermanentRegenerationPerk : PermanentBuffPerk {
             description: "Permanently grants you health regeneration",
             texture: Art.HealIcon) { }
 
-    private const float RegenAmount = 0.0045f;
+    private const float RegenAmount = 0.016f;
 
     protected override Buff CreateBuff() {
         return new Regeneration(regenAmount: RegenAmount, duration: null);
