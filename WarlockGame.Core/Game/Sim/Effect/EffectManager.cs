@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace WarlockGame.Core.Game.Sim.Effect
@@ -8,7 +7,7 @@ namespace WarlockGame.Core.Game.Sim.Effect
 	internal class EffectManager {
 		public IReadOnlyList<IEffect> Effects => _effects;
 		
-		private List<IEffect> _effects = new();
+		private readonly List<IEffect> _effects = new();
 
 		private bool _isUpdating;
 		private readonly List<IEffect> _addedEffects = new();
@@ -29,17 +28,19 @@ namespace WarlockGame.Core.Game.Sim.Effect
 		{
 			_isUpdating = true;
 
-			foreach (var entity in _effects)
-				entity.Update();
+			foreach (var effect in _effects) {
+				effect.Update();
+			}
 
 			_isUpdating = false;
 
-			foreach (var entity in _addedEffects)
-				AddEffect(entity);
+			foreach (var effect in _addedEffects) {
+				AddEffect(effect);
+			}
 
 			_addedEffects.Clear();
 
-			_effects = _effects.Where(x => !x.IsExpired).ToList();
+			_effects.RemoveAll(x => x.IsExpired);
 		}
 
 		public void Clear() {

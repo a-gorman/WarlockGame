@@ -57,7 +57,7 @@ class SpellFactory {
             effects: new DirectionalAreaOfEffect {
                 Shape = new LineTarget { Length = 600, IgnoreCaster = true, Texture = Art.Lightning },
                 Effects = [
-                    new DamageComponent { Damage = 20 },
+                    new DamageComponent { Damage = 30 },
                     new PushComponent { Force = 100 }
                 ]
             }
