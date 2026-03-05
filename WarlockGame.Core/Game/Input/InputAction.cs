@@ -12,6 +12,7 @@ public enum InputAction {
     Spell8,
     Spell9,
     Spell10,
+    CenterCamera,
     LeftClick,
     RightClick,
     MouseLook,

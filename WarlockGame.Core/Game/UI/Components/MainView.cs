@@ -124,6 +124,14 @@ sealed class MainView : InterfaceComponent {
     private void ScrollView(UIManager.UpdateArgs args) {
         var inputState = args.Global.InputState;
         var scrollAmount = Vector2.Zero;
+        if (inputState.IsActionKeyDown(InputAction.CenterCamera) && PlayerManager.LocalPlayer != null) {
+            var localPlayerPos = _sim.EntityManager.GetWarlockLivingOrDeadByForceId(PlayerManager.LocalPlayer.Id)?.Position;
+            if (localPlayerPos != null) {
+                MoveCamera(localPlayerPos.Value - WarlockGame.ScreenSize / 2);
+                return;
+            }
+        } 
+        
         if (inputState.IsActionKeyDown(InputAction.MouseLook)) {
             if (_previousMousePos != null) {
                 scrollAmount -= _mouseLookSensitivity * (args.Global.MousePosition - _previousMousePos.Value);
@@ -165,10 +173,7 @@ sealed class MainView : InterfaceComponent {
         }
 
         if (scrollAmount != Vector2.Zero) {
-            ViewBounds = ViewBounds with {
-                X = Math.Clamp(ViewBounds.X + scrollAmount.X, _viewLimit.Left, _viewLimit.Right),
-                Y = Math.Clamp(ViewBounds.Y + scrollAmount.Y, _viewLimit.Top,  _viewLimit.Bottom)
-            };
+            MoveCamera(new Vector2(ViewBounds.X + scrollAmount.X, ViewBounds.Y + scrollAmount.Y));
         }
     }
 
@@ -253,5 +258,12 @@ sealed class MainView : InterfaceComponent {
         spriteBatch.Draw(filledTexture,
             new Rectangle((int)position.X - HpBarWidth / 2, (int)position.Y, (int)(HpBarWidth * filledProportion), HpBarHeight),
             Color.White);
+    }
+
+    private void MoveCamera(Vector2 newPosition) {
+        ViewBounds = ViewBounds with {
+            X = Math.Clamp(newPosition.X, _viewLimit.Left, _viewLimit.Right),
+            Y = Math.Clamp(newPosition.Y, _viewLimit.Top,  _viewLimit.Bottom)
+        };
     }
 }

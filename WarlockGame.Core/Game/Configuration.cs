@@ -70,6 +70,7 @@ static class Configuration {
             { ParseKey(args["keymap:spell8"], Keys.G), InputAction.Spell8 },
             { ParseKey(args["keymap:spell9"], Keys.C), InputAction.Spell9 },
             { ParseKey(args["keymap:spell10"], Keys.V), InputAction.Spell10 },
+            { ParseKey(args["keymap:centerCamera"], Keys.Space), InputAction.CenterCamera },
             { ParseKey(args["keymap:moveUp"], Keys.Up), InputAction.MoveUp },
             { ParseKey(args["keymap:moveDown"], Keys.Down), InputAction.MoveDown },
             { ParseKey(args["keymap:moveLeft"], Keys.Left), InputAction.MoveLeft },
