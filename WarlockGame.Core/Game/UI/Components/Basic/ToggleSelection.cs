@@ -16,11 +16,10 @@ class ToggleSelection : InterfaceComponent {
     private readonly Color _clickedBorderColor;
     private const int BorderThickness = 4;
     
-    public ToggleSelection(Rectangle boundingBox, Texture2D texture, Color clickedBorderColor) {
+    public ToggleSelection(Texture2D texture, Color clickedBorderColor) {
         _clickedBorderColor = clickedBorderColor;
         Clickable = ClickableState.Clickable;
         _texture = texture;
-        BoundingBox = boundingBox;
     }
     
     public override void OnLeftClick(Vector2 location) {

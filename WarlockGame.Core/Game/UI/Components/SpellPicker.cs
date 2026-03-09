@@ -23,7 +23,7 @@ class SpellPicker : InterfaceComponent {
 
     public SpellPicker(int selections, Simulation sim) {
         Clickable = ClickableState.PassThrough;
-        BoundingBox = new Rectangle(0, 0, 600, 300);
+        Layout = Layout.WithSize(600, 300, Layout.Alignment.Center);
         _maxSelections = selections;
         _sim = sim;
         var descriptionText = $"Select {selections} spells";
@@ -34,8 +34,9 @@ class SpellPicker : InterfaceComponent {
         inactiveTexture.SetData([Color.DarkGray]);
         
         AddComponent(new TextDisplay { Text = descriptionText, TextScale = 0.75f });
-        _confirmButton = new Button(new Rectangle(-10, -10, 80, 40), activeTexture, inactiveTexture) {
+        _confirmButton = new Button(activeTexture, inactiveTexture) {
             IsActive = false,
+            Layout = Layout.WithBoundingBox(-10, -10, 80, 40, Layout.Alignment.BottomRight),
             LeftClick = _ => {
                 var playerId = PlayerManager.LocalPlayerId;
                 if (playerId == null) return;
@@ -44,7 +45,7 @@ class SpellPicker : InterfaceComponent {
                 Visible = false;
             }
         };
-        AddComponent(_confirmButton, Alignment.BottomRight);
+        AddComponent(_confirmButton);
         
         _confirmButton.AddComponent(new TextDisplay { Text = "Confirm", TextScale = 0.5f });
         Visible = false;
@@ -60,18 +61,21 @@ class SpellPicker : InterfaceComponent {
     private Basic.Grid CreateGrid() {
         var rows = _spells!.Length / _columns + 1;
 
-        var grid = new Basic.Grid(BoundingBox.AtOrigin().WithMargin(20), _columns, rows) { Clickable = ClickableState.PassThrough };
+        var grid = new Basic.Grid(BoundingBox.AtOrigin().WithMargin(20), _columns, rows) {
+            Clickable = ClickableState.PassThrough
+        };
         for (var i = 0; i < _spells.Length; i++) {
             var spell = _spells[i];
             var iColumn = i % _columns;
             var iRow = i / _columns;
 
             var spellIndex = i;
-            var selectionBox = new ToggleSelection(new Rectangle(0, 0, 80, 80), spell.SpellIcon, Color.LimeGreen) {
+            var selectionBox = new ToggleSelection(spell.SpellIcon, Color.LimeGreen) {
+                Layout = Layout.WithSize(80, 80),
                 LeftClick = _ => OnLeftClickSelection(spellIndex)
             };
             
-            grid.AddComponent(selectionBox, iRow, iColumn);
+            grid.AddComponentToCell(selectionBox, iRow, iColumn);
         }
 
         return grid;
@@ -89,11 +93,11 @@ class SpellPicker : InterfaceComponent {
         spriteBatch.Draw(Art.Pixel, BoundingBox.WithOffset(location), Color.Maroon);
     }
 
-    public override void OnAdd() {
+    protected override void OnAdd() {
         _sim.SimRestarted += OnGameRestart;
     }
 
-    public override void OnRemove() {
+    protected override void OnRemove() {
         _sim.SimRestarted -= OnGameRestart;
     }
 
@@ -110,7 +114,7 @@ class SpellPicker : InterfaceComponent {
         _confirmButton.IsActive = false;
         _selections.Clear();
         _grid = CreateGrid();
-        AddComponent(_grid, Alignment.Center);
+        AddComponent(_grid);
 
         Visible = true;
     }

@@ -18,7 +18,7 @@ static class UIManager {
     private static InterfaceComponent _view = new() { Clickable = ClickableState.PassThrough };
 
     public static void Initialize() {
-        _view.BoundingBox = new Rectangle(0, 0, Configuration.ScreenWidth, Configuration.ScreenHeight);
+        _view.Layout = Layout.WithSize(Configuration.ScreenWidth, Configuration.ScreenHeight);
     }
     
     public static void Draw(SpriteBatch spriteBatch) {
@@ -44,10 +44,10 @@ static class UIManager {
             Global = GlobalProps
         };
         
-        UpdateComponent(_view, ref args);
+        UpdateComponent(_view, null, ref args, false);
     }
 
-    private static void UpdateComponent(InterfaceComponent component, ref readonly UpdateArgs args) {
+    private static void UpdateComponent(InterfaceComponent component, InterfaceComponent? parent, ref readonly UpdateArgs args, bool parentBoundsRefreshed) {
         var mousePos = args.MousePosition;
         if (mousePos != null && component.BoundingBox.Contains(mousePos.Value)) {
             mousePos -= component.BoundingBox.Location.ToVector2();
@@ -57,8 +57,12 @@ static class UIManager {
 
         var updateArgs = args with { MousePosition = mousePos };
         component.Update(ref updateArgs);
+        if (parentBoundsRefreshed || component.IsLayoutDirty) {
+            component.RefreshBounds(parent?.BoundingBox ?? new Rectangle(0, 0, Configuration.ScreenWidth, Configuration.ScreenHeight));
+            parentBoundsRefreshed = true;
+        }
         foreach (var nestedComponent in component.Components) {
-            UpdateComponent(nestedComponent, ref updateArgs);
+            UpdateComponent(nestedComponent, component, ref updateArgs, parentBoundsRefreshed);
         }
         component.RemoveAllComponents(x => x.IsExpired);
     }
@@ -72,12 +76,12 @@ static class UIManager {
     /// <param name="alignment">Determines where the text prompt should be drawn relative to</param>
     public static void OpenTextPrompt(string promptText, Action<string> acceptedCallback, Action<string>? cancelledCallback = null) {
         var prompt = new TextPrompt(promptText, acceptedCallback, cancelledCallback);
-        AddComponent(prompt, Alignment.Center);
+        AddComponent(prompt);
         InputManager.AddTextConsumer(prompt);
     }
 
-    public static void AddComponent(InterfaceComponent component, Alignment alignment) {
-        _view.AddComponent(component, alignment);
+    public static void AddComponent(InterfaceComponent component) {
+        _view.AddComponent(component);
     }
     
     public static void HandleLeftClick(Vector2 clickLocation) {

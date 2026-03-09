@@ -24,9 +24,9 @@ sealed class PerkPicker: InterfaceComponent {
     private readonly int _marginX = 20;
     private readonly int _marginY = 20;
     
-    public PerkPicker(Simulation sim, Vector2 location) {
+    public PerkPicker(Simulation sim, Point location) {
         _sim = sim;
-        BoundingBox = new Rectangle(location.ToPoint(), new Point(_width, _height));
+        Layout = Layout.WithBoundingBox(location.X, location.Y, _width, _height, Layout.Alignment.Center);
     }
 
     public override void Update(ref readonly UIManager.UpdateArgs args) {
@@ -50,7 +50,7 @@ sealed class PerkPicker: InterfaceComponent {
         AddComponent(grid);
         for (var index = 0; index < _perks.Count; index++) {
             var perk = _perks[index];
-            var button = new Button(new Rectangle(0,0, 90, 90), perk.Texture) {
+            var button = new Button(perk.Texture) {
                 LeftClick = _ => {
                     var playerId = PlayerManager.LocalPlayerId;
                     if (playerId == null) return;
@@ -59,7 +59,7 @@ sealed class PerkPicker: InterfaceComponent {
                 }
             };
 
-            grid.AddComponent(button, column: index, row: 0);
+            grid.AddComponentToCell(button, column: index, row: 0);
             button.AddComponent(new TextDisplay {Text = perk.Name, TextScale = 0.5f});
         }
     }

@@ -54,7 +54,7 @@ sealed class MainView : InterfaceComponent {
         );
         
         Clickable = ClickableState.Clickable;
-        BoundingBox = new Rectangle(new Point(0, 0), WarlockGame.ScreenSize.ToPoint());
+        Layout = Layout.Fill();
         ViewBounds = new RectangleF(
             Math.Abs(WarlockGame.ScreenSize.X - _sim.GameRules.InitialArenaSize.X) / 2,
             Math.Abs(WarlockGame.ScreenSize.Y - _sim.GameRules.InitialArenaSize.Y) / 2,
@@ -62,7 +62,7 @@ sealed class MainView : InterfaceComponent {
             WarlockGame.ScreenSize.Y
         );
 
-        _perkPicker = new PerkPicker(_sim, new Vector2(600, 400)) {Visible = false, Clickable = ClickableState.PassThrough};
+        _perkPicker = new PerkPicker(_sim, new Point(600, 400)) {Visible = false, Clickable = ClickableState.PassThrough};
         AddComponent(_perkPicker);
     }
 

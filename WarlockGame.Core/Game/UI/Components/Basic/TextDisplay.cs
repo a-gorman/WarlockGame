@@ -47,7 +47,7 @@ class TextDisplay : InterfaceComponent {
     }
     
     protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
-        if(IsBoundsDirty || _textDirty) {
+        if(IsLayoutDirty || _textDirty) {
             RecalculateWrappedText();
         }
 

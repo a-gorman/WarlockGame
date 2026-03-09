@@ -15,11 +15,11 @@ sealed class Scoreboard : InterfaceComponent {
         _gameRule = gameRule;
     }
 
-    public override void OnAdd() {
+    protected override void OnAdd() {
         _gameRule.OnChanged += HandleGameRuleChanged;
     }
-    
-    public override void OnRemove() {
+
+    protected override void OnRemove() {
         _gameRule.OnChanged -= HandleGameRuleChanged;
     }
 
@@ -37,7 +37,7 @@ sealed class Scoreboard : InterfaceComponent {
                 var lives = _gameRule.Statuses[id].Lives;
                 var player = PlayerManager.GetPlayer(id);
                 if (player == null) continue;
-                _grid.AddComponent(new TextDisplay {
+                _grid.AddComponentToCell(new TextDisplay {
                     TextColor = player.Color,
                     Text = player.Name,
                     TextScale = 0.55f
@@ -47,13 +47,12 @@ sealed class Scoreboard : InterfaceComponent {
                     Text = lives.ToString(),
                     TextScale = 0.55f
                 };
-                _grid.AddComponent(lifeDisplay, i, 1);
+                _grid.AddComponentToCell(lifeDisplay, i, 1);
                 _playerLifeDisplays[id] = lifeDisplay;
             }
 
             var totalWidth = columnWidth * 2;
-            BoundingBox = new Rectangle((int)WarlockGame.ScreenSize.X - totalWidth, 15, totalWidth,
-                rowHeight * playerIds.Count);
+            Layout = Layout.WithBoundingBox((int)WarlockGame.ScreenSize.X - totalWidth, 15, totalWidth, rowHeight * playerIds.Count, Layout.Alignment.TopRight);
             AddComponent(_grid);
 
             foreach (var playerId in _playerLifeDisplays.Keys) {

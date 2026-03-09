@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Util;
 
@@ -33,15 +34,20 @@ class InterfaceComponent {
     /// </summary>
     public Rectangle BoundingBox { 
         get;
-        set {
-            if (field != value) {
-                IsBoundsDirty = true; 
-                field = value;
-            }
-        } 
+        private set;
     }
 
-    protected bool IsBoundsDirty { get; private set; } = true;
+    public Layout Layout {
+        get;
+        set {
+            if (field != value) {
+                IsLayoutDirty = true;
+                field = value;
+            }
+        }
+    } = new();
+
+    public bool IsLayoutDirty { get; private set; } = true;
     protected bool IsVisibilityDirty { get; private set; } = true;
 
     protected bool WasMadeVisible => IsVisibilityDirty && Visible;
@@ -57,96 +63,99 @@ class InterfaceComponent {
     public void DrawComponent(Vector2 location, SpriteBatch spriteBatch) {
         Draw(location, spriteBatch);
         IsVisibilityDirty = false;
-        IsBoundsDirty = false;
     }
     
-    protected virtual void Draw(Vector2 location, SpriteBatch spriteBatch) {
-        IsBoundsDirty = false;
-    }
+    protected virtual void Draw(Vector2 location, SpriteBatch spriteBatch) { }
 
     /// <summary>
     /// Update function called each frame before drawing any components.
     /// </summary>
     public virtual void Update(ref readonly UIManager.UpdateArgs args) { }
-
-    public void AddComponent(InterfaceComponent component, Alignment alignment) {
-        int xOffset;
-        int yOffset;
-        switch (alignment) {
-            case Alignment.TopLeft:
-                xOffset = 0;
-                yOffset = 0;
-                break;
-            case Alignment.TopCenter:
-                xOffset = CenterOffset(BoundingBox.Width, component.BoundingBox.Width);
-                yOffset = 0;
-                break;
-            case Alignment.TopRight:
-                xOffset = OppositeSideOffset(BoundingBox.Width, component.BoundingBox.Width);
-                yOffset = 0;
-                break;
-            case Alignment.CenterLeft:
-                xOffset = 0;
-                yOffset = CenterOffset(BoundingBox.Height, component.BoundingBox.Height);
-                break;
-            case Alignment.Center:
-                xOffset = CenterOffset(BoundingBox.Width, component.BoundingBox.Width);
-                yOffset = CenterOffset(BoundingBox.Height, component.BoundingBox.Height);
-                break;
-            case Alignment.CenterRight:
-                xOffset = OppositeSideOffset(BoundingBox.Width, component.BoundingBox.Width);
-                yOffset = CenterOffset(BoundingBox.Height, component.BoundingBox.Height);
-                break;
-            case Alignment.BottomLeft:
-                xOffset = 0;
-                yOffset = OppositeSideOffset(BoundingBox.Height, component.BoundingBox.Height);
-                break;
-            case Alignment.BottomCenter:
-                xOffset = CenterOffset(BoundingBox.Width, component.BoundingBox.Width);
-                yOffset = OppositeSideOffset(BoundingBox.Height, component.BoundingBox.Height);
-                break;
-            case Alignment.BottomRight:
-                xOffset = OppositeSideOffset(BoundingBox.Width, component.BoundingBox.Width);
-                yOffset = OppositeSideOffset(BoundingBox.Height, component.BoundingBox.Height);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(alignment), alignment, null);
-        }
-
-        component.BoundingBox = component.BoundingBox.WithOffset(xOffset, yOffset);
-        AddComponent(component);
-
-        // Nested functions
-        int CenterOffset(int parentSideLength, int childSideLength) {
-            return Math.Abs(parentSideLength - childSideLength) / 2;
-        }
-        
-        int OppositeSideOffset(int parentSideLength, int childSideLength) {
-            return Math.Abs(parentSideLength - childSideLength);
-        }
-    }
     
     public void AddComponent(InterfaceComponent component) {
-        if (component.BoundingBox.IsEmpty) {
-            component.BoundingBox = BoundingBox.AtOrigin();
-            Logger.Debug($"Default bounding box assigned for interface component. {component.BoundingBox}", Logger.LogType.Interface);
-        } else {
-            var originX = Math.Min(Math.Max(component.BoundingBox.X, 0), BoundingBox.Width);
-            var originY = Math.Min(Math.Max(component.BoundingBox.Y, 0), BoundingBox.Height);
-            var oppositeX = Math.Max(Math.Min(component.BoundingBox.Right, BoundingBox.Width), 0);
-            var oppositeY = Math.Max(Math.Min(component.BoundingBox.Bottom, BoundingBox.Height), 0);
+        var originX = Math.Min(Math.Max(component.BoundingBox.X, 0), BoundingBox.Width);
+        var originY = Math.Min(Math.Max(component.BoundingBox.Y, 0), BoundingBox.Height);
+        var oppositeX = Math.Max(Math.Min(component.BoundingBox.Right, BoundingBox.Width), 0);
+        var oppositeY = Math.Max(Math.Min(component.BoundingBox.Bottom, BoundingBox.Height), 0);
 
-            var newBounds = new Rectangle(originX, originY, oppositeX - originX, oppositeY - originY);
+        var newBounds = new Rectangle(originX, originY, oppositeX - originX, oppositeY - originY);
 
-            if (newBounds != component.BoundingBox) {
-                Logger.Warning($"Nested component bounds are outside parent bounds. Adjusted '{component.BoundingBox}' to '{newBounds}'.", Logger.LogType.Interface);
-                component.BoundingBox = newBounds;
-            }
+        if (newBounds != component.BoundingBox) {
+            Logger.Warning($"Nested component bounds are outside parent bounds. Adjusted '{component.BoundingBox}' to '{newBounds}'.", Logger.LogType.Interface);
+            component.BoundingBox = newBounds;
         }
         
         _components.Add(component);
         _components.Sort((first, second) => second.Layer.CompareTo(first.Layer));
         component.OnAdd();
+    }
+
+    public virtual void RefreshBounds(Rectangle parentBounds) {
+        switch (Layout.Type) {
+            case Layout.LayoutType.Margin:
+                BoundingBox = parentBounds
+                    .AtLocation(Layout.Offset)
+                    .WithMargin(Layout.Width, Layout.Height);
+                break;
+            case Layout.LayoutType.Manual:
+                int xOffset;
+                int yOffset;
+                switch (Layout.Origin) {
+                    case Layout.Alignment.TopLeft:
+                        xOffset = Layout.Offset.X;
+                        yOffset = Layout.Offset.Y;
+                        break;
+                    case Layout.Alignment.TopCenter:
+                        xOffset = CenterOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
+                        yOffset = Layout.Offset.Y;
+                        break;
+                    case Layout.Alignment.TopRight:
+                        xOffset = OppositeSideOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
+                        yOffset = Layout.Offset.Y;
+                        break;
+                    case Layout.Alignment.CenterLeft:
+                        xOffset = Layout.Offset.X;
+                        yOffset = CenterOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
+                        break;
+                    case Layout.Alignment.Center:
+                        xOffset = CenterOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
+                        yOffset = CenterOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
+                        break;
+                    case Layout.Alignment.CenterRight:
+                        xOffset = OppositeSideOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
+                        yOffset = CenterOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
+                        break;
+                    case Layout.Alignment.BottomLeft:
+                        xOffset = Layout.Offset.X;
+                        yOffset = OppositeSideOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
+                        break;
+                    case Layout.Alignment.BottomCenter:
+                        xOffset = CenterOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
+                        yOffset = OppositeSideOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
+                        break;
+                    case Layout.Alignment.BottomRight:
+                        xOffset = OppositeSideOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
+                        yOffset = OppositeSideOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(UI.Components.Layout.Type), Layout.Type, null);
+                }
+
+                BoundingBox = parentBounds.AtOrigin().GetRelativeRectangle(xOffset, yOffset, Layout.Width, Layout.Height);
+                break;
+        }
+
+        IsLayoutDirty = false;
+        return;
+
+        // Nested functions
+        int CenterOffset(int offset, int childSideLength, int parentSideLength) {
+            return Math.Abs(parentSideLength - (childSideLength - offset)) / 2;
+        }
+
+        int OppositeSideOffset(int offset, int childSideLength, int parentSideLength) {
+            return Math.Abs(parentSideLength - (childSideLength - offset));
+        }
     }
 
     public void RemoveComponent(InterfaceComponent component) {
@@ -170,21 +179,85 @@ class InterfaceComponent {
         _components.RemoveAll(predicate);
     }
 
-    public virtual void OnAdd() { }
+    protected virtual void OnAdd() { }
 
-    public virtual void OnRemove() { }
+    protected virtual void OnRemove() { }
 }
 
-public enum Alignment {
-    TopLeft,
-    TopCenter,
-    TopRight,
-    CenterLeft,
-    Center,
-    CenterRight,
-    BottomLeft,
-    BottomCenter,
-    BottomRight
+public record struct Layout {
+    public LayoutType Type { get; set; }
+    public Alignment Origin { get; set; }
+    public Point Offset { get; set; }
+    public int Width { get; set; }
+    public int Height { get; set; }
+
+    public Layout() {
+        Type = LayoutType.Margin;
+    }
+    
+    private Layout(LayoutType type, 
+        Alignment alignment = Alignment.TopLeft, 
+        Point offset = new(), 
+        int width = 0, 
+        int height = 0) {
+        Origin = alignment;
+        Offset = offset;
+        Width = width;
+        Height = height;
+        Type = type;
+    }
+    
+    public static Layout Fill() {
+        return new Layout();
+    }
+    
+    public static Layout WithMargin(int margin) {
+        return new Layout(LayoutType.Margin, width: margin, height: margin);
+    }
+    
+    public static Layout WithMargin(int widthMargin, int heightMargin) {
+        return new Layout(LayoutType.Margin, width: widthMargin, height: heightMargin);
+    }
+    
+    public static Layout WithSize(int width, int height, Alignment alignment = Alignment.TopLeft) {
+        return new Layout(LayoutType.Manual,
+            alignment: alignment,
+            width: width,
+            height: height);
+    }
+
+    public static Layout WithBoundingBox(Rectangle boundingBox, Alignment alignment = Alignment.TopLeft) {
+        return new Layout(LayoutType.Manual,
+            alignment: alignment,
+            offset: boundingBox.Location,
+            width: boundingBox.Width,
+            height: boundingBox.Height);
+    }
+
+    public static Layout WithBoundingBox(int x, int y, int width, int height, Alignment alignment = Alignment.TopLeft) {
+        return new Layout(LayoutType.Manual,
+            alignment: alignment,
+            offset: new Point(x, y),
+            width: width,
+            height: height);
+    }
+
+    public enum Alignment {
+        TopLeft,
+        TopCenter,
+        TopRight,
+        CenterLeft,
+        Center,
+        CenterRight,
+        BottomLeft,
+        BottomCenter,
+        BottomRight
+    }
+
+    public enum LayoutType {
+        Manual,
+        Margin
+    }
 }
 
 public enum ClickableState {

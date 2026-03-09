@@ -22,7 +22,7 @@ sealed class LogDisplay : InterfaceComponent {
     private bool _logsDirty = true;
     
     private LogDisplay() {
-        BoundingBox = new Rectangle(0, 0, 900, 100);
+        Layout = Layout.WithSize(900, 100);
         _textDisplay = new TextDisplay { TextScale = 0.6f };
 
         AddComponent(_textDisplay);
@@ -51,12 +51,12 @@ sealed class LogDisplay : InterfaceComponent {
         _logsDirty = true;
     }
 
-    public override void OnAdd() {
+    protected override void OnAdd() {
         Logger.LogCreated += OnLogAdded;
         _logsDirty = true;
     }
 
-    public override void OnRemove() {
+    protected override void OnRemove() {
         Logger.LogCreated -= OnLogAdded;
     }
 

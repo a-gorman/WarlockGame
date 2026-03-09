@@ -12,9 +12,8 @@ sealed class Button: InterfaceComponent {
     public Action<Vector2>? RightClick { get; set; }
     public bool IsActive { get; set; } = true;
 
-    public Button(Rectangle boundingBox, Texture2D texture, Texture2D? inactiveTexture = null) {
+    public Button(Texture2D texture, Texture2D? inactiveTexture = null) {
         Clickable = ClickableState.Clickable;
-        BoundingBox = boundingBox;
         Texture = texture;
         InactiveTexture = inactiveTexture;
     }
