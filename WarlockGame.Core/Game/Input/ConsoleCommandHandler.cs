@@ -12,7 +12,7 @@ using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Input;
 
-class TextCommandHandler {
+class ConsoleCommandHandler {
     private record TextCommand(string Name, string[] Aliases, string Description, Action<string[]> Handler);
 
     private static Dictionary<string, TextCommand> _textCommandHandlers = new();

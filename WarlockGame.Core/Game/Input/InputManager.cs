@@ -22,7 +22,7 @@ static class InputManager {
     private static KeyboardInput _keyboard = null!;
     private static readonly List<ITextInputConsumer> _textInputConsumers = new();
     private static readonly InputState _inputState = new();
-    private static readonly TextCommandHandler _commandHandler = new();
+    private static readonly ConsoleCommandHandler _commandHandler = new();
 
     private static readonly List<InputAction> SpellSelectionActions = new() {
         InputAction.Spell1, InputAction.Spell2, InputAction.Spell3, InputAction.Spell4, InputAction.Spell5, 
@@ -77,9 +77,7 @@ static class InputManager {
             UIManager.OpenTextPrompt("", x => _commandHandler.HandleCommand(x));
         }
 
-        if (LocalPlayerId is null) return;
-        
-        if (!HasTextConsumers) {
+        if (!HasTextConsumers && LocalPlayerId is not null) {
             var sim = WarlockGame.Instance.Simulation;
             foreach (var actionType in SpellSelectionActions) {
                 if (inputState.WasActionKeyPressed(actionType) && sim.SpellManager.PlayerSpells.TryGetValue(LocalPlayerId.Value, out var localPlayerSpells)) {

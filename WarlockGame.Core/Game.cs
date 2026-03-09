@@ -78,6 +78,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
         Window.TextInput += (_, textArgs) => InputManager.OnTextInput(textArgs);
         
+        UIManager.AddComponent(new MainMenu { Visible = !Configuration.Client && !Configuration.Server });
         UIManager.AddComponent(LogDisplay.Instance);
         UIManager.AddComponent(MessageDisplay.Instance);
         UIManager.AddComponent(_spellDisplay);

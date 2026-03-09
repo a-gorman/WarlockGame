@@ -11,19 +11,29 @@ sealed class Grid : InterfaceComponent {
         this(bounds.X, bounds.Y, columns, bounds.Width / columns, rows, bounds.Height / rows) { }
     
     public Grid(int x, int y, int columns, int columnWidth, int rows, int rowHeight) {
-        if (columns < 1 || rows < 1) {
-            Logger.Warning($"Added grid with no cells, Columns: {columns}, Rows: {rows}", Logger.LogType.Interface);
-        }
-
         Layout = Layout.WithBoundingBox(x, y, columns * columnWidth, rows * rowHeight);
-        Cells = new Cell[columns, rows];
+        Cells = CreateCells(columns, rows);
+    }
+
+    public Grid(int columns = 1, int rows = 1) {
+        Cells = CreateCells(columns, rows);
+    }
+    
+    private Cell[,] CreateCells(int columns, int rows) {
+        if (columns < 1 || rows < 1) {
+            Logger.Warning($"Created grid with no cells, Columns: {columns}, Rows: {rows}", Logger.LogType.Interface);
+        }
+        
+        var cells = new Cell[columns, rows];
         for (int c = 0; c < columns; c++) {
             for (int r = 0; r < rows; r++) {
                 var cell = new Cell();
                 AddComponent(cell);
-                Cells[c, r] = cell;
+                cells[c, r] = cell;
             }
         }
+
+        return cells;
     }
 
     public void AddComponentToCell(InterfaceComponent component, int row, int column) {
