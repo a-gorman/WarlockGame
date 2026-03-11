@@ -31,6 +31,8 @@ class ConsoleCommandHandler {
         RegisterTextCommand("ip", 
             _ => MessageDisplay.Display($"IP Address is: {NetUtils.GetLocalIpList(LocalAddrType.IPv4).JoinToString()}"));
         RegisterTextCommand("version", ["v"], _ => DisplayVersion(), "Display version information");
+        RegisterTextCommand("ping", ["latency"], _ => DisplayLatency(), "Display latency information");
+        RegisterTextCommand("debug", _ => DisplayDebugInformation(), "Display debug information");
         #if DEBUG
         RegisterTextCommand("kill", args => {
             if (int.TryParse(args.FirstOrDefault(""), out var forceId))
@@ -111,7 +113,18 @@ class ConsoleCommandHandler {
     }
 
     private static void DisplayVersion() {
-        MessageDisplay.Display(System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "");
+        MessageDisplay.Display($"Version: {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? ""}");
+    }
+    
+    private static void DisplayLatency() {
+        MessageDisplay.Display($"Ping: {NetworkManager.Latency?.ToString() ?? ""}");
+    }
+    
+    private static void DisplayDebugInformation() {
+        DisplayVersion();
+        DisplayLatency();
+        MessageDisplay.Display($"Ticks in queue: {WarlockGame.Instance.ServerTicks.Count}");
+        MessageDisplay.Display($"Log file name: {Configuration.LogFileName}");
     }
     
     private static void Help() {

@@ -80,14 +80,14 @@ static class Configuration {
             { ParseKey(args["keymap:openCommandInput"], Keys.Enter), InputAction.OpenCommandInput },
         };
         
-        LogDisplayLevel = args["logDisplayLevel"]?.Let(x => Logger.Level.ParseOrNull(x, true)) ?? Logger.Level.ERROR;
-        LogDisplayVisible = args["logDisplayVisible"]?.Let(bool.Parse) ?? true;
-        LogDedupeLevel = args["logDedupeLevel"]?.Let(x => Logger.Level.ParseOrNull(x, true)) ?? Logger.Level.ERROR;
+        LogDisplayLevel = args["debug:logDisplayLevel"]?.Let(x => Logger.Level.ParseOrNull(x, true)) ?? Logger.Level.ERROR;
+        LogDisplayVisible = args["debug:logDisplayVisible"]?.Let(bool.Parse) ?? true;
+        LogDedupeLevel = args["debug:logDedupeLevel"]?.Let(x => Logger.Level.ParseOrNull(x, true)) ?? Logger.Level.ERROR;
         
-        Client = args["autoStartClient"]?.Let(bool.Parse) ?? false;
-        Server = args["autoStartServer"]?.Let(bool.Parse) ?? false;
-        RestartOnJoin = args["autoRestartOnJoin"]?.Let(bool.Parse) ?? false;
-        JoinIp = args["joinIp"] ?? "localhost";
+        Client = args["debug:autoStartClient"]?.Let(bool.Parse) ?? false;
+        Server = args["debug:autoStartServer"]?.Let(bool.Parse) ?? false;
+        RestartOnJoin = args["debug:autoRestartOnJoin"]?.Let(bool.Parse) ?? false;
+        JoinIp = args["debug:joinIp"] ?? "localhost";
         DebugBoundingBoxVisualize = args["debug:boundingBoxVisualize"]?.Let(bool.Parse) ?? false;
         LogFileName = args["debug:logFileName"] ?? LogFileName;
     }

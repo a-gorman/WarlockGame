@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Client" type="DotNetProject" factoryName=".NET Project" singleton="false">
     <option name="EXE_PATH" value="$PROJECT_DIR$/WarlockGame.WindowsDX/bin/Debug/net8.0-windows/WarlockGame.WindowsDX.exe" />
-    <option name="PROGRAM_PARAMETERS" value="autoStartClient=true player:name=TestClient logDisplayLevel=WARNING windowName=Client debug:logFileName=client_log" />
+    <option name="PROGRAM_PARAMETERS" value="debug:autoStartClient=true player:name=TestClient debug:logDisplayLevel=WARNING windowName=Client debug:logFileName=client_log" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/WarlockGame.WindowsDX/bin/Debug/net8.0-windows" />
     <option name="PASS_PARENT_ENVS" value="1" />
     <option name="ENV_FILE_PATHS" value="" />

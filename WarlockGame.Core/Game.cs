@@ -35,7 +35,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     private SpriteBatch _spriteBatch = null!;
     private readonly BloomComponent _bloom;
     internal Simulation Simulation { get; private set; } = null!;
-    private readonly Queue<ServerTickProcessed> _serverTicks = new();
+    public Queue<ServerTickProcessed> ServerTicks { get; } = new();
     // Map of player Ids to most recent tick processed
     private readonly Dictionary<int, int> _clientTicksProcessed = new();
     private readonly SpellDisplay _spellDisplay;
@@ -171,10 +171,10 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
                 break;
             case ClientTypeState.Client:
             {
-                if (!_serverTicks.Any())
+                if (!ServerTicks.Any())
                     break;
                 
-                var tick = _serverTicks.Dequeue();
+                var tick = ServerTicks.Dequeue();
 
                 foreach (var command in tick.ServerCommands)
                 {
@@ -254,6 +254,6 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     }
 
     public void OnServerTickProcessed(ServerTickProcessed serverTickProcessed) {
-        _serverTicks.Enqueue(serverTickProcessed);
+        ServerTicks.Enqueue(serverTickProcessed);
     }
 }

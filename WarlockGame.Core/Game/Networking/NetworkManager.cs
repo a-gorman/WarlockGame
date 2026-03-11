@@ -20,7 +20,7 @@ static class NetworkManager {
     /// <summary>
     /// Latency in milliseconds
     /// </summary>
-    private static int? Latency => IsClient? _client!.Latency : _server?.Latency;
+    public static int? Latency => IsClient? _client!.Latency : _server?.Latency;
     
     public static void StartServer() {
         if (IsConnected) return;
