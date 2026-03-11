@@ -93,16 +93,17 @@ class SpellFactory {
             cooldownTime: SimTime.OfSeconds(6),
             spellIcon: Art.BurstIcon,
             effects: new SelfAreaOfEffect {
-                Shape = new CircleTarget(innerRadius: 50),
+                Shape = new CircleTarget(innerRadius: 50, outerRadius: 100),
                 Components = [
                     new DamageComponent {
-                        Damage = 10,
+                        Damage = 15,
                         SelfFactor = 0.25f
                     },
                     new PushComponent {
                         Force = 150,
                         SelfFactor = 0
-                    }
+                    },
+                    new DestroyProjectile()
                 ]
             }
         );
