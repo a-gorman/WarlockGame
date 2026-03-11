@@ -77,8 +77,8 @@ class SpellFactory {
                         Shape = new CircleTarget(innerRadius: 8, outerRadius: 20),
                         Components = [
                             new BuffComponent(
-                                caster => new DamageOverTime(caster, SimTime.OfSeconds(6), 2f / 60),
-                                _ => new DefenseBuff(SimTime.OfSeconds(6)) { GenericDefenseModifier = 1.5f })
+                                caster => new DamageOverTime(caster, SimTime.OfSeconds(10), 2.5f / 60),
+                                _ => new DefenseBuff(SimTime.OfSeconds(10)) { GenericDefenseModifier = 1.5f })
                         ]
                     }
                 ]
