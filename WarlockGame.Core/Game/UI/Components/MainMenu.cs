@@ -27,8 +27,7 @@ class MainMenu: InterfaceComponent {
                 }
 
                 UIManager.OpenTextPrompt("Enter name:", name => {
-                    PlayerManager.AddLocalPlayer(name, Configuration.PreferredColor);
-                    NetworkManager.StartServer();
+                    WarlockGame.Instance.Host(name, Configuration.PreferredColor);
                 });
 
                 Visible = false;
@@ -40,16 +39,18 @@ class MainMenu: InterfaceComponent {
                     MessageDisplay.Display("Already in game!");
                     return;
                 }
-
+                
                 UIManager.OpenTextPrompt("Enter name:",
                     name => {
                         UIManager.OpenTextPrompt("Enter Host IP Address:",
                             ipAddress => {
-                                NetworkManager.ConnectToServer(ipAddress.NullOrEmptyTo("localhost"),
-                                    () => NetworkManager.JoinGame(name, Configuration.PreferredColor));
+                                WarlockGame.Instance.ConnectToServer(
+                                    ipAddress.NullOrEmptyTo("localhost"), 
+                                    name,
+                                    Configuration.PreferredColor);
                             });
                     });
-                
+
                 Visible = false;
             }
         }.Also(x => x.AddComponent(new TextDisplay { Text = "Join" }));

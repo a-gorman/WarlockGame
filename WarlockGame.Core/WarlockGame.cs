@@ -32,15 +32,20 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     public static Grid Grid { get; private set; } = null!;
     public static bool IsLocal => !NetworkManager.IsConnected;
 
+    public Queue<ServerTickProcessed> ServerTicks { get; } = new();
+    
     private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch = null!;
     private readonly BloomComponent _bloom;
     internal Simulation Simulation { get; private set; } = null!;
-    public Queue<ServerTickProcessed> ServerTicks { get; } = new();
+    
     // Map of player Ids to most recent tick processed
     private readonly Dictionary<int, int> _clientTicksProcessed = new();
     private readonly SpellDisplay _spellDisplay;
 
+    // 60 FPS
+    private long _targetTickTime = 166667L;
+    
     public enum GameState { WaitingToStart, Running }
     public enum ClientTypeState { Local, Client, Server }
     
@@ -68,7 +73,9 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         Window.Position = Vector2.Zero.ToPoint();
         Window.IsBorderless = Configuration.BorderlessWindow;
         Window.Title = Configuration.WindowName;
-        TargetElapsedTime = TimeSpan.FromTicks((long)(166667L / Configuration.SpeedFactor));
+
+        _targetTickTime = (long)(166667L / Configuration.SimSpeedFactor);
+        TargetElapsedTime = TimeSpan.FromTicks(_targetTickTime);
     }
 
     protected override void BeginRun() {
@@ -170,8 +177,14 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
                 break;
             case ClientTypeState.Client:
             {
-                if (!ServerTicks.Any())
+                if (ServerTicks.Count > 3) {
+                    // Run a bit faster to catch up
+                    TargetElapsedTime = TimeSpan.FromTicks((long)(_targetTickTime / 1.1f));
+                } else if (ServerTicks.Count == 0) {
+                    // Stop trying to catch up to make animations smoother and prevent stuttering
+                    TargetElapsedTime = TimeSpan.FromTicks(_targetTickTime);
                     break;
+                } 
                 
                 var tick = ServerTicks.Dequeue();
 
