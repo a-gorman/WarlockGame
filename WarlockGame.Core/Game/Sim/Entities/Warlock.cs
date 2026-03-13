@@ -39,7 +39,7 @@ class Warlock : Entity {
     }
 
     private bool _updatingBuffs = false;
-    private List<Buff> _addedBuffs = [];
+    private readonly List<Buff> _addedBuffs = [];
     public List<Buff> Buffs { get; } = new();
 
     public float DamageMultiplier { get; set; } = 1;

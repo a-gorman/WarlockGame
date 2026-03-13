@@ -1,5 +1,6 @@
 global using Vector2 = Microsoft.Xna.Framework.Vector2;
 global using OneOf;
+global using Color = Microsoft.Xna.Framework.Color;
 
 using System;
 using System.Collections.Generic;
@@ -92,13 +93,11 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         Logger.Info("Game initialized", Logger.LogType.Program);
 
         if (Configuration.Client) {
-            NetworkManager.ConnectToServer(Configuration.JoinIp, 
-                () => NetworkManager.JoinGame(Configuration.PlayerName ?? "Default", Configuration.PreferredColor));
+            ConnectToServer(Configuration.JoinIp, Configuration.PlayerName ?? "Default", Configuration.PreferredColor);
         }
         
         if (Configuration.Server) {
-            PlayerManager.AddLocalPlayer(Configuration.PlayerName ?? "Default", Configuration.PreferredColor);
-            NetworkManager.StartServer();
+            Host(Configuration.PlayerName ?? "Default", Configuration.PreferredColor);
         }
         
         Simulation.Initialize();
@@ -255,5 +254,14 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
     public void OnServerTickProcessed(ServerTickProcessed serverTickProcessed) {
         ServerTicks.Enqueue(serverTickProcessed);
+    }
+
+    public void ConnectToServer(string joinIp, string playerName, Color? preferredColor) {
+        NetworkManager.ConnectToServer(joinIp, () => NetworkManager.JoinGame(playerName, preferredColor));
+    }
+
+    public void Host(string playerName, Color? preferredColor) {
+        PlayerManager.AddLocalPlayer(playerName, preferredColor);
+        NetworkManager.StartServer();
     }
 }

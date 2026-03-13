@@ -5,7 +5,6 @@ using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.Sim.Spell.Component;
 using WarlockGame.Core.Game.Util;
-using Color = Microsoft.Xna.Framework.Color;
 
 namespace WarlockGame.Core.Game.Sim.Entities;
 

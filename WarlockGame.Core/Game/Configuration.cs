@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Input;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Util;
-using Color = Microsoft.Xna.Framework.Color;
 
 namespace WarlockGame.Core.Game;
 

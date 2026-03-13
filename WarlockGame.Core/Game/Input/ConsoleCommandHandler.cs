@@ -91,8 +91,7 @@ class ConsoleCommandHandler {
         }
 
         UIManager.OpenTextPrompt("Enter name:", name => {
-            PlayerManager.AddLocalPlayer(name, Configuration.PreferredColor);
-            NetworkManager.StartServer();
+            WarlockGame.Instance.Host(name, Configuration.PreferredColor);
         });
     }
 
@@ -106,8 +105,10 @@ class ConsoleCommandHandler {
             name => {
                 UIManager.OpenTextPrompt("Enter Host IP Address:",
                     ipAddress => {
-                        NetworkManager.ConnectToServer(ipAddress.NullOrEmptyTo("localhost"),
-                            () => NetworkManager.JoinGame(name, Configuration.PreferredColor));
+                        WarlockGame.Instance.ConnectToServer(
+                            ipAddress.NullOrEmptyTo("localhost"), 
+                            name,
+                            Configuration.PreferredColor);
                     });
             });
     }
