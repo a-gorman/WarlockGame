@@ -52,9 +52,14 @@ class MainMenu: InterfaceComponent {
     }
     
     private Basic.Grid CreateJoinGrid() {
-        var playerNameInput = Basic.Grid.SingleColumn(
+        var playerNameLabel = new TextDisplay("Player name:", cursorEnabled: true)
+            { Layout = Layout.WithSize(100, 100, Layout.Alignment.BottomLeft), TextScale = 0.5f };
+        var playerNameInput = new TextInput(textColor: Color.Black, backgroundColor: Color.White) 
+            { Layout = Layout.WithMargin(widthMargin: 10, heightMargin: 40) };
+            
+            Basic.Grid.SingleColumn(
         [ 
-            new TextDisplay("Player name:", cursorEnabled: true) { Layout = Layout.WithSize(100, 100, Layout.Alignment.BottomLeft), TextScale = 0.5f },
+            playerNameInput,
             new TextInput(textColor: Color.Black, backgroundColor: Color.White) { Layout = Layout.WithMargin(widthMargin: 10, heightMargin: 40) }
         ]);
         var joinIpInput = new TextInput(textColor: Color.Black, backgroundColor: Color.White) 
@@ -72,7 +77,12 @@ class MainMenu: InterfaceComponent {
             Layout = Layout.WithMargin(10), LeftClick = _ => TransitionToMainState()
         }.Also(x => x.AddComponent(new TextDisplay("Back")));
 
-        return Basic.Grid.SingleColumn([playerNameInput, joinIpInput, connectButton, backButton], ClickableState.PassThrough);
+        return Basic.Grid.SingleColumn([
+            Basic.Grid.SingleColumn([playerNameLabel, playerNameInput]), 
+            joinIpInput, 
+            connectButton, 
+            backButton
+        ], ClickableState.PassThrough);
     }
     
     private Basic.Grid CreateHostGrid() {
