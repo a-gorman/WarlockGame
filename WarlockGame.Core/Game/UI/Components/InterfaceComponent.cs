@@ -16,6 +16,8 @@ class InterfaceComponent {
     public int Layer { get; set; }
 
     public bool IsExpired { get; set; }
+    public bool Disabled { get; set; }
+    
     public ClickableState Clickable { get; set; } = ClickableState.Ignore;
 
     public bool Visible {
@@ -161,11 +163,13 @@ class InterfaceComponent {
     public void RemoveComponent(InterfaceComponent component) {
         _components.Remove(component);
         component.OnRemove();
+        component.Disabled = true;
     }
     
     public void RemoveAllComponents() {
         foreach (var component in _components) {
             component.OnRemove();
+            component.Disabled = true;
         }
         _components.Clear();
     }
@@ -174,10 +178,13 @@ class InterfaceComponent {
         foreach (var component in _components) {
             if (predicate(component)) {
                 component.OnRemove();
+                component.Disabled = true;
             }
         }
         _components.RemoveAll(predicate);
     }
+
+    public virtual void OnLostFocus() { }
 
     protected virtual void OnAdd() { }
 
@@ -260,9 +267,19 @@ public record struct Layout {
     }
 }
 
+/// <summary>
+/// Defines what happens when a click lands in this elment's bounding box and is checked while looking for
+/// a valid interface element to handle a click.
+/// </summary>
 public enum ClickableState {
+    /// <summary> Stop looking for clickable elements </summary>
     Unclickable,
+    /// <summary> Check for a valid clickable sub-element, and if none found, call this element's onClick function and stop </summary>
     Clickable,
+    /// <summary> Call this element's onClick function and then keep looking for a click handler in this element's sub-elements </summary>
+    Notify,
+    /// <summary> Skip this element and keep looking for a click handler in this element's sub-elements </summary>
     PassThrough,
+    /// <summary> Skip this element entirely, including sub-elements </summary>
     Ignore
 }

@@ -1,69 +1,115 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
-using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.UI.Components.Basic;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.UI.Components;
 
 class MainMenu: InterfaceComponent {
-    private readonly Basic.Grid _grid;
-    
+    private readonly Basic.Grid _mainGrid;
+    private readonly Basic.Grid _joinGrid;
+    private readonly Basic.Grid _hostGrid;
+    private MenuState _state = MenuState.Main;
+
+    private readonly Texture2D _buttonTexture;
+
     public MainMenu() {
         Layout = Layout.WithSize(400, 500, Layout.Alignment.Center);
-        _grid = new Basic.Grid(rows: 3) { Clickable = ClickableState.PassThrough };
         Clickable = ClickableState.PassThrough;
+        Layer = 5;
 
-        var backgroundTexture = new Texture2D(Art.Pixel.GraphicsDevice, 1, 1);
-        backgroundTexture.SetData([Color.DarkSlateGray]);
+        _buttonTexture = new Texture2D(Art.Pixel.GraphicsDevice, 1, 1);
+        _buttonTexture.SetData([Color.DarkSlateGray]);
+        
+        _mainGrid = CreateMainGrid();
+        AddComponent(_mainGrid);
+        
+        _joinGrid = CreateJoinGrid();
+        AddComponent(_joinGrid);
+        
+        _hostGrid = CreateHostGrid();
+        AddComponent(_hostGrid);
+        
+        TransitionToMainState();
+    }
 
-        var hostButton = new Button(backgroundTexture) {
+    private Basic.Grid CreateMainGrid() {
+        var hostButton = new Button(_buttonTexture) {
             Layout = Layout.WithMargin(10),
-            LeftClick = _ => {
-                if (NetworkManager.IsConnected) {
-                    MessageDisplay.Display("Already in game!");
-                    return;
-                }
-
-                UIManager.OpenTextPrompt("Enter name:", name => {
-                    WarlockGame.Instance.Host(name, Configuration.PreferredColor);
-                });
-
-                Visible = false;
-            }
-        }.Also(x => x.AddComponent(new TextDisplay { Text = "Host" }));
-        var joinButton = new Button(backgroundTexture) {
-            Layout = Layout.WithMargin(10), LeftClick = _ => {
-                if (NetworkManager.IsConnected) {
-                    MessageDisplay.Display("Already in game!");
-                    return;
-                }
-                
-                UIManager.OpenTextPrompt("Enter name:",
-                    name => {
-                        UIManager.OpenTextPrompt("Enter Host IP Address:",
-                            ipAddress => {
-                                WarlockGame.Instance.ConnectToServer(
-                                    ipAddress.NullOrEmptyTo("localhost"), 
-                                    name,
-                                    Configuration.PreferredColor);
-                            });
-                    });
-
-                Visible = false;
-            }
-        }.Also(x => x.AddComponent(new TextDisplay { Text = "Join" }));
-        var exitButton = new Button(backgroundTexture) { 
+            LeftClick = _ => TransitionToHostState()
+        }.Also(x => x.AddComponent(new TextDisplay("Host")));
+        
+        var joinButton = new Button(_buttonTexture) {
+            Layout = Layout.WithMargin(10), LeftClick = _ => TransitionToJoinState()
+        }.Also(x => x.AddComponent(new TextDisplay("Connect")));
+        
+        var exitButton = new Button(_buttonTexture) { 
             Layout = Layout.WithMargin(10), 
             LeftClick = _ => { WarlockGame.Instance.Exit(); } 
-        }.Also(x => x.AddComponent(new TextDisplay { Text = "Exit" }));
+        }.Also(x => x.AddComponent(new TextDisplay("Exit")));
+
+        return Basic.Grid.SingleColumn([hostButton, joinButton, exitButton], ClickableState.PassThrough);
+    }
+    
+    private Basic.Grid CreateJoinGrid() {
+        var playerNameInput = Basic.Grid.SingleColumn(
+        [ 
+            new TextDisplay("Player name:", cursorEnabled: true) { Layout = Layout.WithSize(100, 100, Layout.Alignment.BottomLeft), TextScale = 0.5f },
+            new TextInput(textColor: Color.Black, backgroundColor: Color.White) { Layout = Layout.WithMargin(widthMargin: 10, heightMargin: 40) }
+        ]);
+        var joinIpInput = new TextInput(textColor: Color.Black, backgroundColor: Color.White) 
+            { Layout = Layout.WithMargin(widthMargin: 10, heightMargin: 40) };
         
-        _grid.AddComponentToCell(hostButton, 0, 0);
-        _grid.AddComponentToCell(joinButton, 1, 0);
-        _grid.AddComponentToCell(exitButton, 2, 0);
+        var connectButton = new Button(_buttonTexture) {
+            Layout = Layout.WithMargin(10), 
+            LeftClick = _ => WarlockGame.Instance.ConnectToServer(
+                joinIpInput.Text.NullOrEmptyTo("localhost"), 
+                playerNameInput.Text.NullOrEmptyTo("Default Client"),
+                Configuration.PreferredColor)
+        }.Also(x => x.AddComponent(new TextDisplay("Connect")));
         
-        AddComponent(_grid);
+        var backButton = new Button(_buttonTexture) {
+            Layout = Layout.WithMargin(10), LeftClick = _ => TransitionToMainState()
+        }.Also(x => x.AddComponent(new TextDisplay("Back")));
+
+        return Basic.Grid.SingleColumn([playerNameInput, joinIpInput, connectButton, backButton], ClickableState.PassThrough);
+    }
+    
+    private Basic.Grid CreateHostGrid() {
+        var playerNameInput = new TextInput(textColor: Color.Black, backgroundColor: Color.White) 
+            { Layout = Layout.WithMargin(widthMargin: 10, heightMargin: 40) };
+        
+        var startButton = new Button(_buttonTexture) {
+            Layout = Layout.WithMargin(10), 
+            LeftClick = _ => WarlockGame.Instance.Host(playerNameInput.Text, Configuration.PreferredColor)
+        }.Also(x => x.AddComponent(new TextDisplay("Start")));
+        
+        var backButton = new Button(_buttonTexture) {
+            Layout = Layout.WithMargin(10), LeftClick = _ => TransitionToMainState()
+        }.Also(x => x.AddComponent(new TextDisplay("Back")));
+        
+        return Basic.Grid.SingleColumn([playerNameInput, startButton, backButton], ClickableState.PassThrough);
+    }
+
+    private void TransitionToMainState() {
+        _mainGrid.Disabled = false;
+        _joinGrid.Disabled = true;
+        _hostGrid.Disabled = true;
+        _state = MenuState.Main;
+    }
+    
+    private void TransitionToJoinState() {
+        _mainGrid.Disabled = true;
+        _joinGrid.Disabled = false;
+        _hostGrid.Disabled = true;
+        _state = MenuState.Join;
+    }
+    
+    private void TransitionToHostState() {
+        _mainGrid.Disabled = true;
+        _joinGrid.Disabled = true;
+        _hostGrid.Disabled = false;
+        _state = MenuState.Host;
     }
 
     protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
@@ -71,4 +117,11 @@ class MainMenu: InterfaceComponent {
         pointTexture.SetData([Color.Gray]);
         spriteBatch.Draw(pointTexture, BoundingBox, Color.White);
     }
+
+    private enum MenuState {
+        Main,
+        Join,
+        Host
+    }
 }
+

@@ -1,10 +1,12 @@
 using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.UI.Components;
+using ZLinq;
 
 namespace WarlockGame.Core.Game.UI;
 
@@ -17,6 +19,8 @@ static class UIManager {
 
     private static InterfaceComponent _view = new() { Clickable = ClickableState.PassThrough };
 
+    private static InterfaceComponent _focusedComponent = _view;
+    
     public static void Initialize() {
         _view.Layout = Layout.WithSize(Configuration.ScreenWidth, Configuration.ScreenHeight);
     }
@@ -48,6 +52,9 @@ static class UIManager {
     }
 
     private static void UpdateComponent(InterfaceComponent component, InterfaceComponent? parent, ref readonly UpdateArgs args, bool parentBoundsRefreshed) {
+        if (component.Disabled)
+            return;
+        
         var mousePos = args.MousePosition;
         if (mousePos != null && component.BoundingBox.Contains(mousePos.Value)) {
             mousePos -= component.BoundingBox.Location.ToVector2();
@@ -73,11 +80,19 @@ static class UIManager {
     /// <param name="promptText">The text to display to the user that explains the box</param>
     /// <param name="acceptedCallback">Callback with entered text called when text box is closed normally (with enter key)  </param>
     /// <param name="cancelledCallback">Callback called when text box is closed in a way that does not indicate acceptance (such as clicking away) </param>
-    /// <param name="alignment">Determines where the text prompt should be drawn relative to</param>
     public static void OpenTextPrompt(string promptText, Action<string> acceptedCallback, Action<string>? cancelledCallback = null) {
         var prompt = new TextPrompt(promptText, acceptedCallback, cancelledCallback);
         AddComponent(prompt);
         InputManager.AddTextConsumer(prompt);
+        FocusComponent(prompt);
+    }
+
+    public static void RegisterTextConsumer(ITextInputConsumer component) {
+        InputManager.AddTextConsumer(component);
+    }
+
+    public static void RemoveTextConsumer(ITextInputConsumer component) {
+        InputManager.RemoveTextConsumer(component);
     }
 
     public static void AddComponent(InterfaceComponent component) {
@@ -93,9 +108,10 @@ static class UIManager {
     }
 
     private static void DrawComponent(InterfaceComponent component, Vector2 globalLocation, SpriteBatch spriteBatch) {
-        if (component.Visible) {
+        if (component.Visible && !component.Disabled) {
             component.DrawComponent(globalLocation, spriteBatch);
-            foreach (var nestedComponent in component.Components) {
+            for (var index = component.Components.Count - 1; index >= 0; index--) {
+                var nestedComponent = component.Components[index];
                 DrawComponent(nestedComponent, globalLocation + component.BoundingBox.Location.ToVector2(),
                     spriteBatch);
             }
@@ -103,24 +119,33 @@ static class UIManager {
     }
     
     private static bool LeftClickComponent(InterfaceComponent component, Vector2 clickLocation) {
-        if (!component.Visible || !component.BoundingBox.Contains(clickLocation)) return false;
+        if (component.Disabled || !component.Visible || !component.BoundingBox.Contains(clickLocation)) return false;
+        var relativeClick = clickLocation - component.RelativeLocation;
         switch (component.Clickable) {
             case ClickableState.PassThrough:
                 foreach (var nestedComponent in component.Components) {
-                    var consumed = LeftClickComponent(nestedComponent, clickLocation - component.RelativeLocation);
+                    var consumed = LeftClickComponent(nestedComponent, relativeClick);
                     if (consumed) return true;
                 }
                 return false;
             case ClickableState.Clickable:
                 foreach (var nestedComponent in component.Components) {
-                    var consumed = LeftClickComponent(nestedComponent, clickLocation - component.RelativeLocation);
+                    var consumed = LeftClickComponent(nestedComponent, relativeClick);
                     if (consumed) return true;
                 }
-                component.OnLeftClick(clickLocation);
+                component.OnLeftClick(relativeClick);
+                FocusComponent(component);
                 return true;
             case ClickableState.Unclickable:
                 return true;
             case ClickableState.Ignore:
+                return false;
+            case ClickableState.Notify:
+                foreach (var nestedComponent in component.Components) {
+                    var consumed = LeftClickComponent(nestedComponent, relativeClick);
+                    if (consumed) return true;
+                }
+                component.OnLeftClick(relativeClick);
                 return false;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -128,7 +153,7 @@ static class UIManager {
     }
     
     private static bool RightClickComponent(InterfaceComponent component, Vector2 clickLocation) {
-        if (!component.Visible || !component.BoundingBox.Contains(clickLocation)) return false;
+        if (component.Disabled || !component.Visible || !component.BoundingBox.Contains(clickLocation)) return false;
         switch (component.Clickable) {
             case ClickableState.PassThrough:
                 foreach (var nestedComponent in component.Components) {
@@ -142,20 +167,35 @@ static class UIManager {
                     if (consumed) return true;
                 }
                 component.OnRightClick(clickLocation);
+                FocusComponent(component);
                 return true;
             case ClickableState.Unclickable:
                 return true;
             case ClickableState.Ignore:
                 return false;
+            case ClickableState.Notify:
+                foreach (var nestedComponent in component.Components) {
+                    var consumed = RightClickComponent(nestedComponent, clickLocation - component.RelativeLocation);
+                    if (consumed) return true;
+                }
+                component.OnRightClick(clickLocation);
+                return false;
             default:
                 throw new ArgumentOutOfRangeException();
         }
     }
+
+    private static void FocusComponent(InterfaceComponent component) {
+        if (component != _focusedComponent) {
+            _focusedComponent.OnLostFocus();
+            _focusedComponent = component;
+        }
+    }
     
     public struct UpdateArgs {
-        public required Vector2? MousePosition { get; set; }
+        public required Vector2? MousePosition { get; init; }
 
-        public required GlobalProps Global { get; set; }
+        public required GlobalProps Global { get; init; }
 
         public class GlobalProps {
             public bool MouseInBounds { get; set; }

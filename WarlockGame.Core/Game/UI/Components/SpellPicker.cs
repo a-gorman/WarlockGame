@@ -33,7 +33,7 @@ class SpellPicker : InterfaceComponent {
         var inactiveTexture = new Texture2D(Art.Pixel.GraphicsDevice, 1, 1);
         inactiveTexture.SetData([Color.DarkGray]);
         
-        AddComponent(new TextDisplay { Text = descriptionText, TextScale = 0.75f });
+        AddComponent(new TextDisplay(descriptionText) { TextScale = 0.75f });
         _confirmButton = new Button(activeTexture, inactiveTexture) {
             IsActive = false,
             Layout = Layout.WithBoundingBox(-10, -10, 80, 40, Layout.Alignment.BottomRight),
@@ -47,7 +47,7 @@ class SpellPicker : InterfaceComponent {
         };
         AddComponent(_confirmButton);
         
-        _confirmButton.AddComponent(new TextDisplay { Text = "Confirm", TextScale = 0.5f });
+        _confirmButton.AddComponent(new TextDisplay("Confirm") { TextScale = 0.5f });
         Visible = false;
     }
 

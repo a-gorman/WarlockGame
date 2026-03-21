@@ -7,7 +7,6 @@ using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.UI;
-using WarlockGame.Core.Game.Util;
 using KeyboardInput = WarlockGame.Core.Game.Input.Devices.KeyboardInput;
 
 namespace WarlockGame.Core.Game.Input; 
@@ -49,6 +48,9 @@ static class InputManager {
             HandleGameFunctions(_inputState);
         }
 
+        if(_inputState.WasActionKeyPressed(InputAction.LeftClick)) UIManager.HandleLeftClick(_inputState.GetMousePosition());
+        if(_inputState.WasActionKeyPressed(InputAction.RightClick)) UIManager.HandleRightClick(_inputState.GetMousePosition());
+        
         _textInputConsumers.RemoveAll(x => x.IsExpired);
 
         return _inputState;
@@ -58,6 +60,10 @@ static class InputManager {
         _textInputConsumers.Add(consumer);
         // Sort higher priority consumers to the front
         _textInputConsumers.Sort((first,second) => second.TextConsumerPriority.CompareTo(first.TextConsumerPriority));
+    }
+    
+    public static void RemoveTextConsumer(ITextInputConsumer consumer) {
+        _textInputConsumers.Remove(consumer);
     }
 
     public static void OnTextInput(TextInputEventArgs args) {
@@ -91,9 +97,6 @@ static class InputManager {
                 }
             }
         }
-        
-        if(inputState.WasActionKeyPressed(InputAction.LeftClick)) UIManager.HandleLeftClick(inputState.GetMousePosition());
-        if(inputState.WasActionKeyPressed(InputAction.RightClick)) UIManager.HandleRightClick(inputState.GetMousePosition());
     }
 
     public static void HandlePlayerAction<T>(T command)  where T : IPlayerAction, new() {
@@ -130,10 +133,6 @@ static class InputManager {
         public bool IsActionKeyDown(InputAction action) => _actions.Contains(action);
 
         public bool WasActionKeyPressed(InputAction action) => _actions.Contains(action) && !_previousActions.Contains(action);
-        
-        public Vector2 GetAimDirection(Vector2 relativeTo) {
-            return (_mousePosition - relativeTo).ToNormalizedOrZero();
-        }
 
         public Vector2 GetMousePosition() {
             return _mousePosition;

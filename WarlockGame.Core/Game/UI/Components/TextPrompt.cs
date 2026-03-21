@@ -3,35 +3,33 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
-using TextCopy;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
-using WarlockGame.Core.Game.Input.Devices;
-using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.UI.Components.Basic;
+using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.UI.Components;
 
 sealed class TextPrompt: InterfaceComponent, ITextInputConsumer {
     public string Prompt { get; set; }
 
-    public string Text { get => _textDisplay.Text; set => _textDisplay.Text = value; }
+    public string Text => _textInput.Text;
 
     public int TextConsumerPriority { get; } = 1;
-    public int MaxCharacters { get; } = 30;
     private Action<string> AcceptedCallback { get; }
     private Action<string>? CancelledCallback { get; }
-    private readonly TextDisplay _textDisplay;
+    private readonly TextInput _textInput;
     
     public TextPrompt(string prompt, Action<string> acceptedCallback, Action<string>? cancelledCallback) {
         Layout = Layout.WithBoundingBox(0, 220, width: 300, height: 35, Layout.Alignment.Center);
 
-        _textDisplay = new TextDisplay
-        {
-            Layer = 1
-        };
+        Layer = 10;
+        
+        Clickable = ClickableState.Clickable;
+        
+        _textInput = new TextInput { Clickable = ClickableState.Ignore };
 
-        AddComponent(_textDisplay);
+        AddComponent(_textInput);
         
         Prompt = prompt;
         AcceptedCallback = acceptedCallback;
@@ -39,17 +37,6 @@ sealed class TextPrompt: InterfaceComponent, ITextInputConsumer {
     }
 
     public void OnTextInput(TextInputEventArgs textEvent) {
-        if(StaticKeyboardInput.IsKeyPressed(Keys.LeftControl) || StaticKeyboardInput.IsKeyPressed(Keys.RightControl)) {
-            switch (textEvent.Key) {
-                case Keys.V:
-                    // This gets around max text size limits
-                    Text += ClipboardService.GetText();
-                    break;
-            }
-
-            return;
-        }
-        
         switch (textEvent.Key) {
             case Keys.Enter:
                 Close(true);
@@ -57,32 +44,28 @@ sealed class TextPrompt: InterfaceComponent, ITextInputConsumer {
             case Keys.Escape:
                 Close(false);
                 break;
-            case Keys.Back:
-                if (Text.Length > 0) {
-                    Text = Text.Remove(Text.Length - 1);
-                }
-                break;
             default:
-                if (Text.Length < MaxCharacters && IsStandardCharacter(textEvent.Character)) {
-                    Text += textEvent.Character;
-                }
+                _textInput.OnTextInput(textEvent);
                 break;
         }
     }
 
-    protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
-        var pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-        pointTexture.SetData([Color.DarkSlateGray]);
-
-        BoundingBox.Offset(location);
-        spriteBatch.Draw(pointTexture, BoundingBox, Color.White);
-
-        spriteBatch.DrawString(Art.Font, Prompt, BoundingBox.Location.ToVector2().Translate(0, -24) + location, Color.White);
-    }
-    
     public override void OnLeftClick(Vector2 location) {
-        Logger.Debug("Click on text prompt", Logger.LogType.Interface | Logger.LogType.PlayerAction);
-        // TODO: Move a cursor to the click location
+        if (_textInput.BoundingBox.Contains(location)) {
+            _textInput.OnLeftClick(location - _textInput.BoundingBox.Location.ToVector2());
+        }
+    }
+
+    public override void OnLostFocus() {
+        Close(false);
+    }
+
+    protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
+        var absoluteBounds = BoundingBox.WithOffset(location);
+        spriteBatch.Draw(Art.Pixel, absoluteBounds, Color.DarkSlateGray);
+        UiUitils.DrawHollowRectangle(spriteBatch, Art.Pixel, absoluteBounds, Color.Black, width: 2);
+
+        spriteBatch.DrawString(Art.Font, Prompt, absoluteBounds.Location.ToVector2().Translate(0, -24), Color.White);
     }
 
     public void Close(bool accepted) {
@@ -93,10 +76,5 @@ sealed class TextPrompt: InterfaceComponent, ITextInputConsumer {
             CancelledCallback?.Invoke(Text);
         }
         IsExpired = true;
-    }
-
-    private bool IsStandardCharacter(char character) {
-        // Space to ~ in UTF-16
-        return character >= 0x20 && character <= 0x7e;
     }
 }

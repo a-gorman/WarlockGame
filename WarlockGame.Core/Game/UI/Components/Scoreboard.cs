@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Sim.Rule;
 using WarlockGame.Core.Game.UI.Components.Basic;
 
@@ -37,14 +36,12 @@ sealed class Scoreboard : InterfaceComponent {
                 var lives = _gameRule.Statuses[id].Lives;
                 var player = PlayerManager.GetPlayer(id);
                 if (player == null) continue;
-                _grid.AddComponentToCell(new TextDisplay {
+                _grid.AddComponentToCell(new TextDisplay(player.Name) {
                     TextColor = player.Color,
-                    Text = player.Name,
                     TextScale = 0.55f
                 }, i, 0);
-                var lifeDisplay = new TextDisplay {
+                var lifeDisplay = new TextDisplay(lives.ToString()) {
                     TextColor = player.Color,
-                    Text = lives.ToString(),
                     TextScale = 0.55f
                 };
                 _grid.AddComponentToCell(lifeDisplay, i, 1);
@@ -52,7 +49,7 @@ sealed class Scoreboard : InterfaceComponent {
             }
 
             var totalWidth = columnWidth * 2;
-            Layout = Layout.WithBoundingBox((int)WarlockGame.ScreenSize.X - totalWidth, 15, totalWidth, rowHeight * playerIds.Count, Layout.Alignment.TopRight);
+            Layout = Layout.WithBoundingBox(10, 15, totalWidth, rowHeight * playerIds.Count, Layout.Alignment.TopRight);
             AddComponent(_grid);
 
             foreach (var playerId in _playerLifeDisplays.Keys) {

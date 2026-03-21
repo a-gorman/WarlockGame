@@ -13,6 +13,8 @@ sealed class SpellDisplay : InterfaceComponent {
     private Dictionary<InputAction, string> KeyMappings { get; }
     private Components.Basic.Grid IconGrid { get; }
 
+    private Texture2D? _pointTexture;
+
     private const int SpellSpacing = 100;
 
     private static readonly InputAction[] Actions = [
@@ -42,17 +44,12 @@ sealed class SpellDisplay : InterfaceComponent {
     }
 
     protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
-        DrawHollowRectangle(spriteBatch, BoundingBox.WithOffset(location), Color.White);
-    }
-
-    private static void DrawHollowRectangle(SpriteBatch spriteBatch, Rectangle rectangle, Color color, int width = 1) {
-        var pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 2, 2);
-        pointTexture.SetData([Color.Red, Color.Blue, Color.White, Color.Green]);
+        if (_pointTexture == null) {
+            _pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 2, 2);
+            _pointTexture.SetData([Color.Red, Color.Blue, Color.White, Color.Green]);
+        }
         
-        spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Left, rectangle.Bottom, rectangle.Width, width), color); // Bottom line
-        spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Left, rectangle.Top, width, rectangle.Height), color);         // Left line
-        spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Right, rectangle.Top, width, rectangle.Height), color);        // Right line
-        spriteBatch.Draw(pointTexture, new Rectangle(rectangle.Left, rectangle.Top, rectangle.Width, width), color);    // Top line
+        UiUitils.DrawHollowRectangle(spriteBatch, _pointTexture, BoundingBox.WithOffset(location), Color.White);
     }
 
     private void AddSpell(int playerId, WarlockSpell spell) {

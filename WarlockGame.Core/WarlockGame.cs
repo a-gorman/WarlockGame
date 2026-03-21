@@ -45,7 +45,8 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
     // 60 FPS
     private long _targetTickTime = 166667L;
-    
+    private MainMenu _mainMenu = null!;
+
     public enum GameState { WaitingToStart, Running }
     public enum ClientTypeState { Local, Client, Server }
     
@@ -85,8 +86,9 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         InputManager.Initialize(Configuration.KeyMappings);
 
         Window.TextInput += (_, textArgs) => InputManager.OnTextInput(textArgs);
-        
-        UIManager.AddComponent(new MainMenu { Visible = !Configuration.Client && !Configuration.Server });
+
+        _mainMenu = new MainMenu();
+        UIManager.AddComponent(_mainMenu);
         UIManager.AddComponent(LogDisplay.Instance);
         UIManager.AddComponent(MessageDisplay.Instance);
         UIManager.AddComponent(_spellDisplay);
@@ -109,7 +111,6 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         
         Simulation.Initialize();
         
-        // Scoreboard has some funky special case handling. Hmmm...
         UIManager.AddComponent(new Scoreboard(Simulation.GameRules));
         UIManager.AddComponent(new SpellPicker(GameRules.SpellSelections, Simulation));
     }
@@ -271,10 +272,12 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
     public void ConnectToServer(string joinIp, string playerName, Color? preferredColor) {
         NetworkManager.ConnectToServer(joinIp, () => NetworkManager.JoinGame(playerName, preferredColor));
+        _mainMenu.Disabled = true;
     }
 
     public void Host(string playerName, Color? preferredColor) {
         PlayerManager.AddLocalPlayer(playerName, preferredColor);
         NetworkManager.StartServer();
+        _mainMenu.Disabled = true;
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Collections;
+using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
@@ -23,10 +24,12 @@ sealed class PerkPicker: InterfaceComponent {
     private readonly int _height = 200;
     private readonly int _marginX = 20;
     private readonly int _marginY = 20;
+
+    private Texture2D? _rainbowTexture;
     
-    public PerkPicker(Simulation sim, Point location) {
+    public PerkPicker(Simulation sim) {
         _sim = sim;
-        Layout = Layout.WithBoundingBox(location.X, location.Y, _width, _height, Layout.Alignment.Center);
+        Layout = Layout.WithSize(_width, _height, Layout.Alignment.Center);
     }
 
     public override void Update(ref readonly UIManager.UpdateArgs args) {
@@ -51,6 +54,7 @@ sealed class PerkPicker: InterfaceComponent {
         for (var index = 0; index < _perks.Count; index++) {
             var perk = _perks[index];
             var button = new Button(perk.Texture) {
+                Layout = Layout.WithMargin(15),
                 LeftClick = _ => {
                     var playerId = PlayerManager.LocalPlayerId;
                     if (playerId == null) return;
@@ -60,25 +64,17 @@ sealed class PerkPicker: InterfaceComponent {
             };
 
             grid.AddComponentToCell(button, column: index, row: 0);
-            button.AddComponent(new TextDisplay {Text = perk.Name, TextScale = 0.5f});
+            button.AddComponent(new TextDisplay(perk.Name) { TextScale = 0.5f});
         }
     }
 
     protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
-        DrawHollowRectangle(spriteBatch, BoundingBox.WithOffset(location), Color.White, 3);
-    }
-    
-    private static void DrawHollowRectangle(SpriteBatch spriteBatch, Rectangle rectangle, Color color, int width = 1) {
-        var pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-        pointTexture.SetData([Color.Gray]);
-        spriteBatch.Draw(pointTexture, rectangle, color);
+        if (_rainbowTexture == null) {
+            _rainbowTexture = new Texture2D(spriteBatch.GraphicsDevice, 2, 2);
+            _rainbowTexture.SetData([Color.Red, Color.Blue, Color.White, Color.Green]);
+        }
         
-        var texture = new Texture2D(spriteBatch.GraphicsDevice, 2, 2);
-        texture.SetData([Color.Red, Color.Blue, Color.White, Color.Green]);
-        
-        spriteBatch.Draw(texture, new Rectangle(rectangle.Left, rectangle.Bottom, rectangle.Width, width), color); // Bottom line
-        spriteBatch.Draw(texture, new Rectangle(rectangle.Left, rectangle.Top, width, rectangle.Height), color);   // Left line
-        spriteBatch.Draw(texture, new Rectangle(rectangle.Right, rectangle.Top, width, rectangle.Height), color);  // Right line
-        spriteBatch.Draw(texture, new Rectangle(rectangle.Left, rectangle.Top, rectangle.Width, width), color);    // Top line
+        spriteBatch.Draw(_rainbowTexture, BoundingBox.WithOffset(location), Color.White);
+        UiUitils.DrawHollowRectangle(spriteBatch, Art.Pixel, BoundingBox.WithOffset(location), Color.Black, 2);
     }
 }

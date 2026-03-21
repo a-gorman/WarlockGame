@@ -1,5 +1,7 @@
 using System;
+using System.Diagnostics;
 using System.Text;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace WarlockGame.Core.Game.Util;
 
@@ -145,10 +147,11 @@ public static class TextUtil {
         return text;
     }
 
-    // This is pretty expensive. Something like a binary search could be much faster
+    // This is pretty expensive. Something like an exponential search could be much faster
     private static ReadOnlySpan<Char> GetPortionOfWordThatFits(
         ReadOnlySpan<Char> word, MeasureTextSize measureText, float remainingLineWidth) {
         for (var i = 0; i < word.Length; i++) {
+            // n^2
             var length = measureText(word.Slice(0, i + 1));
             if (length.X > remainingLineWidth) {
                 if (i == 0) {

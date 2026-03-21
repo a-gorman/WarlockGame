@@ -28,12 +28,12 @@ sealed class MessageDisplay : InterfaceComponent
         var wrapper = new Message
         {
             Text = message,
-            FramesRemaining = 5 * 60
+            FramesRemaining = 7 * 60
         };
         
         Instance._messages.AddFirst(wrapper);
 
-        if (Instance._messages.Count > 5)
+        if (Instance._messages.Count > 8)
         {
             Instance._messages.RemoveLast();
         }

@@ -18,6 +18,28 @@ sealed class Grid : InterfaceComponent {
     public Grid(int columns = 1, int rows = 1) {
         Cells = CreateCells(columns, rows);
     }
+
+    public static Grid SingleColumn(InterfaceComponent[] components, ClickableState clickable = ClickableState.Ignore) {
+        var grid = new Grid(rows: components.Length) {
+            Clickable = clickable
+        };
+
+        for (int r = 0; r < components.Length; r++) {
+            grid.AddComponentToCell(components[r], row: r, column: 0);
+        }
+        return grid;
+    }
+    
+    public static Grid SingleRow(InterfaceComponent[] components, ClickableState clickable = ClickableState.Ignore) {
+        var grid = new Grid(columns: components.Length) {
+            Clickable = clickable
+        };
+        
+        for (int c = 0; c < components.Length; c++) {
+            grid.AddComponentToCell(components[c], row: 0, column: c);
+        }
+        return grid;
+    }
     
     private Cell[,] CreateCells(int columns, int rows) {
         if (columns < 1 || rows < 1) {

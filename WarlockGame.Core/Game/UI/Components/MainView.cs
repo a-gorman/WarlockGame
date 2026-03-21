@@ -61,7 +61,7 @@ sealed class MainView : InterfaceComponent {
             WarlockGame.ScreenSize.Y
         );
 
-        _perkPicker = new PerkPicker(_sim, new Point(600, 400)) {Visible = false, Clickable = ClickableState.PassThrough};
+        _perkPicker = new PerkPicker(_sim) {Visible = false, Clickable = ClickableState.PassThrough};
         AddComponent(_perkPicker);
     }
 
