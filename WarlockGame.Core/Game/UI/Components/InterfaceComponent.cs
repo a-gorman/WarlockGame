@@ -145,6 +145,31 @@ class InterfaceComponent {
 
                 BoundingBox = parentBounds.AtOrigin().GetRelativeRectangle(xOffset, yOffset, Layout.Width, Layout.Height);
                 break;
+            case Layout.LayoutType.HeightMargin:
+                int xOffset = 0;
+                switch(Layout.Origin) {
+                    case Layout.Alignment.Top:
+                        xOffset = Layout.Offset.X;
+                        break;
+                    case Layout.Alignment.Center:
+                        xOffset = CenterOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
+                        break;
+                    case Layout.Alignment.Bottom:
+                        xOffset = OppositeSideOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
+                        break;
+                }
+                BoundingBox = new Rectangle(xOffset, layout.Height, Math.Min(layout.Width, parentBounds.Width - xOffset), parentBounds.Height);
+                break;
+            case Layout.LayoutType.WidthMargin:
+                int yOffset = 0;
+                switch(Layout.Origin) {
+                    int yOffset = 0;
+                    case Layout.Alignment.Top:
+                        yOffset = Layout.Offset.Y;
+                    case Layout.Alignment.Center:
+                    case Layout.Alignment.Bottom:
+                }
+                break;
         }
 
         IsLayoutDirty = false;
@@ -225,6 +250,22 @@ public record struct Layout {
     public static Layout WithMargin(int widthMargin, int heightMargin) {
         return new Layout(LayoutType.Margin, width: widthMargin, height: heightMargin);
     }
+
+    public static Layout WithHeight(int height, int widthOffset = 0, int widthMargin = 0, Alignment alignment = Alignment.TopLeft) {
+        return new Layout(LayoutType.WidthMargin,
+            alignment: alignment,
+            height: height,
+            width: widthMargin
+        )
+    }
+
+    public static Layout WithWidth(int height, int heightOffset = 0, int widthMargin = 0, Alignment alignment = Alignment.TopLeft) {
+        return new Layout(LayoutType.WidthMargin,
+            alignment: alignment,
+            height: height,
+            width: widthMargin
+        )
+    }
     
     public static Layout WithSize(int width, int height, Alignment alignment = Alignment.TopLeft) {
         return new Layout(LayoutType.Manual,
@@ -258,12 +299,18 @@ public record struct Layout {
         CenterRight,
         BottomLeft,
         BottomCenter,
-        BottomRight
+        BottomRight,
+        Bottom,
+        Top,
+        Left,
+        Right
     }
 
     public enum LayoutType {
         Manual,
-        Margin
+        Margin,
+        HeightMargin,
+        WidthMargin
     }
 }
 
