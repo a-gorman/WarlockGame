@@ -93,6 +93,8 @@ class InterfaceComponent {
     }
 
     public virtual void RefreshBounds(Rectangle parentBounds) {
+        int xOffset;
+        int yOffset;
         switch (Layout.Type) {
             case Layout.LayoutType.Margin:
                 BoundingBox = parentBounds
@@ -100,8 +102,6 @@ class InterfaceComponent {
                     .WithMargin(Layout.Width, Layout.Height);
                 break;
             case Layout.LayoutType.Manual:
-                int xOffset;
-                int yOffset;
                 switch (Layout.Origin) {
                     case Layout.Alignment.TopLeft:
                         xOffset = Layout.Offset.X;
@@ -146,7 +146,6 @@ class InterfaceComponent {
                 BoundingBox = parentBounds.AtOrigin().GetRelativeRectangle(xOffset, yOffset, Layout.Width, Layout.Height);
                 break;
             case Layout.LayoutType.HeightMargin:
-                int xOffset = 0;
                 switch(Layout.Origin) {
                     case Layout.Alignment.Top:
                         xOffset = Layout.Offset.X;
@@ -157,18 +156,26 @@ class InterfaceComponent {
                     case Layout.Alignment.Bottom:
                         xOffset = OppositeSideOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(UI.Components.Layout.Type), Layout.Type, null);
                 }
-                BoundingBox = new Rectangle(xOffset, layout.Height, Math.Min(layout.Width, parentBounds.Width - xOffset), parentBounds.Height);
+                BoundingBox = new Rectangle(xOffset, Layout.Height, Math.Min(Layout.Width, parentBounds.Width - xOffset), parentBounds.Height - 2*Layout.Height);
                 break;
             case Layout.LayoutType.WidthMargin:
-                int yOffset = 0;
-                switch(Layout.Origin) {
-                    int yOffset = 0;
+                switch (Layout.Origin) {
                     case Layout.Alignment.Top:
                         yOffset = Layout.Offset.Y;
+                        break;
                     case Layout.Alignment.Center:
+                        yOffset = CenterOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
+                        break;
                     case Layout.Alignment.Bottom:
+                        yOffset = OppositeSideOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(UI.Components.Layout.Type), Layout.Type, null);
                 }
+                BoundingBox = new Rectangle(Layout.Width, yOffset, parentBounds.Width - 2*Layout.Width, Math.Min(Layout.Height, parentBounds.Height - yOffset));
                 break;
         }
 
@@ -251,20 +258,22 @@ public record struct Layout {
         return new Layout(LayoutType.Margin, width: widthMargin, height: heightMargin);
     }
 
-    public static Layout WithHeight(int height, int widthOffset = 0, int widthMargin = 0, Alignment alignment = Alignment.TopLeft) {
+    public static Layout WithHeight(int height, int heightOffset = 0, int widthMargin = 0, Alignment alignment = Alignment.Top) {
         return new Layout(LayoutType.WidthMargin,
             alignment: alignment,
             height: height,
-            width: widthMargin
-        )
+            width: widthMargin,
+            offset: new Point(0, heightOffset)
+        );
     }
 
-    public static Layout WithWidth(int height, int heightOffset = 0, int widthMargin = 0, Alignment alignment = Alignment.TopLeft) {
+    public static Layout WithWidth(int width, int widthOffset = 0, int heightMargin = 0, Alignment alignment = Alignment.Left) {
         return new Layout(LayoutType.WidthMargin,
             alignment: alignment,
-            height: height,
-            width: widthMargin
-        )
+            height: heightMargin,
+            width: width,
+            offset: new Point(widthOffset, 0)
+        );
     }
     
     public static Layout WithSize(int width, int height, Alignment alignment = Alignment.TopLeft) {

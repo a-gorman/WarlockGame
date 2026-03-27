@@ -133,7 +133,8 @@ class TextDisplay : InterfaceComponent {
             RecalculateWrappedText();
         }
         
-        spriteBatch.DrawString(Art.Font, _wrappedText, BoundingBox.Location.ToVector2() + location, TextColor,
+        spriteBatch.DrawString(Art.Font, _wrappedText, BoundingBox.Location.ToVector2() + location, 
+            color: TextColor,
             scale: TextScale,
             rotation: 0,
             origin: Vector2.Zero,

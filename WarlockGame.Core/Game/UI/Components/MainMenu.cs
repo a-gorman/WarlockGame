@@ -14,7 +14,7 @@ class MainMenu: InterfaceComponent {
     private readonly Texture2D _buttonTexture;
 
     public MainMenu() {
-        Layout = Layout.WithSize(400, 500, Layout.Alignment.Center);
+        Layout = Layout.WithSize(300, 400, Layout.Alignment.Center);
         Clickable = ClickableState.PassThrough;
         Layer = 5;
 
@@ -52,18 +52,22 @@ class MainMenu: InterfaceComponent {
     }
     
     private Basic.Grid CreateJoinGrid() {
-        var playerNameLabel = new TextDisplay("Player name:", cursorEnabled: true)
-            { Layout = Layout.WithSize(100, 100, Layout.Alignment.BottomLeft), TextScale = 0.5f };
+        var playerNameLabel = new TextDisplay("Player name:", cursorEnabled: true) {
+            Layout = Layout.WithHeight((int)(Art.Font.LineSpacing * 0.5f), heightOffset: -5, widthMargin: 15, alignment: Layout.Alignment.Bottom),
+            TextScale = 0.5f,
+            TextColor = Color.Black
+        };
+        
         var playerNameInput = new TextInput(textColor: Color.Black, backgroundColor: Color.White) 
-            { Layout = Layout.WithMargin(widthMargin: 10, heightMargin: 40) };
-            
-            Basic.Grid.SingleColumn(
-        [ 
-            playerNameInput,
-            new TextInput(textColor: Color.Black, backgroundColor: Color.White) { Layout = Layout.WithMargin(widthMargin: 10, heightMargin: 40) }
-        ]);
+            { Layout = Layout.WithHeight(Art.Font.LineSpacing, widthMargin: 10, alignment: Layout.Alignment.Top) };
+        
+        var joinIpLabel = new TextDisplay("IP address:", cursorEnabled: true) {
+            Layout = Layout.WithHeight((int)(Art.Font.LineSpacing * 0.5f), heightOffset: -5, widthMargin: 15, alignment: Layout.Alignment.Bottom),
+            TextScale = 0.5f,
+            TextColor = Color.Black
+        };
         var joinIpInput = new TextInput(textColor: Color.Black, backgroundColor: Color.White) 
-            { Layout = Layout.WithMargin(widthMargin: 10, heightMargin: 40) };
+            { Layout = Layout.WithHeight(Art.Font.LineSpacing, widthMargin: 10, alignment: Layout.Alignment.Top) };
         
         var connectButton = new Button(_buttonTexture) {
             Layout = Layout.WithMargin(10), 
@@ -78,16 +82,21 @@ class MainMenu: InterfaceComponent {
         }.Also(x => x.AddComponent(new TextDisplay("Back")));
 
         return Basic.Grid.SingleColumn([
-            Basic.Grid.SingleColumn([playerNameLabel, playerNameInput]), 
-            joinIpInput, 
+            Basic.Grid.SingleColumn([playerNameLabel, playerNameInput], ClickableState.PassThrough), 
+            Basic.Grid.SingleColumn([joinIpLabel, joinIpInput], ClickableState.PassThrough), 
             connectButton, 
             backButton
         ], ClickableState.PassThrough);
     }
     
     private Basic.Grid CreateHostGrid() {
+        var playerNameLabel = new TextDisplay("Player name:", cursorEnabled: true) {
+            Layout = Layout.WithHeight((int)(Art.Font.LineSpacing * 0.5f), heightOffset: -5, widthMargin: 15, alignment: Layout.Alignment.Bottom),
+            TextScale = 0.5f,
+            TextColor = Color.Black
+        };
         var playerNameInput = new TextInput(textColor: Color.Black, backgroundColor: Color.White) 
-            { Layout = Layout.WithMargin(widthMargin: 10, heightMargin: 40) };
+            { Layout = Layout.WithHeight(Art.Font.LineSpacing, widthMargin: 10, alignment: Layout.Alignment.Top) };
         
         var startButton = new Button(_buttonTexture) {
             Layout = Layout.WithMargin(10), 
@@ -98,7 +107,11 @@ class MainMenu: InterfaceComponent {
             Layout = Layout.WithMargin(10), LeftClick = _ => TransitionToMainState()
         }.Also(x => x.AddComponent(new TextDisplay("Back")));
         
-        return Basic.Grid.SingleColumn([playerNameInput, startButton, backButton], ClickableState.PassThrough);
+        return Basic.Grid.SingleColumn([
+            Basic.Grid.SingleColumn([playerNameLabel, playerNameInput], ClickableState.PassThrough), 
+            startButton, 
+            backButton], 
+            ClickableState.PassThrough);
     }
 
     private void TransitionToMainState() {

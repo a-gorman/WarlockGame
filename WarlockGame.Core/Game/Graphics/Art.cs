@@ -27,6 +27,7 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D Pixel { get; private set; } = null!;		// a single white pixel
 
 		public static SpriteFont Font { get; private set; } = null!;
+		public static float FontHeight { get; private set; }
 		
 		public static Texture2D FireballIcon { get; private set; } = null!;
 		public static Texture2D LightningIcon { get; private set; } = null!;
@@ -72,6 +73,7 @@ namespace WarlockGame.Core.Game.Graphics
 			Pixel.SetData(new[] { Color.White });
 
 			Font = content.Load<SpriteFont>("Font");
+			FontHeight = Font.MeasureString("l").Y;
 			
 			LoadIcons(content);
 		}
