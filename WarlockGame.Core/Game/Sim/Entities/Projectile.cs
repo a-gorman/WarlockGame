@@ -35,7 +35,6 @@ class Projectile : Entity {
             Orientation = Extensions.ToAngle(Velocity);
 
         Position += Velocity;
-        WarlockGame.Grid.ApplyExplosiveForce(0.5f * Velocity.Length(), Position, 80);
 
         // delete projectiles that go off-screen
         if (!new RectangleF(new Vector2(0), Simulation.ArenaSize).Contains(Position))

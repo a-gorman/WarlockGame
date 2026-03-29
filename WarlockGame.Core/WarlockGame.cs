@@ -29,7 +29,6 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     public static Vector2 ScreenSize => new Vector2(Viewport.Width, Viewport.Height);
     public static GameTime GameTime { get; private set; } = null!;
     public static ParticleManager<ParticleState> ParticleManager { get; private set; } = null!;
-    public static Grid Grid { get; private set; } = null!;
     public static bool IsLocal => !NetworkManager.IsConnected;
 
     public Queue<ServerTickProcessed> ServerTicks { get; } = new();
@@ -121,10 +120,6 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
 
         ParticleManager = new ParticleManager<ParticleState>(1024 * 20, ParticleState.UpdateParticle);
 
-        const int maxGridPoints = 1600;
-        Vector2 gridSpacing = new Vector2((float)Math.Sqrt(Viewport.Width * Viewport.Height / maxGridPoints));
-        Grid = new Grid(Viewport.Bounds, gridSpacing);
-        
         base.Initialize();
     }
     
@@ -219,8 +214,6 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         
         ParticleManager.Update();
             
-        Grid.Update();
-            
         base.Update(gameTime);
     }
 
@@ -250,7 +243,6 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         _spriteBatch.End();
 
         _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
-        Grid.Draw(_spriteBatch);
         ParticleManager.Draw(_spriteBatch);
         _spriteBatch.End();
 

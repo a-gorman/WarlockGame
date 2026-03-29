@@ -29,10 +29,5 @@ sealed class SpellIcon : InterfaceComponent {
         base.Update(in args);
     }
 
-    public override void RefreshBounds(Rectangle parentBounds) {
-        var x = 5;
-        base.RefreshBounds(parentBounds);
-    }
-
     public override void OnLeftClick(Vector2 _) { InputManager.SelectedSpellId = _spell.Id; }
 }
