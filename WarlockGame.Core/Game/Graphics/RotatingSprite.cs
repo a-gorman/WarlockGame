@@ -25,9 +25,6 @@ public class RotatingSprite: ISprite
         Size = sourceRectangles[0].Size.ToVector2();
     }
     
-    // 0,          1,           2,        3
-    // -1/4-1/4    1/4-3/4    3/4-5/4    5/4-7/4
-    
     public void Draw(SpriteBatch spriteBatch, Vector2 position, Angle orientation, Vector2? origin = null, float opacity = 1) {
         orientation.Radians += float.Pi / _sourceRectangles.Length;
         orientation.WrapPositive();
