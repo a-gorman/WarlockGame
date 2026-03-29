@@ -201,7 +201,7 @@ sealed class MainView : InterfaceComponent {
                 DrawWarlock(location, spriteBatch, entity, warlock);
             }
             else {
-                entity.Sprite.Draw(spriteBatch, entity.Position + location, entity.Orientation);
+                entity.Sprite.Draw(spriteBatch, entity.Position + location, new Angle(entity.Orientation));
             }
         }
         
@@ -234,7 +234,7 @@ sealed class MainView : InterfaceComponent {
         }
         
         
-        entity.Sprite.Draw(spriteBatch, entity.Position + location, entity.Orientation, opacity: opacity);
+        entity.Sprite.Draw(spriteBatch, entity.Position + location, new Angle(entity.Orientation), opacity: opacity);
         DrawHealthBar(warlock, opacity, location, spriteBatch);
     }
 

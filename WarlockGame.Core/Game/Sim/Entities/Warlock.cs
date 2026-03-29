@@ -72,7 +72,7 @@ class Warlock : Entity {
 
 
     public Warlock(int forceId, Vector2 position, Simulation simulation):
-        base(new Sprite(Art.Player), position, radius: 20) {
+        base(RotatingSprite.FromGridSpriteSheet(Art.Warlock, 8), position, radius: 20) {
         _sim = simulation;
         Health = MaxHealth;
         ForceId = forceId;

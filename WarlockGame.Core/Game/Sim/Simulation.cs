@@ -154,7 +154,7 @@ class Simulation {
             var spawnPos = ArenaSize / 2 + new Vector2(0, 400).Rotated(radiansPerPlayer * i);
             var warlock = new Warlock(x.Id, spawnPos, this);
 
-            warlock.Sprite.Color = PlayerManager.GetPlayer(x.Id)!.Color;
+            // warlock.Sprite.Color = PlayerManager.GetPlayer(x.Id)!.Color;
         
             return warlock;
         });

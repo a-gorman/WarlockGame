@@ -493,6 +493,18 @@
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Wanderer.png;Art/Wanderer.png
 
+#begin ../../../../GameContent/Art/WizardGuyGreen.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/WizardGuyGreen.png;Art/WizardGuyGreen.png
+
 #begin ../../../../GameContent/Audio/explosion-01.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

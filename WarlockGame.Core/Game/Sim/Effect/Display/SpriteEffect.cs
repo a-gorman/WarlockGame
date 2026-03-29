@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using WarlockGame.Core.Game.Graphics;
 
 namespace WarlockGame.Core.Game.Sim.Effect.Display;
@@ -35,7 +36,7 @@ public class SpriteEffect : IEffect
     {
         if (!_timer.IsExpired)
         {
-            _sprite.Draw(spriteBatch, viewOffset + _position, _orientation, origin: Origin);
+            _sprite.Draw(spriteBatch, viewOffset + _position, new Angle(_orientation), origin: Origin);
         }
     }
 }

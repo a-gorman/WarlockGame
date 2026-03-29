@@ -1,12 +1,13 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Graphics;
 
-public class Sprite
+public class Sprite: ISprite
 {
     private readonly Texture2D _image;
 
@@ -38,8 +39,8 @@ public class Sprite
         _framesBetweenTransitions = framesBetweenTransitions;
     }
 
-    public void Draw(SpriteBatch spriteBatch, Vector2 position, float orientation, Vector2? origin = null, float opacity = 1) {
-        if (!Rotates) orientation = 0;
+    public void Draw(SpriteBatch spriteBatch, Vector2 position, Angle orientation, Vector2? origin = null, float opacity = 1) {
+        if (!Rotates) orientation = new Angle(0);
         
         spriteBatch.Draw(_image, position, ActiveSourceRectangle, Color * opacity, orientation, origin ?? Size / 2f, Scale, 0, 0);
         AdvanceSpriteFrame();

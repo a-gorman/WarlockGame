@@ -11,7 +11,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
 	{
 		public int Id { get; set; }
 		public int? ForceId { get; set; }
-		public Sprite Sprite { get; }
+		public ISprite Sprite { get; }
 		public CollisionType CollisionType { get; }
 		public bool BlocksProjectiles { get; set; }
 
@@ -62,7 +62,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
 		/// <summary>
 		/// Constructs an entity with a circle collision
 		/// </summary>
-		public Entity(Sprite sprite, Vector2 position, float radius = 20) {
+		public Entity(ISprite sprite, Vector2 position, float radius = 20) {
 			Sprite = sprite;
 			CollisionType = CollisionType.Circle;
 			Radius = radius;

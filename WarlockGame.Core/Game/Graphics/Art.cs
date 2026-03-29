@@ -7,6 +7,7 @@ namespace WarlockGame.Core.Game.Graphics
 	internal static class Art
 	{
 		public static Texture2D Player { get; private set; } = null!;
+		public static Texture2D Warlock { get; private set; } = null!;
 		public static Texture2D Seeker { get; private set; } = null!;
 		public static Texture2D Wanderer { get; private set; } = null!;
 		public static Texture2D Bullet { get; private set; } = null!;
@@ -51,6 +52,7 @@ namespace WarlockGame.Core.Game.Graphics
 
 		public static void Load(ContentManager content)
 		{
+			Warlock = content.Load<Texture2D>("Art/WizardGuyGreen");
 			Player = content.Load<Texture2D>("Art/Player");
 			Seeker = content.Load<Texture2D>("Art/Seeker");
 			Wanderer = content.Load<Texture2D>("Art/Wanderer");
