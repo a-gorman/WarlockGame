@@ -1,7 +1,5 @@
 using System;
-using System.Diagnostics;
 using System.Text;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace WarlockGame.Core.Game.Util;
 

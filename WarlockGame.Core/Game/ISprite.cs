@@ -1,5 +1,4 @@
-﻿using System.Runtime.Intrinsics.X86;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 
 namespace WarlockGame.Core.Game;

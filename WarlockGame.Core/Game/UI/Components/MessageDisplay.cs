@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.UI.Components.Basic;
 using WarlockGame.Core.Game.Util;
-using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace WarlockGame.Core.Game.UI.Components;
 

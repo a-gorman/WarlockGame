@@ -8,7 +8,6 @@ using WarlockGame.Core.Game.Sim.Buffs;
 using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Util;
 using ZLinq;
-using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using Warlock = WarlockGame.Core.Game.Sim.Entities.Warlock;
 

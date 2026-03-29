@@ -1,12 +1,10 @@
 using System;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.UI.Components;
-using ZLinq;
 
 namespace WarlockGame.Core.Game.UI;
 

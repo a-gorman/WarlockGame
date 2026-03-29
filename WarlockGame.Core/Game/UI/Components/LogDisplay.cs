@@ -1,5 +1,4 @@
 using System.Linq;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.UI.Components.Basic;

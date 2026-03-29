@@ -2,7 +2,6 @@ using System;
 using System.Data;
 using LiteNetLib;
 using LiteNetLib.Utils;
-using Microsoft.Xna.Framework;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.UI.Components;
