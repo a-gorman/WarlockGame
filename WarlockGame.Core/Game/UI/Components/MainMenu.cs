@@ -6,9 +6,9 @@ using WarlockGame.Core.Game.Util;
 namespace WarlockGame.Core.Game.UI.Components;
 
 class MainMenu: InterfaceComponent {
-    private readonly Basic.Grid _mainGrid;
-    private readonly Basic.Grid _joinGrid;
-    private readonly Basic.Grid _hostGrid;
+    private readonly Grid _mainGrid;
+    private readonly Grid _joinGrid;
+    private readonly Grid _hostGrid;
     private MenuState _state = MenuState.Main;
 
     private readonly Texture2D _buttonTexture;
@@ -33,7 +33,7 @@ class MainMenu: InterfaceComponent {
         TransitionToMainState();
     }
 
-    private Basic.Grid CreateMainGrid() {
+    private Grid CreateMainGrid() {
         var hostButton = new Button(_buttonTexture) {
             Layout = Layout.WithMargin(10),
             LeftClick = _ => TransitionToHostState()
@@ -48,10 +48,10 @@ class MainMenu: InterfaceComponent {
             LeftClick = _ => { WarlockGame.Instance.Exit(); } 
         }.Also(x => x.AddComponent(new TextDisplay("Exit")));
 
-        return Basic.Grid.SingleColumn([hostButton, joinButton, exitButton], ClickableState.PassThrough);
+        return Grid.SingleColumn([hostButton, joinButton, exitButton], ClickableState.PassThrough);
     }
     
-    private Basic.Grid CreateJoinGrid() {
+    private Grid CreateJoinGrid() {
         var playerNameLabel = new TextDisplay("Player name:", cursorEnabled: true) {
             Layout = Layout.WithHeight((int)(Art.Font.LineSpacing * 0.5f), heightOffset: -5, widthMargin: 15, alignment: Layout.Alignment.Bottom),
             TextScale = 0.5f,
@@ -81,15 +81,15 @@ class MainMenu: InterfaceComponent {
             Layout = Layout.WithMargin(10), LeftClick = _ => TransitionToMainState()
         }.Also(x => x.AddComponent(new TextDisplay("Back")));
 
-        return Basic.Grid.SingleColumn([
-            Basic.Grid.SingleColumn([playerNameLabel, playerNameInput], ClickableState.PassThrough), 
-            Basic.Grid.SingleColumn([joinIpLabel, joinIpInput], ClickableState.PassThrough), 
+        return Grid.SingleColumn([
+            Grid.SingleColumn([playerNameLabel, playerNameInput], ClickableState.PassThrough), 
+            Grid.SingleColumn([joinIpLabel, joinIpInput], ClickableState.PassThrough), 
             connectButton, 
             backButton
         ], ClickableState.PassThrough);
     }
     
-    private Basic.Grid CreateHostGrid() {
+    private Grid CreateHostGrid() {
         var playerNameLabel = new TextDisplay("Player name:", cursorEnabled: true) {
             Layout = Layout.WithHeight((int)(Art.Font.LineSpacing * 0.5f), heightOffset: -5, widthMargin: 15, alignment: Layout.Alignment.Bottom),
             TextScale = 0.5f,
@@ -107,8 +107,8 @@ class MainMenu: InterfaceComponent {
             Layout = Layout.WithMargin(10), LeftClick = _ => TransitionToMainState()
         }.Also(x => x.AddComponent(new TextDisplay("Back")));
         
-        return Basic.Grid.SingleColumn([
-            Basic.Grid.SingleColumn([playerNameLabel, playerNameInput], ClickableState.PassThrough), 
+        return Grid.SingleColumn([
+            Grid.SingleColumn([playerNameLabel, playerNameInput], ClickableState.PassThrough), 
             startButton, 
             backButton], 
             ClickableState.PassThrough);

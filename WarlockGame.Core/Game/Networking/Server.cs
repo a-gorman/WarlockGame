@@ -125,7 +125,7 @@ class Server : INetEventListener {
     }
 
     public void OnNetworkError(IPEndPoint endPoint, SocketError socketError) {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public void OnNetworkReceive(NetPeer peer, NetPacketReader reader, byte channelNumber,
@@ -135,7 +135,7 @@ class Server : INetEventListener {
 
     public void OnNetworkReceiveUnconnected(IPEndPoint remoteEndPoint, NetPacketReader reader,
         UnconnectedMessageType messageType) {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public void OnNetworkLatencyUpdate(NetPeer peer, int latency) {

@@ -14,7 +14,7 @@ namespace WarlockGame.Core.Game.UI.Components;
 
 class SpellPicker : InterfaceComponent {
     private readonly Button _confirmButton;
-    private Basic.Grid? _grid;
+    private Grid? _grid;
     private readonly int _columns = 5;
     private SpellDefinition[]? _spells;
     private readonly HashSet<int> _selections = [];
@@ -58,10 +58,10 @@ class SpellPicker : InterfaceComponent {
         }
     }
 
-    private Basic.Grid CreateGrid() {
+    private Grid CreateGrid() {
         var rows = _spells!.Length / _columns + 1;
 
-        var grid = new Basic.Grid(BoundingBox.AtOrigin().WithMargin(20), _columns, rows) {
+        var grid = new Grid(BoundingBox.AtOrigin().WithMargin(20), _columns, rows) {
             Clickable = ClickableState.PassThrough
         };
         for (var i = 0; i < _spells.Length; i++) {

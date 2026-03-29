@@ -7,7 +7,7 @@ namespace WarlockGame.Core.Game.UI.Components;
 
 sealed class Scoreboard : InterfaceComponent {
     private readonly GameRules _gameRule;
-    private Components.Basic.Grid? _grid;
+    private Grid? _grid;
     private readonly Dictionary<int, TextDisplay> _playerLifeDisplays = new();
 
     public Scoreboard(GameRules gameRule) {
@@ -30,7 +30,7 @@ sealed class Scoreboard : InterfaceComponent {
             if(_grid != null) RemoveComponent(_grid);
             
             var playerIds = _gameRule.Statuses.Keys.ToList();
-            _grid = new Components.Basic.Grid(0, 0, 2, columnWidth, playerIds.Count, rowHeight);
+            _grid = new Grid(0, 0, 2, columnWidth, playerIds.Count, rowHeight);
             for (int i = 0; i < playerIds.Count; i++) {
                 var id = playerIds[i];
                 var lives = _gameRule.Statuses[id].Lives;

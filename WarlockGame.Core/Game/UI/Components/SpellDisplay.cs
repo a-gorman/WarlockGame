@@ -11,7 +11,7 @@ namespace WarlockGame.Core.Game.UI.Components;
 
 sealed class SpellDisplay : InterfaceComponent {
     private Dictionary<InputAction, string> KeyMappings { get; }
-    private Components.Basic.Grid IconGrid { get; }
+    private Basic.Grid IconGrid { get; }
 
     private Texture2D? _pointTexture;
 
@@ -26,7 +26,7 @@ sealed class SpellDisplay : InterfaceComponent {
         KeyMappings = keyMappings.Where(x => Actions.Contains(x.Value)).ToDictionary(x => x.Value, x => x.Key.ToString());
         Layer = 2;
         Layout = Layout.WithBoundingBox(0, -30, 1880, 90, Layout.Alignment.BottomCenter);
-        IconGrid = new Components.Basic.Grid(55, 20, Actions.Length, SpellSpacing, 1, 70) {
+        IconGrid = new Basic.Grid(55, 20, Actions.Length, SpellSpacing, 1, 70) {
             Clickable = ClickableState.PassThrough
         };
         AddComponent(IconGrid);

@@ -47,7 +47,7 @@ sealed class PerkPicker: InterfaceComponent {
     private void SetPerks(IEnumerable<Perk> perks) {
         RemoveAllComponents();
         _perks = perks.ToList();
-        var grid = new Basic.Grid(BoundingBox.AtOrigin().WithMargin(_marginX, _marginY), _perks.Count, 1) {
+        var grid = new Grid(BoundingBox.AtOrigin().WithMargin(_marginX, _marginY), _perks.Count, 1) {
             Clickable = ClickableState.PassThrough
         };
         AddComponent(grid);
