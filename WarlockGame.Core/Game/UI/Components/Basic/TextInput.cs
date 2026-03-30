@@ -40,6 +40,9 @@ class TextInput : InterfaceComponent, ITextInputConsumer {
         }
 
         switch (textEvent.Key) {
+            case Keys.Escape:
+                OnLostFocus();
+                break;
             case Keys.Back:
                 if (Text.Length > 0) {
                     _textDisplay.RemoveChar();
