@@ -179,6 +179,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
                 } else if (ServerTicks.Count == 0) {
                     // Stop trying to catch up to make animations smoother and prevent stuttering
                     TargetElapsedTime = TimeSpan.FromTicks(_targetTickTime);
+                    // Early exit to prevent dequeuing empty queue
                     break;
                 } 
                 
