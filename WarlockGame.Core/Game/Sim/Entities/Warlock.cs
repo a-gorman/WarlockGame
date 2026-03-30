@@ -64,7 +64,6 @@ class Warlock : Entity {
     public event Action<Warlock>? Destroyed;
     public event Action<Warlock>? SpellCast;
 
-    private static readonly Random _rand = new();
     private readonly Simulation _sim;
     private int _nextBuffId = 1;
 

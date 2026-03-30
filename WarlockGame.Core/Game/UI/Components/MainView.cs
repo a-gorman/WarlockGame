@@ -13,7 +13,7 @@ using Warlock = WarlockGame.Core.Game.Sim.Entities.Warlock;
 
 namespace WarlockGame.Core.Game.UI.Components;
 
-sealed class MainView : InterfaceComponent {
+sealed class SimulationView : InterfaceComponent {
     private readonly Simulation _sim;
     private readonly PerkPicker _perkPicker;
     
@@ -34,7 +34,7 @@ sealed class MainView : InterfaceComponent {
     
     public RectangleF ViewBounds { get; set; }
     
-    public MainView(Simulation sim) {
+    public SimulationView(Simulation sim) {
         _sim = sim;
         Layer = -1;
         _scrollBoundaryWidthTop = Configuration.EdgeScrollWidthTop;
