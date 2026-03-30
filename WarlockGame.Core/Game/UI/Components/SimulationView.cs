@@ -8,7 +8,9 @@ using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.Sim.Buffs;
 using WarlockGame.Core.Game.Util;
 using ZLinq;
+using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
+using RectangleF = MonoGame.Extended.RectangleF;
 using Warlock = WarlockGame.Core.Game.Sim.Entities.Warlock;
 
 namespace WarlockGame.Core.Game.UI.Components;
@@ -177,6 +179,16 @@ sealed class SimulationView : InterfaceComponent {
 
     protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
         var drawOffset = location - ViewBounds.Position;
+
+        spriteBatch.End();
+        spriteBatch.Begin(samplerState: SamplerState.LinearWrap);
+        spriteBatch.Draw(Art.Background,
+            destinationRectangle: new Rectangle(drawOffset.ToPoint(), Simulation.ArenaSize.ToPoint()),
+            sourceRectangle: new Rectangle(new Point(), (Simulation.ArenaSize * 10f).ToPoint()), 
+            color: Color.White);
+        spriteBatch.End();
+        
+        spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
         if (InputManager.SelectedSpellId != null 
             && _sim.SpellManager.Spells.TryGetValue(InputManager.SelectedSpellId.Value, out var spell)
             && spell.Definition.CastRange != null
@@ -233,7 +245,7 @@ sealed class SimulationView : InterfaceComponent {
         }
 
         var playerColor = PlayerManager.GetPlayer(warlock.ForceId ?? -1)?.Color ?? Color.White;
-        spriteBatch.Draw(Art.WarlockGlow, warlock.Position + location - new Vector2(138f/6), null, playerColor, 0, Vector2.Zero, new Vector2(0.33f, 0.33f), SpriteEffects.None, 0);
+        spriteBatch.Draw(Art.WarlockGlow, warlock.Position + location - new Vector2(138f/6), null, playerColor * opacity, 0, Vector2.Zero, new Vector2(0.33f, 0.33f), SpriteEffects.None, 0);
         warlock.Sprite.Draw(spriteBatch, warlock.Position + location, new Angle(warlock.Orientation), opacity: opacity);
         DrawHealthBar(warlock, opacity, location, spriteBatch);
     }
