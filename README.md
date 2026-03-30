@@ -1,5 +1,7 @@
 Fun game for myself and friends. Inspired by Warcaft III's custom map Warlocks.
 
+![img.png](readmeImage.png)
+
 Because I do not have rights to redistribute all art assets purchased for use in this game, assets are not included
 in this repository, and are instead kept in a separate, private repository. Before you can build and run this project, 
 you will need to acquire those assets or provide your own replacements. Ask if you believe you should be allowed to
