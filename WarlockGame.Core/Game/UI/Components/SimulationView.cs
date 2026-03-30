@@ -5,7 +5,6 @@ using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.Sim.Buffs;
-using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Util;
 using ZLinq;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
@@ -197,7 +196,7 @@ sealed class SimulationView : InterfaceComponent {
             }
 
             if (entity is Warlock warlock) {
-                DrawWarlock(location, spriteBatch, entity, warlock);
+                DrawWarlock(location, spriteBatch, warlock);
             }
             else {
                 entity.Sprite.Draw(spriteBatch, entity.Position + location, new Angle(entity.Orientation));
@@ -213,27 +212,27 @@ sealed class SimulationView : InterfaceComponent {
         }
     }
 
-    private void DrawWarlock(Vector2 location, SpriteBatch spriteBatch, Entity entity, Warlock warlock) {
+    private void DrawWarlock(Vector2 location, SpriteBatch spriteBatch, Warlock warlock) {
         float opacity = 1;
         var invisBuffs = warlock.Buffs.AsValueEnumerable().OfType<Invisibility>();
         if (invisBuffs.Any()) {
-            if (entity.ForceId != PlayerManager.LocalPlayerId) {
+            if (warlock.ForceId != PlayerManager.LocalPlayerId) {
                 var localPlayerPos = _sim.EntityManager.GetWarlockByForceId(PlayerManager.LocalPlayerId!.Value)
                     ?.Position;
                 if (localPlayerPos != null) {
                     opacity = invisBuffs.Select(x =>
-                            x.CalculateVisibility((localPlayerPos.Value - entity.Position).Length()))
+                            x.CalculateVisibility((localPlayerPos.Value - warlock.Position).Length()))
                         .Min();
                 }
             }
             else {
                 var circleRadius = invisBuffs.MinBy(x => x.FadeInDistanceMax)!.FadeInDistanceMax;
-                SimDebug.VisualizeCircle(circleRadius, entity.Position, Color.BlueViolet);
+                SimDebug.VisualizeCircle(circleRadius, warlock.Position, Color.BlueViolet);
             }
         }
         
         
-        entity.Sprite.Draw(spriteBatch, entity.Position + location, new Angle(entity.Orientation), opacity: opacity);
+        warlock.Sprite.Draw(spriteBatch, warlock.Position + location, new Angle(warlock.Orientation), opacity: opacity);
         DrawHealthBar(warlock, opacity, location, spriteBatch);
     }
 
