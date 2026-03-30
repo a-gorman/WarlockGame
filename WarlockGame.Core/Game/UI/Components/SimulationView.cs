@@ -184,7 +184,7 @@ sealed class SimulationView : InterfaceComponent {
         spriteBatch.Begin(samplerState: SamplerState.LinearWrap);
         spriteBatch.Draw(Art.Background,
             destinationRectangle: new Rectangle(drawOffset.ToPoint(), Simulation.ArenaSize.ToPoint()),
-            sourceRectangle: new Rectangle(new Point(), (Simulation.ArenaSize * 10f).ToPoint()), 
+            sourceRectangle: new Rectangle(new Point(), (Simulation.ArenaSize * 13f).ToPoint()), 
             color: Color.White);
         spriteBatch.End();
         
