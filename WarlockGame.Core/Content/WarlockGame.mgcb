@@ -25,6 +25,18 @@
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Black Hole.png;Art/Black Hole.png
 
+#begin ../../../../GameContent/Art/bubbles_005.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/bubbles_005.png;Art/bubbles_005.png
+
 #begin ../../../../GameContent/Art/Bullet.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -468,6 +480,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Seeker.png;Art/Seeker.png
+
+#begin ../../../../GameContent/Art/Textures/Grass1_Color.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Textures/Grass1_Color.png;Textures/Grass1_Color.png
+
+#begin ../../../../GameContent/Art/Textures/Grass1_Color.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Textures/Grass1_Color.png;Art/Textures/Grass1_Color.png
 
 #begin ../../../../GameContent/Art/Triple.png
 /importer:TextureImporter

@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
+using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim;
@@ -230,8 +231,9 @@ sealed class SimulationView : InterfaceComponent {
                 SimDebug.VisualizeCircle(circleRadius, warlock.Position, Color.BlueViolet);
             }
         }
-        
-        
+
+        var playerColor = PlayerManager.GetPlayer(warlock.ForceId ?? -1)?.Color ?? Color.White;
+        spriteBatch.Draw(Art.WarlockGlow, warlock.Position + location - new Vector2(138f/6), null, playerColor, 0, Vector2.Zero, new Vector2(0.33f, 0.33f), SpriteEffects.None, 0);
         warlock.Sprite.Draw(spriteBatch, warlock.Position + location, new Angle(warlock.Orientation), opacity: opacity);
         DrawHealthBar(warlock, opacity, location, spriteBatch);
     }
