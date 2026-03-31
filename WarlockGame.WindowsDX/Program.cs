@@ -1,13 +1,20 @@
 using System;
+using WarlockGame.Core.Game.Log;
 
 namespace WarlockGame.WindowsDX
 {
     public static class Program
     {
         [STAThread]
-        private static void Main(params string[] args) {
-            using var game = new Core.WarlockGame(args);
-            game.Run();
+        static void Main(params string[] args) {
+            try {
+                using var game = new WarlockGame.Core.WarlockGame(args);
+                game.Run();
+            } catch (Exception e) {
+                Logger.WriteLog(e.ToString(), Logger.Level.FATAL, Logger.LogType.Program);
+                Logger.WriteLogsToFile("crashdump");
+                throw;
+            }
         }
     }
 }

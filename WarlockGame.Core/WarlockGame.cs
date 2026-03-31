@@ -43,7 +43,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     private readonly SpellDisplay _spellDisplay;
 
     // 60 FPS
-    private long _targetTickTime = 166667L;
+    private readonly long _targetTickTime;
     private MainMenu _mainMenu = null!;
 
     public enum GameState { WaitingToStart, Running }

@@ -86,6 +86,7 @@ public static class Logger {
                 Level.INFO => "INFO",
                 Level.WARNING => "WARN",
                 Level.ERROR => "ERROR",
+                Level.FATAL => "FATAL",
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
