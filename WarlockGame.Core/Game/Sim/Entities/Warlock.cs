@@ -71,7 +71,7 @@ class Warlock : Entity {
 
 
     public Warlock(int forceId, Vector2 position, Simulation simulation):
-        base(RotatingSprite.FromGridSpriteSheet(Art.Warlock, 8), position, radius: 20) {
+        base(RotatingSprite.FromGridSpriteSheet(Art.Warlock, 8, scale: 1.35f), position, radius: 20) {
         _sim = simulation;
         Health = MaxHealth;
         ForceId = forceId;

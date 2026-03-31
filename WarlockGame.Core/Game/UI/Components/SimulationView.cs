@@ -181,10 +181,10 @@ sealed class SimulationView : InterfaceComponent {
         var drawOffset = location - ViewBounds.Position;
 
         spriteBatch.End();
-        spriteBatch.Begin(samplerState: SamplerState.LinearWrap);
+        spriteBatch.Begin(samplerState: SamplerState.PointWrap);
         spriteBatch.Draw(Art.Background,
             destinationRectangle: new Rectangle(drawOffset.ToPoint(), Simulation.ArenaSize.ToPoint()),
-            sourceRectangle: new Rectangle(new Point(), (Simulation.ArenaSize * 13f).ToPoint()), 
+            sourceRectangle: new Rectangle(new Point(), (Art.Background.Bounds.Size.ToVector2() * 15f).ToPoint()), 
             color: Color.White);
         spriteBatch.End();
         
@@ -245,7 +245,7 @@ sealed class SimulationView : InterfaceComponent {
         }
 
         var playerColor = PlayerManager.GetPlayer(warlock.ForceId ?? -1)?.Color ?? Color.White;
-        spriteBatch.Draw(Art.WarlockGlow, warlock.Position + location - new Vector2(138f/6), null, playerColor * opacity, 0, Vector2.Zero, new Vector2(0.33f, 0.33f), SpriteEffects.None, 0);
+        spriteBatch.Draw(Art.WarlockGlow, warlock.Position + location - new Vector2(138f/4), null, playerColor * opacity, 0, Vector2.Zero, new Vector2(0.5f, 0.5f), SpriteEffects.None, 0);
         warlock.Sprite.Draw(spriteBatch, warlock.Position + location, new Angle(warlock.Orientation), opacity: opacity);
         DrawHealthBar(warlock, opacity, location, spriteBatch);
     }

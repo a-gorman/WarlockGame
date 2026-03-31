@@ -13,18 +13,6 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin ../../../../GameContent/Art/Black Hole.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../../../../GameContent/Art/Black Hole.png;Art/Black Hole.png
-
 #begin ../../../../GameContent/Art/bubbles_005.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -36,18 +24,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/bubbles_005.png;Art/bubbles_005.png
-
-#begin ../../../../GameContent/Art/Bullet.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../../../../GameContent/Art/Bullet.png;Art/Bullet.png
 
 #begin ../../../../GameContent/Art/Energy_Spark.png
 /importer:TextureImporter
@@ -385,18 +361,6 @@
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Icons/Water_10_Aura_Of_Cold.png;Art/Icons/Water_10_Aura_Of_Cold.png
 
-#begin ../../../../GameContent/Art/Laser.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../../../../GameContent/Art/Laser.png;Art/Laser.png
-
 #begin ../../../../GameContent/Art/Lightning.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -469,30 +433,6 @@
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Power_Ball.png;Art/Power_Ball.png
 
-#begin ../../../../GameContent/Art/Seeker.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../../../../GameContent/Art/Seeker.png;Art/Seeker.png
-
-#begin ../../../../GameContent/Art/Textures/Grass1_Color.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../../../../GameContent/Art/Textures/Grass1_Color.png;Textures/Grass1_Color.png
-
 #begin ../../../../GameContent/Art/Textures/Grass1_Color.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -516,18 +456,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Triple.png;Art/Triple.png
-
-#begin ../../../../GameContent/Art/Wanderer.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../../../../GameContent/Art/Wanderer.png;Art/Wanderer.png
 
 #begin ../../../../GameContent/Art/WizardGuyGreen.png
 /importer:TextureImporter
