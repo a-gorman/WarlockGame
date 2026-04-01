@@ -39,7 +39,7 @@ class Warlock : Entity {
     }
 
     private bool _updatingBuffs = false;
-    private readonly List<Buff> _addedBuffs = [];
+    private readonly Queue<Buff> _addedBuffs = [];
     public List<Buff> Buffs { get; } = new();
 
     public float DamageMultiplier { get; set; } = 1;
@@ -90,15 +90,17 @@ class Warlock : Entity {
 
         _updatingBuffs = true;
         foreach (var buff in Buffs) {
-            buff.Update(this);
-            if(buff.IsExpired) { buff.OnRemove(this); }
+            if (!buff.IsExpired) {
+                buff.Update(this);
+            } else {
+                buff.OnRemove(this);
+            }
         }
         Buffs.RemoveAll(x => x.IsExpired);
         _updatingBuffs = false;
-        foreach (var newBuff in _addedBuffs) {
+        while(_addedBuffs.TryDequeue(out var newBuff)) {
             AddBuff(newBuff);
         }
-        _addedBuffs.Clear();
         
         if (Orders.FirstOrDefault()?.Finished ?? false) {
             Orders.First!.Value.OnFinish();
@@ -183,18 +185,18 @@ class Warlock : Entity {
     public int AddBuff(Buff buff) {
         if (_updatingBuffs) {
             buff.Id = _nextBuffId++;
-            _addedBuffs.Add(buff);
-        }
-        
-        var existingBuff = Buffs.FirstOrDefault(x => x.Type == buff.Type);
-        if (existingBuff == null || buff.Stacking == Buff.StackingType.Stacks) {
-            buff.Id = _nextBuffId++;
-            Buffs.Add(buff);
-            buff.OnAdd(this);
-        } else if (buff.Stacking == Buff.StackingType.Refreshes && existingBuff.Timer != null) {
-            Logger.Debug($"Refreshing {existingBuff.Type} buff {existingBuff.Id}", Logger.LogType.Simulation);
-            existingBuff.Timer = buff.Timer?.Let(x =>
-                GameTimer.FromTicks(Math.Max(x.TicksRemaining, existingBuff.Timer!.Value.TicksRemaining)));
+            _addedBuffs.Enqueue(buff);
+        } else {
+            var existingBuff = Buffs.FirstOrDefault(x => x.Type == buff.Type);
+            if (existingBuff == null || buff.Stacking == Buff.StackingType.Stacks) {
+                buff.Id = _nextBuffId++;
+                Buffs.Add(buff);
+                buff.OnAdd(this);
+            } else if (buff.Stacking == Buff.StackingType.Refreshes && existingBuff.Timer != null) {
+                Logger.Debug($"Refreshing {existingBuff.Type} buff {existingBuff.Id}", Logger.LogType.Simulation);
+                existingBuff.Timer = buff.Timer?.Let(x =>
+                    GameTimer.FromTicks(Math.Max(x.TicksRemaining, existingBuff.Timer!.Value.TicksRemaining)));
+            }
         }
 
         return buff.Id;
