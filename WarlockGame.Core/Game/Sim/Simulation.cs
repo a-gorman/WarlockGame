@@ -42,7 +42,7 @@ class Simulation {
     public static Vector2 ArenaCenter { get; private set; }
 
     public Simulation() {
-        GameRules = new GameRules(this, 3);
+        GameRules = new GameRules(this, 4);
         EffectManager = new EffectManager();
         SpellFactory = new SpellFactory(this);
         SpellManager = new SpellManager(SpellFactory);
