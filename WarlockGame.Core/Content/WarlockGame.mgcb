@@ -373,18 +373,6 @@
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Lightning.png;Art/Lightning.png
 
-#begin ../../../../GameContent/Art/Player.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../../../../GameContent/Art/Player.png;Art/Player.png
-
 #begin ../../../../GameContent/Art/Pointer.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -444,6 +432,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Textures/Grass1_Color.png;Art/Textures/Grass1_Color.png
+
+#begin ../../../../GameContent/Art/tiny ghost.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/tiny ghost.png;Art/tiny ghost.png
 
 #begin ../../../../GameContent/Art/Triple.png
 /importer:TextureImporter

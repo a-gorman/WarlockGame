@@ -5,9 +5,10 @@ namespace WarlockGame.Core.Game.Graphics
 {
 	internal static class Art
 	{
-		public static Texture2D Player { get; private set; } = null!;
 		public static Texture2D Warlock { get; private set; } = null!;
 		public static Texture2D WarlockGlow { get; private set; } = null!;
+		
+		public static Texture2D Ghost { get; private set; } = null!;
 
 		public static Texture2D Background { get; private set; } = null!;
 		
@@ -52,7 +53,7 @@ namespace WarlockGame.Core.Game.Graphics
 		public static void Load(ContentManager content)
 		{
 			Warlock = content.Load<Texture2D>("Art/WizardGuyGreen");
-			Player = content.Load<Texture2D>("Art/Player");
+			Ghost = content.Load<Texture2D>("Art/tiny ghost");
 			WarlockGlow = content.Load<Texture2D>("Art/bubbles_005");
 			
 			Background = content.Load<Texture2D>("Art/Textures/Grass1_Color");
@@ -72,7 +73,7 @@ namespace WarlockGame.Core.Game.Graphics
 
 			FlameStrike = content.Load<Texture2D>("Art/flame_strike");
 
-			Pixel = new Texture2D(Player.GraphicsDevice, 1, 1);
+			Pixel = new Texture2D(Warlock.GraphicsDevice, 1, 1);
 			Pixel.SetData(new[] { Color.White });
 
 			Font = content.Load<SpriteFont>("Font");

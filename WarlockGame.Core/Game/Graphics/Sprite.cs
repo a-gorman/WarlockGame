@@ -26,10 +26,11 @@ public class Sprite: ISprite
 
     private Rectangle ActiveSourceRectangle => _sourceRectangles[_activeSourceRectangleIndex];
 
-    public Sprite(Texture2D image)
+    public Sprite(Texture2D image, float scale = 1)
     {
         _image = image;
         _sourceRectangles = [image.Bounds];
+        Scale = scale;
     }
 
     private Sprite(Texture2D image, Rectangle[] sourceRectangles, int framesBetweenTransitions)

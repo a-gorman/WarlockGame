@@ -170,7 +170,7 @@ class SpellFactory {
                                         EntityConstructor = (spellContext, location) => {
                                             var sim = spellContext.Simulation;
 
-                                            var image = new Entity(new Sprite(Art.Player), location) {
+                                            var image = new Entity(new Sprite(Art.Ghost, scale: 2f), location, radius: 16) {
                                                 BlocksProjectiles = true,
                                                 ForceId = spellContext.Caster.ForceId
                                             };
@@ -191,7 +191,7 @@ class SpellFactory {
                                         EntityConstructor = (spellContext, location) => {
                                             var sim = spellContext.Simulation;
 
-                                            var image = new Entity(new Sprite(Art.Player), location) {
+                                            var image = new Entity(new Sprite(Art.Ghost, scale: 2f), location, radius: 16) {
                                                 BlocksProjectiles = true,
                                                 ForceId = spellContext.Caster.ForceId
                                             };
@@ -311,10 +311,10 @@ class SpellFactory {
             effects: new ProjectileComponent(
                 sprite: Sprite.FromGridSpriteSheet(Art.Triple, 4, 4, SimTime.OfTicks(2), scale: 2f, rotates: false),
                 speed: 18,
-                radius: 16,
+                radius: 23,
                 effects: [
                     new LocationAreaOfEffect {
-                        Shape = new CircleTarget(innerRadius: 16, outerRadius: 18),
+                        Shape = new CircleTarget(innerRadius: 23, outerRadius: 27),
                         Components = [
                             new DamageComponent { Damage = 15 },
                             new PushComponent { Force = 100 }
