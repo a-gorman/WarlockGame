@@ -10,6 +10,7 @@ using WarlockGame.Core.Game.Sim.Order;
 using WarlockGame.Core.Game.Sim.Perks;
 using WarlockGame.Core.Game.Sim.Rule;
 using WarlockGame.Core.Game.Sim.Spell;
+using WarlockGame.Core.Game.UI.Components;
 using WarlockGame.Core.Game.Util;
 using Warlock = WarlockGame.Core.Game.Sim.Entities.Warlock;
 
@@ -119,7 +120,9 @@ class Simulation {
                     ?.GiveOrder(x => new CastOrder(cast.SpellId, cast.CastVector, x, cast.Type.ToSimType()));
                 break;
             case SelectPerk selectPerk:
-                PerkManager.ChoosePerk(selectPerk.PlayerId, selectPerk.PerkId);
+                var perk = PerkManager.ChoosePerk(selectPerk.PlayerId, selectPerk.PerkId);
+                var playerName = PlayerManager.GetPlayer(selectPerk.PlayerId)?.Name ?? "INVALID";
+                MessageDisplay.Display($"{playerName} picked the {perk?.Name} perk!");
                 break;
             case SelectSpells selectSpells:
                 var force = Forces.FirstOrDefault(x => x.Id == selectSpells.PlayerId);

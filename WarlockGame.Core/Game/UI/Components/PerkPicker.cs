@@ -19,32 +19,59 @@ sealed class PerkPicker: InterfaceComponent {
     
     private readonly Simulation _sim;
     private List<Perk> _perks = new();
-    private readonly int _width = 600;
-    private readonly int _height = 200;
     private readonly int _marginX = 20;
     private readonly int _marginY = 20;
 
+    private readonly TextDisplay _pickingTimeDisplay;
+    
+    private TimeSpan _pickingEndTime;
+
+    private bool _hasPicked;
+    
     private Texture2D? _rainbowTexture;
     
     public PerkPicker(Simulation sim) {
         _sim = sim;
-        Layout = Layout.WithSize(_width, _height, Layout.Alignment.Center);
+        Layout = Layout.WithSize(600, 200, Layout.Alignment.Center);
+        _pickingTimeDisplay = new TextDisplay {
+            Layout = Layout.WithHeight((int)(Art.FontHeight * 0.75f), alignment: Layout.Alignment.Bottom),
+            TextScale = 0.75f,
+            TextColor = Color.Black
+        };
     }
 
     public override void Update(ref readonly UIManager.UpdateArgs args) {
         if (WasMadeVisible) {
             var perks = _sim.PerkManager.GetAvailablePerks(PlayerManager.LocalPlayerId ?? -1);
             if (perks.Length > 0) {
+                _hasPicked = false;
+                _pickingEndTime = WarlockGame.GameTime.TotalGameTime + TimeSpan.FromSeconds(10);
                 perks.Shuffle(Random.Shared);
                 SetPerks(perks.Take(PerkSelections));
             } else {
                 Logger.Error("Could not get perks for local player!", Logger.LogType.Interface | Logger.LogType.Simulation);
             }
         }
+
+        if (Visible && !_hasPicked) {
+            var timeRemaining = _pickingEndTime - WarlockGame.GameTime.TotalGameTime;
+            _pickingTimeDisplay.Text = $"Time remaining: {Math.Max(timeRemaining.Seconds, 0)} seconds";
+
+            if (timeRemaining.Ticks <= 0) {
+                var playerId = PlayerManager.LocalPlayerId;
+                if (playerId != null) {
+                    _hasPicked = true;
+                    var randomPerk = _perks[Random.Shared.Next(0, _perks.Count)];
+                    Logger.Info($"Perk picking time expired, randomly picked perk: {randomPerk.Name}", Logger.LogType.Interface);
+                    InputManager.HandlePlayerAction(new SelectPerk { PlayerId = playerId.Value, PerkId = randomPerk.Id });
+                }
+            }
+        }
     }
 
     private void SetPerks(IEnumerable<Perk> perks) {
         RemoveAllComponents();
+        AddComponent(_pickingTimeDisplay);
         _perks = perks.ToList();
         var grid = new Grid(BoundingBox.AtOrigin().WithMargin(_marginX, _marginY), _perks.Count, 1) {
             Clickable = ClickableState.PassThrough
@@ -56,8 +83,8 @@ sealed class PerkPicker: InterfaceComponent {
                 Layout = Layout.WithMargin(15),
                 LeftClick = _ => {
                     var playerId = PlayerManager.LocalPlayerId;
-                    if (playerId == null) return;
-
+                    if (playerId == null || _hasPicked) return;
+                    _hasPicked = true;
                     InputManager.HandlePlayerAction(new SelectPerk { PlayerId = playerId.Value, PerkId = perk.Id });
                 }
             };

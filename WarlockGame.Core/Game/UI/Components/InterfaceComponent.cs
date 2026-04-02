@@ -195,13 +195,11 @@ class InterfaceComponent {
     public void RemoveComponent(InterfaceComponent component) {
         _components.Remove(component);
         component.OnRemove();
-        component.Disabled = true;
     }
     
     public void RemoveAllComponents() {
         foreach (var component in _components) {
             component.OnRemove();
-            component.Disabled = true;
         }
         _components.Clear();
     }
@@ -210,7 +208,6 @@ class InterfaceComponent {
         foreach (var component in _components) {
             if (predicate(component)) {
                 component.OnRemove();
-                component.Disabled = true;
             }
         }
         _components.RemoveAll(predicate);

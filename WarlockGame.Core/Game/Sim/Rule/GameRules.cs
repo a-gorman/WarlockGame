@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MonoGame.Extended;
+using WarlockGame.Core.Game.Sim.Effect;
 using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Sim.Perks;
 using WarlockGame.Core.Game.Util;
@@ -22,20 +23,20 @@ class GameRules {
     
     public event Action<LivesChanged>? OnChanged;
 
-    private readonly Simulation _simulation;
+    private readonly Simulation _sim;
     
-    public GameRules(Simulation simulation, int initialLives) {
-        _simulation = simulation;
+    public GameRules(Simulation sim, int initialLives) {
+        _sim = sim;
         InitialLives = initialLives;
     }
 
     public void Initialize() {
-        _simulation.PerkManager.PerkChosen += OnPerkChosen;
+        _sim.PerkManager.PerkChosen += OnPerkChosen;
     }
     
     public void Reset() {
         Statuses.Clear();
-        foreach (var force in _simulation.Forces) {
+        foreach (var force in _sim.Forces) {
             Statuses.Add(force.Id, new PlayerStatus(InitialLives));
         }
 
@@ -43,10 +44,10 @@ class GameRules {
     }
 
     public void OnWarlockDestroyed(Warlock warlock) {
-        int playerId = warlock.ForceId!.Value;
-        var status = Statuses[playerId];
+        int forceId = warlock.ForceId!.Value;
+        var status = Statuses[forceId];
         status.Lives -= 1;
-        OnChanged?.Invoke(new LivesChanged { PlayerId = playerId });
+        OnChanged?.Invoke(new LivesChanged { PlayerId = forceId });
 
         if (status.Lives != 0) {
             status.ChoosingPerk = true;
@@ -68,9 +69,9 @@ class GameRules {
         if (!Statuses[forceId].ChoosingPerk) return;
         
         Statuses[forceId].ChoosingPerk = false;
-        _simulation.EffectManager.AddDelayedEffect(() => {
-            var respawnPosition = Simulation.ArenaSize / 2 + new Vector2(400, 0).Rotated(_simulation.Random.NextAngle());
-            _simulation.EntityManager.RespawnWarlock(forceId, respawnPosition);
+        _sim.EffectManager.AddDelayedEffect(() => {
+            var respawnPosition = Simulation.ArenaSize / 2 + new Vector2(400, 0).Rotated(_sim.Random.NextAngle());
+            _sim.EntityManager.RespawnWarlock(forceId, respawnPosition);
         }, SimTime.OfSeconds(1));
     }
 }

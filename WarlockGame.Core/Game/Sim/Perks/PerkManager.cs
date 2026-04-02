@@ -39,14 +39,16 @@ class PerkManager {
             .ToArray();
     }
 
-    public void ChoosePerk(int forceId, int perkId) {
+    public Perk? ChoosePerk(int forceId, int perkId) {
         if (_perks.TryGetValue(perkId, out var perk)) {
             _forcePerks[(forceId, perkId)] = true;
             perk.OnAdded(forceId, _sim);
             PerkChosen?.Invoke(forceId, perk);
         } else { 
-            Logger.Warning($"Tried to choose perk that does not exist: {perkId}", Logger.LogType.Simulation | Logger.LogType.PlayerAction);  
+            Logger.Warning($"Tried to choose perk that does not exist: {perkId}", Logger.LogType.Simulation | Logger.LogType.PlayerAction);
         }
+        
+        return perk;
     }
 
     public void Clear() {
