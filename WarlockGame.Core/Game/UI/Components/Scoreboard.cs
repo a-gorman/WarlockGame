@@ -53,15 +53,20 @@ sealed class Scoreboard : InterfaceComponent {
             AddComponent(_grid);
 
             foreach (var playerId in _playerLifeDisplays.Keys) {
-                RecalculatePlayerLives(playerId);
+                RecalculatePlayerLifeDisplay(playerId);
             }
         }
         else {
-            RecalculatePlayerLives(eventArgs.PlayerId);
+            RecalculatePlayerLifeDisplay(eventArgs.PlayerId);
         }
     }
 
-    private void RecalculatePlayerLives(int playerId) {
-        _playerLifeDisplays[playerId].Text = _gameRule.Statuses[playerId].Lives.ToString();
+    private void RecalculatePlayerLifeDisplay(int playerId) {
+        var lives = _gameRule.Statuses[playerId].Lives;
+        if (lives != 0) {
+            _playerLifeDisplays[playerId].Text = lives.ToString();
+        } else {
+            _playerLifeDisplays[playerId].Text = "Defeated";
+        }
     }
 }
