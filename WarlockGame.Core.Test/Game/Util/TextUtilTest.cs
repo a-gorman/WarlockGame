@@ -19,7 +19,8 @@ public class TextUtilTest {
     [InlineData("12345678901", "12345\n67890\n1")]
     [InlineData("1 123456", "1\n12345\n6")]
     public void TextIsWrappedCorrectlySimple(string input, string expected) {
-        TextUtil.WrapText(input, x => new Vector2(x.Length, 1), 5).Should().Be(expected);
+        TextUtil.WrapText(input, x => new Vector2(x.Length, 1), 5).Should()
+            .ContainInConsecutiveOrder(expected.Split('\n'));
     }
     
     [Theory]
@@ -34,7 +35,7 @@ public class TextUtilTest {
     [InlineData(4, "12345678901", "12345\n67890")]
     public void TextIsWrappedCorrectlyMaxHeight(int maxHeight, string input, string expected) {
         TextUtil.WrapText(input, x => new Vector2(x.Length, 2 * (x.Length / 5 + 1)), 5, maxHeight: maxHeight)
-            .Should().Be(expected);
+            .Should().ContainInConsecutiveOrder(expected.Split('\n'));
     }
     
     [Theory]
@@ -49,6 +50,6 @@ public class TextUtilTest {
     [InlineData(2, "12345678901", "12345\n678..")]
     public void TextIsWrappedCorrectlyWithTruncationCharacter(int maxLines, string input, string expected) {
         TextUtil.WrapText(input, x => new Vector2(x.Length, 2 * (x.Length / 5 + 1)), 5, maxLines: maxLines, truncation: "..")
-            .Should().Be(expected);
+            .Should().ContainInConsecutiveOrder(expected.Split('\n'));
     }
 }

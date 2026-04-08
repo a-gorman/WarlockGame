@@ -6,6 +6,7 @@ using LiteNetLib;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
+using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.UI.Components;
 using WarlockGame.Core.Game.Util;
@@ -30,8 +31,8 @@ class ConsoleCommandHandler {
         RegisterTextCommand("logs", ["log"], Logs, "Args: on | off | debug | info | warn | error");
         RegisterTextCommand("ip", 
             _ => MessageDisplay.Display($"IP Address is: {NetUtils.GetLocalIpList(LocalAddrType.IPv4).JoinToString()}"));
-        RegisterTextCommand("version", ["v"], _ => DisplayVersion(), "Display version information");
-        RegisterTextCommand("ping", ["latency"], _ => DisplayLatency(), "Display latency information");
+        RegisterTextCommand("version", ["v"], _ => GetVersionDisplay(), "Display version information");
+        RegisterTextCommand("ping", ["latency"], _ => GetLatencyDisplay(), "Display latency information");
         RegisterTextCommand("debug", _ => DisplayDebugInformation(), "Display debug information");
         #if DEBUG
         RegisterTextCommand("kill", args => {
@@ -113,19 +114,23 @@ class ConsoleCommandHandler {
             });
     }
 
-    private static void DisplayVersion() {
-        MessageDisplay.Display($"Version: {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? ""}");
+    private static string GetVersionDisplay() {
+        return $"Version: {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? ""}";
     }
     
-    private static void DisplayLatency() {
-        MessageDisplay.Display($"Ping: {NetworkManager.Latency?.ToString() ?? ""}");
+    private static string GetLatencyDisplay() {
+        return $"Ping: {NetworkManager.Latency?.ToString() ?? ""}";
     }
-    
+
     private static void DisplayDebugInformation() {
-        DisplayVersion();
-        DisplayLatency();
-        MessageDisplay.Display($"Ticks in queue: {WarlockGame.Instance.ServerTicks.Count}");
-        MessageDisplay.Display($"Log file name: {Configuration.LogFileName}");
+        MessageDisplay.Display(String.Join(
+            separator: '\n',
+            GetVersionDisplay(),
+            GetLatencyDisplay(),
+            $"Ticks in queue: {WarlockGame.Instance.ServerTicks.Count}",
+            $"Log file name: {Configuration.LogFileName}",
+            $"Mouse position: {InputManager.LastInputState.GetMousePosition()}",
+            $"Players: {WarlockGame.Instance.Simulation.Forces.JoinToString(x => $"{x.Name}: Choosing spells: {!x.AreSpellsChosen}")}"));
     }
     
     private static void Help() {

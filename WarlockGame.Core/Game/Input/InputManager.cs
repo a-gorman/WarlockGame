@@ -15,12 +15,13 @@ static class InputManager {
     public static int? SelectedSpellId { get; set; }
     public static bool HasTextConsumers => _textInputConsumers.Any();
 
+    public static readonly InputState LastInputState = new();
+    
     private static int? LocalPlayerId => PlayerManager.LocalPlayerId;
     
     private static readonly MouseInput _mouse = new();
     private static KeyboardInput _keyboard = null!;
     private static readonly List<ITextInputConsumer> _textInputConsumers = new();
-    private static readonly InputState _inputState = new();
     private static readonly ConsoleCommandHandler _commandHandler = new();
 
     private static readonly List<InputAction> SpellSelectionActions = new() {
@@ -38,22 +39,22 @@ static class InputManager {
         _keyboard.Update();
 
         if (WarlockGame.Instance.IsActive) {
-            _inputState.Update(_mouse.GetInputActions().Union(_keyboard.GetInputActions()), _mouse.Position);
+            LastInputState.Update(_mouse.GetInputActions().Union(_keyboard.GetInputActions()), _mouse.Position);
         }
         else {
-            _inputState.Clear();
+            LastInputState.Clear();
         }
         
         if (!HasTextConsumers) {
-            HandleGameFunctions(_inputState);
+            HandleGameFunctions(LastInputState);
         }
 
-        if(_inputState.WasActionKeyPressed(InputAction.LeftClick)) UIManager.HandleLeftClick(_inputState.GetMousePosition());
-        if(_inputState.WasActionKeyPressed(InputAction.RightClick)) UIManager.HandleRightClick(_inputState.GetMousePosition());
+        if(LastInputState.WasActionKeyPressed(InputAction.LeftClick)) UIManager.HandleLeftClick(LastInputState.GetMousePosition());
+        if(LastInputState.WasActionKeyPressed(InputAction.RightClick)) UIManager.HandleRightClick(LastInputState.GetMousePosition());
         
         _textInputConsumers.RemoveAll(x => x.IsExpired);
 
-        return _inputState;
+        return LastInputState;
     }
 
     public static void AddTextConsumer(ITextInputConsumer consumer) {

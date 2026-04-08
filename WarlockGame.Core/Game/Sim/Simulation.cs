@@ -84,7 +84,7 @@ class Simulation {
     public void Restart(int seed) {
         ClearGameState();
         Random = new Random(seed);
-        Forces = PlayerManager.Players.Select(x => new Force { Id = x.Id }).ToArray();
+        Forces = PlayerManager.Players.Select(x => new Force { Id = x.Id, Name = x.Name }).ToArray();
         GameRules.Reset();
         
         foreach (var force in Forces) {
@@ -179,6 +179,7 @@ class Simulation {
 
     public class Force {
         public required int Id { get; init; }
+        public required string Name { get; init; }
         public bool AreSpellsChosen { get; set; }
     }
 }

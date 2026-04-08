@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace WarlockGame.Core.Game.Util;
@@ -6,10 +8,10 @@ namespace WarlockGame.Core.Game.Util;
 public static class TextUtil {
     public delegate Vector2 MeasureTextSize(ReadOnlySpan<Char> text);
     
-    public static string WrapText(string text, MeasureTextSize measureText, float maxLineWidth, 
+    public static List<string> WrapText(string text, MeasureTextSize measureText, float maxLineWidth, 
         float? maxHeight = null, int? maxLines = null, string truncation = "") {
         if (measureText(text).X <= maxLineWidth) {
-            return text;
+            return new List<string>(1) { text };
         }
 
         var spaceMeasurement = measureText(" ");
@@ -23,11 +25,14 @@ public static class TextUtil {
         }
 
         var span = text.AsSpan();
-        
+
+        var lines = new List<string>();
         var sb = new StringBuilder();
         var lineWidth = 0f;
         var nLines = 1;
 
+        Vector2 wordSize;
+        
         while (!span.IsEmpty) {
             
             switch (span[0]) {
@@ -43,30 +48,32 @@ public static class TextUtil {
             
             var word = GetWord(span);
             span = span.Slice(word.Length);
-            Vector2 size = measureText(word);
+            wordSize = measureText(word);
             
             // If the word can fit on the line, add it and continue
-            if (lineWidth + size.X <= maxLineWidth) {
+            if (lineWidth + wordSize.X <= maxLineWidth) {
                 AddWord(word);
                 continue;
             }
 
-            if (size.X <= maxLineWidth) {
+            // If the word does not fit on the line, but it is smaller than a line, add a new line unless we
+            // are out of vertical space.
+            if (wordSize.X <= maxLineWidth) {
                 if(maxLines != null && nLines >= maxLines) {
                     TruncateAndAddFinalWord(word);
                     RemoveLastWhitespace();
-                    return sb.ToString();
+                    return GetFinalReturnValue();
                 }
                 AddNewLine();
                 AddWord(word);
                 continue;
             }
 
-            // Word is larger than one line
+            // Edge case: word is larger than one line
             while (!word.IsEmpty) {
                 if(maxLines != null && nLines >= maxLines) {
                     TruncateAndAddFinalWord(word);
-                    return sb.ToString();
+                    return GetFinalReturnValue();
                 }
                 var wordPortion = GetPortionOfWordThatFits(word, measureText, maxLineWidth);
                 if (lineWidth != 0) {
@@ -75,58 +82,66 @@ public static class TextUtil {
                 AddWord(wordPortion);
                 word = word.Slice(wordPortion.Length);
             }
-            continue;
-
-            void AddSpace() {
-                sb.Append(' ');
-                lineWidth += spaceWidth;
-            }
+        }
         
-            void AddNewLine() {
-                if (sb.Length > 1 && sb[^1] == ' ') {
-                    sb[^1] = '\n';
-                }
-                else {
-                    sb.Append('\n');
-                }
-                lineWidth = 0;
-                nLines++;
-            }
+        RemoveLastWhitespace();
+        return GetFinalReturnValue();
+        
+        void AddSpace() {
+            sb.Append(' ');
+            lineWidth += spaceWidth;
+        }
+        
+        void AddNewLine() {
+            RemoveLastWhitespace();
 
-            void AddWord(ReadOnlySpan<Char> newWord) {
-                sb.Append(newWord);
-                lineWidth += size.X;
-            }
+            lines.Add(sb.ToString());
+            sb.Clear();
+            lineWidth = 0;
+            nLines++;
+        }
 
-            void TruncateAndAddFinalWord(ReadOnlySpan<Char> newWord) {
-                if(truncation.IsEmpty()) {
-                    sb.Append(GetPortionOfWordThatFits(newWord, measureText, maxLineWidth - lineWidth));
+        void AddWord(ReadOnlySpan<Char> newWord) {
+            sb.Append(newWord);
+            lineWidth += wordSize.X;
+        }
+        
+        void TruncateAndAddFinalWord(ReadOnlySpan<Char> newWord) {
+            if(truncation.IsEmpty()) {
+                sb.Append(GetPortionOfWordThatFits(newWord, measureText, maxLineWidth - lineWidth));
+            } else {
+                var truncationSize = measureText(truncation).X;
+                var truncatedWord = GetPortionOfWordThatFits(newWord, measureText, maxLineWidth - (lineWidth + truncationSize));
+                if (!truncatedWord.IsEmpty) {
+                    sb.Append(truncatedWord);
+                    sb.Append(truncation);
+                    RemoveLastWhitespace();
                 } else {
-                    var truncationSize = measureText(truncation).X;
-                    var truncatedWord = GetPortionOfWordThatFits(newWord, measureText, maxLineWidth - (lineWidth + truncationSize));
-                    if (!truncatedWord.IsEmpty) {
-                        sb.Append(truncatedWord);
-                        sb.Append(truncation);
-                        RemoveLastWhitespace();
-                    } else {
-                        RemoveLastWhitespace();
-                        // This is a hack, but should be good enough most of the time, and backing up through the
-                        // string builder properly is pretty difficult without reworking this state machine.
-                        sb.Remove(sb.Length - truncation.Length, truncation.Length);
-                        sb.Append(truncation);
-                    }
+                    RemoveLastWhitespace();
+                    // This is a hack, but should be good enough most of the time, and backing up through the
+                    // string builder properly is pretty difficult without reworking this state machine.
+                    sb.Remove(sb.Length - truncation.Length, truncation.Length);
+                    sb.Append(truncation);
                 }
             }
         }
         
-        RemoveLastWhitespace();
-        return sb.ToString();
+        List<string> GetFinalReturnValue() {
+            while (RemoveLastWhitespace()) { }
+
+            lines.Add(sb.ToString());
+            
+            return lines;
+        }
         
-        void RemoveLastWhitespace() {
-            if (sb.Length > 1 && sb[^1] == ' ' || sb[^1] == '\n') {
+        bool RemoveLastWhitespace() {
+            if (sb.Length > 1 && sb[^1] == ' ') {
                 sb.Remove(sb.Length - 1, 1);
                 lineWidth -= spaceWidth;
+                return true;
             }
+
+            return false;
         }
     }
     

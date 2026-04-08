@@ -52,7 +52,7 @@ class MainMenu: InterfaceComponent {
     }
     
     private Grid CreateJoinGrid() {
-        var playerNameLabel = new TextDisplay("Player name:", cursorEnabled: true) {
+        var playerNameLabel = new TextDisplay("Player name:") {
             Layout = Layout.WithHeight((int)(Art.Font.LineSpacing * 0.5f), heightOffset: -5, widthMargin: 15, alignment: Layout.Alignment.Bottom),
             TextScale = 0.5f,
             TextColor = Color.Black
@@ -61,7 +61,7 @@ class MainMenu: InterfaceComponent {
         var playerNameInput = new TextInput(textColor: Color.Black, backgroundColor: Color.White) 
             { Layout = Layout.WithHeight(Art.Font.LineSpacing, widthMargin: 10, alignment: Layout.Alignment.Top) };
         
-        var joinIpLabel = new TextDisplay("IP address:", cursorEnabled: true) {
+        var joinIpLabel = new TextDisplay("IP address:") {
             Layout = Layout.WithHeight((int)(Art.Font.LineSpacing * 0.5f), heightOffset: -5, widthMargin: 15, alignment: Layout.Alignment.Bottom),
             TextScale = 0.5f,
             TextColor = Color.Black
@@ -90,7 +90,7 @@ class MainMenu: InterfaceComponent {
     }
     
     private Grid CreateHostGrid() {
-        var playerNameLabel = new TextDisplay("Player name:", cursorEnabled: true) {
+        var playerNameLabel = new TextDisplay("Player name:") {
             Layout = Layout.WithHeight((int)(Art.Font.LineSpacing * 0.5f), heightOffset: -5, widthMargin: 15, alignment: Layout.Alignment.Bottom),
             TextScale = 0.5f,
             TextColor = Color.Black
