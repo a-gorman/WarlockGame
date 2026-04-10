@@ -35,7 +35,7 @@ class SpellPicker : InterfaceComponent {
         AddComponent(new TextDisplay(descriptionText) { TextScale = 0.75f });
         _confirmButton = new Button(activeTexture, inactiveTexture) {
             IsActive = false,
-            Layout = Layout.WithBoundingBox(-10, -10, 80, 40, Alignment.BottomRight),
+            Layout = Layout.WithBoundingBox(-10, -10, 90, 50, Alignment.BottomRight),
             LeftClick = _ => {
                 var playerId = PlayerManager.LocalPlayerId;
                 if (playerId == null) return;
@@ -46,7 +46,7 @@ class SpellPicker : InterfaceComponent {
         };
         AddComponent(_confirmButton);
         
-        _confirmButton.AddComponent(new TextDisplay("Confirm") { TextScale = 0.5f });
+        _confirmButton.AddComponent(new TextDisplay("Confirm", Alignment.Center) { TextScale = 0.55f });
         Visible = false;
     }
 
@@ -60,7 +60,8 @@ class SpellPicker : InterfaceComponent {
     private Grid CreateGrid() {
         var rows = _spells!.Length / _columns + 1;
 
-        var grid = new Grid(BoundingBox.AtOrigin().WithMargin(20), _columns, rows) {
+        var grid = new Grid(_columns, rows) {
+            Layout = Layout.WithMargin(20),
             Clickable = ClickableState.PassThrough
         };
         for (var i = 0; i < _spells.Length; i++) {

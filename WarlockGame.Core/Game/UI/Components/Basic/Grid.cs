@@ -6,9 +6,6 @@ namespace WarlockGame.Core.Game.UI.Components.Basic;
 sealed class Grid : InterfaceComponent {
     // Columns, rows
     public Cell[,] Cells { get; }
-
-    public Grid(Rectangle bounds, int columns = 1, int rows = 1) :
-        this(bounds.X, bounds.Y, columns, bounds.Width / columns, rows, bounds.Height / rows) { }
     
     public Grid(int x, int y, int columns, int columnWidth, int rows, int rowHeight) {
         Layout = Layout.WithBoundingBox(x, y, columns * columnWidth, rows * rowHeight);

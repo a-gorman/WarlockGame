@@ -19,9 +19,6 @@ sealed class PerkPicker: InterfaceComponent {
     
     private readonly Simulation _sim;
     private List<Perk> _perks = new();
-    private readonly int _marginX = 20;
-    private readonly int _marginY = 20;
-
     private readonly TextDisplay _pickingTimeDisplay;
     
     private TimeSpan _pickingEndTime;
@@ -73,7 +70,8 @@ sealed class PerkPicker: InterfaceComponent {
         RemoveAllComponents();
         AddComponent(_pickingTimeDisplay);
         _perks = perks.ToList();
-        var grid = new Grid(BoundingBox.AtOrigin().WithMargin(_marginX, _marginY), _perks.Count, 1) {
+        var grid = new Grid(rows: _perks.Count) {
+            Layout = Layout.WithMargin(20),
             Clickable = ClickableState.PassThrough
         };
         AddComponent(grid);
@@ -90,7 +88,7 @@ sealed class PerkPicker: InterfaceComponent {
             };
 
             grid.AddComponentToCell(button, column: index, row: 0);
-            button.AddComponent(new TextDisplay(perk.Name) { TextScale = 0.5f});
+            button.AddComponent(new TextDisplay(perk.Name) { TextScale = 0.5f });
         }
     }
 
