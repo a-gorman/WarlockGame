@@ -118,7 +118,7 @@ class TextDisplay : InterfaceComponent {
                 case Alignment.TopLeft:
                 case Alignment.CenterLeft:
                 case Alignment.BottomLeft:
-                    xOffset = i * lineSpacing;
+                    xOffset = 0;
                     break;
                 case Alignment.TopCenter:
                 case Alignment.Center:

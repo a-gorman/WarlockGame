@@ -123,14 +123,14 @@ class ConsoleCommandHandler {
     }
 
     private static void DisplayDebugInformation() {
-        MessageDisplay.Display(String.Join(
-            separator: '\n',
-            GetVersionDisplay(),
-            GetLatencyDisplay(),
-            $"Ticks in queue: {WarlockGame.Instance.ServerTicks.Count}",
-            $"Log file name: {Configuration.LogFileName}",
-            $"Mouse position: {InputManager.LastInputState.GetMousePosition()}",
-            $"Players: {WarlockGame.Instance.Simulation.Forces.JoinToString(x => $"{x.Name}: Choosing spells: {!x.AreSpellsChosen}")}"));
+        MessageDisplay.Display(
+            String.Join(separator: '\n',
+                $"Players:\n    {WarlockGame.Instance.Simulation.Forces.JoinToString(x => $"{x.Name}: Choosing spells: {!x.AreSpellsChosen}", "\n    ")}",
+                $"Mouse position: {InputManager.LastInputState.GetMousePosition()}",
+                GetVersionDisplay(),
+                GetLatencyDisplay(),
+                $"Ticks in queue: {WarlockGame.Instance.ServerTicks.Count}",
+                $"Log file name: {Configuration.LogFileName}"));
     }
     
     private static void Help() {
