@@ -22,7 +22,7 @@ class SpellPicker : InterfaceComponent {
 
     public SpellPicker(int selections, Simulation sim) {
         Clickable = ClickableState.PassThrough;
-        Layout = Layout.WithSize(600, 300, Layout.Alignment.Center);
+        Layout = Layout.WithSize(600, 300, Alignment.Center);
         _maxSelections = selections;
         _sim = sim;
         var descriptionText = $"Select {selections} spells";
@@ -35,7 +35,7 @@ class SpellPicker : InterfaceComponent {
         AddComponent(new TextDisplay(descriptionText) { TextScale = 0.75f });
         _confirmButton = new Button(activeTexture, inactiveTexture) {
             IsActive = false,
-            Layout = Layout.WithBoundingBox(-10, -10, 80, 40, Layout.Alignment.BottomRight),
+            Layout = Layout.WithBoundingBox(-10, -10, 80, 40, Alignment.BottomRight),
             LeftClick = _ => {
                 var playerId = PlayerManager.LocalPlayerId;
                 if (playerId == null) return;

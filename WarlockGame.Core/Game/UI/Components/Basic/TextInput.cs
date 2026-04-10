@@ -126,16 +126,16 @@ class TextInput : InterfaceComponent, ITextInputConsumer {
         }
 
         var offset = location + BoundingBox.Location.ToVector2();
-        
-        spriteBatch.DrawString(Art.Font, _textBuilder, 
-            position: offset, 
+
+        spriteBatch.DrawString(Art.Font, _textBuilder,
+            position: offset,
             color: TextColor,
             scale: TextScale,
             rotation: 0,
             origin: Vector2.Zero,
             effects: SpriteEffects.None,
             layerDepth: 0);
-        
+
         if (CursorPositionX != null) {
             if (_frameBlinkTimer++ < BlinkSpeed) {
                 var cursorStart = new Vector2(CursorPositionX.Value, 0);

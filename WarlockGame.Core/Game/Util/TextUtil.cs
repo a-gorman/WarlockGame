@@ -1,19 +1,25 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace WarlockGame.Core.Game.Util;
 
 public static class TextUtil {
-    public delegate Vector2 MeasureTextSize(ReadOnlySpan<Char> text);
-    
-    public static List<string> WrapText(string text, MeasureTextSize measureText, float maxLineWidth, 
-        float? maxHeight = null, int? maxLines = null, string truncation = "") {
-        if (measureText(text).X <= maxLineWidth) {
-            return new List<string>(1) { text };
-        }
+    public delegate Vector2 MeasureTextSize(ReadOnlySpan<char> text);
 
+    public struct Line {
+        public string Text { get; }
+        public float Width { get; }
+        
+        public Line(string text, float width) {
+            Text = text;
+            Width = width;
+        }
+    }
+    
+    public static List<Line> WrapText(string text, MeasureTextSize measureText, float maxLineWidth, 
+        float? maxHeight = null, int? maxLines = null, string truncator = "") {
+        
         var spaceMeasurement = measureText(" ");
         var spaceWidth = spaceMeasurement.X;
 
@@ -26,7 +32,7 @@ public static class TextUtil {
 
         var span = text.AsSpan();
 
-        var lines = new List<string>();
+        var lines = new List<Line>();
         var sb = new StringBuilder();
         var lineWidth = 0f;
         var nLines = 1;
@@ -52,7 +58,7 @@ public static class TextUtil {
             
             // If the word can fit on the line, add it and continue
             if (lineWidth + wordSize.X <= maxLineWidth) {
-                AddWord(word);
+                AddCurrentWord(word);
                 continue;
             }
 
@@ -65,7 +71,7 @@ public static class TextUtil {
                     return GetFinalReturnValue();
                 }
                 AddNewLine();
-                AddWord(word);
+                AddCurrentWord(word);
                 continue;
             }
 
@@ -75,11 +81,11 @@ public static class TextUtil {
                     TruncateAndAddFinalWord(word);
                     return GetFinalReturnValue();
                 }
-                var wordPortion = GetPortionOfWordThatFits(word, measureText, maxLineWidth);
+                var wordPortion = GetPortionOfWordThatFits(word, measureText, maxLineWidth, out float sliceWidth);
                 if (lineWidth != 0) {
                     AddNewLine();
                 }
-                AddWord(wordPortion);
+                AddSlice(wordPortion, sliceWidth);
                 word = word.Slice(wordPortion.Length);
             }
         }
@@ -95,41 +101,47 @@ public static class TextUtil {
         void AddNewLine() {
             RemoveLastWhitespace();
 
-            lines.Add(sb.ToString());
+            lines.Add(new Line(sb.ToString(), lineWidth));
             sb.Clear();
             lineWidth = 0;
             nLines++;
         }
 
-        void AddWord(ReadOnlySpan<Char> newWord) {
-            sb.Append(newWord);
-            lineWidth += wordSize.X;
+        void AddCurrentWord(ReadOnlySpan<char> newWord) {
+            AddSlice(newWord, wordSize.X);
         }
         
-        void TruncateAndAddFinalWord(ReadOnlySpan<Char> newWord) {
-            if(truncation.IsEmpty()) {
-                sb.Append(GetPortionOfWordThatFits(newWord, measureText, maxLineWidth - lineWidth));
+        void AddSlice(ReadOnlySpan<char> slice, float width) {
+            sb.Append(slice);
+            lineWidth += width;
+        }
+        
+        void TruncateAndAddFinalWord(ReadOnlySpan<char> newWord) {
+            if(truncator.IsEmpty()) {
+                var slice = GetPortionOfWordThatFits(newWord, measureText, maxLineWidth - lineWidth, out float sliceWidth);
+                AddSlice(slice, sliceWidth);
             } else {
-                var truncationSize = measureText(truncation).X;
-                var truncatedWord = GetPortionOfWordThatFits(newWord, measureText, maxLineWidth - (lineWidth + truncationSize));
+                var truncatorWidth = measureText(truncator).X;
+                var remainingWidth = maxLineWidth - (lineWidth + truncatorWidth);
+                var truncatedWord = GetPortionOfWordThatFits(newWord, measureText, remainingWidth, out float truncatedWidth);
                 if (!truncatedWord.IsEmpty) {
-                    sb.Append(truncatedWord);
-                    sb.Append(truncation);
+                    AddSlice(truncatedWord, truncatedWidth);
+                    AddSlice(truncator, truncatorWidth);
                     RemoveLastWhitespace();
                 } else {
                     RemoveLastWhitespace();
                     // This is a hack, but should be good enough most of the time, and backing up through the
                     // string builder properly is pretty difficult without reworking this state machine.
-                    sb.Remove(sb.Length - truncation.Length, truncation.Length);
-                    sb.Append(truncation);
+                    sb.Remove(sb.Length - truncator.Length, truncator.Length);
+                    sb.Append(truncator);
                 }
             }
         }
         
-        List<string> GetFinalReturnValue() {
+        List<Line> GetFinalReturnValue() {
             while (RemoveLastWhitespace()) { }
 
-            lines.Add(sb.ToString());
+            lines.Add(new Line(sb.ToString(), lineWidth));
             
             return lines;
         }
@@ -145,7 +157,7 @@ public static class TextUtil {
         }
     }
     
-    private static ReadOnlySpan<Char> GetWord(ReadOnlySpan<Char> text) {
+    private static ReadOnlySpan<char> GetWord(ReadOnlySpan<char> text) {
         for (var index = 0; index < text.Length; index++) {
             var character = text[index];
             if (character is ' ' or '\n' or '\t') {
@@ -161,19 +173,26 @@ public static class TextUtil {
     }
 
     // This is pretty expensive. Something like an exponential search could be much faster
-    private static ReadOnlySpan<Char> GetPortionOfWordThatFits(
-        ReadOnlySpan<Char> word, MeasureTextSize measureText, float remainingLineWidth) {
+    private static ReadOnlySpan<char> GetPortionOfWordThatFits(
+        ReadOnlySpan<char> word, MeasureTextSize measureText, float remainingLineWidth, out float width) {
+        float previousSliceWidth = 0f;
         for (var i = 0; i < word.Length; i++) {
             // n^2
-            var length = measureText(word.Slice(0, i + 1));
-            if (length.X > remainingLineWidth) {
+            var sliceWidth = measureText(word.Slice(0, i + 1)).X;
+            if (sliceWidth > remainingLineWidth) {
                 if (i == 0) {
+                    width = 0;
                     return ReadOnlySpan<char>.Empty;
                 }
+
+                width = previousSliceWidth;
                 return word.Slice(0, i);
             }
+
+            previousSliceWidth = sliceWidth;
         }
-        
+
+        width = previousSliceWidth;
         return word;
     }
 }

@@ -19,9 +19,10 @@ sealed class Grid : InterfaceComponent {
         Cells = CreateCells(columns, rows);
     }
 
-    public static Grid SingleColumn(InterfaceComponent[] components, ClickableState clickable = ClickableState.Ignore) {
+    public static Grid SingleColumn(InterfaceComponent[] components, ClickableState clickable = ClickableState.Ignore, Layout layout = default) {
         var grid = new Grid(rows: components.Length) {
-            Clickable = clickable
+            Clickable = clickable,
+            Layout = layout
         };
 
         for (int r = 0; r < components.Length; r++) {
@@ -30,9 +31,10 @@ sealed class Grid : InterfaceComponent {
         return grid;
     }
     
-    public static Grid SingleRow(InterfaceComponent[] components, ClickableState clickable = ClickableState.Ignore) {
+    public static Grid SingleRow(InterfaceComponent[] components, ClickableState clickable = ClickableState.Ignore, Layout layout = default) {
         var grid = new Grid(columns: components.Length) {
-            Clickable = clickable
+            Clickable = clickable,
+            Layout = layout
         };
         
         for (int c = 0; c < components.Length; c++) {

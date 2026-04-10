@@ -32,9 +32,9 @@ sealed class PerkPicker: InterfaceComponent {
     
     public PerkPicker(Simulation sim) {
         _sim = sim;
-        Layout = Layout.WithSize(600, 200, Layout.Alignment.Center);
+        Layout = Layout.WithSize(600, 200, Alignment.Center);
         _pickingTimeDisplay = new TextDisplay {
-            Layout = Layout.WithHeight((int)(Art.FontHeight * 0.75f), alignment: Layout.Alignment.Bottom),
+            Layout = Layout.WithHeight((int)(Art.FontHeight * 0.75f), alignment: Alignment.Bottom),
             TextScale = 0.75f,
             TextColor = Color.Black
         };
@@ -101,6 +101,6 @@ sealed class PerkPicker: InterfaceComponent {
         }
         
         spriteBatch.Draw(_rainbowTexture, BoundingBox.WithOffset(location), Color.White);
-        UiUitils.DrawHollowRectangle(spriteBatch, Art.Pixel, BoundingBox.WithOffset(location), Color.Black, 2);
+        UIUitils.DrawHollowRectangle(spriteBatch, Art.Pixel, BoundingBox.WithOffset(location), Color.Black, 2);
     }
 }

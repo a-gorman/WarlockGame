@@ -1,3 +1,4 @@
+using System.Linq;
 using FluentAssertions;
 using JetBrains.Annotations;
 using Microsoft.Xna.Framework;
@@ -19,8 +20,9 @@ public class TextUtilTest {
     [InlineData("12345678901", "12345\n67890\n1")]
     [InlineData("1 123456", "1\n12345\n6")]
     public void TextIsWrappedCorrectlySimple(string input, string expected) {
-        TextUtil.WrapText(input, x => new Vector2(x.Length, 1), 5).Should()
-            .ContainInConsecutiveOrder(expected.Split('\n'));
+        TextUtil.WrapText(input, x => new Vector2(x.Length, 1), 5)
+            .Should()
+            .ContainInConsecutiveOrder(expected.Split('\n').Select(x => new TextUtil.Line(x, x.Length)));
     }
     
     [Theory]
@@ -35,7 +37,7 @@ public class TextUtilTest {
     [InlineData(4, "12345678901", "12345\n67890")]
     public void TextIsWrappedCorrectlyMaxHeight(int maxHeight, string input, string expected) {
         TextUtil.WrapText(input, x => new Vector2(x.Length, 2 * (x.Length / 5 + 1)), 5, maxHeight: maxHeight)
-            .Should().ContainInConsecutiveOrder(expected.Split('\n'));
+            .Should().ContainInConsecutiveOrder(expected.Split('\n').Select(x => new TextUtil.Line(x, x.Length)));
     }
     
     [Theory]
@@ -49,7 +51,7 @@ public class TextUtilTest {
     [InlineData(1, "1 2345", "1 2..")]
     [InlineData(2, "12345678901", "12345\n678..")]
     public void TextIsWrappedCorrectlyWithTruncationCharacter(int maxLines, string input, string expected) {
-        TextUtil.WrapText(input, x => new Vector2(x.Length, 2 * (x.Length / 5 + 1)), 5, maxLines: maxLines, truncation: "..")
-            .Should().ContainInConsecutiveOrder(expected.Split('\n'));
+        TextUtil.WrapText(input, x => new Vector2(x.Length, 2 * (x.Length / 5 + 1)), 5, maxLines: maxLines, truncator: "..")
+            .Should().ContainInConsecutiveOrder(expected.Split('\n').Select(x => new TextUtil.Line(x, x.Length)));
     }
 }

@@ -21,7 +21,7 @@ sealed class TextPrompt: InterfaceComponent, ITextInputConsumer {
     private readonly TextInput _textInput;
     
     public TextPrompt(string prompt, Action<string> acceptedCallback, Action<string>? cancelledCallback) {
-        Layout = Layout.WithBoundingBox(0, 220, width: 300, height: 35, Layout.Alignment.Center);
+        Layout = Layout.WithBoundingBox(0, 220, width: 300, height: 35, Alignment.Center);
 
         Layer = 10;
         
@@ -63,7 +63,7 @@ sealed class TextPrompt: InterfaceComponent, ITextInputConsumer {
     protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
         var absoluteBounds = BoundingBox.WithOffset(location);
         spriteBatch.Draw(Art.Pixel, absoluteBounds, Color.DarkSlateGray);
-        UiUitils.DrawHollowRectangle(spriteBatch, Art.Pixel, absoluteBounds, Color.Black, width: 2);
+        UIUitils.DrawHollowRectangle(spriteBatch, Art.Pixel, absoluteBounds, Color.Black, width: 2);
 
         spriteBatch.DrawString(Art.Font, Prompt, absoluteBounds.Location.ToVector2().Translate(0, -24), Color.White);
     }

@@ -16,7 +16,7 @@ sealed class MessageDisplay : InterfaceComponent
     private readonly LinkedList<Message> _messages = [];
 
     public MessageDisplay() {
-        Layout = Layout.WithBoundingBox(50, 0, width: 400, height: 100, Layout.Alignment.CenterLeft);
+        Layout = Layout.WithBoundingBox(50, 0, width: 400, height: 100, Alignment.CenterLeft);
         AddComponent(_messageDisplay);
     }
 

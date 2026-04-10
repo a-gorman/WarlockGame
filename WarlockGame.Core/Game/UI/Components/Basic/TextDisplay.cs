@@ -37,30 +37,38 @@ class TextDisplay : InterfaceComponent {
         }
     }
 
-    private List<string> _wrappedText = null!;
+    public Alignment TextAlignment {
+        get;
+        set {
+            field = value;
+            _isTextDirty = true;
+        }
+    }
+    
+    private Line[] _lines = null!;
     private bool _isTextDirty;
     
     private readonly StringBuilder _sb = new();
 
-    public TextDisplay(string text = "", SpriteFont? font = null) {
+    public TextDisplay(string text = "", Alignment textAlignment = Alignment.TopLeft, SpriteFont? font = null) {
         Text = text;
         Font = font ?? Art.Font;
         Clickable = ClickableState.Ignore;
+        TextAlignment = textAlignment;
     }
 
-    protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
+    protected override void Draw(Vector2 location, SpriteBatch spriteBatch) { 
         if (BackgroundColor != null) {
             spriteBatch.Draw(Art.Pixel, BoundingBox.WithOffset(location), BackgroundColor.Value);
         }
 
-        if(IsLayoutDirty || _isTextDirty) {
+        if (IsLayoutDirty || _isTextDirty) {
             RecalculateWrappedText();
         }
 
-        for (var i = 0; i < _wrappedText.Count; i++) {
-            var line = _wrappedText[i];
-            spriteBatch.DrawString(Art.Font, line, 
-                position: BoundingBox.Location.ToVector2().Translate(0, Font.LineSpacing * TextScale * i) + location, 
+        for (var i = 0; i < _lines.Length; i++) {
+            spriteBatch.DrawString(Art.Font, _lines[i].Text,
+                position: BoundingBox.Location.ToVector2() + location + _lines[i].Position,
                 color: TextColor,
                 scale: TextScale,
                 rotation: 0,
@@ -77,6 +85,66 @@ class TextDisplay : InterfaceComponent {
             return Font.MeasureString(_sb.Append(x)) * TextScale;
         }
 
-        _wrappedText = TextUtil.WrapText(Text, TextMeasurement, BoundingBox.Width, maxHeight: BoundingBox.Height, truncation: TruncationCharacters);
+        var unprocessedLines = TextUtil.WrapText(Text, TextMeasurement, BoundingBox.Width, maxHeight: BoundingBox.Height, truncator: TruncationCharacters);
+        _lines = new Line[unprocessedLines.Count];
+
+        var lineSpacing = Font.LineSpacing * TextScale;
+        var lineCount = unprocessedLines.Count;
+        
+        for (var i = 0; i < lineCount; i++) {
+            float yOffset;
+            switch (TextAlignment) {
+                case Alignment.TopLeft:
+                case Alignment.TopCenter:
+                case Alignment.TopRight:
+                    yOffset = i * lineSpacing;
+                    break;
+                case Alignment.CenterLeft:
+                case Alignment.Center:
+                case Alignment.CenterRight:
+                    yOffset = (float)BoundingBox.Height / 2 + (i - (float)lineCount / 2) * lineSpacing;
+                    break;
+                case Alignment.BottomLeft:
+                case Alignment.BottomCenter:
+                case Alignment.BottomRight:
+                    yOffset = BoundingBox.Height - (lineCount - i) * lineSpacing;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(TextAlignment), TextAlignment, null);
+            }
+
+            float xOffset;
+            switch (TextAlignment) {
+                case Alignment.TopLeft:
+                case Alignment.CenterLeft:
+                case Alignment.BottomLeft:
+                    xOffset = i * lineSpacing;
+                    break;
+                case Alignment.TopCenter:
+                case Alignment.Center:
+                case Alignment.BottomCenter:
+                    xOffset = Math.Abs(BoundingBox.Width - unprocessedLines[i].Width) / 2;
+                    break;
+                case Alignment.TopRight:
+                case Alignment.CenterRight:
+                case Alignment.BottomRight:
+                    xOffset = Math.Abs(BoundingBox.Width - unprocessedLines[i].Width);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(TextAlignment), TextAlignment, null);
+            }
+
+            _lines[i] = new Line(unprocessedLines[i].Text, new Vector2(xOffset, yOffset));
+        }
+    }
+
+    private struct Line {
+        public string Text { get; }
+        public Vector2 Position { get; }
+        
+        public Line(string text, Vector2 position) {
+            Text = text;
+            Position = position;
+        }
     }
 }

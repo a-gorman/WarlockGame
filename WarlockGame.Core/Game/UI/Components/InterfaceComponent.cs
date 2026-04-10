@@ -102,40 +102,40 @@ class InterfaceComponent {
                     .WithMargin(Layout.Width, Layout.Height);
                 break;
             case Layout.LayoutType.Manual:
-                switch (Layout.Origin) {
-                    case Layout.Alignment.TopLeft:
+                switch (Layout.Alignment) {
+                    case Alignment.TopLeft:
                         xOffset = Layout.Offset.X;
                         yOffset = Layout.Offset.Y;
                         break;
-                    case Layout.Alignment.TopCenter:
+                    case Alignment.TopCenter:
                         xOffset = CenterOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
                         yOffset = Layout.Offset.Y;
                         break;
-                    case Layout.Alignment.TopRight:
+                    case Alignment.TopRight:
                         xOffset = OppositeSideOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
                         yOffset = Layout.Offset.Y;
                         break;
-                    case Layout.Alignment.CenterLeft:
+                    case Alignment.CenterLeft:
                         xOffset = Layout.Offset.X;
                         yOffset = CenterOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
                         break;
-                    case Layout.Alignment.Center:
+                    case Alignment.Center:
                         xOffset = CenterOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
                         yOffset = CenterOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
                         break;
-                    case Layout.Alignment.CenterRight:
+                    case Alignment.CenterRight:
                         xOffset = OppositeSideOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
                         yOffset = CenterOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
                         break;
-                    case Layout.Alignment.BottomLeft:
+                    case Alignment.BottomLeft:
                         xOffset = Layout.Offset.X;
                         yOffset = OppositeSideOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
                         break;
-                    case Layout.Alignment.BottomCenter:
+                    case Alignment.BottomCenter:
                         xOffset = CenterOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
                         yOffset = OppositeSideOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
                         break;
-                    case Layout.Alignment.BottomRight:
+                    case Alignment.BottomRight:
                         xOffset = OppositeSideOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
                         yOffset = OppositeSideOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
                         break;
@@ -146,34 +146,34 @@ class InterfaceComponent {
                 BoundingBox = parentBounds.AtOrigin().GetRelativeRectangle(xOffset, yOffset, Layout.Width, Layout.Height);
                 break;
             case Layout.LayoutType.HeightMargin:
-                switch(Layout.Origin) {
-                    case Layout.Alignment.Top:
+                switch(Layout.Alignment) {
+                    case Alignment.Left:
                         xOffset = Layout.Offset.X;
                         break;
-                    case Layout.Alignment.Center:
+                    case Alignment.Center:
                         xOffset = CenterOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
                         break;
-                    case Layout.Alignment.Bottom:
+                    case Alignment.Right:
                         xOffset = OppositeSideOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(UI.Components.Layout.Type), Layout.Type, null);
+                        throw new ArgumentOutOfRangeException(nameof(UI.Components.Layout.Alignment), Layout.Alignment, null);
                 }
                 BoundingBox = new Rectangle(xOffset, Layout.Height, Math.Min(Layout.Width, parentBounds.Width - xOffset), parentBounds.Height - 2*Layout.Height);
                 break;
             case Layout.LayoutType.WidthMargin:
-                switch (Layout.Origin) {
-                    case Layout.Alignment.Top:
+                switch (Layout.Alignment) {
+                    case Alignment.Top:
                         yOffset = Layout.Offset.Y;
                         break;
-                    case Layout.Alignment.Center:
+                    case Alignment.Center:
                         yOffset = CenterOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
                         break;
-                    case Layout.Alignment.Bottom:
+                    case Alignment.Bottom:
                         yOffset = OppositeSideOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(UI.Components.Layout.Type), Layout.Type, null);
+                        throw new ArgumentOutOfRangeException(nameof(UI.Components.Layout.Alignment), Layout.Alignment, null);
                 }
                 BoundingBox = new Rectangle(Layout.Width, yOffset, parentBounds.Width - 2*Layout.Width, Math.Min(Layout.Height, parentBounds.Height - yOffset));
                 break;
@@ -220,23 +220,21 @@ class InterfaceComponent {
     protected virtual void OnRemove() { }
 }
 
-public record struct Layout {
+record struct Layout {
     public LayoutType Type { get; set; }
-    public Alignment Origin { get; set; }
+    public Alignment Alignment { get; set; }
     public Point Offset { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
 
-    public Layout() {
-        Type = LayoutType.Margin;
-    }
+    public Layout() { /* Fill */ }
     
     private Layout(LayoutType type, 
         Alignment alignment = Alignment.TopLeft, 
         Point offset = new(), 
         int width = 0, 
         int height = 0) {
-        Origin = alignment;
+        Alignment = alignment;
         Offset = offset;
         Width = width;
         Height = height;
@@ -296,27 +294,11 @@ public record struct Layout {
             height: height);
     }
 
-    public enum Alignment {
-        TopLeft,
-        TopCenter,
-        TopRight,
-        CenterLeft,
-        Center,
-        CenterRight,
-        BottomLeft,
-        BottomCenter,
-        BottomRight,
-        Bottom,
-        Top,
-        Left,
-        Right
-    }
-
     public enum LayoutType {
-        Manual,
         Margin,
         HeightMargin,
-        WidthMargin
+        WidthMargin,
+        Manual
     }
 }
 

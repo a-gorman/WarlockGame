@@ -49,7 +49,7 @@ sealed class Scoreboard : InterfaceComponent {
             }
 
             var totalWidth = columnWidth * 2;
-            Layout = Layout.WithBoundingBox(10, 15, totalWidth, rowHeight * playerIds.Count, Layout.Alignment.TopRight);
+            Layout = Layout.WithBoundingBox(10, 15, totalWidth, rowHeight * playerIds.Count, Alignment.TopRight);
             AddComponent(_grid);
 
             foreach (var playerId in _playerLifeDisplays.Keys) {

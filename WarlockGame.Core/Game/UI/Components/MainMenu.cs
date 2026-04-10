@@ -14,7 +14,7 @@ class MainMenu: InterfaceComponent {
     private readonly Texture2D _buttonTexture;
 
     public MainMenu() {
-        Layout = Layout.WithSize(300, 400, Layout.Alignment.Center);
+        Layout = Layout.WithSize(300, 400, Alignment.Center);
         Clickable = ClickableState.PassThrough;
         Layer = 5;
 
@@ -35,39 +35,29 @@ class MainMenu: InterfaceComponent {
 
     private Grid CreateMainGrid() {
         var hostButton = new Button(_buttonTexture) {
-            Layout = Layout.WithMargin(10),
+            Layout = Layout.WithMargin(20),
             LeftClick = _ => TransitionToHostState()
-        }.Also(x => x.AddComponent(new TextDisplay("Host")));
+        }.Also(x => x.AddComponent(new TextDisplay("Host", Alignment.Center)));
         
         var joinButton = new Button(_buttonTexture) {
-            Layout = Layout.WithMargin(10), LeftClick = _ => TransitionToJoinState()
-        }.Also(x => x.AddComponent(new TextDisplay("Connect")));
+            Layout = Layout.WithMargin(20), LeftClick = _ => TransitionToJoinState()
+        }.Also(x => x.AddComponent(new TextDisplay("Connect", Alignment.Center)));
         
         var exitButton = new Button(_buttonTexture) { 
-            Layout = Layout.WithMargin(10), 
+            Layout = Layout.WithMargin(20), 
             LeftClick = _ => { WarlockGame.Instance.Exit(); } 
-        }.Also(x => x.AddComponent(new TextDisplay("Exit")));
+        }.Also(x => x.AddComponent(new TextDisplay("Exit", Alignment.Center)));
 
-        return Grid.SingleColumn([hostButton, joinButton, exitButton], ClickableState.PassThrough);
+        return Grid.SingleColumn([hostButton, joinButton, exitButton],
+            ClickableState.PassThrough);
     }
     
     private Grid CreateJoinGrid() {
-        var playerNameLabel = new TextDisplay("Player name:") {
-            Layout = Layout.WithHeight((int)(Art.Font.LineSpacing * 0.5f), heightOffset: -5, widthMargin: 15, alignment: Layout.Alignment.Bottom),
-            TextScale = 0.5f,
-            TextColor = Color.Black
-        };
-        
         var playerNameInput = new TextInput(textColor: Color.Black, backgroundColor: Color.White) 
-            { Layout = Layout.WithHeight(Art.Font.LineSpacing, widthMargin: 10, alignment: Layout.Alignment.Top) };
+            { Layout = Layout.WithHeight(Art.Font.LineSpacing, alignment: Alignment.Top) };
         
-        var joinIpLabel = new TextDisplay("IP address:") {
-            Layout = Layout.WithHeight((int)(Art.Font.LineSpacing * 0.5f), heightOffset: -5, widthMargin: 15, alignment: Layout.Alignment.Bottom),
-            TextScale = 0.5f,
-            TextColor = Color.Black
-        };
         var joinIpInput = new TextInput(textColor: Color.Black, backgroundColor: Color.White) 
-            { Layout = Layout.WithHeight(Art.Font.LineSpacing, widthMargin: 10, alignment: Layout.Alignment.Top) };
+            { Layout = Layout.WithHeight(Art.Font.LineSpacing, alignment: Alignment.Top) };
         
         var connectButton = new Button(_buttonTexture) {
             Layout = Layout.WithMargin(10), 
@@ -75,43 +65,41 @@ class MainMenu: InterfaceComponent {
                 joinIpInput.Text.NullOrEmptyTo("localhost"), 
                 playerNameInput.Text.NullOrEmptyTo("Default Client"),
                 Configuration.PreferredColor)
-        }.Also(x => x.AddComponent(new TextDisplay("Connect")));
+        }.Also(x => x.AddComponent(new TextDisplay("Connect", Alignment.Center)));
         
         var backButton = new Button(_buttonTexture) {
             Layout = Layout.WithMargin(10), LeftClick = _ => TransitionToMainState()
-        }.Also(x => x.AddComponent(new TextDisplay("Back")));
+        }.Also(x => x.AddComponent(new TextDisplay("Back", Alignment.Center)));
 
         return Grid.SingleColumn([
-            Grid.SingleColumn([playerNameLabel, playerNameInput], ClickableState.PassThrough), 
-            Grid.SingleColumn([joinIpLabel, joinIpInput], ClickableState.PassThrough), 
-            connectButton, 
-            backButton
-        ], ClickableState.PassThrough);
+                Grid.SingleColumn([CreateInputLabel("Player Name:"), playerNameInput], ClickableState.PassThrough),
+                Grid.SingleColumn([CreateInputLabel("IP Address:"), joinIpInput], ClickableState.PassThrough),
+                connectButton,
+                backButton
+            ],
+            ClickableState.PassThrough,
+            Layout.WithMargin(10, 0));
     }
     
     private Grid CreateHostGrid() {
-        var playerNameLabel = new TextDisplay("Player name:") {
-            Layout = Layout.WithHeight((int)(Art.Font.LineSpacing * 0.5f), heightOffset: -5, widthMargin: 15, alignment: Layout.Alignment.Bottom),
-            TextScale = 0.5f,
-            TextColor = Color.Black
-        };
         var playerNameInput = new TextInput(textColor: Color.Black, backgroundColor: Color.White) 
-            { Layout = Layout.WithHeight(Art.Font.LineSpacing, widthMargin: 10, alignment: Layout.Alignment.Top) };
+            { Layout = Layout.WithHeight(Art.Font.LineSpacing, alignment: Alignment.Top) };
         
         var startButton = new Button(_buttonTexture) {
             Layout = Layout.WithMargin(10), 
             LeftClick = _ => WarlockGame.Instance.Host(playerNameInput.Text, Configuration.PreferredColor)
-        }.Also(x => x.AddComponent(new TextDisplay("Start")));
+        }.Also(x => x.AddComponent(new TextDisplay("Start", Alignment.Center)));
         
         var backButton = new Button(_buttonTexture) {
             Layout = Layout.WithMargin(10), LeftClick = _ => TransitionToMainState()
-        }.Also(x => x.AddComponent(new TextDisplay("Back")));
+        }.Also(x => x.AddComponent(new TextDisplay("Back", Alignment.Center)));
         
         return Grid.SingleColumn([
-            Grid.SingleColumn([playerNameLabel, playerNameInput], ClickableState.PassThrough), 
+            Grid.SingleColumn([CreateInputLabel("Player name:"), playerNameInput], ClickableState.PassThrough), 
             startButton, 
-            backButton], 
-            ClickableState.PassThrough);
+            backButton],
+            ClickableState.PassThrough,
+            Layout.WithMargin(10, 0));
     }
 
     private void TransitionToMainState() {
@@ -139,6 +127,13 @@ class MainMenu: InterfaceComponent {
         var pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
         pointTexture.SetData([Color.Gray]);
         spriteBatch.Draw(pointTexture, BoundingBox, Color.White);
+    }
+
+    private TextDisplay CreateInputLabel(string text) {
+        return new TextDisplay(text, Alignment.BottomLeft) {
+            TextScale = 0.65f,
+            TextColor = Color.Black
+        };
     }
 
     private enum MenuState {
