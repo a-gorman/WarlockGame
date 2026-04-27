@@ -41,23 +41,32 @@ static class Configuration {
     public static Logger.Level LogDedupeLevel { get; set; }
     public static bool DebugBoundingBoxVisualize { get; set; }
     public static string LogFileName { get; set; } = "logs";
+    public static float Volume { get; set; }
 
     public static void ParseArgs(IConfigurationRoot args) {
         WindowName = args["windowName"] ?? "WarlockGame";
         ScreenHeight = args["screenHeight"]?.Let(int.Parse) ?? 1080;
         ScreenWidth = args["screenWidth"]?.Let(int.Parse) ?? 1920;
         BorderlessWindow = args["borderlessWindow"]?.Let(bool.Parse) ?? true;
+        
+        Volume = args["masterVolume"]?.Let(x => Math.Clamp(float.Parse(x), 0f, 1f)) ?? 1.0f;
+        
         SimSpeedFactor = args["simulationSpeedFactor"]?.Let(float.Parse) ?? 1.0f;
+        
         PlayerName = args["player:name"];
         PreferredColor = args["player:color"]?.Let(s => System.Drawing.Color.FromName(s).Let(c => new Color(c.R, c.G, c.B, c.A)));
+        
         MapEdgeScrollLimitBoundary = args["interface:mapEdgeScrollLimitBoundary"]?.Let(int.Parse) ?? 0;
         EdgeScrollWidthTop = args["interface:edgeScrollWidthTop"]?.Let(int.Parse) ?? 20;
         EdgeScrollWidthBottom = args["interface:edgeScrollWidthBottom"]?.Let(int.Parse) ?? 20;
         EdgeScrollWidthLeft = args["interface:edgeScrollWidthLeft"]?.Let(int.Parse) ?? 20;
         EdgeScrollWidthRight = args["interface:edgeScrollWidthRight"]?.Let(int.Parse) ?? 20;
+        
         EdgeScrollSpeed = args["interface:edgeScrollSpeed"]?.Let(int.Parse) ?? 7;
         KeyScrollSpeed = args["interface:keyScrollSpeed"]?.Let(int.Parse) ?? 6;
+        
         MouseLookSensitivity = args["interface:middleMouseLookSensitivity"]?.Let(int.Parse) ?? 1;
+        
         KeyMappings = new Dictionary<Keys, InputAction> {
             { ParseKey(args["keymap:spell1"], Keys.Q), InputAction.Spell1 },
             { ParseKey(args["keymap:spell2"], Keys.W), InputAction.Spell2 },

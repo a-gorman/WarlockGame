@@ -8,28 +8,24 @@ namespace WarlockGame.Core.Game
 {
 	internal static class Sound
 	{
-		public static Song Music { get; private set; } = null!;
-
 		private static readonly Random Rand = new();
+		public static GameSound None = null!;
 
-		private static SoundEffect[] _explosions = null!;
-		// return a random explosion sound
-		public static SoundEffect Explosion => _explosions[Rand.Next(_explosions.Length)];
-
-		private static SoundEffect[] _shots = null!;
-		public static SoundEffect Shot => _shots[Rand.Next(_shots.Length)];
-
-		private static SoundEffect[] _spawns = null!;
-		public static SoundEffect Spawn => _spawns[Rand.Next(_spawns.Length)];
+		public static GameSound Lightning = null!;
 
 		public static void Load(ContentManager content)
 		{
-			Music = content.Load<Song>("Audio/Music");
-
-			// These linq expressions are just a fancy way loading all sounds of each category into an array.
-			_explosions = Enumerable.Range(1, 8).Select(x => content.Load<SoundEffect>("Audio/explosion-0" + x)).ToArray();
-			_shots = Enumerable.Range(1, 4).Select(x => content.Load<SoundEffect>("Audio/shoot-0" + x)).ToArray();
-			_spawns = Enumerable.Range(1, 8).Select(x => content.Load<SoundEffect>("Audio/spawn-0" + x)).ToArray();
+			Lightning = new GameSound(content.Load<SoundEffect>("Audio/wav_Thunder_Spell_Shoot_6"));
+			None = new GameSound(null!) { Disabled = true };
+		}
+	}
+	
+	public class GameSound(SoundEffect soundEffect) {
+		public bool Disabled { get; set; } = false;
+		
+		public void Play() {
+			if(!Disabled)
+				soundEffect.Play(volume: Configuration.Volume, 0f, 0f);
 		}
 	}
 }

@@ -33,6 +33,7 @@ class SpellFactory {
             name: "Fireball",
             cooldownTime: SimTime.OfSeconds(3),
             spellIcon: Art.FireballIcon,
+            sound: Sound.None,
             effects: new ProjectileComponent(
                 sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
                 effects: [
@@ -54,6 +55,7 @@ class SpellFactory {
             name: "Lightning",
             cooldownTime: SimTime.OfSeconds(20),
             spellIcon: Art.LightningIcon,
+            sound: Sound.Lightning,
             effects: new DirectionalAreaOfEffect {
                 Shape = new LineTarget { Length = 600, IgnoreCaster = true, Texture = Art.Lightning },
                 Effects = [
@@ -70,6 +72,7 @@ class SpellFactory {
             name: "Poison",
             cooldownTime: SimTime.OfSeconds(6),
             spellIcon: Art.PoisonIcon,
+            sound: Sound.None,
             effects: new ProjectileComponent(
                 sprite: new Sprite(Art.PoisonBall) { Scale = 0.80f },
                 [
@@ -92,6 +95,7 @@ class SpellFactory {
             name: "Burst",
             cooldownTime: SimTime.OfSeconds(6),
             spellIcon: Art.BurstIcon,
+            sound: Sound.None,
             effects: new SelfAreaOfEffect {
                 Shape = new CircleTarget(innerRadius: 50, outerRadius: 100),
                 Components = [
@@ -115,6 +119,7 @@ class SpellFactory {
             name: "Wind Shield",
             cooldownTime: SimTime.OfSeconds(16),
             spellIcon: Art.WindWallIcon,
+            sound: Sound.None,
             effects: new SelfCastPositionComponent {
                 Components = [
                     new LocationEffectComponent(
@@ -154,6 +159,7 @@ class SpellFactory {
             name: "Soul Shatter",
             cooldownTime: SimTime.OfSeconds(6),
             spellIcon: Art.SoulShatterIcon,
+            sound: Sound.None,
             effects: new ProjectileComponent(
                 sprite: Sprite.FromGridSpriteSheet(Art.PowerBall, 4, 4, SimTime.OfTicks(10)),
                 speed: 16,
@@ -222,6 +228,7 @@ class SpellFactory {
             name: "Deflection Shield",
             cooldownTime: SimTime.OfSeconds(8),
             spellIcon: Art.RefractionShieldIcon,
+            sound: Sound.None,
             effects: new DirectionalComponent {
                 Components = [
                     new EntityComponent {
@@ -277,6 +284,7 @@ class SpellFactory {
             name: "Homing",
             cooldownTime: SimTime.OfSeconds(8),
             spellIcon: Art.HomingIcon,
+            sound: Sound.None,
             effects: new ProjectileComponent(
                 sprite: Sprite.FromGridSpriteSheet(Art.EnergySpark, 4, 4, SimTime.OfTicks(10), scale: 2f, rotates: false),
                 effects: [
@@ -308,6 +316,7 @@ class SpellFactory {
             name: "Boomerang",
             cooldownTime: SimTime.OfSeconds(6),
             spellIcon: Art.BoomerangIcon,
+            sound: Sound.None,
             effects: new ProjectileComponent(
                 sprite: Sprite.FromGridSpriteSheet(Art.Triple, 4, 4, SimTime.OfTicks(2), scale: 2f, rotates: false),
                 speed: 18,
@@ -352,6 +361,7 @@ class SpellFactory {
             name: "Light strike",
             cooldownTime: SimTime.OfSeconds(20),
             spellIcon: Art.LightStrikeIcon,
+            sound: Sound.None,
             new LocationEffectComponent(location =>
                 new CircleTimingIndicator(new CircleF(location, radius), SimTime.OfSeconds(delaySeconds))),
             new DelayedLocationComponent(
@@ -416,6 +426,7 @@ class SpellFactory {
             name: "Fire Spray",
             cooldownTime: SimTime.OfSeconds(11),
             spellIcon: Art.FireSprayIcon,
+            sound: Sound.None,
             effects: projectileEffects
         );
     }
@@ -426,6 +437,7 @@ class SpellFactory {
             name: "Teleport",
             cooldownTime: SimTime.OfSeconds(20),
             spellIcon: Art.TeleportIcon,
+            sound: Sound.None,
             effects: new TeleportComponent()
         ) { CastRange = 600 };
     }
@@ -436,6 +448,7 @@ class SpellFactory {
             name: "Shockwave",
             cooldownTime: SimTime.OfSeconds(7),
             spellIcon: Art.ShockwaveIcon,
+            sound: Sound.None,
             effects: new DirectionalEffectComponent((spellContext, castLoc, direction) => 
                 new ShockwaveEffect(spellContext, 
                     castLoc, 

@@ -28,6 +28,7 @@ class WarlockSpell {
 
     public void DoCast(Warlock caster, Vector2 castTarget) {
         Cooldown = Definition.CooldownTime.ToTimer();
+        Definition.Sound.Play();
         var context = new SpellContext
         {
             Caster = caster,

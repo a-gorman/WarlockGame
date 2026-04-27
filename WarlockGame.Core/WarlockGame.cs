@@ -173,7 +173,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
                 break;
             case ClientTypeState.Client:
             {
-                if (ServerTicks.Count > 3) {
+                if (ServerTicks.Count > 1) {
                     // Run a bit faster to catch up
                     TargetElapsedTime = TimeSpan.FromTicks((long)(_targetTickTime / 1.1f));
                 } else if (ServerTicks.Count == 0) {
@@ -238,11 +238,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         _bloom.BeginDraw();
 
         GraphicsDevice.Clear(Color.Black);
-
-        _spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive);
-        // Simulation.EntityManager.Draw(_spriteBatch);
-        _spriteBatch.End();
-
+        
         _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
         ParticleManager.Draw(_spriteBatch);
         _spriteBatch.End();
