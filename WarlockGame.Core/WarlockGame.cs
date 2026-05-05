@@ -45,6 +45,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
     // 60 FPS
     private readonly long _targetTickTime;
     private MainMenu _mainMenu = null!;
+    private SimulationView _simulationView = null!;
 
     public enum GameState { WaitingToStart, Running }
     public enum ClientTypeState { Local, Client, Server }
@@ -54,11 +55,12 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         : NetworkManager.IsClient ? ClientTypeState.Client : ClientTypeState.Server;
 
     public WarlockGame(params string[] args) {
+        Instance = this;
+        
         Configuration.ParseArgs(new ConfigurationBuilder().AddIniFile("settings.ini").AddCommandLine(args).Build());
 
         Logger.Info($"Settings loaded with command line arguments: {args}", Logger.LogType.Program);
         
-        Instance = this;
         _graphics = new GraphicsDeviceManager(this);
         _graphics.PreferredBackBufferWidth = Configuration.ScreenWidth;
         _graphics.PreferredBackBufferHeight = Configuration.ScreenHeight;
@@ -91,7 +93,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         UIManager.AddComponent(LogDisplay.Instance);
         UIManager.AddComponent(MessageDisplay.Instance);
         UIManager.AddComponent(_spellDisplay);
-        UIManager.AddComponent(new SimulationView(Simulation));
+        UIManager.AddComponent(_simulationView);
 
         LogDisplay.Instance.SetDisplayLevel(Configuration.LogDisplayLevel);
         LogDisplay.Instance.Visible = Configuration.LogDisplayVisible;
@@ -268,5 +270,9 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         PlayerManager.AddLocalPlayer(playerName, preferredColor);
         NetworkManager.StartServer();
         _mainMenu.Disabled = true;
+    }
+    
+    public bool IsPointOnScreen(Vector2 point) {
+        return _simulationView.ViewBounds.Contains(point);
     }
 }

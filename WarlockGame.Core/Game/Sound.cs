@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Media;
 
 namespace WarlockGame.Core.Game
 {
@@ -25,6 +23,11 @@ namespace WarlockGame.Core.Game
 		
 		public void Play() {
 			if(!Disabled)
+				soundEffect.Play(volume: Configuration.Volume, 0f, 0f);
+		}
+		
+		public void Play(Vector2 location) {
+			if(!Disabled && WarlockGame.Instance.IsPointOnScreen(location))
 				soundEffect.Play(volume: Configuration.Volume, 0f, 0f);
 		}
 	}

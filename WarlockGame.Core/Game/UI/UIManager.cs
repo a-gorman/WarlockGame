@@ -15,7 +15,7 @@ namespace WarlockGame.Core.Game.UI;
 static class UIManager {
     private static readonly UpdateArgs.GlobalProps GlobalProps = new();
 
-    private static InterfaceComponent _view = new() { Clickable = ClickableState.PassThrough };
+    private static readonly InterfaceComponent _view = new() { Clickable = ClickableState.PassThrough };
 
     private static InterfaceComponent _focusedComponent = _view;
     
