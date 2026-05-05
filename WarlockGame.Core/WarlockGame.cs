@@ -93,6 +93,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         UIManager.AddComponent(LogDisplay.Instance);
         UIManager.AddComponent(MessageDisplay.Instance);
         UIManager.AddComponent(_spellDisplay);
+        _simulationView = new SimulationView(Simulation);
         UIManager.AddComponent(_simulationView);
 
         LogDisplay.Instance.SetDisplayLevel(Configuration.LogDisplayLevel);
