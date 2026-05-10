@@ -42,6 +42,7 @@ static class Configuration {
     public static bool DebugBoundingBoxVisualize { get; set; }
     public static string LogFileName { get; set; } = "logs";
     public static float Volume { get; set; }
+    public static bool MuteWhenNotFocused { get; set; }
 
     public static void ParseArgs(IConfigurationRoot args) {
         WindowName = args["windowName"] ?? "WarlockGame";
@@ -49,12 +50,13 @@ static class Configuration {
         ScreenWidth = args["screenWidth"]?.Let(int.Parse) ?? 1920;
         BorderlessWindow = args["borderlessWindow"]?.Let(bool.Parse) ?? true;
         
-        Volume = args["masterVolume"]?.Let(x => Math.Clamp(float.Parse(x), 0f, 1f)) ?? 1.0f;
-        
         SimSpeedFactor = args["simulationSpeedFactor"]?.Let(float.Parse) ?? 1.0f;
         
         PlayerName = args["player:name"];
         PreferredColor = args["player:color"]?.Let(s => System.Drawing.Color.FromName(s).Let(c => new Color(c.R, c.G, c.B, c.A)));
+        
+        Volume = args["audio:masterVolume"]?.Let(x => Math.Clamp(float.Parse(x), 0f, 1f)) ?? 1.0f;
+        MuteWhenNotFocused = args.BoolKey("audio:muteWhenNotFocused");
         
         MapEdgeScrollLimitBoundary = args["interface:mapEdgeScrollLimitBoundary"]?.Let(int.Parse) ?? 0;
         EdgeScrollWidthTop = args["interface:edgeScrollWidthTop"]?.Let(int.Parse) ?? 20;
@@ -102,5 +104,10 @@ static class Configuration {
 
     private static Keys ParseKey(string? str, Keys defaultValue) {
         return Enum.TryParse(str, true, out Keys key) ? key : defaultValue;
+    }
+
+    private static bool BoolKey(this IConfigurationRoot config, string key, bool defaultValue = false) {
+        var value = config[key];
+        return value == null ? defaultValue : bool.Parse(value);
     }
 }
