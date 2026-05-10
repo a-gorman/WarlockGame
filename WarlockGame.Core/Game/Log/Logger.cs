@@ -41,7 +41,7 @@ public static class Logger {
         if (!_logs.IsEmpty && level <= DedupeLevel && _logs.Front().Message == message) {
              _logs.Front().Apply(x =>
              {
-                 x.Tick = WarlockGame.Instance.Simulation.Tick;
+                 x.Tick = WarlockGame.Instance.Simulation?.Tick ?? 0;
                  x.Timestamp = DateTime.Now;
                  x.DedupCount++;
              });
@@ -50,7 +50,7 @@ public static class Logger {
             var log = new Log {
                 Level = level,
                 Message = message,
-                Tick = WarlockGame.Instance?.Simulation.Tick ?? 0,
+                Tick = WarlockGame.Instance.Simulation?.Tick ?? 0,
                 Type = logType,
                 Timestamp = DateTime.Now
             };

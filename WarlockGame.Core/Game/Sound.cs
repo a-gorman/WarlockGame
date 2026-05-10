@@ -10,10 +10,16 @@ namespace WarlockGame.Core.Game
 		public static GameSound None = null!;
 
 		public static GameSound Lightning = null!;
+		public static GameSound FireHit = null!;
+		public static GameSound FireBallCast = null!;
+		public static GameSound FireSprayCast = null!;
 
 		public static void Load(ContentManager content)
 		{
-			Lightning = new GameSound(content.Load<SoundEffect>("Audio/wav_Thunder_Spell_Shoot_6"));
+			Lightning = new GameSound(content.Load<SoundEffect>("Audio/thunder_spell_shoot_6"));
+			FireHit = new GameSound(content.Load<SoundEffect>("Audio/fire_spell_hit_1"));
+			FireBallCast = new GameSound(content.Load<SoundEffect>("Audio/fire_spell_hit_6"));
+			FireSprayCast = new GameSound(content.Load<SoundEffect>("Audio/fire_spell_shoot_8"));
 			None = new GameSound(null!) { Disabled = true };
 		}
 	}

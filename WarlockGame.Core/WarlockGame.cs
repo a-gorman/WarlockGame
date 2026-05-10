@@ -22,8 +22,7 @@ using WarlockGame.Core.Game.UI.Components;
 
 namespace WarlockGame.Core;
 
-public class WarlockGame: Microsoft.Xna.Framework.Game
-{
+public class WarlockGame: Microsoft.Xna.Framework.Game {
     public static WarlockGame Instance { get; private set; }  = null!;
     public static Viewport Viewport => Instance.GraphicsDevice.Viewport;
     public static Vector2 ScreenSize => new Vector2(Viewport.Width, Viewport.Height);
@@ -117,17 +116,15 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         UIManager.AddComponent(new SpellPicker(GameRules.SpellSelections, Simulation));
     }
 
-    protected override void Initialize()
-    {
+    protected override void Initialize() {
         Content.RootDirectory = "Content";
 
         ParticleManager = new ParticleManager<ParticleState>(1024 * 20, ParticleState.UpdateParticle);
 
         base.Initialize();
     }
-    
-    protected override void LoadContent()
-    {
+
+    protected override void LoadContent() {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         Art.Load(Content);
         Sound.Load(Content);
@@ -136,8 +133,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         // MediaPlayer.Play(Sound.Music);
     }
 
-    protected override void Update(GameTime gameTime)
-    {
+    protected override void Update(GameTime gameTime) {
         GameTime = gameTime;
         StaticInput.Update();
 
@@ -149,8 +145,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
         switch (ClientType)
         {
             case ClientTypeState.Local:
-                if (State == GameState.Running)
-                {
+                if (State == GameState.Running) {
                     Simulation.Update(CommandManager.SimulationCommands);
                     CommandManager.SimulationCommands.Clear();
                 }
@@ -163,8 +158,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
                 
                 var result = Simulation.Update(CommandManager.SimulationCommands);
                 
-                NetworkManager.SendSerializable(new ServerTickProcessed
-                {
+                NetworkManager.SendSerializable(new ServerTickProcessed {
                     Tick = Simulation.Tick, 
                     Checksum = result.Checksum,
                     ServerCommands = CommandManager.ProcessedServerCommands.ToList(),
@@ -188,13 +182,11 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
                 
                 var tick = ServerTicks.Dequeue();
 
-                foreach (var command in tick.ServerCommands)
-                {
+                foreach (var command in tick.ServerCommands) {
                     CommandManager.IssueServerCommand(command);
                 }
 
-                if (State != GameState.Running)
-                {
+                if (State != GameState.Running) {
                     break;
                 }
 
@@ -205,8 +197,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game
                     Logger.Error($"Checksum does not match. Actual: '{result.Checksum}' Expected: '{tick.Checksum}'", Logger.LogType.Network);
                 }
 
-                NetworkManager.Send(new ClientTickProcessed
-                {
+                NetworkManager.Send(new ClientTickProcessed {
                     Tick = Simulation.Tick, 
                     ChecksumMatched = checksumMatched
                 });

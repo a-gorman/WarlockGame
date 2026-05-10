@@ -70,26 +70,22 @@ sealed class PerkPicker: InterfaceComponent {
         RemoveAllComponents();
         AddComponent(_pickingTimeDisplay);
         _perks = perks.ToList();
-        var grid = new Grid(rows: _perks.Count) {
-            Layout = Layout.WithMargin(20),
-            Clickable = ClickableState.PassThrough
-        };
+        var grid = Grid.SingleRow(
+            layout: Layout.WithMargin(20),
+            clickable: ClickableState.PassThrough,
+            components: _perks.Select(perk => new Button(perk.Texture) {
+                    Layout = Layout.WithMargin(15),
+                    LeftClick = _ => {
+                        var playerId = PlayerManager.LocalPlayerId;
+                        if (playerId == null || _hasPicked) return;
+                        _hasPicked = true;
+                        InputManager.HandlePlayerAction(new SelectPerk { PlayerId = playerId.Value, PerkId = perk.Id });
+                    }
+                }.Also(button => button.AddComponent(new TextDisplay(perk.Name) { TextScale = 0.5f }))
+            ).ToArray<InterfaceComponent>()
+        );
+        
         AddComponent(grid);
-        for (var index = 0; index < _perks.Count; index++) {
-            var perk = _perks[index];
-            var button = new Button(perk.Texture) {
-                Layout = Layout.WithMargin(15),
-                LeftClick = _ => {
-                    var playerId = PlayerManager.LocalPlayerId;
-                    if (playerId == null || _hasPicked) return;
-                    _hasPicked = true;
-                    InputManager.HandlePlayerAction(new SelectPerk { PlayerId = playerId.Value, PerkId = perk.Id });
-                }
-            };
-
-            grid.AddComponentToCell(button, column: index, row: 0);
-            button.AddComponent(new TextDisplay(perk.Name) { TextScale = 0.5f });
-        }
     }
 
     protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {

@@ -33,7 +33,7 @@ class SpellFactory {
             name: "Fireball",
             cooldownTime: SimTime.OfSeconds(3),
             spellIcon: Art.FireballIcon,
-            sound: Sound.None,
+            sound: Sound.FireBallCast,
             effects: new ProjectileComponent(
                 sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
                 effects: [
@@ -426,7 +426,7 @@ class SpellFactory {
             name: "Fire Spray",
             cooldownTime: SimTime.OfSeconds(11),
             spellIcon: Art.FireSprayIcon,
-            sound: Sound.None,
+            sound: Sound.FireSprayCast,
             effects: projectileEffects
         );
     }
