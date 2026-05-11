@@ -481,11 +481,11 @@
 /processorParam:Quality=Best
 /build:../../../../GameContent/Audio/fire_spell_hit_6.wav;Audio/fire_spell_hit_6.wav
 
-#begin ../../../../GameContent/Audio/fire_spell_shoot_8.wav
+#begin ../../../../GameContent/Audio/fire_spell_shoot_9_edited.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:../../../../GameContent/Audio/fire_spell_shoot_8.wav;Audio/fire_spell_shoot_8.wav
+/build:../../../../GameContent/Audio/fire_spell_shoot_9_edited.wav;Audio/fire_spell_shoot_9_edited.wav
 
 #begin ../../../../GameContent/Audio/thunder_spell_shoot_6.wav
 /importer:WavImporter

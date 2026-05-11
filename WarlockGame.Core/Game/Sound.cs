@@ -19,7 +19,7 @@ namespace WarlockGame.Core.Game
 			Lightning = new GameSound(content.Load<SoundEffect>("Audio/thunder_spell_shoot_6"));
 			FireHit = new GameSound(content.Load<SoundEffect>("Audio/fire_spell_hit_1"));
 			FireBallCast = new GameSound(content.Load<SoundEffect>("Audio/fire_spell_hit_6"));
-			FireSprayCast = new GameSound(content.Load<SoundEffect>("Audio/fire_spell_shoot_8"));
+			FireSprayCast = new GameSound(content.Load<SoundEffect>("Audio/fire_spell_shoot_9_edited"));
 			None = new GameSound(null!) { Disabled = true };
 		}
 	}
