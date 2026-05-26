@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Util;
 
@@ -13,18 +11,23 @@ class Doughnut : ILocationShape {
     public required float Radius { get; init; }
     public required float Width { get; init; }
     public bool IgnoreCaster { get; init; } = false;
-    public Texture2D? Texture { get; init; }
     public Falloff.FalloffFactor2Axis FalloffFactor { get; init; } = Falloff.Axis1Linear;
 
-    public List<TargetInfo> GatherTargets(SpellContext context, Vector2 invokeLocation) {
+    public AoeResult GatherTargets(SpellContext context, Vector2 invokeLocation) {
         
         SimDebug.VisualizeCircle(Radius, invokeLocation, Color.Bisque, 5);
         
-        return context.EntityManager.GetNearbyEntities(invokeLocation, Radius + Width)
+        var targets = context.EntityManager.GetNearbyEntities(invokeLocation, Radius + Width)
                             .Where(x => !IgnoreCaster || x != context.Caster)
                             .Select(x => CreateTargetInfo(x, invokeLocation))
                             .Where(x => x.DisplacementAxis2.IsLengthLessThan(Width))
                             .ToList();
+        
+        return new AoeResult {
+            Targets = targets,
+            Center = invokeLocation,
+            SoundRadius = Radius
+        }; 
     }
 
     private TargetInfo CreateTargetInfo(Entity target, Vector2 invokeLocation) {

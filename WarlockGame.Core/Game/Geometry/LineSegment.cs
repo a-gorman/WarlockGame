@@ -7,7 +7,9 @@ namespace WarlockGame.Core.Game.Geometry;
 public class LineSegment {
     public Vector2 Start;
     public Vector2 End;
-
+    public Vector2 Center => (Start + End) / 2;
+    public float Length => (End - Start).Length();
+    
     /// <summary>
     /// The segment's axis aligned bounding box
     /// </summary>

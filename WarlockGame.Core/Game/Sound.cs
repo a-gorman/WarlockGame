@@ -28,13 +28,19 @@ namespace WarlockGame.Core.Game
 		public bool Disabled { get; set; } = false;
 		
 		public void Play() {
-			if(!Disabled && !(Configuration.MuteWhenNotFocused && WarlockGame.Instance.IsActive))
+			if(!Disabled && !(Configuration.MuteWhenNotFocused && !WarlockGame.Instance.IsActive))
 				soundEffect.Play(volume: Configuration.Volume, 0f, 0f);
 		}
 		
 		public void Play(Vector2 location) {
 			if(!Disabled && WarlockGame.Instance.IsPointOnScreen(location) 
-			             && !(Configuration.MuteWhenNotFocused && WarlockGame.Instance.IsActive))
+			             && !(Configuration.MuteWhenNotFocused && !WarlockGame.Instance.IsActive))
+				soundEffect.Play(volume: Configuration.Volume, 0f, 0f);
+		}
+		
+		public void Play(Vector2 location, float radius) {
+			if(!Disabled && WarlockGame.Instance.IsPointWithinDistanceOfScreen(location, radius) 
+			             && !(Configuration.MuteWhenNotFocused && !WarlockGame.Instance.IsActive))
 				soundEffect.Play(volume: Configuration.Volume, 0f, 0f);
 		}
 	}

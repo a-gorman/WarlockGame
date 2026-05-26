@@ -7,11 +7,16 @@ class LocationAreaOfEffect: ILocationSpellComponent {
 
     public required ILocationShape Shape { get; init; } 
     public required IReadOnlyCollection<IEntityComponent> Components { get; init; }
+    public GameSound? Sound { get; init; }
 
     public void Invoke(SpellContext context, Vector2 invokeLocation) {
-        var targetsHit = Shape.GatherTargets(context, invokeLocation);
+        var aoeResult = Shape.GatherTargets(context, invokeLocation);
         foreach (var effect in Components) {
-            effect.Invoke(context, targetsHit);
+            effect.Invoke(context, aoeResult.Targets);
+        }
+        
+        if (Sound != null) {
+            Sound.Play(aoeResult.Center, aoeResult.SoundRadius);
         }
     }
 }
@@ -20,11 +25,16 @@ class DirectionalAreaOfEffect: IDirectionalSpellComponent {
 
     public required IDirectionalShape Shape { get; init; } 
     public required IReadOnlyCollection<IEntityComponent> Effects { get; init; }
+    public GameSound? Sound { get; init; }
 
     public void Invoke(SpellContext context, Vector2 invokeLocation, Vector2 invokeDirection) {
-        var entitiesHit = Shape.GatherTargets(context, invokeLocation, invokeDirection);
+        var aoeResult = Shape.GatherTargets(context, invokeLocation, invokeDirection);
         foreach (var effect in Effects) {
-            effect.Invoke(context, entitiesHit);
+            effect.Invoke(context, aoeResult.Targets);
+        }
+        
+        if (Sound != null) {
+            Sound.Play(aoeResult.Center, aoeResult.SoundRadius);
         }
     }
 }
@@ -33,11 +43,16 @@ class SelfAreaOfEffect: ISelfSpellComponent {
 
     public required ILocationShape Shape { get; init; } 
     public required IReadOnlyCollection<IEntityComponent> Components { get; init; }
+    public GameSound? Sound { get; init; }
 
     public void Invoke(SpellContext context) {
-        var entitiesHit = Shape.GatherTargets(context, context.Caster.Position);
+        var aoeResult = Shape.GatherTargets(context, context.Caster.Position);
         foreach (var effect in Components) {
-            effect.Invoke(context, entitiesHit);
+            effect.Invoke(context, aoeResult.Targets);
+        }
+
+        if (Sound != null) {
+            Sound.Play(aoeResult.Center, aoeResult.SoundRadius);
         }
     }
 }

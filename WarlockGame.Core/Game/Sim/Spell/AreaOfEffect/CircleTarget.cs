@@ -11,7 +11,6 @@ class CircleTarget : ILocationShape {
     public bool IgnoreProjectiles { get; init; } = false;
     public float InnerRadius { get; }
     public float OuterRadius { get; }
-    public Texture2D? Texture { get; init; }
     public Falloff.FalloffFactor FalloffFactor { get; init; } = Falloff.Linear;
 
     public CircleTarget(int innerRadius = 0, int? outerRadius = null) {
@@ -24,8 +23,8 @@ class CircleTarget : ILocationShape {
         }
     }
 
-    public List<TargetInfo> GatherTargets(SpellContext context, Vector2 origin) {
-        return context.EntityManager.GetNearbyEntities(origin, OuterRadius)
+    public AoeResult GatherTargets(SpellContext context, Vector2 origin) {
+        var targets = context.EntityManager.GetNearbyEntities(origin, OuterRadius)
                             .Where(x => (!IgnoreCaster || x != context.Caster) && (!IgnoreProjectiles || x is not Projectile))
                             .Select(x => new TargetInfo
                             {
@@ -35,7 +34,12 @@ class CircleTarget : ILocationShape {
                                 FalloffFactor = FalloffFactor.Invoke(x.Position - origin, OuterRadius, InnerRadius, x.Radius)
                             })
                             .ToList();
-    }
 
+        return new AoeResult {
+            Targets = targets,
+            Center = origin,
+            SoundRadius = OuterRadius
+        };
+    }
 }
 

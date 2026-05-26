@@ -10,14 +10,14 @@ class SpellDefinition {
         string name,
         SimTime cooldownTime,
         Texture2D spellIcon,
-        GameSound sound,
-        params IDirectionalSpellComponent[] effects) {
+        IDirectionalSpellComponent[] effects,
+        GameSound? castSound = null) {
         Id = id;
         Name = name;
         CooldownTime = cooldownTime;
         SpellIcon = spellIcon;
         Effects = effects;
-        Sound = sound;
+        CastSound = castSound;
         Type = SpellType.Directional;
     }
 
@@ -26,14 +26,14 @@ class SpellDefinition {
         string name,
         SimTime cooldownTime,
         Texture2D spellIcon,
-        GameSound sound,
-        params ILocationSpellComponent[] effects) {
+        ILocationSpellComponent[] effects,
+        GameSound? castSound = null) {
         Id = id;
         Name = name;
         CooldownTime = cooldownTime;
         SpellIcon = spellIcon;
         Effects = effects;
-        Sound = sound;
+        CastSound = castSound;
         Type = SpellType.Location;
     }
 
@@ -42,21 +42,21 @@ class SpellDefinition {
         string name,
         SimTime cooldownTime,
         Texture2D spellIcon,
-        GameSound sound,
-        params ISelfSpellComponent[] effects) {
+        ISelfSpellComponent[] effects,
+        GameSound? castSound = null) {
         Id = id;
         Name = name;
         CooldownTime = cooldownTime;
         SpellIcon = spellIcon;
         Effects = effects;
-        Sound = sound;
+        CastSound = castSound;
         Type = SpellType.Self;
     }
     
     public int Id { get; }
     public string Name { get; }
     public SpellType Type { get; }
-    public GameSound Sound { get; }
+    public GameSound? CastSound { get; }
     public SimTime CooldownTime { get; }
     public Texture2D SpellIcon { get; }
     public float? CastRange { get; init; }

@@ -13,9 +13,11 @@ class LineTarget : IDirectionalShape {
     public int Width { get; init; } = 0;
     public bool IgnoreCaster { get; init; } = false;
     public Texture2D? Texture { get; init; }
+    public Vector2 Center { get; }
+    public float SoundRadius { get; }
     public Falloff.FalloffFactor2Axis FalloffFactor { get; init; } = Falloff.None;
 
-    public List<TargetInfo> GatherTargets(SpellContext context, Vector2 castLocation, Vector2 invokeDirection) {
+    public AoeResult GatherTargets(SpellContext context, Vector2 castLocation, Vector2 invokeDirection) {
         var startPoint = castLocation + context.Caster.Radius * invokeDirection.ToNormalized();
         var endPoint = startPoint + invokeDirection * Length;
 
@@ -31,7 +33,11 @@ class LineTarget : IDirectionalShape {
 
         var lineSegment = new LineSegment(startPoint, endPoint);
         
-        return GatherTargets(lineSegment, context).ToList();
+        return new AoeResult {
+            Targets = GatherTargets(lineSegment, context).ToList(),
+            Center = lineSegment.Center,
+            SoundRadius = lineSegment.Length
+        }; 
     }
         
     private IEnumerable<TargetInfo> GatherTargets(LineSegment lineSegment, SpellContext context) {

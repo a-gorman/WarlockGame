@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
+using MonoGame.Extended;
 using WarlockGame.Core.Game;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
@@ -266,5 +267,9 @@ public class WarlockGame: Microsoft.Xna.Framework.Game {
     
     public bool IsPointOnScreen(Vector2 point) {
         return _simulationView.ViewBounds.Contains(point);
+    }
+    
+    public bool IsPointWithinDistanceOfScreen(Vector2 point, float distance) {
+        return _simulationView.ViewBounds.Intersects(new CircleF(point, distance));
     }
 }
