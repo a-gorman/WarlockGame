@@ -72,26 +72,25 @@ class SpellFactory {
 
     public SpellDefinition Poison() {
         return new SpellDefinition(
-                id: 3,
-                name: "Poison",
-                cooldownTime: SimTime.OfSeconds(6),
-                spellIcon: Art.PoisonIcon,
-                effects: [
-                    new ProjectileComponent(
-                        sprite: new Sprite(Art.PoisonBall) { Scale = 0.80f },
-                        [
-                            new LocationAreaOfEffect {
-                                Shape = new CircleTarget(innerRadius: 8, outerRadius: 20),
-                                Components = [
-                                    new BuffComponent(
-                                        caster => new DamageOverTime(caster, SimTime.OfSeconds(10), 2.5f / 60),
-                                        _ => new DefenseBuff(SimTime.OfSeconds(10)) { GenericDefenseModifier = 1.5f })
-                                ]
-                            }
-                        ]
-                    )
-                ])
-            ;
+            id: 3,
+            name: "Poison",
+            cooldownTime: SimTime.OfSeconds(6),
+            spellIcon: Art.PoisonIcon,
+            effects: [
+                new ProjectileComponent(
+                    sprite: new Sprite(Art.PoisonBall) { Scale = 0.80f },
+                    [
+                        new LocationAreaOfEffect {
+                            Shape = new CircleTarget(innerRadius: 8, outerRadius: 20),
+                            Components = [
+                                new BuffComponent(
+                                    caster => new DamageOverTime(caster, SimTime.OfSeconds(10), 2.5f / 60),
+                                    _ => new DefenseBuff(SimTime.OfSeconds(10)) { GenericDefenseModifier = 1.5f })
+                            ]
+                        }
+                    ]
+                )
+            ]);
     }
 
     public SpellDefinition Burst() {
