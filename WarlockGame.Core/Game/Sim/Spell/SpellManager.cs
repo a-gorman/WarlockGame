@@ -35,7 +35,7 @@ class SpellManager {
             _spellFactory.FlameStrike(),
             _spellFactory.FireSpray(),
             _spellFactory.Blink(),
-            _spellFactory.Shockwave()
+            _spellFactory.LightningJump()
         }.ToDictionary(x => x.Id, x => x);
     }
     

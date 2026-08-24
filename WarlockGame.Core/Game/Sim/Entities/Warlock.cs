@@ -49,6 +49,8 @@ class Warlock : Entity {
     public float EnvironmentDefense { get; set; } = 1;
     public float BoundsDefense { get; set; } = 1;
     
+    public bool Jumping { get; set; }
+    
     private bool Sliding { get;
         set {
             if (value != field) {
@@ -57,6 +59,10 @@ class Warlock : Entity {
             }
         }
     }
+
+    public bool CanCast => !Jumping;
+    public bool CanMove => !Jumping && !Sliding;
+    
     private MoveState _moveState;
     private readonly Friction _slidingFriction;
         
@@ -92,7 +98,9 @@ class Warlock : Entity {
         foreach (var buff in Buffs) {
             if (!buff.IsExpired) {
                 buff.Update(this);
-            } else {
+            }
+            // Note: Buff can become expired after update.
+            if(buff.IsExpired) {
                 buff.OnRemove(this);
             }
         }
@@ -135,7 +143,8 @@ class Warlock : Entity {
                 }
                 break;
             }
-            case MoveState.Moving when Direction != null: {
+            case MoveState.Moving: {
+                if (Direction == null || !CanMove) break;
                 var targetOrientation = Direction.Value.ToAngle();
                 var interiorAngle = Util.Geometry.GetInteriorAngle(targetOrientation, Orientation);
                 var rotationFactor = MathF.Cos(interiorAngle / 2).Squared();
@@ -150,7 +159,7 @@ class Warlock : Entity {
                 break;
             }
             case MoveState.Rotating: {
-                if (DesiredOrientation != null) {
+                if (DesiredOrientation != null && CanMove) {
                     var interiorAngle = Util.Geometry.GetInteriorAngle(DesiredOrientation.Value, Orientation);
 
                     if (Math.Abs(interiorAngle) < RotationSpeed) {
@@ -172,7 +181,9 @@ class Warlock : Entity {
         }
 
         Position += Velocity;
-        Position = Vector2.Clamp(Position, Sprite.Size / 2, Simulation.ArenaSize - Sprite.Size / 2);
+        Position = Vector2.Clamp(Position,
+            min: BoundingRectangle.HalfExtents, 
+            max: Simulation.ArenaSize - BoundingRectangle.HalfExtents);
     }
         
     public void CastSpell(int spellId, Vector2 castTarget) {

@@ -78,7 +78,7 @@ class SpellFactory {
             spellIcon: Art.PoisonIcon,
             effects: [
                 new ProjectileComponent(
-                    sprite: new Sprite(Art.PoisonBall) { Scale = 0.80f },
+                    sprite: new Sprite(Art.PoisonBall, scale: 0.80f),
                     [
                         new LocationAreaOfEffect {
                             Shape = new CircleTarget(innerRadius: 8, outerRadius: 20),
@@ -467,5 +467,44 @@ class SpellFactory {
                         pushAmount: 4.25f,
                         radius: 80))
             ]);
+    }
+
+    public SpellDefinition LightningJump() {
+        return new SpellDefinition(
+            id: 14,
+            name: "Spark Jump",
+            cooldownTime: SimTime.OfSeconds(7),
+            spellIcon: Art.LightningJumpIcon,
+            effects: [
+                new SelfAreaOfEffect {
+                    Shape = new CircleTarget(50),
+                    Components = [
+                        new DamageComponent { Damage = 10, SelfFactor = 0 },
+                        new PushComponent() { Force = 100, SelfFactor = 0 }
+                    ]
+                },
+                new BuffComponent(buffConstructors: context => {
+                    var displacement = context.TargetPosition - context.CastFromPosition;
+                    return new SparkJumpBuff(_simulation, displacement, height: 10, duration: SimTime.OfSeconds(0.5f));
+                }),
+                new LocationEffectComponent((context, _) => new SpriteEffect(
+                    sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f), 1.35f), 
+                    position: context.CastFromPosition,
+                    duration: SimTime.OfSeconds(0.5f))),
+                new DelayedLocationComponent(SimTime.OfSeconds(0.5f),
+                    new LocationAreaOfEffect {
+                        Shape = new CircleTarget(50),
+                        Components = [
+                            new DamageComponent { Damage = 10, SelfFactor = 0 },
+                            new PushComponent() { Force = 100, SelfFactor = 0 }
+                        ]
+                    },
+                    new LocationEffectComponent(x => new SpriteEffect(
+                        sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f), 1.35f), 
+                        position: x, 
+                        duration: SimTime.OfSeconds(0.5f))))
+            ]) {
+            CastRange = 400
+        };
     }
 }

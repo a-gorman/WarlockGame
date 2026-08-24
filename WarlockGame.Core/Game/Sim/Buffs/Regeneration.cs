@@ -10,8 +10,7 @@ class Regeneration: Buff {
         _regenAmount = regenAmount;
     }
     
-    public override void Update(Warlock target) {
+    protected override void OnUpdate(Warlock target) {
         target.Health += _regenAmount;
-        base.Update(target);
     }
 }

@@ -6,37 +6,36 @@ namespace WarlockGame.Core.Game.Sim.Effect.Display;
 
 public class SpriteEffect : IEffect
 {
-    private readonly Vector2 _position;
+    public Vector2 Position { get; set; }
     
-    private readonly float _orientation;
+    public float Orientation { get; set; }
 
-    private readonly Sprite _sprite;
-
-    private GameTimer _timer;
-
-    public bool IsExpired => _timer.IsExpired;
+    public bool IsExpired { get; set; }
 
     public Vector2? Origin { get; init; }
     
-    public SpriteEffect(Sprite sprite, Vector2 position, SimTime duration, float orientation = 0)
-    {
-        _position = position;
-        _orientation = orientation;
+    private readonly Sprite _sprite;
+
+    private GameTimer? _timer;
+
+    public SpriteEffect(Sprite sprite, Vector2 position, SimTime? duration, float orientation = 0) {
+        Position = position;
+        Orientation = orientation;
         _sprite = sprite;
-        _timer = duration.ToTimer();
+        _timer = duration?.ToTimer();
         Origin = null;
     }
 
-    public void Update()
-    {
-        _timer = _timer.Decremented();
+    public void Update() {
+        _timer = _timer?.Decremented();
+        if (_timer?.IsExpired ?? false) {
+            IsExpired = true;
+        }
     }
-    
-    public void Draw(Vector2 viewOffset, SpriteBatch spriteBatch)
-    {
-        if (!_timer.IsExpired)
-        {
-            _sprite.Draw(spriteBatch, viewOffset + _position, new Angle(_orientation), origin: Origin);
+
+    public void Draw(Vector2 viewOffset, SpriteBatch spriteBatch) {
+        if (!IsExpired) {
+            _sprite.Draw(spriteBatch, viewOffset + Position, new Angle(Orientation), origin: Origin);
         }
     }
 }

@@ -23,9 +23,8 @@ class Invisibility : Buff {
         FadeDecay = fadeTime.ToTickDecayRate();
     }
 
-    public override void Update(Warlock target) {
+    protected override void OnUpdate(Warlock target) {
         Visibility -= FadeDecay;
-        base.Update(target);
     }
 
     public override void OnAdd(Warlock target) {

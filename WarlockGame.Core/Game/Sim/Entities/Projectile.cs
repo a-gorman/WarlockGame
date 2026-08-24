@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Graphics;
+using WarlockGame.Core.Game.Sim.Buffs;
+using WarlockGame.Core.Game.Sim.Entities.Behaviors;
+using WarlockGame.Core.Game.Sim.Entities.Behaviors.CollisionBehaviors.CollisionFilters;
 using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.Sim.Spell.Component;
 using WarlockGame.Core.Game.Util;
@@ -27,6 +30,15 @@ class Projectile : Entity {
         BlocksProjectiles = true;
         ForceId = context.Caster.ForceId;
         _effects = effects;
+        
+        CollisionFilters.Add((_, other) => {
+            if (other is Warlock warlock) {
+                return !warlock.Jumping;
+            }
+
+            return true;
+        });
+        AddBehaviors(new Pushable());
     }
 
     public override void Update()
@@ -58,9 +70,5 @@ class Projectile : Entity {
         }
 
         base.HandleCollision(other);
-    }
-
-    public void Push(float force, Vector2 direction) {
-        Velocity += force * direction.ToNormalizedOrZero();
     }
 }

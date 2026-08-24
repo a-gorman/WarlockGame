@@ -39,13 +39,13 @@ class DirectionalAreaOfEffect: IDirectionalSpellComponent {
     }
 }
 
-class SelfAreaOfEffect: ISelfSpellComponent {
+class SelfAreaOfEffect: ILocationSpellComponent {
 
     public required ILocationShape Shape { get; init; } 
     public required IReadOnlyCollection<IEntityComponent> Components { get; init; }
     public GameSound? Sound { get; init; }
 
-    public void Invoke(SpellContext context) {
+    public void Invoke(SpellContext context, Vector2 invokeLocation) {
         var aoeResult = Shape.GatherTargets(context, context.Caster.Position);
         foreach (var effect in Components) {
             effect.Invoke(context, aoeResult.Targets);

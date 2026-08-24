@@ -20,6 +20,8 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D PowerBall { get; private set; } = null!;
 		public static Texture2D Pointer { get; private set; } = null!;
 		public static Texture2D BlackHole { get; private set; } = null!;
+		public static Texture2D SparkJumpExpand { get; private set; } = null!;
+		public static Texture2D SparkJumpTravel { get; private set; } = null!;
 
 		public static Texture2D FlameStrike { get; private set; } = null!;
 
@@ -30,6 +32,7 @@ namespace WarlockGame.Core.Game.Graphics
 		public static SpriteFont Font { get; private set; } = null!;
 		public static float FontHeight { get; private set; }
 		
+		// Icons
 		public static Texture2D FireballIcon { get; private set; } = null!;
 		public static Texture2D LightningIcon { get; private set; } = null!;
 		public static Texture2D PoisonIcon { get; private set; } = null!;
@@ -49,6 +52,7 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D FireSprayIcon { get; set; } = null!;
 		public static Texture2D TeleportIcon { get; set; } = null!;
 		public static Texture2D ShockwaveIcon { get; set; } = null!;
+		public static Texture2D LightningJumpIcon { get; set; } = null!;
 
 		public static void Load(ContentManager content)
 		{
@@ -67,6 +71,8 @@ namespace WarlockGame.Core.Game.Graphics
 			Triple = content.Load<Texture2D>("Art/Triple");
 			Pointer = content.Load<Texture2D>("Art/Pointer");
 			BlackHole = content.Load<Texture2D>("Art/Black Hole");
+			SparkJumpExpand = content.Load<Texture2D>("Art/particle-fx_Eletric_Expansion");
+			SparkJumpTravel = content.Load<Texture2D>("Art/particle-fx_Eletric_A_Sheet");
 
 			LineParticle = content.Load<Texture2D>("Art/Laser");
 			Glow = content.Load<Texture2D>("Art/Glow");
@@ -96,6 +102,7 @@ namespace WarlockGame.Core.Game.Graphics
 			FireSprayIcon = LoadIcon(content, "pyromancer_11");
 			TeleportIcon = LoadIcon(content, "General_14_Teleport");
 			ShockwaveIcon = LoadIcon(content, "aeromancer_15");
+			LightningJumpIcon = LoadIcon(content, "Lightning_mage_skill_icons_46");
 			
 			HealIcon = LoadIcon(content, "General_02_Heal_T");
 			InvisibilityIcon = LoadIcon(content, "Invis");

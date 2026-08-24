@@ -92,7 +92,8 @@ static class InputManager {
                     selectedSpell?.Effect.Switch(
                         _ => SelectedSpellId = selectedSpell.Id,
                         _ => SelectedSpellId = selectedSpell.Id,
-                        _ => HandlePlayerAction(new CastAction { PlayerId = LocalPlayerId.Value, Type = CastAction.CastType.Self, SpellId = selectedSpell.Id })
+                        _ => HandlePlayerAction(new CastAction { PlayerId = LocalPlayerId.Value, Type = CastAction.CastType.Self, SpellId = selectedSpell.Id }),
+                        _ => SelectedSpellId = selectedSpell.Id
                     );
                     Logger.Debug($"Selected spell: Id: {selectedSpell?.Id} Name: {selectedSpell?.Definition.Name}", Logger.LogType.PlayerAction | Logger.LogType.Interface);
                 }

@@ -14,18 +14,24 @@ class PushComponent : IEntityComponent {
 
     public void Invoke(SpellContext context, IReadOnlyCollection<TargetInfo> targets) {
         foreach (var target in targets) {
+            var forceFactor = 1f;
+            if (target.Entity == context.Caster) {
+                if(SelfFactor == 0) continue;
+                forceFactor = SelfFactor;
+            }
+            
+            if (target.Entity is Projectile) {
+                if (ProjectileFactor == 0) {
+                    continue;
+                }
+                
+                forceFactor = ProjectileFactor;
+            }
+            
             var forceToUse = Force * target.FalloffFactor;
             var direction = DisplacementTransform.Invoke(target.OriginTargetDisplacement, target.DisplacementAxis2);
-            
-            if (target.Entity is Projectile projectile) {
-                projectile.Push(forceToUse * ProjectileFactor, direction);
-            }
-            
-            if (target.Entity == context.Caster) {
-                forceToUse *= SelfFactor;
-            }
 
-            target.Entity.Push(direction.WithLength(forceToUse));
+            target.Entity.Push(direction.WithLength(forceToUse * forceFactor));
         }
     }
 }

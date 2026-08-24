@@ -90,13 +90,15 @@ sealed class SimulationView : InterfaceComponent {
             Vector2? castVector = spell.Effect.Match<Vector2?>(
                 _ => (worldLocation - warlock.Position).ToNormalizedOrZero(),
                 _ => worldLocation,
-                _ => null
+                _ => null,
+                _ => worldLocation
             );
 
             CastAction.CastType castType = spell.Effect.Match(
                 _ => CastAction.CastType.Directional,
                 _ => CastAction.CastType.Location,
-                _ => CastAction.CastType.Self
+                _ => CastAction.CastType.Self,
+                _ => CastAction.CastType.Location
             );
             
             if (castVector is not null) {

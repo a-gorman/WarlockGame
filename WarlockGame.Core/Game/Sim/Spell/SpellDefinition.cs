@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Sim.Spell.Component;
@@ -5,6 +6,22 @@ using WarlockGame.Core.Game.Sim.Spell.Component;
 namespace WarlockGame.Core.Game.Sim.Spell;
 
 class SpellDefinition {
+    public SpellDefinition(
+        int id,
+        string name,
+        SimTime cooldownTime,
+        Texture2D spellIcon,
+        Action<SpellContext, Vector2>[] effects,
+        GameSound? castSound = null) {
+        Id = id;
+        Name = name;
+        CooldownTime = cooldownTime;
+        SpellIcon = spellIcon;
+        Effects = effects;
+        CastSound = castSound;
+        Type = SpellType.Directional;
+    }
+    
     public SpellDefinition(
         int id,
         string name,
@@ -60,7 +77,12 @@ class SpellDefinition {
     public SimTime CooldownTime { get; }
     public Texture2D SpellIcon { get; }
     public float? CastRange { get; init; }
-    public OneOf<IDirectionalSpellComponent[], ILocationSpellComponent[], ISelfSpellComponent[]> Effects { get; }
+    public OneOf<
+        IDirectionalSpellComponent[], 
+        ILocationSpellComponent[], 
+        ISelfSpellComponent[], 
+        Action<SpellContext, Vector2>[]> 
+        Effects { get; }
 
     public enum SpellType {
         Directional,

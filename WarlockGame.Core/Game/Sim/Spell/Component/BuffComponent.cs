@@ -6,7 +6,7 @@ using WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Component;
 
-class BuffComponent : IEntityComponent {
+class BuffComponent : ILocationSpellComponent, IEntityComponent, ISelfSpellComponent {
     private readonly Func<SpellContext,Buff>[] _buffConstructors;
     public bool IgnoreCaster { get; init; } = false;
     
@@ -23,5 +23,15 @@ class BuffComponent : IEntityComponent {
                 }
             }
         }
+    }
+
+    public void Invoke(SpellContext context) {
+        foreach (var constructor in _buffConstructors) {
+            context.Caster.AddBuff(constructor.Invoke(context));
+        }
+    }
+
+    public void Invoke(SpellContext context, Vector2 invokeLocation) {
+        Invoke(context);
     }
 }

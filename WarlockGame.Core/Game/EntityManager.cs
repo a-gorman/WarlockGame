@@ -124,13 +124,13 @@ namespace WarlockGame.Core.Game
 				return false;
 			}
 
-			foreach (var filter in a.CollisionFilters.AsValueEnumerable()) {
+			foreach (var filter in a.CollisionFilters) {
 				if (!filter.Invoke(a, b)) {
 					return false;
 				}
 			}
 			
-			foreach (var filter in b.CollisionFilters.AsValueEnumerable()) {
+			foreach (var filter in b.CollisionFilters) {
 				if (!filter.Invoke(b, a)) {
 					return false;
 				}

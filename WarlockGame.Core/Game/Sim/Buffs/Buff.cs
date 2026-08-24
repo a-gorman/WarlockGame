@@ -16,10 +16,14 @@ class Buff {
         Timer = duration?.ToTimer();
     }
     
-    public virtual void Update(Warlock target) {
+    public void Update(Warlock target) {
         Timer = Timer?.Decremented() ?? null;
         IsExpired |= Timer?.IsExpired ?? false;
+        
+        OnUpdate(target);
     }
+
+    protected virtual void OnUpdate(Warlock target) { }
 
     public virtual void OnAdd(Warlock target) { }
 
@@ -36,11 +40,13 @@ class Buff {
         PowerFromDamage,
         Defense,
         Slow,
+        Jumping,
     }
 
     internal enum StackingType {
         Invalid = 0,
         Refreshes = 1,
-        Stacks = 2
+        Stacks = 2,
+        None = 2
     }
 }
