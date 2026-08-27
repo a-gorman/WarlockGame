@@ -48,9 +48,8 @@ class SparkJumpBuff : Buff {
     }
     
     protected override void OnUpdate(Warlock target) {
-        Height += 0.5f * VerticalVelocity;
+        Height += VerticalVelocity + _acceleration/2;
         VerticalVelocity += _acceleration;
-        Height += 0.5f * VerticalVelocity;
         target.Sprite.ChangeTransformation(_transformationId, (Height + 1) * _heightScaleFactor);
         target.Position += _displacementPerTick;
 
