@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MonoGame.Extended;
-using WarlockGame.Core.Game.Sim.Effect;
 using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Sim.Perks;
 using WarlockGame.Core.Game.Util;

@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Sim.Entities;
 

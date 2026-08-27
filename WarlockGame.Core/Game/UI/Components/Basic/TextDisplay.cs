@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Util;
 

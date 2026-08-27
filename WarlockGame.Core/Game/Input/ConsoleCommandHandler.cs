@@ -6,7 +6,6 @@ using LiteNetLib;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
-using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.UI;
 using WarlockGame.Core.Game.UI.Components;
 using WarlockGame.Core.Game.Util;
