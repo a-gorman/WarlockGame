@@ -446,10 +446,10 @@ class SpellFactory {
         return new SpellDefinition(
             id: 12,
             name: "Teleport",
-            cooldownTime: SimTime.OfSeconds(20),
+            cooldownTime: SimTime.OfSeconds(7),
             spellIcon: Art.TeleportIcon,
             effects: [new TeleportComponent()]
-        ) { CastRange = 600 };
+        ) { CastRange = 350 };
     }
 
     public SpellDefinition Shockwave() {
@@ -470,10 +470,11 @@ class SpellFactory {
     }
 
     public SpellDefinition LightningJump() {
+        var jumpTime = 0.75f;
         return new SpellDefinition(
             id: 14,
             name: "Spark Jump",
-            cooldownTime: SimTime.OfSeconds(7),
+            cooldownTime: SimTime.OfSeconds(20),
             spellIcon: Art.LightningJumpIcon,
             effects: [
                 new SelfAreaOfEffect {
@@ -485,13 +486,13 @@ class SpellFactory {
                 },
                 new BuffComponent(buffConstructors: context => {
                     var displacement = context.TargetPosition - context.CastFromPosition;
-                    return new SparkJumpBuff(_simulation, displacement, height: 10, duration: SimTime.OfSeconds(0.5f));
+                    return new SparkJumpBuff(_simulation, displacement, height: 10, duration: SimTime.OfSeconds(jumpTime));
                 }),
                 new LocationEffectComponent((context, _) => new SpriteEffect(
                     sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f), 1.35f), 
                     position: context.CastFromPosition,
                     duration: SimTime.OfSeconds(0.5f))),
-                new DelayedLocationComponent(SimTime.OfSeconds(0.5f),
+                new DelayedLocationComponent(SimTime.OfSeconds(jumpTime),
                     new LocationAreaOfEffect {
                         Shape = new CircleTarget(50),
                         Components = [
@@ -504,7 +505,7 @@ class SpellFactory {
                         position: x, 
                         duration: SimTime.OfSeconds(0.5f))))
             ]) {
-            CastRange = 400
+            CastRange = 650
         };
     }
 }
