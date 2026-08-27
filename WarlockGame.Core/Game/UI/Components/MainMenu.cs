@@ -35,21 +35,22 @@ class MainMenu: InterfaceComponent {
 
     private Grid CreateMainGrid() {
         var hostButton = new Button(_buttonTexture) {
-            Layout = Layout.WithMargin(20),
+            Layout = Layout.WithMargin(10),
             LeftClick = _ => TransitionToHostState()
         }.Also(x => x.AddComponent(new TextDisplay("Host", Alignment.Center)));
         
         var joinButton = new Button(_buttonTexture) {
-            Layout = Layout.WithMargin(20), LeftClick = _ => TransitionToJoinState()
+            Layout = Layout.WithMargin(10), LeftClick = _ => TransitionToJoinState()
         }.Also(x => x.AddComponent(new TextDisplay("Connect", Alignment.Center)));
         
         var exitButton = new Button(_buttonTexture) { 
-            Layout = Layout.WithMargin(20), 
+            Layout = Layout.WithMargin(10), 
             LeftClick = _ => { WarlockGame.Instance.Exit(); } 
         }.Also(x => x.AddComponent(new TextDisplay("Exit", Alignment.Center)));
 
         return Grid.SingleColumn([hostButton, joinButton, exitButton],
-            ClickableState.PassThrough);
+            ClickableState.PassThrough,
+            layout: Layout.WithMargin(10, 0));
     }
     
     private Grid CreateJoinGrid() {
@@ -72,8 +73,8 @@ class MainMenu: InterfaceComponent {
         }.Also(x => x.AddComponent(new TextDisplay("Back", Alignment.Center)));
 
         return Grid.SingleColumn([
-                Grid.SingleColumn([CreateInputLabel("Player Name:"), playerNameInput], ClickableState.PassThrough),
-                Grid.SingleColumn([CreateInputLabel("IP Address:"), joinIpInput], ClickableState.PassThrough),
+                Grid.SingleColumn([CreateInputLabel("Player Name:"), playerNameInput], ClickableState.PassThrough, layout: Layout.WithMargin(10, 0)),
+                Grid.SingleColumn([CreateInputLabel("IP Address:"), joinIpInput], ClickableState.PassThrough, layout: Layout.WithMargin(10, 0)),
                 connectButton,
                 backButton
             ],
@@ -95,7 +96,7 @@ class MainMenu: InterfaceComponent {
         }.Also(x => x.AddComponent(new TextDisplay("Back", Alignment.Center)));
         
         return Grid.SingleColumn([
-            Grid.SingleColumn([CreateInputLabel("Player name:"), playerNameInput], ClickableState.PassThrough), 
+            Grid.SingleColumn([CreateInputLabel("Player name:"), playerNameInput], ClickableState.PassThrough, layout: Layout.WithMargin(10, 0)), 
             startButton, 
             backButton],
             ClickableState.PassThrough,
