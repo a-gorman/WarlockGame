@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Graphics;
@@ -6,6 +8,7 @@ using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.Sim.Buffs;
+using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.Util;
 using ZLinq;
 using Point = Microsoft.Xna.Framework.Point;
@@ -87,20 +90,18 @@ sealed class SimulationView : InterfaceComponent {
             if (warlock == null) return;
             if (!_sim.SpellManager.Spells.TryGetValue(InputManager.SelectedSpellId.Value, out var spell)) return;
 
-            Vector2? castVector = spell.Effect.Match<Vector2?>(
-                _ => (worldLocation - warlock.Position).ToNormalizedOrZero(),
-                _ => worldLocation,
-                _ => null,
-                _ => worldLocation
-            );
-
-            CastAction.CastType castType = spell.Effect.Match(
-                _ => CastAction.CastType.Directional,
-                _ => CastAction.CastType.Location,
-                _ => CastAction.CastType.Self,
-                _ => CastAction.CastType.Location
-            );
+            Vector2? castVector = spell.Definition switch {
+                DirectionalSpell => (worldLocation - warlock.Position).ToNormalizedOrZero(),
+                LocationSpell => worldLocation,
+                SelfCastSpell => null
+            };
             
+            var castType = spell.Definition switch {
+                DirectionalSpell => CastAction.CastType.Directional,
+                LocationSpell => CastAction.CastType.Location,
+                SelfCastSpell => CastAction.CastType.Self
+            };
+
             if (castVector is not null) {
                 InputManager.HandlePlayerAction(new CastAction {
                     PlayerId = localPlayerId.Value,
@@ -193,9 +194,9 @@ sealed class SimulationView : InterfaceComponent {
         spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
         if (InputManager.SelectedSpellId != null 
             && _sim.SpellManager.Spells.TryGetValue(InputManager.SelectedSpellId.Value, out var spell)
-            && spell.Definition.CastRange != null
+            && spell.Definition is LocationSpell { CastRange: not null } locationSpell
             && _sim.EntityManager.TryGetWarlockByForceId(PlayerManager.LocalPlayerId!.Value, out var warlock)) {
-            SimDebug.VisualizeCircle(spell.Definition.CastRange.Value, warlock!.Position, Color.LightSeaGreen);
+            SimDebug.VisualizeCircle(locationSpell.CastRange.Value, warlock!.Position, Color.LightSeaGreen);
         }
         
         DrawEntities(drawOffset, spriteBatch);

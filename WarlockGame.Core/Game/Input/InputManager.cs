@@ -6,6 +6,7 @@ using WarlockGame.Core.Game.Input.Devices;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
+using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.UI;
 using KeyboardInput = WarlockGame.Core.Game.Input.Devices.KeyboardInput;
 
@@ -89,13 +90,13 @@ static class InputManager {
             foreach (var actionType in SpellSelectionActions) {
                 if (inputState.WasActionKeyPressed(actionType) && sim.SpellManager.PlayerSpells.TryGetValue(LocalPlayerId.Value, out var localPlayerSpells)) {
                     var selectedSpell = localPlayerSpells?.FirstOrDefault(x => x.Value.SlotLocation == SpellSelectionActions.IndexOf(actionType)).Value;
-                    selectedSpell?.Effect.Switch(
-                        _ => SelectedSpellId = selectedSpell.Id,
-                        _ => SelectedSpellId = selectedSpell.Id,
-                        _ => HandlePlayerAction(new CastAction { PlayerId = LocalPlayerId.Value, Type = CastAction.CastType.Self, SpellId = selectedSpell.Id }),
-                        _ => SelectedSpellId = selectedSpell.Id
-                    );
-                    Logger.Debug($"Selected spell: Id: {selectedSpell?.Id} Name: {selectedSpell?.Definition.Name}", Logger.LogType.PlayerAction | Logger.LogType.Interface);
+                    
+                    if (selectedSpell?.Definition is SelfCastSpell) {
+                        HandlePlayerAction(new CastAction { PlayerId = LocalPlayerId.Value, Type = CastAction.CastType.Self, SpellId = selectedSpell.Id });
+                    } else {
+                        SelectedSpellId = selectedSpell?.Id;
+                    }
+                    // Logger.Debug($"Selected spell: Id: {selectedSpell?.Id} Name: {selectedSpell?.Definition.Name}", Logger.LogType.PlayerAction | Logger.LogType.Interface);
                 }
             }
         }

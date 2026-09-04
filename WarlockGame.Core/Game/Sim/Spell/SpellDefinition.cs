@@ -1,91 +1,79 @@
-using System;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Sim.Spell.Component;
 
 namespace WarlockGame.Core.Game.Sim.Spell;
 
-class SpellDefinition {
-    public SpellDefinition(
+closed class SpellDefinition {
+    public int Id { get; }
+    public string Name { get; }
+    public GameSound? CastSound { get; }
+    public SimTime CooldownTime { get; }
+    public Texture2D SpellIcon { get; }
+
+    protected SpellDefinition(
         int id,
         string name,
         SimTime cooldownTime,
         Texture2D spellIcon,
-        Action<SpellContext, Vector2>[] effects,
         GameSound? castSound = null) {
         Id = id;
         Name = name;
         CooldownTime = cooldownTime;
         SpellIcon = spellIcon;
-        Effects = effects;
         CastSound = castSound;
-        Type = SpellType.Directional;
     }
+}
     
-    public SpellDefinition(
+class DirectionalSpell: SpellDefinition {
+    public IDirectionalSpellComponent[] Effects { get; }
+
+    public DirectionalSpell(
+    int id,
+    string name,
+    SimTime cooldownTime,
+    Texture2D spellIcon,
+    IDirectionalSpellComponent[] effects,
+    GameSound? castSound = null) 
+    : base(id, name, cooldownTime, spellIcon, castSound) {
+        Effects = effects;
+    }
+}
+
+class LocationSpell : SpellDefinition {
+    public ILocationSpellComponent[] Effects { get; }
+    public ISelfSpellComponent[] SelfEffects { get; }
+
+    public float? CastRange { get; }
+    
+    public LocationSpell(
         int id,
         string name,
         SimTime cooldownTime,
         Texture2D spellIcon,
-        IDirectionalSpellComponent[] effects,
-        GameSound? castSound = null) {
-        Id = id;
-        Name = name;
-        CooldownTime = cooldownTime;
-        SpellIcon = spellIcon;
+        ILocationSpellComponent[] effects, 
+        float? castRange = null, 
+        ISelfSpellComponent[]? selfEffects = null,
+        GameSound? castSound = null) : base(id, name, cooldownTime, spellIcon, castSound) {
         Effects = effects;
-        CastSound = castSound;
-        Type = SpellType.Directional;
+        SelfEffects = selfEffects ?? [];
+        CastRange = castRange;
     }
+}
 
-    public SpellDefinition(
-        int id,
-        string name,
-        SimTime cooldownTime,
-        Texture2D spellIcon,
-        ILocationSpellComponent[] effects,
-        GameSound? castSound = null) {
-        Id = id;
-        Name = name;
-        CooldownTime = cooldownTime;
-        SpellIcon = spellIcon;
-        Effects = effects;
-        CastSound = castSound;
-        Type = SpellType.Location;
-    }
+class SelfCastSpell : SpellDefinition {
+    public ISelfSpellComponent[] Effects { get; }
+    public ILocationSpellComponent[] CastLocationEffects { get; }
 
-    public SpellDefinition(
+    public SelfCastSpell(
         int id,
         string name,
         SimTime cooldownTime,
         Texture2D spellIcon,
         ISelfSpellComponent[] effects,
-        GameSound? castSound = null) {
-        Id = id;
-        Name = name;
-        CooldownTime = cooldownTime;
-        SpellIcon = spellIcon;
+        ILocationSpellComponent[]? castLocationEffects = null,
+        GameSound? castSound = null)
+        : base(id, name, cooldownTime, spellIcon, castSound) {
         Effects = effects;
-        CastSound = castSound;
-        Type = SpellType.Self;
-    }
-    
-    public int Id { get; }
-    public string Name { get; }
-    public SpellType Type { get; }
-    public GameSound? CastSound { get; }
-    public SimTime CooldownTime { get; }
-    public Texture2D SpellIcon { get; }
-    public float? CastRange { get; init; }
-    public OneOf<
-        IDirectionalSpellComponent[], 
-        ILocationSpellComponent[], 
-        ISelfSpellComponent[], 
-        Action<SpellContext, Vector2>[]> 
-        Effects { get; }
-
-    public enum SpellType {
-        Directional,
-        Location,
-        Self
+        CastLocationEffects = castLocationEffects ?? [];
     }
 }

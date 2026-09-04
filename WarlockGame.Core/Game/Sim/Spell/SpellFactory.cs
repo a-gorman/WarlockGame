@@ -28,12 +28,12 @@ class SpellFactory {
     }
 
     public SpellDefinition Fireball() {
-        return new SpellDefinition(
+        return new DirectionalSpell(
             id: 1,
             name: "Fireball",
-            cooldownTime: SimTime.OfSeconds(3),
             spellIcon: Art.FireballIcon,
             castSound: Sound.FireBallCast,
+            cooldownTime: SimTime.OfSeconds(3),
             effects: [
                 new ProjectileComponent(
                     sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
@@ -52,11 +52,11 @@ class SpellFactory {
     }
 
     public SpellDefinition Lightning() {
-        return new SpellDefinition(
+        return new DirectionalSpell(
             id: 2,
             name: "Lightning",
-            cooldownTime: SimTime.OfSeconds(20),
             spellIcon: Art.LightningIcon,
+            cooldownTime: SimTime.OfSeconds(20),
             effects: [
                 new DirectionalAreaOfEffect {
                     Shape = new LineTarget { Length = 600, IgnoreCaster = true, Texture = Art.Lightning },
@@ -71,11 +71,11 @@ class SpellFactory {
     }
 
     public SpellDefinition Poison() {
-        return new SpellDefinition(
+        return new DirectionalSpell(
             id: 3,
             name: "Poison",
-            cooldownTime: SimTime.OfSeconds(6),
             spellIcon: Art.PoisonIcon,
+            cooldownTime: SimTime.OfSeconds(6),
             effects: [
                 new ProjectileComponent(
                     sprite: new Sprite(Art.PoisonBall, scale: 0.80f),
@@ -94,11 +94,11 @@ class SpellFactory {
     }
 
     public SpellDefinition Burst() {
-        return new SpellDefinition(
+        return new SelfCastSpell(
             id: 4,
             name: "Burst",
-            cooldownTime: SimTime.OfSeconds(6),
             spellIcon: Art.BurstIcon,
+            cooldownTime: SimTime.OfSeconds(6),
             effects: [
                 new SelfAreaOfEffect {
                     Shape = new CircleTarget(innerRadius: 50, outerRadius: 100),
@@ -119,11 +119,11 @@ class SpellFactory {
     }
 
     public SpellDefinition WindShield() {
-        return new SpellDefinition(
+        return new SelfCastSpell(
             id: 5,
             name: "Wind Shield",
-            cooldownTime: SimTime.OfSeconds(16),
             spellIcon: Art.WindWallIcon,
+            cooldownTime: SimTime.OfSeconds(16),
             effects: [
                 new SelfCastPositionComponent {
                     Components = [
@@ -159,11 +159,11 @@ class SpellFactory {
     }
 
     public SpellDefinition SoulShatter() {
-        return new SpellDefinition(
+        return new DirectionalSpell(
             id: 6,
             name: "Soul Shatter",
-            cooldownTime: SimTime.OfSeconds(6),
             spellIcon: Art.SoulShatterIcon,
+            cooldownTime: SimTime.OfSeconds(6),
             effects: [
                 new ProjectileComponent(
                     sprite: Sprite.FromGridSpriteSheet(Art.PowerBall, 4, 4, SimTime.OfTicks(10)),
@@ -232,11 +232,11 @@ class SpellFactory {
     }
 
     public SpellDefinition DeflectionShield() {
-        return new SpellDefinition(
+        return new DirectionalSpell(
             id: 7,
             name: "Deflection Shield",
-            cooldownTime: SimTime.OfSeconds(8),
             spellIcon: Art.RefractionShieldIcon,
+            cooldownTime: SimTime.OfSeconds(8),
             effects: [
                 new DirectionalComponent {
                     Components = [
@@ -288,11 +288,11 @@ class SpellFactory {
     }
 
     public SpellDefinition Homing() {
-        return new SpellDefinition(
+        return new DirectionalSpell(
             id: 8,
             name: "Homing",
-            cooldownTime: SimTime.OfSeconds(8),
             spellIcon: Art.HomingIcon,
+            cooldownTime: SimTime.OfSeconds(8),
             effects: [
                 new ProjectileComponent(
                     sprite: Sprite.FromGridSpriteSheet(Art.EnergySpark, 4, 4, SimTime.OfTicks(10), scale: 2f,
@@ -321,11 +321,11 @@ class SpellFactory {
     }
 
     public SpellDefinition Boomerang() {
-        return new SpellDefinition(
+        return new DirectionalSpell(
             id: 9,
             name: "Boomerang",
-            cooldownTime: SimTime.OfSeconds(6),
             spellIcon: Art.BoomerangIcon,
+            cooldownTime: SimTime.OfSeconds(6),
             effects: [
                 new ProjectileComponent(
                     sprite: Sprite.FromGridSpriteSheet(Art.Triple, 4, 4, SimTime.OfTicks(2), scale: 2f, rotates: false),
@@ -366,11 +366,12 @@ class SpellFactory {
         var radius = 180;
         var delaySeconds = 1.35f;
         var animationDurationSeconds = 0.8f;
-        return new SpellDefinition(
+        return new LocationSpell(
             id: 10,
             name: "Light strike",
-            cooldownTime: SimTime.OfSeconds(20),
             spellIcon: Art.LightStrikeIcon,
+            cooldownTime: SimTime.OfSeconds(20),
+            castRange: 700,
             effects: [
                 new LocationEffectComponent(location =>
                     new CircleTimingIndicator(new CircleF(location, radius), SimTime.OfSeconds(delaySeconds))),
@@ -400,7 +401,7 @@ class SpellFactory {
                         };
                     })
                 )
-            ]) { CastRange = 700 };
+            ]);
     }
 
     public SpellDefinition FireSpray() {
@@ -432,32 +433,33 @@ class SpellFactory {
                 ]);
         }
 
-        return new SpellDefinition(
+        return new DirectionalSpell(
             id: 11,
             name: "Fire Spray",
-            cooldownTime: SimTime.OfSeconds(11),
             spellIcon: Art.FireSprayIcon,
             castSound: Sound.FireSprayCast,
+            cooldownTime: SimTime.OfSeconds(11),
             effects: projectileEffects
         );
     }
 
     public SpellDefinition Blink() {
-        return new SpellDefinition(
+        return new LocationSpell(
             id: 12,
             name: "Teleport",
-            cooldownTime: SimTime.OfSeconds(7),
             spellIcon: Art.TeleportIcon,
+            cooldownTime: SimTime.OfSeconds(7),
+            castRange: 350,
             effects: [new TeleportComponent()]
-        ) { CastRange = 350 };
+        );
     }
 
     public SpellDefinition Shockwave() {
-        return new SpellDefinition(
+        return new DirectionalSpell(
             id: 13,
             name: "Shockwave",
-            cooldownTime: SimTime.OfSeconds(7),
             spellIcon: Art.ShockwaveIcon,
+            cooldownTime: SimTime.OfSeconds(7),
             effects: [
                 new DirectionalEffectComponent((spellContext, castLoc, direction) =>
                     new ShockwaveEffect(spellContext,
@@ -471,25 +473,29 @@ class SpellFactory {
 
     public SpellDefinition LightningJump() {
         var jumpTime = 0.75f;
-        return new SpellDefinition(
+        return new LocationSpell(
             id: 14,
             name: "Spark Jump",
-            cooldownTime: SimTime.OfSeconds(20),
             spellIcon: Art.LightningJumpIcon,
-            effects: [
+            cooldownTime: SimTime.OfSeconds(20),
+            castRange: 650,
+            selfEffects: [
                 new SelfAreaOfEffect {
                     Shape = new CircleTarget(50),
                     Components = [
                         new DamageComponent { Damage = 10, SelfFactor = 0 },
                         new PushComponent() { Force = 100, SelfFactor = 0 }
                     ]
-                },
+                }
+            ],
+            effects: [
                 new BuffComponent(buffConstructors: context => {
                     var displacement = context.TargetPosition - context.CastFromPosition;
-                    return new SparkJumpBuff(_simulation, displacement, height: 10, duration: SimTime.OfSeconds(jumpTime));
+                    return new SparkJumpBuff(_simulation, displacement, height: 10,
+                        duration: SimTime.OfSeconds(jumpTime));
                 }),
                 new LocationEffectComponent((context, _) => new SpriteEffect(
-                    sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f), 1.35f), 
+                    sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f), 1.35f),
                     position: context.CastFromPosition,
                     duration: SimTime.OfSeconds(0.5f))),
                 new DelayedLocationComponent(SimTime.OfSeconds(jumpTime),
@@ -501,11 +507,10 @@ class SpellFactory {
                         ]
                     },
                     new LocationEffectComponent(x => new SpriteEffect(
-                        sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f), 1.35f), 
-                        position: x, 
+                        sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f),
+                            1.35f),
+                        position: x,
                         duration: SimTime.OfSeconds(0.5f))))
-            ]) {
-            CastRange = 650
-        };
+            ]);
     }
 }
