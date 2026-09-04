@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
+using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.Util;
 
@@ -28,5 +29,12 @@ sealed class SpellIcon : InterfaceComponent {
         base.Update(in args);
     }
 
-    public override void OnLeftClick(Vector2 _) { InputManager.SelectedSpellId = _spell.Id; }
+    public override void OnLeftClick(Vector2 _) {
+        if (_spell.Definition is SelfCastSpell && PlayerManager.LocalPlayerId != null) {
+            InputManager.HandlePlayerAction(new CastAction { PlayerId = PlayerManager.LocalPlayerId.Value, Type = CastAction.CastType.Self, SpellId = _spell.Id });
+            InputManager.SelectedSpellId = null;
+        } else {
+            InputManager.SelectedSpellId = _spell.Id;
+        }
+    }
 }

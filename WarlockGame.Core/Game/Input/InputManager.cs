@@ -3,7 +3,6 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using WarlockGame.Core.Game.Input.Devices;
-using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Networking;
 using WarlockGame.Core.Game.Networking.Packet;
 using WarlockGame.Core.Game.Sim.Spell;
@@ -89,10 +88,11 @@ static class InputManager {
             var sim = WarlockGame.Instance.Simulation;
             foreach (var actionType in SpellSelectionActions) {
                 if (inputState.WasActionKeyPressed(actionType) && sim.SpellManager.PlayerSpells.TryGetValue(LocalPlayerId.Value, out var localPlayerSpells)) {
-                    var selectedSpell = localPlayerSpells?.FirstOrDefault(x => x.Value.SlotLocation == SpellSelectionActions.IndexOf(actionType)).Value;
+                    var selectedSpell = localPlayerSpells.FirstOrDefault(x => x.Value.SlotLocation == SpellSelectionActions.IndexOf(actionType)).Value;
                     
                     if (selectedSpell?.Definition is SelfCastSpell) {
                         HandlePlayerAction(new CastAction { PlayerId = LocalPlayerId.Value, Type = CastAction.CastType.Self, SpellId = selectedSpell.Id });
+                        SelectedSpellId = null;
                     } else {
                         SelectedSpellId = selectedSpell?.Id;
                     }
