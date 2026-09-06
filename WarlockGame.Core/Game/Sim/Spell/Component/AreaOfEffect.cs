@@ -3,7 +3,7 @@ using WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Component;
 
-class LocationAreaOfEffect: ILocationSpellComponent {
+class LocationAreaOfEffect: ILocationSpellComponent, ISelfSpellComponent {
 
     public required ILocationShape Shape { get; init; } 
     public required IReadOnlyCollection<IEntityComponent> Components { get; init; }
@@ -15,6 +15,17 @@ class LocationAreaOfEffect: ILocationSpellComponent {
             effect.Invoke(context, aoeResult.Targets);
         }
         
+        if (Sound != null) {
+            Sound.Play(aoeResult.Center, aoeResult.SoundRadius);
+        }
+    }
+
+    public void Invoke(SpellContext context) {
+        var aoeResult = Shape.GatherTargets(context, context.Caster.Position);
+        foreach (var effect in Components) {
+            effect.Invoke(context, aoeResult.Targets);
+        }
+
         if (Sound != null) {
             Sound.Play(aoeResult.Center, aoeResult.SoundRadius);
         }

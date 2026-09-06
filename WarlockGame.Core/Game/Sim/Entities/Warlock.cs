@@ -21,9 +21,9 @@ class Warlock : Entity {
     public Vector2? Direction {
         get;
         set {
-            if (value.HasValue ^ field.HasValue) {
+            if (value != field) {
                 field = value;
-                RecalculateMoveState();
+                _moveStateDirty = true;
             }
         }
     }
@@ -31,9 +31,9 @@ class Warlock : Entity {
     public float? DesiredOrientation {
         get;
         set {
-            if (value.HasValue ^ field.HasValue) {
+            if (value != field) {
                 field = value;
-                RecalculateMoveState();
+                _moveStateDirty = true;
             }
         }
     }
@@ -55,7 +55,7 @@ class Warlock : Entity {
         set {
             if (value != field) {
                 field = value;
-                RecalculateMoveState();
+                _moveStateDirty = true;
             }
         }
     }
@@ -65,7 +65,8 @@ class Warlock : Entity {
     
     private MoveState _moveState;
     private readonly Friction _slidingFriction;
-        
+    private readonly Pushable _pushableBehavior;
+
     public event Action<Warlock>? Respawned;
     public event Action<Warlock>? Destroyed;
     public event Action<Warlock>? SpellCast;
@@ -74,6 +75,8 @@ class Warlock : Entity {
     private int _nextBuffId = 1;
 
     private LinkedList<IOrder> Orders { get; } = new();
+
+    private bool _moveStateDirty;
 
 
     public Warlock(int forceId, Vector2 position, Simulation simulation):
@@ -86,11 +89,16 @@ class Warlock : Entity {
         _slidingFriction = new Friction(a: 0.001f, b: 0.12f, c: 0.02f);
         
         OnPushed += HandlePushed;
-        AddBehaviors(new Pushable());
+        _pushableBehavior = new Pushable();
+        AddBehaviors(_pushableBehavior);
     }
 
     public override void Update() {
         Orders.FirstOrDefault()?.Update();
+
+        if(_moveStateDirty) {
+            RecalculateMoveState();
+        }
 
         Move();
 
@@ -176,7 +184,6 @@ class Warlock : Entity {
                 break;
             default:
                 Logger.Error($"Invalid move state value {(int)_moveState}", Logger.LogType.Simulation);
-                RecalculateMoveState();
                 break;
         }
 
@@ -271,13 +278,20 @@ class Warlock : Entity {
     }
 
     private void RecalculateMoveState() {
-        if (Sliding) {
+        if (Jumping) {
+            _pushableBehavior.Strength = 2.0f;
+            _moveState = MoveState.Jumping;
+        } else if (Sliding) {
+            _pushableBehavior.Strength = 1.0f;
             _moveState = MoveState.Sliding;
-        } else if (Direction != null) {
+        } else if (Direction != null && CanMove) {
+            _pushableBehavior.Strength = 1.0f;
             _moveState = MoveState.Moving;
-        } else if(DesiredOrientation != null) {
+        } else if(DesiredOrientation != null && CanMove) {
+            _pushableBehavior.Strength = 0.75f;
             _moveState = MoveState.Rotating;
         } else {
+            _pushableBehavior.Strength = 0.5f;
             _moveState = MoveState.Stopped;
         }
     }
@@ -287,5 +301,6 @@ internal enum MoveState {
     Stopped,
     Rotating,
     Moving,
-    Sliding
+    Sliding,
+    Jumping
 }

@@ -480,7 +480,7 @@ class SpellFactory {
             cooldownTime: SimTime.OfSeconds(20),
             castRange: 650,
             selfEffects: [
-                new SelfAreaOfEffect {
+                new LocationAreaOfEffect {
                     Shape = new CircleTarget(50),
                     Components = [
                         new DamageComponent { Damage = 10, SelfFactor = 0 },
