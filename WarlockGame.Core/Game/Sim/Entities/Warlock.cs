@@ -70,6 +70,7 @@ class Warlock : Entity {
     public event Action<Warlock>? Respawned;
     public event Action<Warlock>? Destroyed;
     public event Action<Warlock>? SpellCast;
+    public event Action<Warlock, Buff>? BuffRemoved;
 
     private readonly Simulation _sim;
     private int _nextBuffId = 1;
@@ -77,7 +78,6 @@ class Warlock : Entity {
     private LinkedList<IOrder> Orders { get; } = new();
 
     private bool _moveStateDirty;
-
 
     public Warlock(int forceId, Vector2 position, Simulation simulation):
         base(RotatingSprite.FromGridSpriteSheet(Art.Warlock, 8, scale: 1.35f), position, radius: 20) {
@@ -109,6 +109,7 @@ class Warlock : Entity {
             }
             // Note: Buff can become expired after update.
             if(buff.IsExpired) {
+                BuffRemoved?.Invoke(this, buff);
                 buff.OnRemove(this);
             }
         }

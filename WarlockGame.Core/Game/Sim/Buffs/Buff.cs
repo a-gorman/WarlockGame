@@ -10,6 +10,8 @@ class Buff {
     public bool ClearedOnDeath { get; set; } = true;
     public bool IsExpired { get; set; }
     public StackingType Stacking { get; set; } = StackingType.Refreshes;
+
+    private readonly BuffBehavior[] _behaviors;
     
     protected Buff(BuffType type, SimTime? duration) {
         Type = type;
@@ -20,16 +22,32 @@ class Buff {
         Timer = Timer?.Decremented() ?? null;
         IsExpired |= Timer?.IsExpired ?? false;
         
+        foreach(var behavior in _behaviors) {
+            behavior.update(this, target);
+        }
+
         OnUpdate(target);
     }
 
     protected virtual void OnUpdate(Warlock target) { }
 
-    public virtual void OnAdd(Warlock target) { }
+    public virtual void OnAdd(Warlock target) {
+        foreach(var behavior in _behaviors) {
+            behavior.OnAdd(this, target);
+        }
+     }
 
-    public virtual void OnRemove(Warlock target) { }
+    public virtual void OnRemove(Warlock target) { 
+        foreach(var behavior in _behaviors) {
+            behavior.OnRemove(this, target);
+        }
+    }
 
-    public virtual void OnRespawn() { }
+    public virtual void OnRespawn() {
+        foreach(var behavior in _behaviors) {
+            behavior.OnRespawn(this);
+        }
+     }
     
     public enum BuffType {
         Invalid = 0,
