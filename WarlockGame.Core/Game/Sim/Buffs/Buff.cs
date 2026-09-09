@@ -11,19 +11,26 @@ class Buff {
     public bool IsExpired { get; set; }
     public StackingType Stacking { get; set; } = StackingType.Refreshes;
 
-    private readonly BuffBehavior[] _behaviors;
+    private readonly BuffComponent[] _components;
     
+    public Buff(BuffType type, SimTime? duration, BuffComponent[] components, StackingType stacking = StackingType.Stacks) {
+        Type = type;
+        Timer = duration?.ToTimer();
+        _components = components;
+    }
+
     protected Buff(BuffType type, SimTime? duration) {
         Type = type;
         Timer = duration?.ToTimer();
+        _components = [];
     }
     
     public void Update(Warlock target) {
         Timer = Timer?.Decremented() ?? null;
         IsExpired |= Timer?.IsExpired ?? false;
         
-        foreach(var behavior in _behaviors) {
-            behavior.update(this, target);
+        foreach(var component in _components) {
+            component.update(this, target);
         }
 
         OnUpdate(target);
@@ -32,20 +39,20 @@ class Buff {
     protected virtual void OnUpdate(Warlock target) { }
 
     public virtual void OnAdd(Warlock target) {
-        foreach(var behavior in _behaviors) {
-            behavior.OnAdd(this, target);
+        foreach(var component in _components) {
+            component.OnAdd(this, target);
         }
      }
 
     public virtual void OnRemove(Warlock target) { 
-        foreach(var behavior in _behaviors) {
-            behavior.OnRemove(this, target);
+        foreach(var component in _components) {
+            component.OnRemove(this, target);
         }
     }
 
     public virtual void OnRespawn() {
-        foreach(var behavior in _behaviors) {
-            behavior.OnRespawn(this);
+        foreach(var component in _components) {
+            component.OnRespawn(this);
         }
      }
     
@@ -65,6 +72,6 @@ class Buff {
         Invalid = 0,
         Refreshes = 1,
         Stacks = 2,
-        None = 2
+        None = 3
     }
 }

@@ -6,27 +6,23 @@ using WarlockGame.Core.Game.Util;
 namespace WarlockGame.Core.Game.Sim.Buffs;
 
 class SpriteComponent : BuffComponent {
-    private readonly float _heightScaleFactor = 0.2f;
     private readonly Simulation _sim;
+
+    private readonly Sprite _sprite;
     private int _transformationId;
     private Vector2 _spriteOffset;
     
     private SpriteEffect _travelSprite = null!;
     
-    public SparkJumpBuff(Simulation sim, Vector2 spriteOffset, float height) : base(BuffType.Jumping, duration) {
+    public SpriteComponent(Sprite sprite, Vector2 spriteOffset, Simulation sim) {
         _sim = sim;
-        _displacementPerTick = displacement / duration.Ticks;
-        
-        _acceleration = - 8f * height / duration.Ticks.Squared();
-        VerticalVelocity =  _acceleration * -0.5f * duration.Ticks;
-        Stacking = StackingType.None;
+        _spriteOffset = spriteOffset;
     }
 
     public override void OnAdd(Warlock target) {
         _spriteOffset = -_spriteOffset.Rotated(orientation);
         
-        var sprite = Sprite.FromGridSpriteSheet(Art.SparkJumpTravel, 3, 3, SimTime.OfSeconds(0.05f), scale: 2.3f);
-        _travelSprite = new SpriteEffect(sprite, target.Position + _spriteOffset, duration: null, orientation: (_displacementPerTick).ToAngle());
+        _travelSprite = new SpriteEffect(_sprite, target.Position + _spriteOffset, duration: null, orientation: (_displacementPerTick).ToAngle());
         _sim.EffectManager.Add(_travelSprite);
     }
 

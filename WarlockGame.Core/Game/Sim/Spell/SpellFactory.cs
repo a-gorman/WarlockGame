@@ -473,6 +473,8 @@ class SpellFactory {
 
     public SpellDefinition LightningJump() {
         var jumpTime = 0.75f;
+        var travelSprite = Sprite.FromGridSpriteSheet(Art.SparkJumpTravel, 3, 3, SimTime.OfSeconds(0.05f), scale: 2.3f);
+        
         return new LocationSpell(
             id: 14,
             name: "Spark Jump",
@@ -489,28 +491,56 @@ class SpellFactory {
                 }
             ],
             effects: [
-                new BuffComponent(buffConstructors: context => {
-                    var displacement = context.TargetPosition - context.CastFromPosition;
-                    return new SparkJumpBuff(_simulation, displacement, height: 10,
-                        duration: SimTime.OfSeconds(jumpTime));
-                }),
                 new LocationEffectComponent((context, _) => new SpriteEffect(
                     sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f), 1.35f),
                     position: context.CastFromPosition,
-                    duration: SimTime.OfSeconds(0.5f))),
-                new DelayedLocationComponent(SimTime.OfSeconds(jumpTime),
-                    new LocationAreaOfEffect {
-                        Shape = new CircleTarget(50),
-                        Components = [
-                            new DamageComponent { Damage = 10, SelfFactor = 0 },
-                            new PushComponent() { Force = 100, SelfFactor = 0 }
-                        ]
-                    },
-                    new LocationEffectComponent(x => new SpriteEffect(
-                        sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f),
-                            1.35f),
-                        position: x,
-                        duration: SimTime.OfSeconds(0.5f))))
+                    duration: SimTime.OfSeconds(0.5f)))
+                new ApplyBuffComponent(context => {
+                    var displacement = context.TargetPosition - context.CastFromPosition;
+                    return new Buff(
+                        type: Buff.BuffType.Jumping, 
+                        duration: SimTime.OfSeconds(jumpTime), 
+                        components: [
+                            new JumpComponent(context.simulation, displacement: displacement, height: 10),
+                            new SpriteComponent(
+                                sprite: travelSprite, 
+                                displacement: new Vector2(100, 0),
+                                simulation: context.simulation),
+                            new OnExpiration(context, [
+                                new LocationAreaOfEffect {
+                                    Shape = new CircleTarget(50),
+                                    Components = [
+                                        new DamageComponent { Damage = 10, SelfFactor = 0 },
+                                        new PushComponent() { Force = 100, SelfFactor = 0 }
+                                    ]
+                                },
+                                new LocationEffectComponent(x => new SpriteEffect(
+                                    sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f),
+                                        1.35f),
+                                    position: x,
+                                    duration: SimTime.OfSeconds(0.5f)))                       
+                            ])
+                        ]);
+                })
             ]);
+    }
+
+    public SpellDefinition Swap() {
+        return new DirectionalSpell(
+            id: 15,
+            name: "Swap",
+            effects: [
+                new ProjectileComponent(
+                    sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
+                    effects: [
+                        new LocationAreaOfEffect {
+                            Shape = new CircleTarget(innerRadius: 8, outerRadius: 30),
+                            Components = [
+                                new SwapComponent(),
+                            ]
+                        }
+                    ]
+                )
+        ]);
     }
 }

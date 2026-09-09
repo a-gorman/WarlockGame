@@ -8,33 +8,27 @@ namespace WarlockGame.Core.Game.Sim.Buffs.Components;
 class JumpComponent : BuffComponent {
     public float Height { get; private set; }
     public float VerticalVelocity { get; private set; }
-    
-    private readonly Vector2 _displacementPerTick;
-    private readonly float _heightScaleFactor = 0.2f;
-    private readonly float _acceleration;
+
+    private readonly float _maxHeight;
     private readonly Simulation _sim;
+
+    private Vector2 _displacementPerTick;
+    private float _verticalAcceleration;
     private int _transformationId;
-    private Vector2 _spriteOffset;
     
-    private SpriteEffect _travelSprite = null!;
-    
-    public SparkJumpBuff(Simulation sim, Vector2 displacement, float height, SimTime duration) : base(BuffType.Jumping, duration) {
+    public SparkJumpBuff(Simulation sim, Vector2 displacement, float height) {
         _sim = sim;
-        _displacementPerTick = displacement / duration.Ticks;
-        
-        _acceleration = - 8f * height / duration.Ticks.Squared();
-        VerticalVelocity =  _acceleration * -0.5f * duration.Ticks;
-        Stacking = StackingType.None;
+        _maxHeight;
     }
 
     public override void OnAdd(Warlock target) {
-        _spriteOffset = -_displacementPerTick.ToNormalized() * 100;
-        
-        var sprite = Sprite.FromGridSpriteSheet(Art.SparkJumpTravel, 3, 3, SimTime.OfSeconds(0.05f), scale: 2.3f);
-        _travelSprite = new SpriteEffect(sprite, target.Position + _spriteOffset, duration: null, orientation: (_displacementPerTick).ToAngle());
-        _sim.EffectManager.Add(_travelSprite);
-        
         _transformationId = target.Sprite.AddTransformation(1f);
+        
+        _displacementPerTick = displacement / duration.Ticks;
+        
+        _verticalAcceleration = - 8f * height / duration.Ticks.Squared();
+        VerticalVelocity =  _verticalAcceleration * -0.5f * duration.Ticks;
+        
         target.Jumping = true;
     }
 
@@ -43,16 +37,13 @@ class JumpComponent : BuffComponent {
             target.Sprite.RemoveTransformation(_transformationId);
         }
 
-        _travelSprite.IsExpired = true;
         target.Jumping = false;
     }
     
     protected override void OnUpdate(Warlock target) {
-        Height += VerticalVelocity + _acceleration/2;
-        VerticalVelocity += _acceleration;
+        Height += VerticalVelocity + _verticalAcceleration/2;
+        VerticalVelocity += _verticalAcceleration;
         target.Sprite.ChangeTransformation(_transformationId, (Height + 1) * _heightScaleFactor);
         target.Position += _displacementPerTick;
-
-        _travelSprite.Position = target.Position + _spriteOffset;
     }
 }
