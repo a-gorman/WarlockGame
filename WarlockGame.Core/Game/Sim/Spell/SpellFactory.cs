@@ -491,7 +491,8 @@ class SpellFactory {
                 }
             ],
             effects: [
-                new LocationEffectComponent((context, _) => new SpriteEffect(
+                new LocationEffectComponent((context, _) => 
+                new SpriteEffect(
                     sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f), 1.35f),
                     position: context.CastFromPosition,
                     duration: SimTime.OfSeconds(0.5f)))
@@ -499,7 +500,8 @@ class SpellFactory {
                     var displacement = context.TargetPosition - context.CastFromPosition;
                     return new Buff(
                         type: Buff.BuffType.Jumping, 
-                        duration: SimTime.OfSeconds(jumpTime), 
+                        duration: SimTime.OfSeconds(jumpTime),
+                        stacking: StackingType.None,
                         components: [
                             new JumpComponent(context.simulation, displacement: displacement, height: 10),
                             new SpriteComponent(
@@ -520,7 +522,7 @@ class SpellFactory {
                                     position: x,
                                     duration: SimTime.OfSeconds(0.5f)))                       
                             ])
-                        ]);
+                    ]);
                 })
             ]);
     }
@@ -535,8 +537,46 @@ class SpellFactory {
                     effects: [
                         new LocationAreaOfEffect {
                             Shape = new CircleTarget(innerRadius: 8, outerRadius: 30),
-                            Components = [
-                                new SwapComponent(),
+                            Components = [ new SwapComponent() ]
+                        }
+                    ]
+                )
+        ]);
+    }
+
+    public SpellDefinition DelayedDetonation() {
+        return new DirectionalSpell(
+            id: 15,
+            name: "Swap",
+            effects: [
+                new ProjectileComponent(
+                    sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
+                    effects: [
+                        new LocationAreaOfEffect {
+                            Shape = new CircleTarget(innerRadius: 8, outerRadius: 30),
+                            Components = [ 
+                                new ApplyBuffComponent(context => {
+                                    var displacement = context.TargetPosition - context.CastFromPosition;
+                                    return new Buff(
+                                        type: Buff.BuffType.Jumping, 
+                                        duration: SimTime.OfSeconds(5),
+                                        stacking: StackingType.Stacks,
+                                        components: [
+                                            new OnExpiration(context, [
+                                                new LocationAreaOfEffect {
+                                                    Shape = new CircleTarget(50),
+                                                    Components = [
+                                                        new DamageComponent { Damage = 10, SelfFactor = 0 },
+                                                        new PushComponent() { Force = 100, SelfFactor = 0 }
+                                                    ]
+                                                },
+                                                new LocationEffectComponent(x => new SpriteEffect(
+                                                    sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f), 1.35f),
+                                                    position: x,
+                                                    duration: SimTime.OfSeconds(0.5f)))                       
+                                            ])
+                                    ]);
+                                })   
                             ]
                         }
                     ]
