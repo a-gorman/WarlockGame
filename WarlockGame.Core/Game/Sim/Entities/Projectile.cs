@@ -39,8 +39,7 @@ class Projectile : Entity {
         AddBehaviors(new Pushable());
     }
 
-    public override void Update()
-    {
+    public override void Update() {
         if (Velocity.HasLength())
             Orientation = Extensions.ToAngle(Velocity);
 
@@ -62,11 +61,15 @@ class Projectile : Entity {
     public override void HandleCollision(Entity other) {
         if (other != Context.Caster && other.BlocksProjectiles) {
             IsExpired = true;
-            foreach (var effect in _effects) {
-                effect.Invoke(Context, Position);
-            }
+            TriggerEffects();
         }
 
         base.HandleCollision(other);
+    }
+
+    public void TriggerEffects() {
+        foreach (var effect in _effects) {
+            effect.Invoke(Context, Position);
+        }
     }
 }
