@@ -52,20 +52,20 @@ class LocationEffectComponent : ILocationSpellComponent, IAoeTargetsSpellCompone
 /// Creates new effects at a location with a direction and adds them to the effect manager
 /// </summary>
 class DirectionalEffectComponent : IDirectionalSpellComponent {
-    public Func<SpellContext, Vector2, Vector2, IEffect>[] EffectConstructors { get; private init; }
+    private readonly Func<SpellContext, Vector2, Vector2, IEffect>[] _effectConstructors;
     
     public DirectionalEffectComponent(params Func<SpellContext, Vector2, Vector2, IEffect>[] effectConstructors) {
-        EffectConstructors = effectConstructors;
+        _effectConstructors = effectConstructors;
     }
     
     public DirectionalEffectComponent(params Func<Vector2, Vector2, IEffect>[] effectConstructors) {
-        EffectConstructors = effectConstructors
+        _effectConstructors = effectConstructors
             .Select(func => new Func<SpellContext, Vector2, Vector2, IEffect>((_, loc, direction) => func.Invoke(loc, direction)))
             .ToArray();
     }
     
     public void Invoke(SpellContext context, Vector2 invokeLocation, Vector2 invokeDirection) {
-        foreach (var effect in EffectConstructors) {
+        foreach (var effect in _effectConstructors) {
             context.EffectManager.Add(effect.Invoke(context, invokeLocation, invokeDirection));
         }
     }

@@ -8,11 +8,23 @@ namespace WarlockGame.Core.Game.Sim.Spell.Effect;
 
 class ContinuousSpellEffect : IEffect {
     public bool IsExpired { get; set; }
-    public required SpellContext Context { get; init; }
-    public required OneOf<Vector2, Func<ContinuousSpellEffect, Vector2>> Location { private get; init; }
-    public required IReadOnlyCollection<ILocationSpellComponent> Components { get; init; }
-    public required GameTimer Timer { get; set; } // TODO: Make this better
-    public int RepeatEvery { get; init; } = 1;
+    public SpellContext Context { get; }
+    public Vector2 Location { get; }
+    public IReadOnlyCollection<ILocationSpellComponent> Components { get; }
+    public GameTimer Timer { get; private set; }
+    public int RepeatEvery { get; }
+
+    public ContinuousSpellEffect( SpellContext context,  
+        Vector2 location, 
+        SimTime duration, 
+        IReadOnlyCollection<ILocationSpellComponent> components,
+        SimTime? repeatTime = null) {
+        Context = context;
+        Components = components;
+        Location = location;
+        Timer = duration.ToTimer();
+        RepeatEvery = repeatTime?.Ticks ?? 1;
+    }
     
     public void Update() {
         Timer = Timer.Decremented();
@@ -20,10 +32,8 @@ class ContinuousSpellEffect : IEffect {
 
         // TODO: This Doesn't consistently start on the first tick
         if (Timer.TicksRemaining % RepeatEvery == 0) {
-            var currentLocation = Location.Match(x => x, x => x.Invoke(this));
-
             foreach (var component in Components) {
-                component.Invoke(Context, currentLocation);
+                component.Invoke(Context, Location);
             }
         }
     }

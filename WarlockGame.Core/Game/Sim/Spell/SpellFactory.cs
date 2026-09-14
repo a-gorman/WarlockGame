@@ -126,12 +126,13 @@ class SpellFactory {
             spellIcon: Art.WindWallIcon,
             cooldownTime: SimTime.OfSeconds(16),
             effects: [
-                new LocationEffectComponent((spellContext, location) => new ContinuousSpellEffect {
-                        Context = spellContext,
-                        Location = location,
-                        RepeatEvery = 5,
-                        Timer = GameTimer.FromSeconds(6),
-                        Components = [
+                new LocationEffectComponent((spellContext, location) =>
+                    new ContinuousSpellEffect(
+                        context: spellContext,
+                        location: location,
+                        repeatTime: SimTime.OfTicks(5),
+                        duration: SimTime.OfSeconds(6),
+                        components: [
                             new LocationAreaOfEffect {
                                 Shape = new Doughnut {
                                     Radius = 200,
@@ -149,7 +150,7 @@ class SpellFactory {
                                 ]
                             }
                         ]
-                    }
+                    )
                 )
             ]
         );
@@ -563,37 +564,38 @@ class SpellFactory {
         ]);
     }
 
-    // public SpellDefinition Redirection() {
-    //     return new DirectionalSpell(
-    //         id: 17,
-    //         name: "Redirection",
-    //         spellIcon: Art.LightningJumpIcon,
-    //         cooldownTime: SimTime.OfSeconds(20),
-    //         effects: [
-    //             new ContinuousSpellEffect {
-    //                 Context = spellContext,
-    //                 Location = location,
-    //                 RepeatEvery = 5,
-    //                 Timer = GameTimer.FromSeconds(6),
-    //                 Components = [
-    //                     new LocationAreaOfEffect {
-    //                         Shape = new CircleTarget(
-    //                             innerRadius: 200, 
-    //                             targetSelector: AoeSelectors.Projectiles) {
-    //                             FalloffFactor = Falloff.None
-    //                         },
-    //                         Components = [
-    //                             new PushComponent {
-    //                                 Force = 6f,
-    //                                 SelfFactor = 0,
-    //                                 ProjectileFactor = 1,
-    //                                 DisplacementTransform = (axis1, _) => axis1.PerpendicularClockwise()
-    //                             }
-    //                         ]
-    //                     }
-    //                 ]
-    //             }
-    //     ]);
-    // }
-
+    public SpellDefinition Redirection() {
+        return new DirectionalSpell(
+            id: 17,
+            name: "Redirection",
+            spellIcon: Art.LightningJumpIcon,
+            cooldownTime: SimTime.OfSeconds(20),
+            effects: [
+                new DirectionalEffectComponent((spellContext, castLoc, _) =>
+                    new ContinuousSpellEffect(
+                        context: spellContext,
+                        location: castLoc,
+                        repeatTime: SimTime.OfTicks(5),
+                        duration: SimTime.OfSeconds(6),
+                        components: [
+                            new LocationAreaOfEffect {
+                                Shape = new CircleTarget(
+                                    innerRadius: 200,
+                                    targetSelector: AoeSelectors.Projectiles) {
+                                    FalloffFactor = Falloff.None
+                                },
+                                Components = [
+                                    new PushComponent {
+                                        Force = 6f,
+                                        SelfFactor = 0,
+                                        ProjectileFactor = 1,
+                                        DisplacementTransform = (axis1, _) => axis1.PerpendicularClockwise()
+                                    }
+                                ]
+                            }
+                        ]
+                    )
+                )
+            ]);
+    }
 }
