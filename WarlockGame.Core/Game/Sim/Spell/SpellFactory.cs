@@ -175,61 +175,41 @@ class SpellFactory {
                             Components = [
                                 new DamageComponent { Damage = 5 },
                                 new ApplyBuffComponent(_ => new Slow(0.66f, SimTime.OfSeconds(3.5f))),
-                                new AoeTargetsLocationComponent {
-                                    DynamicComponents = [
-                                        targetInfo =>
-                                            new EntityComponent {
-                                                EntityConstructor = (spellContext, location) => {
-                                                    var sim = spellContext.Simulation;
+                                new AoeEntityComponent((spellContext, targetInfo) => {
+                                        var imageMoveAngle = float.Pi / 6;
+                                        return [CreateImage(imageMoveAngle), CreateImage(-imageMoveAngle)];
 
-                                                    var image = new Entity(new Sprite(Art.Ghost, scale: 2f), location,
-                                                        radius: 16) {
-                                                        BlocksProjectiles = true,
-                                                        ForceId = spellContext.Caster.ForceId
-                                                    };
-                                                    image.AddBehaviors(
-                                                        new PushShare(targetInfo.Entity.Id, sim),
-                                                        new DamageShare(targetInfo.Entity.Id, sim),
-                                                        new TimedLife(SimTime.OfSeconds(3.5f)),
-                                                        new Shadow(targetInfo.Entity.Id, sim),
-                                                        new Yoyo(sim,
-                                                            -targetInfo.OriginTargetDisplacement.WithLength(160)
-                                                                .Rotated(float.Pi / 6),
-                                                            outwardsTime: SimTime.OfSeconds(0.5f),
-                                                            inwardsTime: SimTime.OfSeconds(3)));
-                                                    return image;
-                                                }
-                                            },
-                                        targetInfo =>
-                                            new EntityComponent {
-                                                EntityConstructor = (spellContext, location) => {
-                                                    var sim = spellContext.Simulation;
+                                        // Local helper method
+                                        Entity CreateImage(float angle) {
+                                            var sim = spellContext.Simulation;
 
-                                                    var image = new Entity(new Sprite(Art.Ghost, scale: 2f), location,
-                                                        radius: 16) {
-                                                        BlocksProjectiles = true,
-                                                        ForceId = spellContext.Caster.ForceId
-                                                    };
-                                                    image.AddBehaviors(
-                                                        new PushShare(targetInfo.Entity.Id, sim),
-                                                        new DamageShare(targetInfo.Entity.Id, sim),
-                                                        new TimedLife(SimTime.OfSeconds(3.5f)),
-                                                        new Shadow(targetInfo.Entity.Id, sim),
-                                                        new Yoyo(sim,
-                                                            -targetInfo.OriginTargetDisplacement.WithLength(160)
-                                                                .Rotated(-float.Pi / 6),
-                                                            SimTime.OfSeconds(0.5f),
-                                                            SimTime.OfSeconds(3)));
-                                                    return image;
-                                                }
-                                            }
-                                    ]
-                                }
+                                            var image = new Entity(new Sprite(Art.Ghost, scale: 2f),
+                                                targetInfo.TargetPosition, radius: 16) {
+                                                BlocksProjectiles = true,
+                                                ForceId = spellContext.Caster.ForceId
+                                            };
+                                            
+                                            var maxDisplacement = -targetInfo.OriginTargetDisplacement
+                                                .WithLength(160)
+                                                .Rotated(angle);
+                                            
+                                            image.AddBehaviors(
+                                                new PushShare(targetInfo.Entity.Id, sim),
+                                                new DamageShare(targetInfo.Entity.Id, sim),
+                                                new TimedLife(SimTime.OfSeconds(3.5f)),
+                                                new Shadow(targetInfo.Entity.Id, sim),
+                                                new Yoyo(
+                                                    maxDisplacement: maxDisplacement,
+                                                    outwardsTime: SimTime.OfSeconds(0.5f),
+                                                    inwardsTime: SimTime.OfSeconds(3)));
+                                            return image;
+                                        }
+                                    }
+                                )
                             ]
                         }
                     ])
-            ]
-        );
+            ]);
     }
 
     public SpellDefinition DeflectionShield() {
@@ -239,52 +219,46 @@ class SpellFactory {
             spellIcon: Art.RefractionShieldIcon,
             cooldownTime: SimTime.OfSeconds(8),
             effects: [
-                new DirectionalComponent {
-                    Components = [
-                        new EntityComponent {
-                            EntityConstructor = (spellContext, direction) => {
-                                var caster = spellContext.Caster;
-                                var angle = Extensions.ToAngle(direction);
-                                var wallLoc = caster.Position + new Vector2(80, 40).Rotated(angle);
+                new EntityComponent((spellContext, location, direction) => {
+                        var caster = spellContext.Caster;
+                        var angle = Extensions.ToAngle(direction);
+                        var wallLoc = location + new Vector2(80, 40).Rotated(angle);
 
-                                return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, angle + float.Pi / 6) {
-                                        ForceId = caster.ForceId
-                                    }
-                                    .Also(x => x.AddBehaviors(
-                                        new DebugVisualize(),
-                                        new TimedLife(SimTime.OfSeconds(4)),
-                                        new OneCollisionPerEntity(),
-                                        new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies),
-                                        new DeflectProjectiles {
-                                            DeflectionFunc = (e, p) =>
-                                                DeflectProjectiles.OrientedRectangleReflection(e, p, 0.4f)
-                                        }
-                                    ));
+                        return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, angle + float.Pi / 6) {
+                                ForceId = caster.ForceId
                             }
-                        },
-                        new EntityComponent {
-                            EntityConstructor = (spellContext, direction) => {
-                                var caster = spellContext.Caster;
-                                var angle = Extensions.ToAngle(direction);
-                                var wallLoc = caster.Position + new Vector2(80, -40).Rotated(angle);
+                            .Also(x => x.AddBehaviors(
+                                new DebugVisualize(),
+                                new TimedLife(SimTime.OfSeconds(4)),
+                                new OneCollisionPerEntity(),
+                                new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies),
+                                new DeflectProjectiles {
+                                    DeflectionFunc = (e, p) =>
+                                        DeflectProjectiles.OrientedRectangleReflection(e, p, 0.4f)
+                                }
+                            ));
+                    }
+                ),
+                new EntityComponent((spellContext, location, direction) => {
+                        var caster = spellContext.Caster;
+                        var angle = Extensions.ToAngle(direction);
+                        var wallLoc = location + new Vector2(80, -40).Rotated(angle);
 
-                                return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, angle - float.Pi / 6) {
-                                        ForceId = caster.ForceId
-                                    }
-                                    .Also(x => x.AddBehaviors(
-                                        new DebugVisualize(),
-                                        new TimedLife(SimTime.OfSeconds(4)),
-                                        new OneCollisionPerEntity(),
-                                        new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies),
-                                        new DeflectProjectiles {
-                                            DeflectionFunc = (e, p) =>
-                                                DeflectProjectiles.OrientedRectangleReflection(e, p, 0.4f)
-                                        }
-                                    ));
+                        return new Entity(new Sprite(Art.Pixel), wallLoc, 5, 50, angle - float.Pi / 6) {
+                                ForceId = caster.ForceId
                             }
-                        }
-                    ]
-                }
+                            .Also(x => x.AddBehaviors(
+                                new DebugVisualize(),
+                                new TimedLife(SimTime.OfSeconds(4)),
+                                new OneCollisionPerEntity(),
+                                new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies),
+                                new DeflectProjectiles {
+                                    DeflectionFunc = (e, p) =>
+                                        DeflectProjectiles.OrientedRectangleReflection(e, p, 0.4f)
+                                }
+                            ));
+                    }
+                )
             ]);
     }
 

@@ -3,8 +3,6 @@ using WarlockGame.Core.Game.Util;
 namespace WarlockGame.Core.Game.Sim.Entities.Behaviors;
 
 class Yoyo : Behavior {
-    private readonly Simulation _simulation;
-
     private State _state = State.Outwards;
 
     private readonly Vector2 _outwardsAccel;
@@ -14,8 +12,7 @@ class Yoyo : Behavior {
     public GameTimer OutwardsTime { get; private set; }
     public GameTimer InwardsTime { get; private set; }
 
-    public Yoyo(Simulation simulation, Vector2 maxDisplacement, SimTime outwardsTime, SimTime inwardsTime) {
-        _simulation = simulation;
+    public Yoyo(Vector2 maxDisplacement, SimTime outwardsTime, SimTime inwardsTime) {
         OutwardsTime = outwardsTime.ToTimer();
         InwardsTime = inwardsTime.ToTimer();
 

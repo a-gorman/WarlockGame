@@ -7,4 +7,6 @@ class AoeTargetInfo {
     public required Vector2 OriginTargetDisplacement { get; init; }
     public required Vector2 DisplacementAxis2 { get; init; }
     public required float FalloffFactor { get; init; }
+
+    public Vector2 TargetPosition => Entity.Position;
 }
