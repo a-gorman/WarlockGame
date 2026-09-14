@@ -30,7 +30,7 @@ class Doughnut : ILocationShape {
         }; 
     }
 
-    private TargetInfo CreateTargetInfo(Entity target, Vector2 invokeLocation) {
+    private AoeTargetInfo CreateTargetInfo(Entity target, Vector2 invokeLocation) {
         var displacementAxis1 = target.Position - invokeLocation;
         
         var displacementAxis2 = Vector2.Zero;
@@ -39,7 +39,7 @@ class Doughnut : ILocationShape {
             displacementAxis2 = displacementAxis1.WithLength(Radius - displacementAxis1.Length()); 
         }
 
-        return new TargetInfo
+        return new AoeTargetInfo
         {
             Entity = target,
             OriginTargetDisplacement = displacementAxis1,

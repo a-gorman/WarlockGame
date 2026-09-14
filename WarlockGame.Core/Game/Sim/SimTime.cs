@@ -1,13 +1,11 @@
 namespace WarlockGame.Core.Game.Sim;
 
-public struct SimTime
-{
+public readonly struct SimTime {
     public const float TicksPerSecond = 60f;
 
     public readonly int Ticks;
 
-    private SimTime(int ticks)
-    {
+    private SimTime(int ticks) {
         Ticks = ticks;
     }
 
@@ -18,8 +16,7 @@ public struct SimTime
     /// Creates the amount of time needed to decay from 1 at the given rate
     public static SimTime FromTickDecayRate(float decayPerTick) => new SimTime((int)(1f / decayPerTick));
 
-    public GameTimer ToTimer()
-    {
+    public GameTimer ToTimer() {
         return GameTimer.FromTicks(Ticks);
     }
     

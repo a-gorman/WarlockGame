@@ -2,9 +2,9 @@ using System;
 
 namespace WarlockGame.Core.Game;
 
-public struct GameTimer
+public readonly struct GameTimer
 {
-    public int TicksRemaining { get; set; }
+    public int TicksRemaining { get; }
     
     private const float TicksPerSecond = 60;
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Component;
@@ -25,8 +26,15 @@ interface ISelfSpellComponent {
 }
 
 /// <summary>
-/// Component that applies to warlocks, such as doing damage
+/// Component that applies to a single target, such as doing damage
 /// </summary>
-interface IEntityComponent {
-    void Invoke(SpellContext context, IReadOnlyCollection<TargetInfo> targets);
+interface IEntitySpellComponent {
+    void Invoke(SpellContext context, Entity target);
+}
+
+/// <summary>
+/// Component that applies to a group of targets in an Area of effect, such as 3 warlocks caught in an explosion
+/// </summary>
+interface IAoeTargetsSpellComponent {
+    void Invoke(SpellContext context, IReadOnlyCollection<AoeTargetInfo> targets);
 }

@@ -4,8 +4,8 @@ using WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Component;
 
-class DestroyProjectile : IEntityComponent {
-    public void Invoke(SpellContext context, IReadOnlyCollection<TargetInfo> targets) {
+class DestroyProjectile : IAoeTargetsSpellComponent {
+    public void Invoke(SpellContext context, IReadOnlyCollection<AoeTargetInfo> targets) {
         foreach (var target in targets) {
             if (target.Entity is Projectile projectile) {
                 projectile.IsExpired = true;

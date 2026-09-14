@@ -1,12 +1,13 @@
 using System.Collections.Generic;
+using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Component;
 
-class LocationAreaOfEffect: ILocationSpellComponent, ISelfSpellComponent {
+class LocationAreaOfEffect: ILocationSpellComponent, ISelfSpellComponent, IEntitySpellComponent {
 
     public required ILocationShape Shape { get; init; } 
-    public required IReadOnlyCollection<IEntityComponent> Components { get; init; }
+    public required IReadOnlyCollection<IAoeTargetsSpellComponent> Components { get; init; }
     public GameSound? Sound { get; init; }
 
     public void Invoke(SpellContext context, Vector2 invokeLocation) {
@@ -21,6 +22,10 @@ class LocationAreaOfEffect: ILocationSpellComponent, ISelfSpellComponent {
     }
 
     public void Invoke(SpellContext context) {
+        Invoke(context, context.Caster);
+    }
+
+    public void Invoke(SpellContext context, Entity target) {
         var aoeResult = Shape.GatherTargets(context, context.Caster.Position);
         foreach (var effect in Components) {
             effect.Invoke(context, aoeResult.Targets);
@@ -35,7 +40,7 @@ class LocationAreaOfEffect: ILocationSpellComponent, ISelfSpellComponent {
 class DirectionalAreaOfEffect: IDirectionalSpellComponent {
 
     public required IDirectionalShape Shape { get; init; } 
-    public required IReadOnlyCollection<IEntityComponent> Effects { get; init; }
+    public required IReadOnlyCollection<IAoeTargetsSpellComponent> Effects { get; init; }
     public GameSound? Sound { get; init; }
 
     public void Invoke(SpellContext context, Vector2 invokeLocation, Vector2 invokeDirection) {
@@ -53,7 +58,7 @@ class DirectionalAreaOfEffect: IDirectionalSpellComponent {
 class SelfAreaOfEffect: ISelfSpellComponent {
 
     public required ILocationShape Shape { get; init; } 
-    public required IReadOnlyCollection<IEntityComponent> Components { get; init; }
+    public required IReadOnlyCollection<IAoeTargetsSpellComponent> Components { get; init; }
     public GameSound? Sound { get; init; }
 
     public void Invoke(SpellContext context) {

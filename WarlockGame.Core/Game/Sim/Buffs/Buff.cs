@@ -1,3 +1,4 @@
+using WarlockGame.Core.Game.Sim.Buffs.Components;
 using WarlockGame.Core.Game.Sim.Entities;
 
 namespace WarlockGame.Core.Game.Sim.Buffs;
@@ -13,7 +14,7 @@ class Buff {
 
     private readonly BuffComponent[] _components;
     
-    public Buff(BuffType type, SimTime? duration, BuffComponent[] components, StackingType stacking = StackingType.Stacks) {
+    public Buff(BuffType type, SimTime? duration, BuffComponent[] components, StackingType stacking = StackingType.Refreshes) {
         Type = type;
         Timer = duration?.ToTimer();
         _components = components;
@@ -30,7 +31,7 @@ class Buff {
         IsExpired |= Timer?.IsExpired ?? false;
         
         foreach(var component in _components) {
-            component.update(this, target);
+            component.Update(this, target);
         }
 
         OnUpdate(target);
@@ -39,22 +40,22 @@ class Buff {
     protected virtual void OnUpdate(Warlock target) { }
 
     public virtual void OnAdd(Warlock target) {
-        foreach(var component in _components) {
+        foreach (var component in _components) {
             component.OnAdd(this, target);
         }
-     }
+    }
 
-    public virtual void OnRemove(Warlock target) { 
-        foreach(var component in _components) {
+    public virtual void OnRemove(Warlock target) {
+        foreach (var component in _components) {
             component.OnRemove(this, target);
         }
     }
 
     public virtual void OnRespawn() {
-        foreach(var component in _components) {
+        foreach (var component in _components) {
             component.OnRespawn(this);
         }
-     }
+    }
     
     public enum BuffType {
         Invalid = 0,
@@ -66,9 +67,10 @@ class Buff {
         Defense,
         Slow,
         Jumping,
+        GraveTick,
     }
 
-    internal enum StackingType {
+    public enum StackingType {
         Invalid = 0,
         Refreshes = 1,
         Stacks = 2,

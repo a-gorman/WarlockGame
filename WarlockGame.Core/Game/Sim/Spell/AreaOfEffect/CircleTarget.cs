@@ -11,9 +11,9 @@ class CircleTarget : ILocationShape {
     public float OuterRadius { get; }
     public Falloff.FalloffFactor FalloffFactor { get; init; } = Falloff.Linear;
 
-    private readonly AoeSelector _tragetSelector;
+    private readonly AoeSelector _targetSelector;
 
-    public CircleTarget(int innerRadius = 0, int? outerRadius = null, AoeSelector targetSelector = AoeSelector.All) {
+    public CircleTarget(AoeSelector targetSelector, int innerRadius = 0, int? outerRadius = null) {
         InnerRadius = innerRadius;
         OuterRadius = outerRadius ?? innerRadius;
         _targetSelector = targetSelector;
@@ -26,10 +26,9 @@ class CircleTarget : ILocationShape {
 
     public AoeResult GatherTargets(SpellContext context, Vector2 origin) {
         var targets = context.EntityManager.GetNearbyEntities(origin, OuterRadius)
-                        .Where(x => _targetSelector.invoke(x, context))
+                        .Where(x => _targetSelector.Invoke(x, context))
                         .Where(x => (!IgnoreCaster || x != context.Caster) && (!IgnoreProjectiles || x is not Projectile))
-                        .Select(x => new TargetInfo
-                        {
+                        .Select(x => new AoeTargetInfo {
                             Entity = x,
                             OriginTargetDisplacement = x.Position - origin,
                             DisplacementAxis2 = x.Position - origin,

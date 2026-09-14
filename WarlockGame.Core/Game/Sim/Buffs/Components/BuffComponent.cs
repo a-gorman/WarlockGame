@@ -1,8 +1,10 @@
-namespace WarlockGame.Core.Game.Sim.Buffs.Behaviors;
+using WarlockGame.Core.Game.Sim.Entities;
+
+namespace WarlockGame.Core.Game.Sim.Buffs.Components;
 
 closed class BuffComponent {
 
-    public virtual void OnUpdate(Buff buff, Warlock target) { }
+    public virtual void Update(Buff buff, Warlock target) { }
 
     public virtual void OnAdd(Buff buff, Warlock target) { }
 

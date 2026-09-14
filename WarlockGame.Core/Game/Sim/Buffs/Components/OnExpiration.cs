@@ -1,19 +1,24 @@
+using WarlockGame.Core.Game.Sim.Entities;
+using WarlockGame.Core.Game.Sim.Spell;
+using WarlockGame.Core.Game.Sim.Spell.Component;
 
-
-namespace WarlockGame.Core.Game.Sim.Buffs.Behaviors;
+namespace WarlockGame.Core.Game.Sim.Buffs.Components;
 
 class OnExpiration: BuffComponent {
 
     private readonly SpellContext _context;
-    private readonly ISelfSpellComponent[] _components;
+    private readonly IEntitySpellComponent[] _components;
 
-    public OnExpiration(SpellContext spellContext, ISelfSpellComponent[] components) {
+    public OnExpiration(SpellContext spellContext, IEntitySpellComponent[] components) {
         _context = spellContext;
+        _components = components;
     }
 
-    public override void OnExpiration(Buff buff, Warlock target) {
-        foreach(var component in _components) {
-            component.invoke(component)
+    public override void OnRemove(Buff buff, Warlock target) {
+        if (buff.Timer.HasValue && buff.Timer.Value.IsExpired) {
+            foreach (var component in _components) {
+                component.Invoke(_context, target);
+            }
         }
     }
 }

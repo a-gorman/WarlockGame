@@ -48,10 +48,19 @@ class Warlock : Entity {
     public float PlayerDefense { get; set; } = 1;
     public float EnvironmentDefense { get; set; } = 1;
     public float BoundsDefense { get; set; } = 1;
-    
-    public bool Jumping { get; set; }
-    
-    private bool Sliding { get;
+
+    public bool Jumping {
+        get;
+        set {
+            if (value != field) {
+                field = value;
+                _moveStateDirty = true;
+            }
+        }
+    }
+
+    private bool Sliding {
+        get;
         set {
             if (value != field) {
                 field = value;
@@ -63,7 +72,6 @@ class Warlock : Entity {
     public bool CanCast => !Jumping;
     public bool CanMove => !Jumping && !Sliding;
     
-    private MoveState _moveState;
     private readonly Friction _slidingFriction;
     private readonly Pushable _pushableBehavior;
 
@@ -77,7 +85,8 @@ class Warlock : Entity {
 
     private LinkedList<IOrder> Orders { get; } = new();
 
-    private bool _moveStateDirty;
+    private MoveState _moveState = MoveState.Stopped;
+    private bool _moveStateDirty = true;
 
     public Warlock(int forceId, Vector2 position, Simulation simulation):
         base(RotatingSprite.FromGridSpriteSheet(Art.Warlock, 8, scale: 1.35f), position, radius: 20) {
@@ -161,10 +170,10 @@ class Warlock : Entity {
 
                 if (Math.Abs(interiorAngle) < RotationSpeed) {
                     Orientation = targetOrientation;
-                }
-                else {
+                } else {
                     Orientation -= Math.Sign(interiorAngle) * RotationSpeed;
                 }
+
                 break;
             }
             case MoveState.Rotating: {
@@ -182,6 +191,8 @@ class Warlock : Entity {
             }
             case MoveState.Stopped:
                 Velocity = Vector2.Zero;
+                break;
+            case MoveState.Jumping:
                 break;
             default:
                 Logger.Error($"Invalid move state value {(int)_moveState}", Logger.LogType.Simulation);

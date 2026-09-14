@@ -60,7 +60,7 @@ public class PlayerJoined : INetSerializable {
     }
 }
 
-public class Warlock : INetSerializable {
+public class WarlockPacket : INetSerializable {
     public int PlayerId { get; set; }
     public Vector2 Position { get; set; }
     public Vector2 Velocity { get; set; }

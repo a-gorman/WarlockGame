@@ -29,12 +29,12 @@ class ProjectileComponent: IDirectionalSpellComponent {
         _radius = radius;
         _effects = effects.ToArray();
         if (maxRange != null) {
-            _maxLife = SimTime.FromTicks(maxRange / speed);
+            _maxLife = SimTime.OfTicks((int)(maxRange / speed));
         }
     }
 
     public void Invoke(SpellContext context, Vector2 invokeLocation, Vector2 invokeDirection) {
-        val projectile = new Projectile(
+        var projectile = new Projectile(
             position: invokeLocation, 
             velocity: invokeDirection.ToNormalized() * _speed,
             radius: _radius,
@@ -43,11 +43,11 @@ class ProjectileComponent: IDirectionalSpellComponent {
             effects: _effects);
         
         if (_maxLife != null) {
-            projectile.AddBehaviors(new TimedLife<Projectile>(_maxLife, x => x.TriggerEffects()));
+            projectile.AddBehaviors(new TimedLife<Projectile>(_maxLife.Value, x => x.TriggerEffects()));
         }
 
         if (_behaviors != null) {
-            projectile.AddBehaviors(_behaviors);
+            projectile.AddBehaviors(_behaviors.Invoke());
         }
 
         context.EntityManager.Add(projectile);

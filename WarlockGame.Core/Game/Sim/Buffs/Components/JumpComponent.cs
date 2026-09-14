@@ -1,6 +1,4 @@
-﻿using WarlockGame.Core.Game.Graphics;
-using WarlockGame.Core.Game.Sim.Effect.Display;
-using WarlockGame.Core.Game.Sim.Entities;
+﻿using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Sim.Buffs.Components;
@@ -11,28 +9,34 @@ class JumpComponent : BuffComponent {
 
     private readonly float _maxHeight;
     private readonly Simulation _sim;
+    private readonly Vector2 _displacement;
 
     private Vector2 _displacementPerTick;
     private float _verticalAcceleration;
     private int _transformationId;
     
-    public SparkJumpBuff(Simulation sim, Vector2 displacement, float height) {
+    private const float HeightScaleFactor = 0.2f;
+    
+    public JumpComponent(Simulation sim, Vector2 displacement, float height) {
         _sim = sim;
-        _maxHeight;
+        _displacement = displacement;
+        _maxHeight = height;
     }
 
-    public override void OnAdd(Warlock target) {
+    public override void OnAdd(Buff buff, Warlock target) {
         _transformationId = target.Sprite.AddTransformation(1f);
         
-        _displacementPerTick = displacement / duration.Ticks;
+        var duration = buff.Timer!.Value.TicksRemaining;
         
-        _verticalAcceleration = - 8f * height / duration.Ticks.Squared();
-        VerticalVelocity =  _verticalAcceleration * -0.5f * duration.Ticks;
+        _displacementPerTick = _displacement / duration;
+        
+        _verticalAcceleration = - 8f * _maxHeight / duration.Squared();
+        VerticalVelocity =  _verticalAcceleration * -0.5f * duration;
         
         target.Jumping = true;
     }
 
-    public override void OnRemove(Warlock target) {
+    public override void OnRemove(Buff buff, Warlock target) {
         if (_transformationId != 0) {
             target.Sprite.RemoveTransformation(_transformationId);
         }
@@ -40,10 +44,10 @@ class JumpComponent : BuffComponent {
         target.Jumping = false;
     }
     
-    protected override void OnUpdate(Warlock target) {
+    public override void Update(Buff buff, Warlock target) {
         Height += VerticalVelocity + _verticalAcceleration/2;
         VerticalVelocity += _verticalAcceleration;
-        target.Sprite.ChangeTransformation(_transformationId, (Height + 1) * _heightScaleFactor);
+        target.Sprite.ChangeTransformation(_transformationId, (Height + 1) * HeightScaleFactor);
         target.Position += _displacementPerTick;
     }
 }

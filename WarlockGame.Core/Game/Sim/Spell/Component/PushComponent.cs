@@ -6,13 +6,13 @@ using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Component;
 
-class PushComponent : IEntityComponent {
+class PushComponent : IAoeTargetsSpellComponent {
     public required float Force { get; init; }
     public float SelfFactor { get; init; } = 1;
     public float ProjectileFactor { get; init; } = 0;
     public Func<Vector2, Vector2, Vector2> DisplacementTransform { get; init; } = (x, _) => x;
 
-    public void Invoke(SpellContext context, IReadOnlyCollection<TargetInfo> targets) {
+    public void Invoke(SpellContext context, IReadOnlyCollection<AoeTargetInfo> targets) {
         foreach (var target in targets) {
             var forceFactor = 1f;
             if (target.Entity == context.Caster) {

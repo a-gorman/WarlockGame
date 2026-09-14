@@ -3,6 +3,7 @@ using System.Linq;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Sim.Buffs;
+using WarlockGame.Core.Game.Sim.Buffs.Components;
 using WarlockGame.Core.Game.Sim.Effect;
 using WarlockGame.Core.Game.Sim.Effect.Display;
 using WarlockGame.Core.Game.Sim.Entities;
@@ -39,7 +40,7 @@ class SpellFactory {
                     sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
                     effects: [
                         new LocationAreaOfEffect {
-                            Shape = new CircleTarget(innerRadius: 8, outerRadius: 30),
+                            Shape = new CircleTarget(AoeSelectors.All, innerRadius: 8, outerRadius: 30),
                             Sound = Sound.FireHit,
                             Components = [
                                 new DamageComponent { Damage = 20 },
@@ -79,11 +80,11 @@ class SpellFactory {
             effects: [
                 new ProjectileComponent(
                     sprite: new Sprite(Art.PoisonBall, scale: 0.80f),
-                    [
+                    effects: [
                         new LocationAreaOfEffect {
-                            Shape = new CircleTarget(innerRadius: 8, outerRadius: 20),
+                            Shape = new CircleTarget(AoeSelectors.Warlocks, innerRadius: 8, outerRadius: 20),
                             Components = [
-                                new BuffComponent(
+                                new ApplyBuffComponent(
                                     caster => new DamageOverTime(caster, SimTime.OfSeconds(10), 2.5f / 60),
                                     _ => new DefenseBuff(SimTime.OfSeconds(10)) { GenericDefenseModifier = 1.5f })
                             ]
@@ -101,7 +102,7 @@ class SpellFactory {
             cooldownTime: SimTime.OfSeconds(6),
             effects: [
                 new SelfAreaOfEffect {
-                    Shape = new CircleTarget(innerRadius: 50, outerRadius: 100),
+                    Shape = new CircleTarget(AoeSelectors.All, innerRadius: 50, outerRadius: 100),
                     Components = [
                         new DamageComponent {
                             Damage = 15,
@@ -170,11 +171,11 @@ class SpellFactory {
                     speed: 16,
                     effects: [
                         new LocationAreaOfEffect {
-                            Shape = new CircleTarget(innerRadius: 8, outerRadius: 20) { IgnoreProjectiles = true },
+                            Shape = new CircleTarget(AoeSelectors.Warlocks, innerRadius: 8, outerRadius: 20),
                             Components = [
                                 new DamageComponent { Damage = 5 },
-                                new BuffComponent(_ => new Slow(0.66f, SimTime.OfSeconds(3.5f))),
-                                new EntityLocationComponent {
+                                new ApplyBuffComponent(_ => new Slow(0.66f, SimTime.OfSeconds(3.5f))),
+                                new AoeTargetsLocationComponent {
                                     DynamicComponents = [
                                         targetInfo =>
                                             new EntityComponent {
@@ -299,7 +300,7 @@ class SpellFactory {
                         rotates: false),
                     effects: [
                         new LocationAreaOfEffect {
-                            Shape = new CircleTarget(innerRadius: 8, outerRadius: 30),
+                            Shape = new CircleTarget(AoeSelectors.All, innerRadius: 8, outerRadius: 30),
                             Components = [
                                 new DamageComponent { Damage = 10 },
                                 new PushComponent { Force = 100 }
@@ -333,7 +334,7 @@ class SpellFactory {
                     radius: 23,
                     effects: [
                         new LocationAreaOfEffect {
-                            Shape = new CircleTarget(innerRadius: 23, outerRadius: 27),
+                            Shape = new CircleTarget(AoeSelectors.All, innerRadius: 23, outerRadius: 27),
                             Components = [
                                 new DamageComponent { Damage = 15 },
                                 new PushComponent { Force = 100 }
@@ -378,7 +379,7 @@ class SpellFactory {
                 new DelayedLocationComponent(
                     SimTime.OfSeconds(delaySeconds),
                     new LocationAreaOfEffect {
-                        Shape = new CircleTarget(outerRadius: radius),
+                        Shape = new CircleTarget(AoeSelectors.All, outerRadius: radius),
                         Components = [
                             new DamageComponent { Damage = 80 },
                             new PushComponent { Force = 200 }
@@ -421,7 +422,7 @@ class SpellFactory {
                         ],
                         effects: [
                             new LocationAreaOfEffect {
-                                Shape = new CircleTarget(innerRadius: 8, outerRadius: 20),
+                                Shape = new CircleTarget(AoeSelectors.All, innerRadius: 8, outerRadius: 20),
                                 Sound = Sound.FireHit,
                                 Components = [
                                     new DamageComponent { Damage = 6 },
@@ -474,7 +475,7 @@ class SpellFactory {
     public SpellDefinition LightningJump() {
         var jumpTime = 0.75f;
         var travelSprite = Sprite.FromGridSpriteSheet(Art.SparkJumpTravel, 3, 3, SimTime.OfSeconds(0.05f), scale: 2.3f);
-        
+
         return new LocationSpell(
             id: 14,
             name: "Spark Jump",
@@ -483,46 +484,47 @@ class SpellFactory {
             castRange: 650,
             selfEffects: [
                 new LocationAreaOfEffect {
-                    Shape = new CircleTarget(50),
+                    Shape = new CircleTarget(AoeSelectors.AllIgnoreCaster, 50),
                     Components = [
-                        new DamageComponent { Damage = 10, SelfFactor = 0 },
-                        new PushComponent() { Force = 100, SelfFactor = 0 }
+                        new DamageComponent { Damage = 10 },
+                        new PushComponent() { Force = 100 }
                     ]
                 }
             ],
             effects: [
-                new LocationEffectComponent((context, _) => 
-                new SpriteEffect(
-                    sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f), 1.35f),
-                    position: context.CastFromPosition,
-                    duration: SimTime.OfSeconds(0.5f)))
+                new LocationEffectComponent((context, _) => {
+                    return new SpriteEffect(
+                        sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f),
+                            1.35f),
+                        position: context.CastFromPosition,
+                        duration: SimTime.OfSeconds(0.5f));
+                }),
                 new ApplyBuffComponent(context => {
                     var displacement = context.TargetPosition - context.CastFromPosition;
                     return new Buff(
-                        type: Buff.BuffType.Jumping, 
+                        type: Buff.BuffType.Jumping,
                         duration: SimTime.OfSeconds(jumpTime),
-                        stacking: StackingType.None,
+                        stacking: Buff.StackingType.None,
                         components: [
-                            new JumpComponent(context.simulation, displacement: displacement, height: 10),
+                            new JumpComponent(context.Simulation, displacement: displacement, height: 10),
                             new SpriteComponent(
-                                sprite: travelSprite, 
-                                displacement: new Vector2(100, 0),
-                                simulation: context.simulation),
+                                sprite: travelSprite,
+                                spriteOffset: new Vector2(100, 0),
+                                sim: context.Simulation),
                             new OnExpiration(context, [
                                 new LocationAreaOfEffect {
-                                    Shape = new CircleTarget(50),
+                                    Shape = new CircleTarget(AoeSelectors.WarlocksIgnoreCaster, 50),
                                     Components = [
                                         new DamageComponent { Damage = 10, SelfFactor = 0 },
                                         new PushComponent() { Force = 100, SelfFactor = 0 }
                                     ]
                                 },
                                 new LocationEffectComponent(x => new SpriteEffect(
-                                    sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f),
-                                        1.35f),
+                                    sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f), 1.35f),
                                     position: x,
-                                    duration: SimTime.OfSeconds(0.5f)))                       
+                                    duration: SimTime.OfSeconds(0.5f)))
                             ])
-                    ]);
+                        ]);
                 })
             ]);
     }
@@ -539,7 +541,7 @@ class SpellFactory {
                     maxRange: 500,
                     effects: [
                         new LocationAreaOfEffect {
-                            Shape = new CircleTarget(outerRadius: 30),
+                            Shape = new CircleTarget(AoeSelectors.AllIgnoreCaster, outerRadius: 30),
                             Components = [ new SwapComponent() ]
                         }
                     ]
@@ -558,21 +560,20 @@ class SpellFactory {
                     sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
                     effects: [
                         new LocationAreaOfEffect {
-                            Shape = new CircleTarget(innerRadius: 8, outerRadius: 30),
+                            Shape = new CircleTarget(AoeSelectors.Warlocks, innerRadius: 8, outerRadius: 30),
                             Components = [ 
                                 new ApplyBuffComponent(context => {
-                                    var displacement = context.TargetPosition - context.CastFromPosition;
                                     return new Buff(
-                                        type: Buff.BuffType.SomethingElse,
+                                        type: Buff.BuffType.GraveTick,
                                         duration: SimTime.OfSeconds(10),
-                                        stacking: StackingType.Stacks,
+                                        stacking: Buff.StackingType.Stacks,
                                         components: [
                                             new OnUpdate(
                                             context: context,
                                             repeatEvery: SimTime.OfSeconds(2), 
                                             components: [
                                                 new LocationAreaOfEffect {
-                                                    Shape = new CircleTarget(50),
+                                                    Shape = new CircleTarget(AoeSelectors.Warlocks, 50),
                                                     Components = [
                                                         new DamageComponent { Damage = 10, SelfFactor = 0, Distributed = true },
                                                         new LocationEffectComponent(x => new SpriteEffect(
@@ -592,37 +593,37 @@ class SpellFactory {
         ]);
     }
 
-    public SpellDefinition Redirection() {
-        return new DirectionalSpell(
-            id: 17,
-            name: "Redirection",
-            spellIcon: Art.LightningJumpIcon,
-            cooldownTime: SimTime.OfSeconds(20),
-            effects: [
-                new ContinuousSpellEffect {
-                    Context = spellContext,
-                    Location = location,
-                    RepeatEvery = 5,
-                    Timer = GameTimer.FromSeconds(6),
-                    Components = [
-                        new LocationAreaOfEffect {
-                            Shape = new CircleTarget(
-                                innerRadius: 200, 
-                                targetSelector: AoeSelectors.Projectiles) {
-                                FalloffFactor = Falloff.None
-                            },
-                            Components = [
-                                new PushComponent {
-                                    Force = 6f,
-                                    SelfFactor = 0,
-                                    ProjectileFactor = 1,
-                                    DisplacementTransform = (axis1, _) => axis1.PerpendicularClockwise()
-                                }
-                            ]
-                        }
-                    ]
-                }
-        ]);
-    }
+    // public SpellDefinition Redirection() {
+    //     return new DirectionalSpell(
+    //         id: 17,
+    //         name: "Redirection",
+    //         spellIcon: Art.LightningJumpIcon,
+    //         cooldownTime: SimTime.OfSeconds(20),
+    //         effects: [
+    //             new ContinuousSpellEffect {
+    //                 Context = spellContext,
+    //                 Location = location,
+    //                 RepeatEvery = 5,
+    //                 Timer = GameTimer.FromSeconds(6),
+    //                 Components = [
+    //                     new LocationAreaOfEffect {
+    //                         Shape = new CircleTarget(
+    //                             innerRadius: 200, 
+    //                             targetSelector: AoeSelectors.Projectiles) {
+    //                             FalloffFactor = Falloff.None
+    //                         },
+    //                         Components = [
+    //                             new PushComponent {
+    //                                 Force = 6f,
+    //                                 SelfFactor = 0,
+    //                                 ProjectileFactor = 1,
+    //                                 DisplacementTransform = (axis1, _) => axis1.PerpendicularClockwise()
+    //                             }
+    //                         ]
+    //                     }
+    //                 ]
+    //             }
+    //     ]);
+    // }
 
 }

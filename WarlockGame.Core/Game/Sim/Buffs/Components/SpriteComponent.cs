@@ -3,7 +3,7 @@ using WarlockGame.Core.Game.Sim.Effect.Display;
 using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Util;
 
-namespace WarlockGame.Core.Game.Sim.Buffs;
+namespace WarlockGame.Core.Game.Sim.Buffs.Components;
 
 class SpriteComponent : BuffComponent {
     private readonly Simulation _sim;
@@ -12,28 +12,26 @@ class SpriteComponent : BuffComponent {
     private int _transformationId;
     private Vector2 _spriteOffset;
     
-    private SpriteEffect _travelSprite = null!;
+    private SpriteEffect _effect = null!;
     
     public SpriteComponent(Sprite sprite, Vector2 spriteOffset, Simulation sim) {
+        _sprite = sprite;
         _sim = sim;
         _spriteOffset = spriteOffset;
     }
 
-    public override void OnAdd(Warlock target) {
-        _spriteOffset = -_spriteOffset.Rotated(orientation);
+    public override void OnAdd(Buff buff, Warlock target) {
+        _spriteOffset = -_spriteOffset.Rotated(target.Orientation);
         
-        _travelSprite = new SpriteEffect(_sprite, target.Position + _spriteOffset, duration: null, orientation: (_displacementPerTick).ToAngle());
-        _sim.EffectManager.Add(_travelSprite);
+        _effect = new SpriteEffect(_sprite, target.Position + _spriteOffset, duration: null, orientation: target.Orientation);
+        _sim.EffectManager.Add(_effect);
     }
 
-    public override void OnRemove(Warlock target) {
-        _travelSprite.IsExpired = true;
+    public override void OnRemove(Buff buff, Warlock target) {
+        _effect.IsExpired = true;
     }
     
-    protected override void OnUpdate(Warlock target) {
-        Height += VerticalVelocity + _acceleration/2;
-        VerticalVelocity += _acceleration;
-
-        _travelSprite.Position = target.Position + _spriteOffset;
+    public override void Update(Buff buff, Warlock target) {
+        _effect.Position = target.Position + _spriteOffset;
     }
 }

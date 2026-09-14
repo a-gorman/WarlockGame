@@ -40,7 +40,7 @@ class LineTarget : IDirectionalShape {
         }; 
     }
         
-    private IEnumerable<TargetInfo> GatherTargets(LineSegment lineSegment, SpellContext context) {
+    private IEnumerable<AoeTargetInfo> GatherTargets(LineSegment lineSegment, SpellContext context) {
         foreach (var entity in context.EntityManager.GetNearbyEntities(lineSegment.BoundingBox)) {
             if(IgnoreCaster && entity == context.Caster) { continue; }
             
@@ -50,7 +50,7 @@ class LineTarget : IDirectionalShape {
 
             var displacement1 = entity.Position - lineSegment.Start;
             var displacement2 = entity.Position - closetLinePoint;
-            yield return new TargetInfo
+            yield return new AoeTargetInfo
             {
                 Entity = entity,
                 OriginTargetDisplacement = displacement1,

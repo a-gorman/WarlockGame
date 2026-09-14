@@ -1,3 +1,5 @@
+using System;
+
 namespace WarlockGame.Core.Game.Sim.Entities.Behaviors;
 
 class TimedLife : Behavior {
@@ -15,9 +17,9 @@ class TimedLife : Behavior {
     }
 }
 
-class TimedLife<T> : Behavior {
+class TimedLife<T> : Behavior where T: Entity {
     private GameTimer _timeToLive;
-    private readonly _onExpiration;
+    private readonly Action<T> _onExpiration;
 
     public TimedLife(SimTime timeToLive, Action<T> onExpiration) {
         _timeToLive = timeToLive.ToTimer();
@@ -28,7 +30,7 @@ class TimedLife<T> : Behavior {
         _timeToLive = _timeToLive.Decremented();
         if (_timeToLive.IsExpired) {
             entity.IsExpired = true;
-            _onExpiration.invoke(entity as T);
+            _onExpiration.Invoke((entity as T)!);
         }
     }
 }

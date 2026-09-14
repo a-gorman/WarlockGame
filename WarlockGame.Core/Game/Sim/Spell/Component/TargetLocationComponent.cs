@@ -4,13 +4,13 @@ using WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
 
 namespace WarlockGame.Core.Game.Sim.Spell.Component;
 
-class EntityLocationComponent : IEntityComponent {
+class AoeTargetsLocationComponent : IAoeTargetsSpellComponent {
 
     public List<ILocationSpellComponent> Components { get; init; } = [];
-    public List<Func<TargetInfo, ILocationSpellComponent>> DynamicComponents { get; init; } = [];
-    public List<Action<SpellContext, IReadOnlyCollection<TargetInfo>>> Actions { get; init; } = [];
+    public List<Func<AoeTargetInfo, ILocationSpellComponent>> DynamicComponents { get; init; } = [];
+    public List<Action<SpellContext, IReadOnlyCollection<AoeTargetInfo>>> Actions { get; init; } = [];
     
-    public void Invoke(SpellContext context, IReadOnlyCollection<TargetInfo> targets) {
+    public void Invoke(SpellContext context, IReadOnlyCollection<AoeTargetInfo> targets) {
         foreach (var spellComponent in Components) {
             foreach (var targetInfo in targets) {
                 spellComponent.Invoke(context, targetInfo.Entity.Position);
