@@ -126,35 +126,31 @@ class SpellFactory {
             spellIcon: Art.WindWallIcon,
             cooldownTime: SimTime.OfSeconds(16),
             effects: [
-                new SelfCastPositionComponent {
-                    Components = [
-                        new LocationEffectComponent((spellContext, location) => new ContinuousSpellEffect {
-                                Context = spellContext,
-                                Location = location,
-                                RepeatEvery = 5,
-                                Timer = GameTimer.FromSeconds(6),
+                new LocationEffectComponent((spellContext, location) => new ContinuousSpellEffect {
+                        Context = spellContext,
+                        Location = location,
+                        RepeatEvery = 5,
+                        Timer = GameTimer.FromSeconds(6),
+                        Components = [
+                            new LocationAreaOfEffect {
+                                Shape = new Doughnut {
+                                    Radius = 200,
+                                    Width = 30,
+                                    IgnoreCaster = false,
+                                    FalloffFactor = Falloff.None
+                                },
                                 Components = [
-                                    new LocationAreaOfEffect {
-                                        Shape = new Doughnut {
-                                            Radius = 200,
-                                            Width = 30,
-                                            IgnoreCaster = false,
-                                            FalloffFactor = Falloff.None
-                                        },
-                                        Components = [
-                                            new PushComponent {
-                                                Force = 6f,
-                                                SelfFactor = 0,
-                                                ProjectileFactor = 1,
-                                                DisplacementTransform = (axis1, _) => axis1.PerpendicularClockwise()
-                                            }
-                                        ]
+                                    new PushComponent {
+                                        Force = 6f,
+                                        SelfFactor = 0,
+                                        ProjectileFactor = 1,
+                                        DisplacementTransform = (axis1, _) => axis1.PerpendicularClockwise()
                                     }
                                 ]
                             }
-                        )
-                    ]
-                }
+                        ]
+                    }
+                )
             ]
         );
     }
