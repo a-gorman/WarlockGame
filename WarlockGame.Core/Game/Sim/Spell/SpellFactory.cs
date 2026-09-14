@@ -135,7 +135,7 @@ class SpellFactory {
                                 Components = [
                                     new LocationAreaOfEffect {
                                         Shape = new Doughnut {
-                                            Radius = 202,
+                                            Radius = 200,
                                             Width = 30,
                                             IgnoreCaster = false,
                                             FalloffFactor = Falloff.None
@@ -531,23 +531,28 @@ class SpellFactory {
         return new DirectionalSpell(
             id: 15,
             name: "Swap",
+            spellIcon: Art.LightningJumpIcon,
+            cooldownTime: SimTime.OfSeconds(20),
             effects: [
                 new ProjectileComponent(
                     sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
+                    maxRange: 500,
                     effects: [
                         new LocationAreaOfEffect {
-                            Shape = new CircleTarget(innerRadius: 8, outerRadius: 30),
+                            Shape = new CircleTarget(outerRadius: 30),
                             Components = [ new SwapComponent() ]
                         }
                     ]
                 )
         ]);
     }
-
-    public SpellDefinition DelayedDetonation() {
+ 
+    public SpellDefinition GraveTick() {
         return new DirectionalSpell(
-            id: 15,
-            name: "Swap",
+            id: 16,
+            name: "Grave Tick",
+            spellIcon: Art.LightningJumpIcon,
+            cooldownTime: SimTime.OfSeconds(20),
             effects: [
                 new ProjectileComponent(
                     sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
@@ -558,22 +563,25 @@ class SpellFactory {
                                 new ApplyBuffComponent(context => {
                                     var displacement = context.TargetPosition - context.CastFromPosition;
                                     return new Buff(
-                                        type: Buff.BuffType.Jumping, 
-                                        duration: SimTime.OfSeconds(5),
+                                        type: Buff.BuffType.SomethingElse,
+                                        duration: SimTime.OfSeconds(10),
                                         stacking: StackingType.Stacks,
                                         components: [
-                                            new OnExpiration(context, [
+                                            new OnUpdate(
+                                            context: context,
+                                            repeatEvery: SimTime.OfSeconds(2), 
+                                            components: [
                                                 new LocationAreaOfEffect {
                                                     Shape = new CircleTarget(50),
                                                     Components = [
-                                                        new DamageComponent { Damage = 10, SelfFactor = 0 },
-                                                        new PushComponent() { Force = 100, SelfFactor = 0 }
+                                                        new DamageComponent { Damage = 10, SelfFactor = 0, Distributed = true },
+                                                        new LocationEffectComponent(x => new SpriteEffect(
+                                                        sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f), 1.35f),
+                                                        position: x,
+                                                        duration: SimTime.OfSeconds(0.5f)))
                                                     ]
-                                                },
-                                                new LocationEffectComponent(x => new SpriteEffect(
-                                                    sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f), 1.35f),
-                                                    position: x,
-                                                    duration: SimTime.OfSeconds(0.5f)))                       
+                                                }
+                                                
                                             ])
                                     ]);
                                 })   
@@ -583,4 +591,38 @@ class SpellFactory {
                 )
         ]);
     }
+
+    public SpellDefinition Redirection() {
+        return new DirectionalSpell(
+            id: 17,
+            name: "Redirection",
+            spellIcon: Art.LightningJumpIcon,
+            cooldownTime: SimTime.OfSeconds(20),
+            effects: [
+                new ContinuousSpellEffect {
+                    Context = spellContext,
+                    Location = location,
+                    RepeatEvery = 5,
+                    Timer = GameTimer.FromSeconds(6),
+                    Components = [
+                        new LocationAreaOfEffect {
+                            Shape = new CircleTarget(
+                                innerRadius: 200, 
+                                targetSelector: AoeSelectors.Projectiles) {
+                                FalloffFactor = Falloff.None
+                            },
+                            Components = [
+                                new PushComponent {
+                                    Force = 6f,
+                                    SelfFactor = 0,
+                                    ProjectileFactor = 1,
+                                    DisplacementTransform = (axis1, _) => axis1.PerpendicularClockwise()
+                                }
+                            ]
+                        }
+                    ]
+                }
+        ]);
+    }
+
 }

@@ -11,9 +11,12 @@ class CircleTarget : ILocationShape {
     public float OuterRadius { get; }
     public Falloff.FalloffFactor FalloffFactor { get; init; } = Falloff.Linear;
 
-    public CircleTarget(int innerRadius = 0, int? outerRadius = null) {
+    private readonly AoeSelector _tragetSelector;
+
+    public CircleTarget(int innerRadius = 0, int? outerRadius = null, AoeSelector targetSelector = AoeSelector.All) {
         InnerRadius = innerRadius;
         OuterRadius = outerRadius ?? innerRadius;
+        _targetSelector = targetSelector;
 
         if(InnerRadius > OuterRadius) {
             Logger.Warning("Inner radius is greater than outer radius. Expanding outer radius to match.", Logger.LogType.Simulation);
@@ -23,15 +26,16 @@ class CircleTarget : ILocationShape {
 
     public AoeResult GatherTargets(SpellContext context, Vector2 origin) {
         var targets = context.EntityManager.GetNearbyEntities(origin, OuterRadius)
-                            .Where(x => (!IgnoreCaster || x != context.Caster) && (!IgnoreProjectiles || x is not Projectile))
-                            .Select(x => new TargetInfo
-                            {
-                                Entity = x,
-                                OriginTargetDisplacement = x.Position - origin,
-                                DisplacementAxis2 = x.Position - origin,
-                                FalloffFactor = FalloffFactor.Invoke(x.Position - origin, OuterRadius, InnerRadius, x.Radius)
-                            })
-                            .ToList();
+                        .Where(x => _targetSelector.invoke(x, context))
+                        .Where(x => (!IgnoreCaster || x != context.Caster) && (!IgnoreProjectiles || x is not Projectile))
+                        .Select(x => new TargetInfo
+                        {
+                            Entity = x,
+                            OriginTargetDisplacement = x.Position - origin,
+                            DisplacementAxis2 = x.Position - origin,
+                            FalloffFactor = FalloffFactor.Invoke(x.Position - origin, OuterRadius, InnerRadius, x.Radius)
+                        })
+                        .ToList();
 
         return new AoeResult {
             Targets = targets,

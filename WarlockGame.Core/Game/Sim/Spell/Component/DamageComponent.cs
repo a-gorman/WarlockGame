@@ -12,12 +12,13 @@ class DamageComponent : IEntityComponent {
     public void Invoke(SpellContext context, IReadOnlyCollection<TargetInfo> targets) {
         foreach (var target in targets) {
             var damageToInflict = Damage * target.FalloffFactor * context.Caster.DamageMultiplier;
-            if (Distributed) {
-                damageToInflict = targets.Count;
-            }
 
             if (target.Entity == context.Caster) {
                 damageToInflict *= SelfFactor;
+            }
+
+            if (Distributed) {
+                damageToInflict /= targets.Count;
             }
 
             target.Entity.Damage(damageToInflict, DamageType.Player, context.Caster);

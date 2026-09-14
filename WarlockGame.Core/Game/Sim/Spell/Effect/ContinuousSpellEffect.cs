@@ -11,7 +11,7 @@ class ContinuousSpellEffect : IEffect {
     public required SpellContext Context { get; init; }
     public required OneOf<Vector2, Func<ContinuousSpellEffect, Vector2>> Location { private get; init; }
     public required IReadOnlyCollection<ILocationSpellComponent> Components { get; init; }
-    public required GameTimer Timer { get; set; }
+    public required GameTimer Timer { get; set; } // TODO: Make this better
     public int RepeatEvery { get; init; } = 1;
     
     public void Update() {
