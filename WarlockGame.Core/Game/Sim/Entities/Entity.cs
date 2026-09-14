@@ -24,7 +24,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
 
 		/// true if the entity was destroyed and should be deleted.
 		public bool IsExpired { get; set; }
-		/// true if the entity was destroyed for gameplay purposes, but may come back. It is not deleted.
+		/// true if the entity was destroyed for gameplay purposes, but may come back. Does not cause deletion.
 		public bool IsDead { get => field || IsExpired; set; }
 
 		private List<Behavior> Behaviors { get; } = [];

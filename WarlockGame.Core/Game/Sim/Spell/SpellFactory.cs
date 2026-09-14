@@ -571,26 +571,19 @@ class SpellFactory {
             spellIcon: Art.LightningJumpIcon,
             cooldownTime: SimTime.OfSeconds(20),
             effects: [
-                new DirectionalEffectComponent((spellContext, castLoc, _) =>
+                new DirectionalEffectComponent((spellContext, castLoc, direction) =>
                     new ContinuousSpellEffect(
                         context: spellContext,
                         location: castLoc,
                         repeatTime: SimTime.OfTicks(5),
-                        duration: SimTime.OfSeconds(6),
+                        duration: SimTime.OfSeconds(0.5f),
                         components: [
                             new LocationAreaOfEffect {
                                 Shape = new CircleTarget(
-                                    innerRadius: 200,
-                                    targetSelector: AoeSelectors.Projectiles) {
-                                    FalloffFactor = Falloff.None
-                                },
+                                    innerRadius: 50,
+                                    targetSelector: AoeSelectors.Projectiles),
                                 Components = [
-                                    new PushComponent {
-                                        Force = 6f,
-                                        SelfFactor = 0,
-                                        ProjectileFactor = 1,
-                                        DisplacementTransform = (axis1, _) => axis1.PerpendicularClockwise()
-                                    }
+                                    new RedirectProjectileComponent(direction)
                                 ]
                             }
                         ]
