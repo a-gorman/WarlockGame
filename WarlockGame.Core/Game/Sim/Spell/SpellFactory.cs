@@ -307,7 +307,7 @@ class SpellFactory {
                             ]
                         }
                     ],
-                    behaviors: () => [
+                    additionalBehaviors: () => [
                         new AccelerateTowards(0.22f,
                             targetLocation: projectile =>
                                 _simulation.EntityManager.Warlocks
@@ -341,7 +341,7 @@ class SpellFactory {
                             ]
                         }
                     ],
-                    behaviors: () => {
+                    additionalBehaviors: () => {
                         var initialTick = _simulation.Tick;
                         return [
                             new AccelerateTowards(0.18f,
@@ -417,7 +417,7 @@ class SpellFactory {
                     new ProjectileComponent(
                         sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfMillis(100), scale: .12f),
                         speed: 10,
-                        behaviors: () => [
+                        additionalBehaviors: () => [
                             new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies)
                         ],
                         effects: [
