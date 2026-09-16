@@ -20,7 +20,7 @@ class PowerFromDamagePerk : Perk {
     }
 
     private void AddBuff(OnDamagedEventArgs args) {
-        (args.Source as Warlock)!.AddBuff(new SpeedBoost(SimTime.OfSeconds(2)));
+        (args.DamagedEntity as Warlock)!.AddBuff(new SpeedBoost(SimTime.OfSeconds(2)));
     }
 
     public override void OnRemoved(int forceId, Simulation sim) {

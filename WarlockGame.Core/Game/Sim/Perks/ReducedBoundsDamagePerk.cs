@@ -6,7 +6,7 @@ namespace WarlockGame.Core.Game.Sim.Perks;
 class ReducedBoundsDamagePerk: PermanentBuffPerk {
     private const float Factor = 0.15f;
 
-    protected override Buff CreateBuff() {
+    protected override Buff CreateBuff(Simulation _) {
         return new DefenseBuff(duration: null) {
             BoundsDefenseModifier = Factor
         };

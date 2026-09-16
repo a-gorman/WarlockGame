@@ -15,7 +15,7 @@ class PermanentInvisibilityPerk : PermanentBuffPerk {
             description: "Permanently grants you invisibility from distant enemies",
             texture: Art.InvisibilityIcon) { }
 
-    protected override Buff CreateBuff() {
+    protected override Buff CreateBuff(Simulation _) {
         return new Invisibility(
             fadeInDistanceMin: FadeInDistanceMin,
             fadeInDistanceMax: FadeInDistanceMax,

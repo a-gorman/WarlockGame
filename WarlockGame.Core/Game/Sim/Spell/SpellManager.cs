@@ -19,6 +19,9 @@ class SpellManager {
 
     public delegate void SpellAddedHandler(int playerId, WarlockSpell warlockSpell);
     public event SpellAddedHandler? SpellAdded;
+    
+    public delegate void SpellRemovedHandler(int playerId, int spellId);
+    public event SpellRemovedHandler? SpellRemoved;
 
     public SpellManager(SpellFactory spellFactory) {
         _spellFactory = spellFactory;
@@ -69,9 +72,30 @@ class SpellManager {
     }
 
     public void RemoveSpell(int forceId, int definitionId) {
-        var removed = PlayerSpells.TryGetValue(forceId, out var spellBook) && spellBook.Remove(definitionId);
-        if (!removed) {
+        if(!PlayerSpells.TryGetValue(forceId, out var spellBook)) {
+            Logger.Warning($"Tried removing a spell from a player that does exist! Force: {forceId}", Logger.LogType.Simulation);
+            return;
+        } 
+        if (!spellBook.TryGetValue(definitionId, out var spell)) {
             Logger.Warning($"Tried removing a spell from a player that does not have that spell. Force: {forceId} Definition: {definitionId}", Logger.LogType.Simulation);
+            return;
+        }
+
+        Spells.Remove(spell.Id);
+        
+        SpellRemoved?.Invoke(forceId, spell.Id);
+    }
+    
+    public void RemoveSpellFromAll(int definitionId) {
+        foreach (var spellBook in PlayerSpells) {
+            foreach (var spell in spellBook.Value) {
+                if (spell.Value.Definition.Id == definitionId) {
+                    spellBook.Value.Remove(spell.Key);
+                    SpellRemoved?.Invoke(spellBook.Key, spell.Key);
+                    break;
+                }
+            }
+            Spells.RemoveAll((_, value) => value.Definition.Id == definitionId);
         }
     }
 

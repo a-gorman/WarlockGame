@@ -13,7 +13,7 @@ class PermanentRegenerationPerk : PermanentBuffPerk {
 
     private const float RegenAmount = 0.016f;
 
-    protected override Buff CreateBuff() {
+    protected override Buff CreateBuff(Simulation _) {
         return new Regeneration(regenAmount: RegenAmount, duration: null);
     }
 }

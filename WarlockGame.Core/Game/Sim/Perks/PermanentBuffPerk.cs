@@ -11,7 +11,7 @@ abstract class PermanentBuffPerk : Perk {
 
     private readonly Dictionary<int, int> _playerBuffIds = new();
 
-    protected abstract Buff CreateBuff();
+    protected abstract Buff CreateBuff(Simulation sim);
 
     public override void OnAdded(int forceId, Simulation sim) {
         var warlock = sim.EntityManager.GetWarlockLivingOrDeadByForceId(forceId);
@@ -20,7 +20,7 @@ abstract class PermanentBuffPerk : Perk {
             return;
         }
 
-        var buff = CreateBuff();
+        var buff = CreateBuff(sim);
         buff.ClearedOnDeath = false;
         buff.Timer = null;
         int buffId = warlock.AddBuff(buff);

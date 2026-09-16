@@ -110,7 +110,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
 			if (OnDamaged != null) {
 				var args = new OnDamagedEventArgs {
 					Amount = damage,
-					Source = this,
+					DamagedEntity = this,
 					DamageSource = source,
 					DamageTypes = damageTypes
 				};

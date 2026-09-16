@@ -101,7 +101,7 @@ class SpellFactory {
             spellIcon: Art.BurstIcon,
             cooldownTime: SimTime.OfSeconds(6),
             effects: [
-                new SelfAreaOfEffect {
+                new LocationAreaOfEffect {
                     Shape = new CircleTarget(AoeSelectors.All, innerRadius: 50, outerRadius: 100),
                     Components = [
                         new DamageComponent {

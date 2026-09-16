@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace WarlockGame.Core.Game.Sim.Perks;
 
-class Perk {
+closed class Perk {
     public int Id { get; }
     public string Name { get; }
     public string Description { get; }
@@ -18,5 +18,5 @@ class Perk {
     public virtual void Update(Simulation sim) { }
     public virtual void OnAdded(int forceId, Simulation sim) { }
     public virtual void OnRemoved(int forceId, Simulation sim) { }
-    public virtual void Clear(Simulation sim) { }
+    public abstract void Clear(Simulation sim);
 }

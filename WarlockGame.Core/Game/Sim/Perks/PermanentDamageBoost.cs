@@ -13,7 +13,7 @@ class PermanentDamageBoostPerk : PermanentBuffPerk {
 
     private const float DamageMultiplier = 2;
 
-    protected override Buff CreateBuff() {
+    protected override Buff CreateBuff(Simulation _) {
         return new DamageBoost(multiplier: DamageMultiplier, duration: null);
     }
 }

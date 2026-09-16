@@ -17,6 +17,10 @@ abstract class NewSpellPerk : Perk {
     public override void OnRemoved(int forceId, Simulation sim) {
         sim.SpellManager.RemoveSpell(forceId, SpellDefinition.Id);
     }
+
+    public override void Clear(Simulation sim) {
+        sim.SpellManager.RemoveSpellFromAll(SpellDefinition.Id);
+    }
 }
 
 class FlameStrikeSpellPerk : NewSpellPerk {

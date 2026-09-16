@@ -6,7 +6,7 @@ namespace WarlockGame.Core.Game.Sim.Perks;
 class ReducedAllDamagePerk : PermanentBuffPerk {
     private const float Factor = 0.60f;
 
-    protected override Buff CreateBuff() {
+    protected override Buff CreateBuff(Simulation _) {
         return new DefenseBuff(duration: null) {
             GenericDefenseModifier = Factor
         };

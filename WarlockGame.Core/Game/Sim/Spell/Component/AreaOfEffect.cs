@@ -22,18 +22,11 @@ class LocationAreaOfEffect: ILocationSpellComponent, ISelfSpellComponent, IEntit
     }
 
     public void Invoke(SpellContext context) {
-        Invoke(context, context.Caster);
+        Invoke(context, context.Caster.Position);
     }
 
     public void Invoke(SpellContext context, Entity target) {
-        var aoeResult = Shape.GatherTargets(context, context.Caster.Position);
-        foreach (var effect in Components) {
-            effect.Invoke(context, aoeResult.Targets);
-        }
-
-        if (Sound != null) {
-            Sound.Play(aoeResult.Center, aoeResult.SoundRadius);
-        }
+        Invoke(context, target.Position);
     }
 }
 
@@ -49,24 +42,6 @@ class DirectionalAreaOfEffect: IDirectionalSpellComponent {
             effect.Invoke(context, aoeResult.Targets);
         }
         
-        if (Sound != null) {
-            Sound.Play(aoeResult.Center, aoeResult.SoundRadius);
-        }
-    }
-}
-
-class SelfAreaOfEffect: ISelfSpellComponent {
-
-    public required ILocationShape Shape { get; init; } 
-    public required IReadOnlyCollection<IAoeTargetsSpellComponent> Components { get; init; }
-    public GameSound? Sound { get; init; }
-
-    public void Invoke(SpellContext context) {
-        var aoeResult = Shape.GatherTargets(context, context.Caster.Position);
-        foreach (var effect in Components) {
-            effect.Invoke(context, aoeResult.Targets);
-        }
-
         if (Sound != null) {
             Sound.Play(aoeResult.Center, aoeResult.SoundRadius);
         }
