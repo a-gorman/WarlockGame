@@ -62,6 +62,11 @@ public class PrettyString {
                     sb.Clear();
                     input = ParseFormatToken(input.Slice(1), ref formatting, tokens, sb, textTokens);
                     break;
+                // case '}':
+                //     tokens.Add(sb.ToString());
+                //     sb.Clear();
+                //     input = ParseFormatToken(input.Slice(1), ref formatting, tokens, sb, textTokens);
+                //     break;
                 case '$':
                     input = ParseVariableToken(input.Slice(1), sb, textTokens);
                     break;
@@ -104,10 +109,10 @@ public class PrettyString {
     }
     
     private static ReadOnlySpan<char> ParseFormatToken(
-        ReadOnlySpan<char> input, 
-        scoped ref Formatting formatting, 
-        List<Token> tokens,  
-        StringBuilder sb, 
+        ReadOnlySpan<char> input,
+        scoped ref Formatting formatting,
+        List<Token> tokens,
+        StringBuilder sb,
         Dictionary<string, string> textTokens) {
 
         var newFormatting = formatting;
