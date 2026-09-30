@@ -66,11 +66,7 @@ public class PrettyString {
                     var innerFormatting = formatting;
                     input = ParseText(input.Slice(1), ref innerFormatting, tokens, sb, textTokens);
                     if (innerFormatting != formatting) {
-                        if (tokens.Count > 1 && tokens[^1] is Formatting lastToken && lastToken == formatting) {
-                            tokens.RemoveAt(tokens.Count - 1);
-                        } else {
-                            AddFormattingToken(formatting, tokens, sb);
-                        }
+                        AddFormattingToken(formatting, tokens, sb);
                     }
                     break;
                 case '>':
@@ -163,6 +159,7 @@ public class PrettyString {
     }
     
     private static void AddFormattingToken(in Formatting formatting, List<Token> tokens, StringBuilder sb) {
+        // Close out any open text token
         AddTextToken(sb, tokens);
         if (tokens.Count != 0 && tokens[^1] is Formatting formatToken && formatting != formatToken) {
             tokens[^1] = formatting;
