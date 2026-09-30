@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using WarlockGame.Core.Game.Util;
 
@@ -35,8 +36,12 @@ public class PrettyString {
             Color = Color.Black
         };
 
-        ParseText(input, ref formatting, tokens, sb, textTokens);
+        var remaining = ParseText(input, ref formatting, tokens, sb, textTokens);
 
+        if (remaining.Length != 0) {
+            throw new Exception("Unmatched '>' detected");
+        }
+        
         return tokens;
     }
 
@@ -46,44 +51,40 @@ public class PrettyString {
         scoped ref Formatting formatting, 
         List<Token> tokens,
         StringBuilder sb,  
-        Dictionary<string, string> textTokens, 
-        char? endToken = null) {
+        Dictionary<string, string> textTokens) {
 
         sb.Clear();
         loop: while (!input.IsEmpty) {
             var character = input[0];
             switch (character) {
-                case '\\':
-                    sb.Append(input[1]);
-                    input = input.Slice(2);
+                case '#':
+                    input = ParseEscapeToken(input.Slice(1), ref formatting, tokens, sb, textTokens);
                     break;
                 case '<':
                     tokens.Add(sb.ToString());
                     sb.Clear();
-                    input = ParseFormatToken(input.Slice(1), ref formatting, tokens, sb, textTokens);
+                    var innerFormatting = formatting;
+                    input = ParseText(input.Slice(1), ref innerFormatting, tokens, sb, textTokens);
+                    if (innerFormatting != formatting) {
+                        if (tokens.Count > 1 && tokens[^1] is Formatting lastToken && lastToken == formatting) {
+                            tokens.RemoveAt(tokens.Count - 1);
+                        } else {
+                            AddFormattingToken(formatting, tokens, sb);
+                        }
+                    }
                     break;
-                // case '}':
-                //     tokens.Add(sb.ToString());
-                //     sb.Clear();
-                //     input = ParseFormatToken(input.Slice(1), ref formatting, tokens, sb, textTokens);
-                //     break;
+                case '>':
+                    input = input.Slice(1);
+                    break loop;
                 case '$':
-                    input = ParseVariableToken(input.Slice(1), sb, textTokens);
+                    input = ParseVariableToken(input.Slice(1), textTokens, out var variable);
+                    sb.Append(variable);
                     break;
                 default:
-                    if (character == endToken) {
-                        input = input.Slice(1);
-                        break loop;
-                    }
-
                     sb.Append(character);
                     input = input.Slice(1);
                     break;
             }
-        }
-
-        if (endToken != null && input.IsEmpty) {
-            throw new Exception("End token not found");
         }
         
         if (sb.Length != 0) {
@@ -94,81 +95,94 @@ public class PrettyString {
         return input;
     }
 
-    private static ReadOnlySpan<char> ParseVariableToken(ReadOnlySpan<char> input, StringBuilder sb, Dictionary<string, string> textTokens) {
+    private static ReadOnlySpan<char> ParseVariableToken(ReadOnlySpan<char> input, Dictionary<string, string> textTokens, out string output) {
         int i;
+        bool consumeExtraChar = false;
         for (i = 0; i < input.Length; i++) {
             var character = input[i];
 
             if (!char.IsAsciiLetterOrDigit(character) && character != '_') {
+                consumeExtraChar = character == '$';
                 break;
             }
         }
 
-        sb.Append(textTokens[input.Slice(0, i).ToString()]);
-        return input.Slice(i);
+        output = textTokens[input.Slice(0, i).ToString()];
+        return input.Slice(consumeExtraChar ? i + 1 : i);
     }
     
-    private static ReadOnlySpan<char> ParseFormatToken(
+    private static ReadOnlySpan<char> ParseEscapeToken(
         ReadOnlySpan<char> input,
         scoped ref Formatting formatting,
         List<Token> tokens,
         StringBuilder sb,
         Dictionary<string, string> textTokens) {
-
-        var newFormatting = formatting;
-        List<Token>? nestedTokens = null;
-        while (true) {
-            switch (input[0]) {
-                case 'c':
-                    if (input[1] != '=') {
-                        throw new Exception("Invalid color token format!");
-                    }
-    
-                    input = ParseColorToken(input.Slice(2), ref newFormatting);
-                    break;
-                case 't':
-                    if (input[1] != '=' || input[2] != '\'') {
-                        throw new Exception("Invalid text token format");
-                    }
-
-                    var innerFormatting = newFormatting;
-                    nestedTokens ??= new();
-                    input = ParseText(input.Slice(3), ref innerFormatting, nestedTokens, sb, textTokens, endToken: '\'');
-                    break;
-                case '>':
-                    tokens.Add(newFormatting);
-                    if (nestedTokens != null) {
-                        tokens.AddRange(nestedTokens);
-                        tokens.Add(formatting);
-                        formatting = newFormatting;
-                    }
-                    
-                    return input.Slice(1);
-                default:
-                    if (char.IsWhiteSpace(input[0])) {
-                        input = input.Slice(1);
-                        continue;
-                    }
-
-                    throw new Exception($"Error parsing formatting token: unexpected character {input[0]}");
-            }
+        switch (input[0]) {
+            case 'c':
+                if (input[1] != '=') {
+                    throw new Exception("Invalid color token format!");
+                }
+                
+                return ParseColorToken(input.Slice(2), ref formatting, tokens, textTokens, sb);
+            default:
+                sb.Append(input[0]);
+                return input.Slice(1);
         }
     }
 
-    private static ReadOnlySpan<Char> ParseColorToken(ReadOnlySpan<char> input, scoped ref Formatting formatting) {
+    private static ReadOnlySpan<char> ParseColorToken(ReadOnlySpan<char> input, 
+        scoped ref Formatting formatting, 
+        List<Token> tokens,
+        Dictionary<string, string> textTokens,
+        StringBuilder sb) {
+        if (input[0] == '$') {
+            var newSlice = ParseVariableToken(input.Slice(1), textTokens, out var variableToken);
+            formatting = GetFormatting(variableToken, formatting);
+            AddFormattingToken(formatting, tokens, sb);
+            return newSlice;
+        }
+
         for (var i = 0; i < input.Length; i++) {
             var character = input[i];
             if (!char.IsAsciiLetter(character)) {
-                formatting = formatting with {
-                    Color = System.Drawing.Color.FromName(input.Slice(0, i).ToString())
-                        .Let(c => new Color(c.R, c.G, c.B, c.A))
-                };
+                formatting = GetFormatting(input.Slice(0, i), formatting);
+                AddFormattingToken(formatting, tokens, sb);
 
-                return input.Slice(i);
+                return input.Slice(character == ' ' ? i + 1 : i);
             }
         }
 
         throw new Exception("Formatting token not closed properly");
+
+        Formatting GetFormatting(ReadOnlySpan<char> input, scoped in Formatting formatting) {
+            return formatting with {
+                Color = System.Drawing.Color.FromName(input.ToString())
+                    .Let(c => new Color(c.R, c.G, c.B, c.A))
+            };
+        }
+    }
+    
+    private static void AddFormattingToken(in Formatting formatting, List<Token> tokens, StringBuilder sb) {
+        AddTextToken(sb, tokens);
+        if (tokens.Count != 0 && tokens[^1] is Formatting formatToken && formatting != formatToken) {
+            tokens[^1] = formatting;
+        } else {
+            tokens.Add(formatting);
+        }
+    }
+    
+    private static void AddTextToken(StringBuilder sb, List<Token> tokens) {
+        if (sb.Length == 0) {
+            return;
+        }
+        
+        if (tokens.Count != 0 && tokens[^1] is string stringToken) {
+            tokens[^1] = string.Concat(stringToken, sb);
+        } else {
+            tokens.Add(sb.ToString());
+        }
+
+        sb.Clear();
     }
 
     public union Token(string, Formatting);

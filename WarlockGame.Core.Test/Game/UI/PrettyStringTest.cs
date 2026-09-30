@@ -14,7 +14,7 @@ public class PrettyStringTest {
     [Theory]
     [InlineData("a")]
     [InlineData(" ")]
-    [InlineData("aslkdglaksjghpoki asdlgkj asdgiosdafh asdf!@#%^%_)({}")]
+    [InlineData("aslkdglaksjghpoki asdlgkj asdgiosdafh asdf!@\\%^%_)({}")]
     public void SimpleParsing(string input) {
         PrettyString.ParseTokens(input).Single().Value.As<string>().Should().Be(input);
     }
@@ -33,30 +33,48 @@ public class PrettyStringTest {
 
     [Fact]
     public void ComplicatedCase() {
-        var tokens = new Dictionary<string, string> {
+        var variables = new Dictionary<string, string> {
             { "token_1", "aaaa" },
             { "token_2", "bb" },
-            { "token_3", "$token_1<>" }
+            { "token_3", "$token_1<>" },
+            { "colorToken", "Blue" }
         };
         
-        PrettyString.ParseTokens(" $token_1 <c=Red t='bb <t='$token_3' c=Blue>ee'> d ", tokens)
+        PrettyString.ParseTokens(" $token_1#c=Green  <#c=Red bb <$token_3 #c=Blue>ee> d### #c=$colorToken$a", variables)
             .Select(x => x.Value)
             .Should()
             .ContainInConsecutiveOrder(new List<PrettyString.Token> {
-                " aaaa ",
+                " aaaa",
+                new PrettyString.Formatting { Color = Color.Green },
+                " ",
                 new PrettyString.Formatting { Color = Color.Red },
-                "bb ",
-                new PrettyString.Formatting { Color = Color.Blue },
-                "$token_1<>",
+                "bb $token_1<> ",
                 new PrettyString.Formatting { Color = Color.Red },
                 "ee",
-                new PrettyString.Formatting { Color = Color.Black },
-                " d "
+                new PrettyString.Formatting { Color = Color.Green },
+                " d# ",
+                new PrettyString.Formatting { Color = Color.Blue },
+                "a"
+            }.Select(x => x.Value));
+    }
+    
+    [Fact]
+    public void CanParseColorVariable() {
+        var variables = new Dictionary<string, string> {
+            { "colorToken", "Blue" }
+        };
+        
+        PrettyString.ParseTokens("#c=$colorToken$a", variables)
+            .Select(x => x.Value)
+            .Should()
+            .ContainInConsecutiveOrder(new List<PrettyString.Token> {
+                new PrettyString.Formatting { Color = Color.Blue },
+                "a"
             }.Select(x => x.Value));
     }
     
     [Theory]
-    [MemberData("DataProvider")]
+    [MemberData("FormatTokenDataProvider")]
     public void CanParseFormatTokens(string input, List<PrettyString.Token> expectedResult) {
         PrettyString.ParseTokens(input)
             .Select(x => x.Value)
@@ -64,42 +82,37 @@ public class PrettyStringTest {
             .ContainInConsecutiveOrder(expectedResult.Select(x => x.Value));
     }
 
-    public static List<object[]> DataProvider() {
+    public static List<object[]> FormatTokenDataProvider() {
         return [
             [
                 "<>",
-                new List<PrettyString.Token> {
-                    new PrettyString.Formatting { Color = Color.Black }
-                }
+                new List<PrettyString.Token> { }
             ],
             [
                 "a<>b",
                 new List<PrettyString.Token> {
                     "a",
-                    new PrettyString.Formatting { Color = Color.Black },
                     "b"
                 }
             ],
             [
-                "a<t='c'>b",
+                "a<c>b",
                 new List<PrettyString.Token> {
                     "a",
-                    new PrettyString.Formatting { Color = Color.Black },
                     "c",
-                    new PrettyString.Formatting { Color = Color.Black },
                     "b"
                 }
             ],
             [
-                " a <c=Red> b ",
+                " a <#c=Red> b ",
                 new List<PrettyString.Token> {
                     " a ",
-                    new PrettyString.Formatting { Color = Color.Red },
+                    new PrettyString.Formatting { Color = Color.Black },
                     " b "
                 }
             ],
             [
-                " a <c=Red t='hello'> b ",
+                " a <#c=Red hello> b ",
                 new List<PrettyString.Token> {
                     " a ",
                     new PrettyString.Formatting { Color = Color.Red },
@@ -109,7 +122,7 @@ public class PrettyStringTest {
                 }
             ],
             [
-                " a <c=Red t='bb <t='cc' c=Blue>ee'> d ",
+                " a <#c=Red bb <#c=Blue cc>ee> d ",
                 new List<PrettyString.Token> {
                     " a ",
                     new PrettyString.Formatting { Color = Color.Red },
