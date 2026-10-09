@@ -25,6 +25,7 @@ class SpellPicker : InterfaceComponent {
         Layout = Layout.WithSize(600, 300, Alignment.Center);
         _maxSelections = selections;
         _sim = sim;
+        Visible = false;
         var descriptionText = $"Select {selections} spells";
 
         var activeTexture = new Texture2D(Art.Pixel.GraphicsDevice, 1, 1);
@@ -47,10 +48,9 @@ class SpellPicker : InterfaceComponent {
         AddComponent(_confirmButton);
         
         _confirmButton.AddComponent(new TextDisplay("Confirm", Alignment.Center) { TextScale = 0.55f });
-        Visible = false;
     }
 
-    public override void Update(ref readonly UIManager.UpdateArgs args) {
+    protected override void OnUpdate(in UIManager.UpdateArgs args) {
         var playerId = PlayerManager.LocalPlayerId;
         if (playerId == null) {
             Visible = false;
@@ -70,10 +70,18 @@ class SpellPicker : InterfaceComponent {
             var iRow = i / _columns;
 
             var spellIndex = i;
-            var selectionBox = new ToggleSelection(spell.SpellIcon, Color.LimeGreen) {
+            var selectionBox = new ToolTipWrapper(
+                // new TextDisplay(spell.Name), 
+                new TextDisplay(spell.Name) {
+                    ZIndex = ZLayer.Tooltip,
+                    TextScale = 0.5f,
+                    BackgroundColor = Color.BurlyWood,
+                    Layout = Layout.WithUnrestrictedBounds(10, -50, 100, 100, Alignment.TopRight)
+                }, 
+                new ToggleSelection(spell.SpellIcon, Color.LimeGreen) {
                 Layout = Layout.WithSize(80, 80),
                 LeftClick = _ => OnLeftClickSelection(spellIndex)
-            };
+            });
             
             grid.AddComponentToCell(selectionBox, iRow, iColumn);
         }
@@ -94,11 +102,11 @@ class SpellPicker : InterfaceComponent {
     }
 
     protected override void OnAdd() {
-        _sim.SimRestarted += OnGameRestart;
+        _sim.EventManager.SubscribeToSimRestarted(OnGameRestart);
     }
 
     protected override void OnRemove() {
-        _sim.SimRestarted -= OnGameRestart;
+        _sim.EventManager.UnsubscribeToSimRestarted(OnGameRestart);
     }
 
     private void OnGameRestart() {

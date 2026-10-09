@@ -505,7 +505,7 @@ class SpellFactory {
             id: 15,
             name: "Swap",
             spellIcon: Art.LightningJumpIcon,
-            cooldownTime: SimTime.OfSeconds(20),
+            cooldownTime: SimTime.OfSeconds(1),
             effects: [
                 new ProjectileComponent(
                     sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
@@ -519,20 +519,20 @@ class SpellFactory {
                 )
         ]);
     }
- 
+
     public SpellDefinition GraveTick() {
         return new DirectionalSpell(
             id: 16,
             name: "Grave Tick",
             spellIcon: Art.LightningJumpIcon,
-            cooldownTime: SimTime.OfSeconds(20),
+            cooldownTime: SimTime.OfSeconds(1),
             effects: [
                 new ProjectileComponent(
                     sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
                     effects: [
                         new LocationAreaOfEffect {
                             Shape = new CircleTarget(AoeSelectors.Warlocks, innerRadius: 8, outerRadius: 30),
-                            Components = [ 
+                            Components = [
                                 new ApplyBuffComponent(context => {
                                     return new Buff(
                                         type: Buff.BuffType.GraveTick,
@@ -540,28 +540,27 @@ class SpellFactory {
                                         stacking: Buff.StackingType.Stacks,
                                         components: [
                                             new OnUpdate(
-                                            context: context,
-                                            repeatEvery: SimTime.OfSeconds(2), 
-                                            components: [
-                                                new LocationAreaOfEffect {
-                                                    Shape = new CircleTarget(AoeSelectors.Warlocks, 50),
-                                                    Components = [
-                                                        new DamageComponent { Damage = 10, SelfFactor = 0, Distributed = true },
-                                                        new LocationEffectComponent(x => new SpriteEffect(
+                                                context: context,
+                                                repeatEvery: SimTime.OfSeconds(2),
+                                                components: [
+                                                    new LocationEffectComponent(x => new SpriteEffect(
                                                         sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f), 1.35f),
                                                         position: x,
-                                                        duration: SimTime.OfSeconds(0.5f)))
-                                                    ]
-                                                }
-                                                
-                                            ])
-                                    ]);
-                                })   
+                                                        duration: SimTime.OfSeconds(0.5f))),
+                                                    new LocationAreaOfEffect {
+                                                        Shape = new CircleTarget(AoeSelectors.Warlocks, 50),
+                                                        Components = [
+                                                            new DamageComponent { Damage = 10, SelfFactor = 0, Distributed = true }
+                                                        ]
+                                                    }
+                                                ])
+                                        ]);
+                                })
                             ]
                         }
                     ]
                 )
-        ]);
+            ]);
     }
 
     public SpellDefinition Redirection() {
@@ -569,7 +568,7 @@ class SpellFactory {
             id: 17,
             name: "Redirection",
             spellIcon: Art.LightningJumpIcon,
-            cooldownTime: SimTime.OfSeconds(20),
+            cooldownTime: SimTime.OfSeconds(1),
             effects: [
                 new DirectionalEffectComponent((spellContext, castLoc, direction) =>
                     new ContinuousSpellEffect(

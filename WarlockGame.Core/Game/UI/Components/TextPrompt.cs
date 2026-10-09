@@ -23,7 +23,7 @@ sealed class TextPrompt: InterfaceComponent, ITextInputConsumer {
     public TextPrompt(string prompt, Action<string> acceptedCallback, Action<string>? cancelledCallback) {
         Layout = Layout.WithBoundingBox(0, 220, width: 300, height: 35, Alignment.Center);
 
-        Layer = 10;
+        SiblingLayer = 10;
         
         Clickable = ClickableState.Clickable;
         

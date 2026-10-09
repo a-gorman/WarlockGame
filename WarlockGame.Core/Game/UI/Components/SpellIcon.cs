@@ -25,10 +25,6 @@ sealed class SpellIcon : InterfaceComponent {
         spriteBatch.DrawString(Art.Font, _hotkey, location + new Vector2(0, 0), Color.White);
     }
 
-    public override void Update(ref readonly UIManager.UpdateArgs args) {
-        base.Update(in args);
-    }
-
     public override void OnLeftClick(Vector2 _) {
         if (_spell.Definition is SelfCastSpell && PlayerManager.LocalPlayerId != null) {
             InputManager.HandlePlayerAction(new CastAction { PlayerId = PlayerManager.LocalPlayerId.Value, Type = CastAction.CastType.Self, SpellId = _spell.Id });

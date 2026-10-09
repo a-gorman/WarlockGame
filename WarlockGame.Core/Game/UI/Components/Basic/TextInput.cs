@@ -109,7 +109,7 @@ class TextInput : InterfaceComponent, ITextInputConsumer {
         }
     }
     
-    public override void Update(ref readonly UIManager.UpdateArgs args) {
+    protected override void OnUpdate(in UIManager.UpdateArgs args) {
         if (CursorVisible) {
             if (args.Global.InputState.WasActionKeyPressed(InputAction.MoveLeft)) {
                 MoveCursorLeft();

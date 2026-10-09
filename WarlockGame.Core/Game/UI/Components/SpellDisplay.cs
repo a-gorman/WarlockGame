@@ -23,7 +23,7 @@ sealed class SpellDisplay : InterfaceComponent {
 
     public SpellDisplay(Dictionary<Keys, InputAction> keyMappings) {
         KeyMappings = keyMappings.Where(x => Actions.Contains(x.Value)).ToDictionary(x => x.Value, x => x.Key.ToString());
-        Layer = 2;
+        SiblingLayer = 2;
         Layout = Layout.WithBoundingBox(0, -30, 1880, 90, Alignment.BottomCenter);
         IconGrid = new Basic.Grid(55, 20, Actions.Length, SpellSpacing, 1, 70) {
             Clickable = ClickableState.PassThrough

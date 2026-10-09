@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace WarlockGame.Core.Game.Util;
 
@@ -17,8 +21,13 @@ public static class TextUtil {
         }
     }
     
-    public static List<Line> WrapText(string text, MeasureTextSize measureText, float maxLineWidth, 
-        float? maxHeight = null, int? maxLines = null, string truncator = "") {
+    public static List<Line> WrapText(ReadOnlySpan<char> text, 
+        MeasureTextSize measureText, 
+        float maxLineWidth, 
+        float startingIndent = 0,
+        float? maxHeight = null, 
+        int? maxLines = null, 
+        string truncator = "") {
         
         var spaceMeasurement = measureText(" ");
         var spaceWidth = spaceMeasurement.X;
@@ -30,11 +39,11 @@ public static class TextUtil {
             maxLines = 1;
         }
 
-        var span = text.AsSpan();
+        var span = text;
 
         var lines = new List<Line>();
         var sb = new StringBuilder();
-        var lineWidth = 0f;
+        var lineWidth = startingIndent;
         var nLines = 1;
 
         Vector2 wordSize;
@@ -195,4 +204,193 @@ public static class TextUtil {
         width = previousSliceWidth;
         return word;
     }
+
+
+    #region TextMeasurement
+
+    private static readonly Dictionary<SpriteFont, CharacterRegion[]> _regions = new();
+    private static readonly Dictionary<SpriteFont, int> _defaultGlyphIdices = new();
+
+    public static Vector2 MeasureString(this SpriteFont font, ReadOnlySpan<char> text) {
+        var source = new CharacterSource(text);
+        Vector2 size;
+        MeasureString(font, ref source, out size);
+        return size;
+    }
+
+
+    private static unsafe void MeasureString(SpriteFont font, ref CharacterSource text, out Vector2 size) {
+        if (text.Length == 0) {
+            size = Vector2.Zero;
+            return;
+        }
+
+        var regions = _regions.GetOrAdd(font, CreateCharacterRegions);
+        var defaultGlyphIndex = _defaultGlyphIdices.GetOrAdd(font, f => {
+            if (f.DefaultCharacter == null) return -1;
+            
+            // No need to check for existence because it's validated by the SpriteFont at construction time.
+            TryGetGlyphIndex(regions, f.DefaultCharacter.Value, out int result);
+            return result;
+        });
+
+
+        var width = 0.0f;
+        var finalLineHeight = (float)font.LineSpacing;
+
+        var offset = Vector2.Zero;
+        var firstGlyphOfLine = true;
+
+        fixed (SpriteFont.Glyph* pGlyphs = font.Glyphs)
+            for (var i = 0; i < text.Length; ++i) {
+                var c = text[i];
+
+                if (c == '\r')
+                    continue;
+
+                if (c == '\n') {
+                    finalLineHeight = font.LineSpacing;
+
+                    offset.X = 0;
+                    offset.Y += font.LineSpacing;
+                    firstGlyphOfLine = true;
+                    continue;
+                }
+
+                var currentGlyphIndex = GetGlyphIndexOrDefault(c, regions, defaultGlyphIndex);
+                Debug.Assert(currentGlyphIndex >= 0 && currentGlyphIndex < font.Glyphs.Length,
+                    "currentGlyphIndex was outside the bounds of the array.");
+                var pCurrentGlyph = pGlyphs + currentGlyphIndex;
+
+                // The first character on a line might have a negative left side bearing.
+                // In this scenario, SpriteBatch/SpriteFont normally offset the text to the right,
+                //  so that text does not hang off the left side of its rectangle.
+                if (firstGlyphOfLine) {
+                    offset.X = Math.Max(pCurrentGlyph->LeftSideBearing, 0);
+                    firstGlyphOfLine = false;
+                } else {
+                    offset.X += font.Spacing + pCurrentGlyph->LeftSideBearing;
+                }
+
+                offset.X += pCurrentGlyph->Width;
+
+                var proposedWidth = offset.X + Math.Max(pCurrentGlyph->RightSideBearing, 0);
+                if (proposedWidth > width)
+                    width = proposedWidth;
+
+                offset.X += pCurrentGlyph->RightSideBearing;
+
+                if (pCurrentGlyph->Cropping.Height > finalLineHeight)
+                    finalLineHeight = pCurrentGlyph->Cropping.Height;
+            }
+
+        size.X = width;
+        size.Y = offset.Y + finalLineHeight;
+    }
+
+    private static unsafe bool TryGetGlyphIndex(CharacterRegion[] regions, char c, out int index) {
+        fixed (CharacterRegion* pRegions = regions) {
+            if (!TryGetRegionIdx(c, regions.Length, pRegions, out int regionIdx)) {
+                c = char.IsUpper(c) ? char.ToLower(c) : char.ToUpper(c);
+                TryGetRegionIdx(c, regions.Length, pRegions, out regionIdx);
+            }
+
+            if (regionIdx == -1) {
+                index = -1;
+                return false;
+            }
+
+            index = pRegions[regionIdx].StartIndex + (c - pRegions[regionIdx].Start);
+        }
+
+        return true;
+    }
+
+    private static unsafe bool TryGetRegionIdx(char c, int regionLen, CharacterRegion* pRegions, out int regionIdx) {
+        // Get region Index 
+        regionIdx = -1;
+        var l = 0;
+        var r = regionLen - 1;
+        while (l <= r) {
+            var m = (l + r) >> 1;
+            Debug.Assert(m >= 0 && m < regionLen, "Index was outside the bounds of the array.");
+            if (pRegions[m].End < c) {
+                l = m + 1;
+            } else if (pRegions[m].Start > c) {
+                r = m - 1;
+            } else {
+                regionIdx = m;
+                break;
+            }
+        }
+
+        if (regionIdx == -1) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    private static int GetGlyphIndexOrDefault(char c, CharacterRegion[] regions, int defaultGlyphIdx) {
+        if (!TryGetGlyphIndex(regions, c, out var glyphIdx)) {
+            if (defaultGlyphIdx == -1)
+                throw new ArgumentException("Text Contains Unresolvable Characters");
+
+            return defaultGlyphIdx;
+        } else
+            return glyphIdx;
+    }
+
+
+    private static CharacterRegion[] CreateCharacterRegions(SpriteFont font) {
+        var characters = font.Characters;
+
+        var regions = new Stack<CharacterRegion>();
+
+        for (var i = 0; i < characters.Count; i++) {
+            if (regions.Count == 0 || characters[i] > (regions.Peek().End + 1)) {
+                // Start a new region
+                regions.Push(new CharacterRegion(characters[i], i));
+            } else if (characters[i] == (regions.Peek().End + 1)) {
+                var currentRegion = regions.Pop();
+                // include character in currentRegion
+                currentRegion.End++;
+                regions.Push(currentRegion);
+            } else // characters[i] < (regions.Peek().End+1)
+            {
+                throw new InvalidOperationException("Invalid SpriteFont. Character map must be in ascending order.");
+            }
+        }
+
+        var tmp = regions.ToArray();
+        Array.Reverse(tmp);
+        return tmp;
+    }
+
+    private readonly ref struct CharacterSource {
+        private readonly ReadOnlySpan<char> _value;
+
+        public CharacterSource(ReadOnlySpan<char> builder) {
+            _value = builder;
+            Length = builder.Length;
+        }
+
+        public readonly int Length;
+        public char this[int index] => _value[index];
+    }
+
+    private struct CharacterRegion {
+        public char Start;
+        public char End;
+        public int StartIndex;
+
+        public CharacterRegion(char start, int startIndex) {
+            Start = start;
+            End = start;
+            StartIndex = startIndex;
+        }
+    }
+
+    #endregion
 }

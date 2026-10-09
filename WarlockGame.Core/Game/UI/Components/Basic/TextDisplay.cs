@@ -46,8 +46,6 @@ class TextDisplay : InterfaceComponent {
     private Line[] _lines = null!;
     private bool _isTextDirty;
     
-    private readonly StringBuilder _sb = new();
-
     public TextDisplay(string text = "", Alignment textAlignment = Alignment.TopLeft, SpriteFont? font = null) {
         Text = text;
         Font = font ?? Art.Font;
@@ -65,7 +63,7 @@ class TextDisplay : InterfaceComponent {
         }
 
         for (var i = 0; i < _lines.Length; i++) {
-            spriteBatch.DrawString(Art.Font, _lines[i].Text,
+            spriteBatch.DrawString(Font, _lines[i].Text,
                 position: BoundingBox.Location.ToVector2() + location + _lines[i].Position,
                 color: TextColor,
                 scale: TextScale,
@@ -76,11 +74,9 @@ class TextDisplay : InterfaceComponent {
         }
     }
     
-    // Thread unsafe
     private void RecalculateWrappedText() {
         Vector2 TextMeasurement(ReadOnlySpan<char> x) {
-            _sb.Clear();
-            return Font.MeasureString(_sb.Append(x)) * TextScale;
+            return Font.MeasureString(x) * TextScale;
         }
 
         var unprocessedLines = TextUtil.WrapText(Text, TextMeasurement, BoundingBox.Width, maxHeight: BoundingBox.Height, truncator: TruncationCharacters);

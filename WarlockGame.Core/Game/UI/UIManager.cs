@@ -1,10 +1,14 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Input;
+using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Sim;
 using WarlockGame.Core.Game.UI.Components;
+using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.UI;
 
@@ -18,6 +22,9 @@ static class UIManager {
     private static readonly InterfaceComponent _view = new() { Clickable = ClickableState.PassThrough };
 
     private static InterfaceComponent _focusedComponent = _view;
+
+    private static readonly List<ZIndexEntry>[] _zLayers = Enumerable.Range(0, Enum.GetValues<InterfaceComponent.ZLayer>().Length).Select(x => new List<ZIndexEntry>()).ToArray();
+    public static bool ZLayersDirty = true;
     
     public static void Initialize() {
         _view.Layout = Layout.WithSize(Configuration.ScreenWidth, Configuration.ScreenHeight);
@@ -27,7 +34,16 @@ static class UIManager {
         
         spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-        DrawComponent(_view, Vector2.Zero, spriteBatch);
+        if (ZLayersDirty) {
+            ReconstructZLayerIndex();
+            ZLayersDirty = false;
+        }
+
+        foreach (var layer in _zLayers) {
+            foreach (var component in layer) {
+                component.Component.DrawComponent(component.GlobalLocation, spriteBatch);
+            }
+        }
         spriteBatch.End();
 
         // draw the custom mouse cursor
@@ -50,8 +66,11 @@ static class UIManager {
     }
 
     private static void UpdateComponent(InterfaceComponent component, InterfaceComponent? parent, ref readonly UpdateArgs args, bool parentBoundsRefreshed) {
-        if (component.Disabled)
+        if (component.Disabled) {
+            ZLayersDirty |= component.RequiresReindexing;
+            component.RequiresReindexing = false;
             return;
+        }
         
         var mousePos = args.MousePosition;
         if (mousePos != null && component.BoundingBox.Contains(mousePos.Value)) {
@@ -70,6 +89,9 @@ static class UIManager {
             UpdateComponent(nestedComponent, component, ref updateArgs, parentBoundsRefreshed);
         }
         component.RemoveAllComponents(x => x.IsExpired);
+        
+        ZLayersDirty |= component.RequiresReindexing;
+        component.RequiresReindexing = false;
     }
 
     /// <summary>
@@ -97,23 +119,16 @@ static class UIManager {
         _view.AddComponent(component);
     }
     
+    public static void RemoveComponent(InterfaceComponent component) {
+        _view.RemoveComponent(component);
+    }
+    
     public static void HandleLeftClick(Vector2 clickLocation) {
         LeftClickComponent(_view, clickLocation);
     }
     
     public static void HandleRightClick(Vector2 clickLocation) {
         RightClickComponent(_view, clickLocation);
-    }
-
-    private static void DrawComponent(InterfaceComponent component, Vector2 globalLocation, SpriteBatch spriteBatch) {
-        if (component.Visible && !component.Disabled) {
-            component.DrawComponent(globalLocation, spriteBatch);
-            for (var index = component.Components.Count - 1; index >= 0; index--) {
-                var nestedComponent = component.Components[index];
-                DrawComponent(nestedComponent, globalLocation + component.BoundingBox.Location.ToVector2(),
-                    spriteBatch);
-            }
-        }
     }
     
     private static bool LeftClickComponent(InterfaceComponent component, Vector2 clickLocation) {
@@ -189,6 +204,26 @@ static class UIManager {
             _focusedComponent = component;
         }
     }
+
+    private static void ReconstructZLayerIndex() {
+        Logger.Debug("Reindexing zLayerIndex", Logger.LogType.Interface);
+        
+        _zLayers.ForEach(x => x.Clear());
+        ReindexComponent(_view, 0, Vector2.Zero);
+        
+        static void ReindexComponent(InterfaceComponent component, int parentZLayer, Vector2 globalLocation) {
+            if (component.Visible && !component.Disabled) {
+                var zLayer = Math.Max(parentZLayer, (int)component.ZIndex);
+                _zLayers[zLayer].Add(new ZIndexEntry(component, globalLocation));
+                for (var index = component.Components.Count - 1; index >= 0; index--) {
+                    var nestedComponent = component.Components[index];
+                    ReindexComponent(nestedComponent, zLayer, globalLocation + component.BoundingBox.Location.ToVector2());
+                }
+            }
+        }
+    }
+
+    private record struct ZIndexEntry(InterfaceComponent Component, Vector2 GlobalLocation);
     
     public struct UpdateArgs {
         public required Vector2? MousePosition { get; init; }

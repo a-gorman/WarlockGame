@@ -9,14 +9,23 @@ using WarlockGame.Core.Game.Util;
 namespace WarlockGame.Core.Game.UI.Components;
 
 class InterfaceComponent {
+    public ZLayer ZIndex { get; init; }
+    
     /// <summary>
-    /// Determines what is displayed on top of what.
+    /// Determines what is displayed on top of what among siblings in the interface tree.
     /// Higher layers are displayed on top of lower numbered layers.
     /// </summary>
-    public int Layer { get; set; }
+    public int SiblingLayer { get; init; }
 
     public bool IsExpired { get; set; }
-    public bool Disabled { get; set; }
+    public bool Disabled { get;
+        set {
+            if (value != field) {
+                RequiresReindexing = true;
+                field = value;
+            }
+        }
+    }
     
     public ClickableState Clickable { get; set; } = ClickableState.Ignore;
 
@@ -25,6 +34,7 @@ class InterfaceComponent {
         set {
             if (value != field) {
                 IsVisibilityDirty = true;
+                DirtyIndexing();
                 field = value;
             }
         }
@@ -34,21 +44,27 @@ class InterfaceComponent {
     /// The bounding box for determining if the component was clicked.
     /// Higher layers obscure clicks from lower layers.
     /// </summary>
-    public Rectangle BoundingBox { 
+    public Rectangle BoundingBox {
         get;
-        private set;
+        private set {
+            if (value != field) {
+                DirtyIndexing();
+                field = value;
+            }
+        }
     }
 
     public Layout Layout {
         get;
         set {
             if (field != value) {
-                IsLayoutDirty = true;
+                DirtyIndexing();
                 field = value;
             }
         }
     } = new();
 
+    public bool RequiresReindexing { get; set; }
     public bool IsLayoutDirty { get; private set; } = true;
     protected bool IsVisibilityDirty { get; private set; } = true;
 
@@ -64,15 +80,19 @@ class InterfaceComponent {
 
     public void DrawComponent(Vector2 location, SpriteBatch spriteBatch) {
         Draw(location, spriteBatch);
-        IsVisibilityDirty = false;
+        DirtyIndexing();
     }
     
     protected virtual void Draw(Vector2 location, SpriteBatch spriteBatch) { }
 
+    protected virtual void OnUpdate(in UIManager.UpdateArgs args) { }
+    
     /// <summary>
     /// Update function called each frame before drawing any components.
     /// </summary>
-    public virtual void Update(ref readonly UIManager.UpdateArgs args) { }
+    public void Update(ref readonly UIManager.UpdateArgs args) {
+        OnUpdate(args);
+    }
     
     public void AddComponent(InterfaceComponent component) {
         var originX = Math.Min(Math.Max(component.BoundingBox.X, 0), BoundingBox.Width);
@@ -88,8 +108,33 @@ class InterfaceComponent {
         }
         
         _components.Add(component);
-        _components.Sort((first, second) => second.Layer.CompareTo(first.Layer));
+        _components.Sort((first, second) => second.SiblingLayer.CompareTo(first.SiblingLayer));
         component.OnAdd();
+        DirtyIndexing();
+    }
+    
+    public void RemoveComponent(InterfaceComponent component) {
+        _components.Remove(component);
+        component.OnRemove();
+        DirtyIndexing();
+    }
+    
+    public void RemoveAllComponents() {
+        foreach (var component in _components) {
+            component.OnRemove();
+        }
+        _components.Clear();
+        DirtyIndexing();
+    }
+    
+    public void RemoveAllComponents(Predicate<InterfaceComponent> predicate) {
+        foreach (var component in _components) {
+            if (predicate(component)) {
+                component.OnRemove();
+            }
+        }
+        _components.RemoveAll(predicate);
+        DirtyIndexing();
     }
 
     public virtual void RefreshBounds(Rectangle parentBounds) {
@@ -101,7 +146,51 @@ class InterfaceComponent {
                     .AtLocation(Layout.Offset)
                     .WithMargin(Layout.Width, Layout.Height);
                 break;
-            case Layout.LayoutType.Manual:
+            case Layout.LayoutType.Unrestricted:
+                switch (Layout.Alignment) {
+                    case Alignment.TopLeft:
+                        xOffset = Layout.Offset.X;
+                        yOffset = Layout.Offset.Y;
+                        break;
+                    case Alignment.TopCenter:
+                        xOffset = CenterOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
+                        yOffset = Layout.Offset.Y;
+                        break;
+                    case Alignment.TopRight:
+                        xOffset = OppositeSideOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
+                        yOffset = Layout.Offset.Y;
+                        break;
+                    case Alignment.CenterLeft:
+                        xOffset = Layout.Offset.X;
+                        yOffset = CenterOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
+                        break;
+                    case Alignment.Center:
+                        xOffset = CenterOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
+                        yOffset = CenterOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
+                        break;
+                    case Alignment.CenterRight:
+                        xOffset = OppositeSideOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
+                        yOffset = CenterOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
+                        break;
+                    case Alignment.BottomLeft:
+                        xOffset = Layout.Offset.X;
+                        yOffset = OppositeSideOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
+                        break;
+                    case Alignment.BottomCenter:
+                        xOffset = CenterOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
+                        yOffset = OppositeSideOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
+                        break;
+                    case Alignment.BottomRight:
+                        xOffset = OppositeSideOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
+                        yOffset = OppositeSideOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(UI.Components.Layout.Type), Layout.Type, null);
+                }
+
+                BoundingBox = new Rectangle(xOffset, yOffset, Layout.Width, Layout.Height);
+                break;
+            case Layout.LayoutType.ManualSize:
                 switch (Layout.Alignment) {
                     case Alignment.TopLeft:
                         xOffset = Layout.Offset.X;
@@ -192,32 +281,24 @@ class InterfaceComponent {
         }
     }
 
-    public void RemoveComponent(InterfaceComponent component) {
-        _components.Remove(component);
-        component.OnRemove();
+    private void DirtyIndexing() {
+        RequiresReindexing |= !Disabled;
     }
-    
-    public void RemoveAllComponents() {
-        foreach (var component in _components) {
-            component.OnRemove();
-        }
-        _components.Clear();
-    }
-    
-    public void RemoveAllComponents(Predicate<InterfaceComponent> predicate) {
-        foreach (var component in _components) {
-            if (predicate(component)) {
-                component.OnRemove();
-            }
-        }
-        _components.RemoveAll(predicate);
-    }
+
+    public virtual void OnHover() { }
+
+    public virtual void OnStopHover() { }
 
     public virtual void OnLostFocus() { }
 
     protected virtual void OnAdd() { }
 
     protected virtual void OnRemove() { }
+    
+    public enum ZLayer {
+        Default,
+        Tooltip
+    }
 }
 
 record struct Layout {
@@ -272,14 +353,14 @@ record struct Layout {
     }
     
     public static Layout WithSize(int width, int height, Alignment alignment = Alignment.TopLeft) {
-        return new Layout(LayoutType.Manual,
+        return new Layout(LayoutType.ManualSize,
             alignment: alignment,
             width: width,
             height: height);
     }
 
     public static Layout WithBoundingBox(Rectangle boundingBox, Alignment alignment = Alignment.TopLeft) {
-        return new Layout(LayoutType.Manual,
+        return new Layout(LayoutType.ManualSize,
             alignment: alignment,
             offset: boundingBox.Location,
             width: boundingBox.Width,
@@ -287,7 +368,15 @@ record struct Layout {
     }
 
     public static Layout WithBoundingBox(int x, int y, int width, int height, Alignment alignment = Alignment.TopLeft) {
-        return new Layout(LayoutType.Manual,
+        return new Layout(LayoutType.ManualSize,
+            alignment: alignment,
+            offset: new Point(x, y),
+            width: width,
+            height: height);
+    }
+    
+    public static Layout WithUnrestrictedBounds(int x, int y, int width, int height, Alignment alignment = Alignment.TopLeft) {
+        return new Layout(LayoutType.Unrestricted,
             alignment: alignment,
             offset: new Point(x, y),
             width: width,
@@ -298,7 +387,8 @@ record struct Layout {
         Margin,
         HeightMargin,
         WidthMargin,
-        Manual
+        ManualSize,
+        Unrestricted
     }
 }
 

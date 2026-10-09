@@ -19,7 +19,7 @@ sealed class PerkPicker: InterfaceComponent {
     
     private readonly Simulation _sim;
     private List<Perk> _perks = new();
-    private readonly TextDisplay _pickingTimeDisplay;
+    private readonly PrettyTextDisplay _pickingTimeDisplay;
     
     private TimeSpan _pickingEndTime;
 
@@ -30,14 +30,14 @@ sealed class PerkPicker: InterfaceComponent {
     public PerkPicker(Simulation sim) {
         _sim = sim;
         Layout = Layout.WithSize(600, 200, Alignment.Center);
-        _pickingTimeDisplay = new TextDisplay {
+        _pickingTimeDisplay = new PrettyTextDisplay(PrettyString.Parse("Time remaining: 0 seconds")) {
             Layout = Layout.WithHeight((int)(Art.FontHeight * 0.75f), alignment: Alignment.Bottom),
             TextScale = 0.75f,
             TextColor = Color.Black
         };
     }
 
-    public override void Update(ref readonly UIManager.UpdateArgs args) {
+    protected override void OnUpdate(in UIManager.UpdateArgs args) {
         if (WasMadeVisible) {
             var perks = _sim.PerkManager.GetAvailablePerks(PlayerManager.LocalPlayerId ?? -1);
             if (perks.Length > 0) {
@@ -52,7 +52,9 @@ sealed class PerkPicker: InterfaceComponent {
 
         if (Visible && !_hasPicked) {
             var timeRemaining = _pickingEndTime - WarlockGame.GameTime.TotalGameTime;
-            _pickingTimeDisplay.Text = $"Time remaining: {Math.Max(timeRemaining.Seconds, 0)} seconds";
+            var asdf = new Dictionary<string, string>();
+            asdf.Add("time", Math.Max(timeRemaining.Seconds, 0).ToString());
+            _pickingTimeDisplay.Text = PrettyString.Parse("Time remaining: <c=Red t='$time'> seconds", asdf);
 
             if (timeRemaining.Ticks <= 0) {
                 var playerId = PlayerManager.LocalPlayerId;

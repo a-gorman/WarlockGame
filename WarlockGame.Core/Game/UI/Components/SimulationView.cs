@@ -39,7 +39,7 @@ sealed class SimulationView : InterfaceComponent {
     
     public SimulationView(Simulation sim) {
         _sim = sim;
-        Layer = -1;
+        SiblingLayer = -1;
         _scrollBoundaryWidthTop = Configuration.EdgeScrollWidthTop;
         _scrollBoundaryWidthBottom = Configuration.EdgeScrollWidthBottom;
         _scrollBoundaryWidthLeft = Configuration.EdgeScrollWidthLeft;
@@ -113,7 +113,7 @@ sealed class SimulationView : InterfaceComponent {
         InputManager.SelectedSpellId = null;
     }
 
-    public override void Update(ref readonly UIManager.UpdateArgs args) {
+    protected override void OnUpdate(in UIManager.UpdateArgs args) {
         var localPlayerId = PlayerManager.LocalPlayerId;
         if (localPlayerId != null && _sim.GameRules.Statuses.TryGetValue(localPlayerId.Value, out var status)) {
             _perkPicker.Visible = status.ChoosingPerk;
