@@ -6,6 +6,7 @@ namespace WarlockGame.Core.Game.Sim.Spell;
 closed class SpellDefinition {
     public int Id { get; }
     public string Name { get; }
+    public string Description { get; }
     public GameSound? CastSound { get; }
     public SimTime CooldownTime { get; }
     public Texture2D SpellIcon { get; }
@@ -13,11 +14,13 @@ closed class SpellDefinition {
     protected SpellDefinition(
         int id,
         string name,
+        string description,
         SimTime cooldownTime,
         Texture2D spellIcon,
         GameSound? castSound = null) {
         Id = id;
         Name = name;
+        Description = description;
         CooldownTime = cooldownTime;
         SpellIcon = spellIcon;
         CastSound = castSound;
@@ -30,11 +33,12 @@ class DirectionalSpell: SpellDefinition {
     public DirectionalSpell(
     int id,
     string name,
+    string description,
     SimTime cooldownTime,
     Texture2D spellIcon,
     IDirectionalSpellComponent[] effects,
     GameSound? castSound = null) 
-    : base(id, name, cooldownTime, spellIcon, castSound) {
+    : base(id, name, description, cooldownTime, spellIcon, castSound) {
         Effects = effects;
     }
 }
@@ -48,12 +52,13 @@ class LocationSpell : SpellDefinition {
     public LocationSpell(
         int id,
         string name,
+        string description,
         SimTime cooldownTime,
         Texture2D spellIcon,
         ILocationSpellComponent[] effects, 
         float? castRange = null, 
         ISelfSpellComponent[]? selfEffects = null,
-        GameSound? castSound = null) : base(id, name, cooldownTime, spellIcon, castSound) {
+        GameSound? castSound = null) : base(id, name, description, cooldownTime, spellIcon, castSound) {
         Effects = effects;
         SelfEffects = selfEffects ?? [];
         CastRange = castRange;
@@ -67,12 +72,13 @@ class SelfCastSpell : SpellDefinition {
     public SelfCastSpell(
         int id,
         string name,
+        string description,
         SimTime cooldownTime,
         Texture2D spellIcon,
         ISelfSpellComponent[] effects,
         ILocationSpellComponent[]? castLocationEffects = null,
         GameSound? castSound = null)
-        : base(id, name, cooldownTime, spellIcon, castSound) {
+        : base(id, name, description, cooldownTime, spellIcon, castSound) {
         Effects = effects;
         CastLocationEffects = castLocationEffects ?? [];
     }

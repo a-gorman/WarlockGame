@@ -70,18 +70,17 @@ class SpellPicker : InterfaceComponent {
             var iRow = i / _columns;
 
             var spellIndex = i;
-            var selectionBox = new ToolTipWrapper(
-                // new TextDisplay(spell.Name), 
-                new TextDisplay(spell.Name) {
-                    ZIndex = ZLayer.Tooltip,
-                    TextScale = 0.5f,
-                    BackgroundColor = Color.BurlyWood,
-                    Layout = Layout.WithUnrestrictedBounds(10, -50, 100, 100, Alignment.TopRight)
-                }, 
-                new ToggleSelection(spell.SpellIcon, Color.LimeGreen) {
+            var selectionBox = new ToggleSelection(spell.SpellIcon, Color.LimeGreen) {
                 Layout = Layout.WithSize(80, 80),
                 LeftClick = _ => OnLeftClickSelection(spellIndex)
-            });
+            };
+            selectionBox.AddComponent(new ToolTip(
+                wrappedElements: [
+                    new TextDisplay($"{spell.Name}\n{spell.Description}") {
+                        TextScale = 0.5f,
+                        BackgroundColor = Color.BurlyWood
+                    }
+                ]));
             
             grid.AddComponentToCell(selectionBox, iRow, iColumn);
         }

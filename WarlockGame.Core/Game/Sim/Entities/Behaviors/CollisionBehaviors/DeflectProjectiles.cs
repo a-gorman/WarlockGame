@@ -40,7 +40,7 @@ class DeflectProjectiles : Behavior {
         return projectile.Velocity.Rotated(2 * angleOfIncidence - float.Pi);
     }
     
-    public static Vector2 OrientedRectangleReflection(Entity source, Projectile projectile, float indexOfRefraction) {
+    public static Vector2 OrientedRectangleReflection(Entity source, Projectile projectile) {
         var sides = source.OrientedRectangle.GetSides();
         MonoGame.Extended.Segment2 closestSegment = sides.MinBy(x => x.SquaredDistanceTo(projectile.Position));
         var surfaceNormal = (closestSegment.End - closestSegment.Start).ToNormalVector();

@@ -4,6 +4,7 @@ public readonly struct SimTime {
     public const float TicksPerSecond = 60f;
 
     public readonly int Ticks;
+    public float Seconds => Ticks / TicksPerSecond;
 
     private SimTime(int ticks) {
         Ticks = ticks;
@@ -22,5 +23,13 @@ public readonly struct SimTime {
     
     public float ToTickDecayRate(float startingValue = 1) {
         return startingValue / Ticks;
+    }
+    
+    public static SimTime operator *(SimTime left, int right) {
+        return new SimTime(left.Ticks * right);
+    }
+    
+    public static SimTime operator *(int left, SimTime right) {
+        return new SimTime(right.Ticks * left);
     }
 }

@@ -16,7 +16,7 @@ class MainMenu: InterfaceComponent {
     public MainMenu() {
         Layout = Layout.WithSize(300, 400, Alignment.Center);
         Clickable = ClickableState.PassThrough;
-        Layer = 5;
+        SiblingLayer = 5;
 
         _buttonTexture = new Texture2D(Art.Pixel.GraphicsDevice, 1, 1);
         _buttonTexture.SetData([Color.DarkSlateGray]);
