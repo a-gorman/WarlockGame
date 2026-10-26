@@ -30,6 +30,8 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D Pixel { get; private set; } = null!;		// a single white pixel
 
 		public static SpriteFont Font { get; private set; } = null!;
+		public static SpriteFont BoldFont { get; private set; } = null!;
+		public static SpriteFont ItalicFont { get; private set; } = null!;
 		public static float FontHeight { get; private set; }
 		
 		// Icons
@@ -49,10 +51,13 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D BigExplosionIcon { get; set; } = null!;
 		public static Texture2D ReducedBoundaryDamageIcon { get; set; } = null!;
 		public static Texture2D ReducedAllDamageIcon { get; set; } = null!;
+		public static Texture2D ExplodeOnDamageIcon { get; set; } = null!;
 		public static Texture2D FireSprayIcon { get; set; } = null!;
 		public static Texture2D TeleportIcon { get; set; } = null!;
+		public static Texture2D SwapIcon { get; set; } = null!;
 		public static Texture2D ShockwaveIcon { get; set; } = null!;
 		public static Texture2D LightningJumpIcon { get; set; } = null!;
+		public static Texture2D GraveTickIcon { get; set; } = null!;
 
 		public static void Load(ContentManager content)
 		{
@@ -82,7 +87,9 @@ namespace WarlockGame.Core.Game.Graphics
 			Pixel = new Texture2D(Warlock.GraphicsDevice, 1, 1);
 			Pixel.SetData(new[] { Color.White });
 
-			Font = content.Load<SpriteFont>("Font");
+			Font = content.Load<SpriteFont>("ArialFont");
+			BoldFont = content.Load<SpriteFont>("BoldArialFont");
+			ItalicFont = content.Load<SpriteFont>("ItalicArialFont");
 			FontHeight = Font.MeasureString("l").Y;
 			
 			LoadIcons(content);
@@ -94,15 +101,18 @@ namespace WarlockGame.Core.Game.Graphics
 			PoisonIcon = LoadIcon(content, "Nature_01_Missile");
 			BurstIcon = LoadIcon(content, "warlock_skill_43");
 			WindWallIcon = LoadIcon(content, "Water_10_Aura_Of_Cold");
-			SoulShatterIcon = LoadIcon(content, "General_15_Blur");
+			// SoulShatterIcon = LoadIcon(content, "General_15_Blur");
+			SoulShatterIcon = LoadIcon(content, "rpg_skill_icons_9");
 			RefractionShieldIcon = LoadIcon(content, "paladin_skill_34");
 			HomingIcon = LoadIcon(content, "Water_08_Ball_Of_Water");
 			BoomerangIcon = LoadIcon(content, "paladin_skill_24");
 			LightStrikeIcon = LoadIcon(content, "rpg_skill_71");
 			FireSprayIcon = LoadIcon(content, "pyromancer_11");
 			TeleportIcon = LoadIcon(content, "General_14_Teleport");
+			SwapIcon = LoadIcon(content, "100_skill_icons_8");
 			ShockwaveIcon = LoadIcon(content, "aeromancer_15");
 			LightningJumpIcon = LoadIcon(content, "Lightning_mage_skill_icons_46");
+			GraveTickIcon = LoadIcon(content, "Control_10_Aura_Of_Control");
 			
 			HealIcon = LoadIcon(content, "General_02_Heal_T");
 			InvisibilityIcon = LoadIcon(content, "Invis");
@@ -110,6 +120,7 @@ namespace WarlockGame.Core.Game.Graphics
 			BigExplosionIcon = LoadIcon(content, "Defiance");
 			ReducedBoundaryDamageIcon = LoadIcon(content, "rpg_skill_42");
 			ReducedAllDamageIcon = LoadIcon(content, "priest_skill_33");
+			ExplodeOnDamageIcon = LoadIcon(content, "cryomancer_32");
 		}
 
 		private static Texture2D LoadIcon(ContentManager content, string iconName) {
