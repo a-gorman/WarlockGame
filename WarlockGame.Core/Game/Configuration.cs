@@ -40,6 +40,7 @@ static class Configuration {
     public static Logger.Level LogDisplayLevel { get; set; }
     public static Logger.Level LogDedupeLevel { get; set; }
     public static bool DebugBoundingBoxVisualize { get; set; }
+    public static bool DebugAoeVisualize { get; set; }
     public static string LogFileName { get; set; } = "logs";
     public static float Volume { get; set; }
     public static bool MuteWhenNotFocused { get; set; }
@@ -99,6 +100,7 @@ static class Configuration {
         RestartOnJoin = args["debug:autoRestartOnJoin"]?.Let(bool.Parse) ?? false;
         JoinIp = args["debug:joinIp"] ?? "localhost";
         DebugBoundingBoxVisualize = args["debug:boundingBoxVisualize"]?.Let(bool.Parse) ?? false;
+        DebugAoeVisualize = args["debug:aoeVisualize"]?.Let(bool.Parse) ?? false;
         LogFileName = args["debug:logFileName"] ?? LogFileName;
     }
 

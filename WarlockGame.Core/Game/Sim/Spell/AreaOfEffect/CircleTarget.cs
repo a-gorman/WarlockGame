@@ -1,6 +1,7 @@
 using System.Linq;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Sim.Entities;
+using WarlockGame.Core.Game.Sim.Entities.Behaviors;
 
 namespace WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
 
@@ -13,9 +14,9 @@ class CircleTarget : ILocationShape {
 
     private readonly AoeSelector _targetSelector;
 
-    public CircleTarget(AoeSelector targetSelector, int innerRadius = 0, int? outerRadius = null) {
+    public CircleTarget(AoeSelector targetSelector, int innerRadius, int outerRadius) {
         InnerRadius = innerRadius;
-        OuterRadius = outerRadius ?? innerRadius;
+        OuterRadius = outerRadius;
         _targetSelector = targetSelector;
 
         if(InnerRadius > OuterRadius) {
@@ -23,8 +24,16 @@ class CircleTarget : ILocationShape {
             OuterRadius = InnerRadius;
         }
     }
-
+    
+    public CircleTarget(AoeSelector targetSelector, int radius): this(targetSelector, radius, radius) { }
+    
+    
     public AoeResult GatherTargets(SpellContext context, Vector2 origin) {
+        if (Configuration.DebugAoeVisualize) {
+            SimDebug.VisualizeCircle(InnerRadius, origin, Color.Blue, duration: 6);
+            SimDebug.VisualizeCircle(OuterRadius, origin, Color.Yellow, duration: 6);
+        }
+        
         var targets = context.EntityManager.GetNearbyEntities(origin, OuterRadius)
                         .Where(x => _targetSelector.Invoke(x, context))
                         .Where(x => (!IgnoreCaster || x != context.Caster) && (!IgnoreProjectiles || x is not Projectile))
