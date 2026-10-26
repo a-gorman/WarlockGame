@@ -42,7 +42,7 @@ class SpellFactory {
                     sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
                     effects: [
                         new LocationAreaOfEffect {
-                            Shape = new CircleTarget(AoeSelectors.All, innerRadius: 8, outerRadius: 30),
+                            Shape = new CircleTarget(AoeSelectors.All, innerRadius: 8, outerRadius: 50),
                             Sound = Sound.FireHit,
                             Components = [
                                 new DamageComponent { Damage = damage },
@@ -89,6 +89,7 @@ class SpellFactory {
             effects: [
                 new ProjectileComponent(
                     sprite: new Sprite(Art.PoisonBall, scale: 0.80f),
+                    speed: 9,
                     effects: [
                         new LocationAreaOfEffect {
                             Shape = new CircleTarget(AoeSelectors.Warlocks, innerRadius: 8, outerRadius: 20),
@@ -177,13 +178,13 @@ class SpellFactory {
         return new DirectionalSpell(
             id: 6,
             name: "Soul Shatter",
-            description: $"Launches a fast moving projectile that shatters the victim's soul into 2 shards and expels the pieces from their body. If a shard takes damage, it shares that damage with the host body. The shards quickly return to the host and knit themselves back together. While victim has its soul shattered, it is slowed by {slowFactor:0.##%}. Does {damage} damage.",
+            description: $"Launches a fast moving projectile that shatters the victim's soul into 2 shards and expels them from their body. When a shard takes damage, it shares that damage with the host body. While victim has its soul shattered, it is slowed by {slowFactor:0.##%}. Does {damage} damage.",
             spellIcon: Art.SoulShatterIcon,
             cooldownTime: SimTime.OfSeconds(6),
             effects: [
                 new ProjectileComponent(
                     sprite: Sprite.FromGridSpriteSheet(Art.PowerBall, 4, 4, SimTime.OfTicks(10)),
-                    speed: 16,
+                    speed: 18,
                     effects: [
                         new LocationAreaOfEffect {
                             Shape = new CircleTarget(AoeSelectors.Warlocks, innerRadius: 8, outerRadius: 20),
@@ -361,7 +362,7 @@ class SpellFactory {
                 new DelayedLocationComponent(
                     SimTime.OfSeconds(delaySeconds),
                     new LocationAreaOfEffect {
-                        Shape = new CircleTarget(AoeSelectors.All, outerRadius: radius),
+                        Shape = new CircleTarget(AoeSelectors.All, radius),
                         Components = [
                             new DamageComponent { Damage = damage },
                             new PushComponent { Force = 200 }
@@ -434,7 +435,7 @@ class SpellFactory {
         return new LocationSpell(
             id: 12,
             name: "Teleport",
-            description: "You instantly teleport up to {distance} from your current position.",
+            description: $"You instantly teleport up to {distance} from your current position.",
             spellIcon: Art.TeleportIcon,
             cooldownTime: SimTime.OfSeconds(7),
             castRange: distance,
@@ -461,21 +462,23 @@ class SpellFactory {
     }
 
     public SpellDefinition LightningJump() {
+        var damage = 10;
+        var castRange = 650;
         var jumpTime = 0.75f;
         var travelSprite = Sprite.FromGridSpriteSheet(Art.SparkJumpTravel, 3, 3, SimTime.OfSeconds(0.05f), scale: 2.3f);
 
         return new LocationSpell(
             id: 14,
             name: "Spark Jump",
-            description: "",
+            description: $"Jumps to another location up to {castRange} away. Creates an electrical discharges that deals {damage} damage at both the origin and landing points.",
             spellIcon: Art.LightningJumpIcon,
             cooldownTime: SimTime.OfSeconds(20),
-            castRange: 650,
+            castRange: castRange,
             selfEffects: [
                 new LocationAreaOfEffect {
                     Shape = new CircleTarget(AoeSelectors.AllIgnoreCaster, 50),
                     Components = [
-                        new DamageComponent { Damage = 10 },
+                        new DamageComponent { Damage = damage },
                         new PushComponent() { Force = 100 }
                     ]
                 }
@@ -504,7 +507,7 @@ class SpellFactory {
                                 new LocationAreaOfEffect {
                                     Shape = new CircleTarget(AoeSelectors.WarlocksIgnoreCaster, 50),
                                     Components = [
-                                        new DamageComponent { Damage = 10, SelfFactor = 0 },
+                                        new DamageComponent { Damage = damage, SelfFactor = 0 },
                                         new PushComponent() { Force = 100, SelfFactor = 0 }
                                     ]
                                 },
@@ -520,19 +523,21 @@ class SpellFactory {
 
     public SpellDefinition Swap() {
         var maxDistance = 500;
+        
         return new DirectionalSpell(
             id: 15,
             name: "Swap",
-            description: $"Launches a projectile that causes you to switch position with whatever it touches. After the projectile moves {maxDistance}, you teleport to the projectile, even if nothing is nearby.",
-            spellIcon: Art.LightningJumpIcon,
-            cooldownTime: SimTime.OfSeconds(1),
+            description: $"Launches a projectile that causes you to switch position with anything it touches. After the projectile moves {maxDistance}, you teleport to the projectile, even if nothing is nearby.",
+            spellIcon: Art.SwapIcon,
+            cooldownTime: SimTime.OfSeconds(12),
             effects: [
                 new ProjectileComponent(
                     sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
                     maxRange: maxDistance,
+                    speed: 11,
                     effects: [
                         new LocationAreaOfEffect {
-                            Shape = new CircleTarget(AoeSelectors.AllIgnoreCaster, outerRadius: 30),
+                            Shape = new CircleTarget(AoeSelectors.AllIgnoreCaster, radius: 100),
                             Components = [ new SwapComponent() ]
                         }
                     ]
@@ -541,37 +546,42 @@ class SpellFactory {
     }
 
     public SpellDefinition GraveTick() {
+        var damage = 6;
+        var timeBetweenTicks = SimTime.OfSeconds(2);
+        var duration = SimTime.OfSeconds(10);
+        var shareRadius = 120;
+        
         return new DirectionalSpell(
             id: 16,
             name: "Grave Tick",
-            description: "Temp",
-            spellIcon: Art.LightningJumpIcon,
-            cooldownTime: SimTime.OfSeconds(1),
+            description: $"Curses the victim to pulse with death energy. Every {timeBetweenTicks.Seconds:0.#} seconds, the target takes {damage} damage. The damage is divided between all targets within {shareRadius} of the target. Lasts {duration.Seconds:0.#} seconds.",
+            spellIcon: Art.GraveTickIcon,
+            cooldownTime: SimTime.OfSeconds(16),
             effects: [
                 new ProjectileComponent(
                     sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
                     effects: [
                         new LocationAreaOfEffect {
-                            Shape = new CircleTarget(AoeSelectors.Warlocks, innerRadius: 8, outerRadius: 30),
+                            Shape = new CircleTarget(AoeSelectors.Warlocks, radius: 40),
                             Components = [
                                 new ApplyBuffComponent(context => {
                                     return new Buff(
                                         type: Buff.BuffType.GraveTick,
-                                        duration: SimTime.OfSeconds(10),
+                                        duration: duration,
                                         stacking: Buff.StackingType.Stacks,
                                         components: [
                                             new OnUpdate(
                                                 context: context,
-                                                repeatEvery: SimTime.OfSeconds(2),
+                                                repeatEvery: timeBetweenTicks,
                                                 components: [
                                                     new LocationEffectComponent(x => new SpriteEffect(
                                                         sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f), 1.35f),
                                                         position: x,
                                                         duration: SimTime.OfSeconds(0.5f))),
                                                     new LocationAreaOfEffect {
-                                                        Shape = new CircleTarget(AoeSelectors.Warlocks, 50),
+                                                        Shape = new CircleTarget(AoeSelectors.Warlocks, shareRadius),
                                                         Components = [
-                                                            new DamageComponent { Damage = 10, SelfFactor = 0, Distributed = true }
+                                                            new DamageComponent { Damage = damage, SelfFactor = 0, Distributed = true }
                                                         ]
                                                     }
                                                 ])
@@ -601,7 +611,7 @@ class SpellFactory {
                         components: [
                             new LocationAreaOfEffect {
                                 Shape = new CircleTarget(
-                                    innerRadius: 50,
+                                    radius: 50,
                                     targetSelector: AoeSelectors.Projectiles),
                                 Components = [
                                     new RedirectProjectileComponent(direction)
