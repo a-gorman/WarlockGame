@@ -26,12 +26,11 @@ class Simulation {
     public SpellFactory SpellFactory { get; }
     public EffectManager EffectManager { get; }
     public PerkManager PerkManager { get; }
+    public EventManager EventManager { get; } = new();
 
     public GameRules GameRules { get; }
 
     public Force[] Forces { get; private set; } = [];
-
-    public event Action? SimRestarted;
 
     public static Vector2 ArenaSize { 
         get;
@@ -93,7 +92,7 @@ class Simulation {
             }
         }
         
-        SimRestarted?.Invoke();
+        EventManager.OnSimRestarted();
     }
 
     private void ClearGameState() {
