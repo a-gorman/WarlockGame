@@ -11,7 +11,7 @@ class RedirectProjectileComponent: IAoeTargetsSpellComponent {
         _direction = direction;
     }
 
-    public void Invoke(SpellContext context, IReadOnlyCollection<AoeTargetInfo> targets) {
+    public void Invoke(SpellContext context, Vector2 origin, IReadOnlyCollection<AoeTargetInfo> targets) {
         foreach (var target in targets) {
             target.Entity.Velocity = _direction.WithLength(target.Entity.Velocity.Length());
         }    

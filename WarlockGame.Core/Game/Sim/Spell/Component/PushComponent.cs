@@ -12,7 +12,7 @@ class PushComponent : IAoeTargetsSpellComponent {
     public float ProjectileFactor { get; init; } = 0;
     public Func<Vector2, Vector2, Vector2> DisplacementTransform { get; init; } = (x, _) => x;
 
-    public void Invoke(SpellContext context, IReadOnlyCollection<AoeTargetInfo> targets) {
+    public void Invoke(SpellContext context, Vector2 origin, IReadOnlyCollection<AoeTargetInfo> targets) {
         foreach (var target in targets) {
             var forceFactor = 1f;
             if (target.Entity == context.Caster) {

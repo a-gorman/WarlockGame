@@ -9,7 +9,6 @@ class SpriteComponent : BuffComponent {
     private readonly Simulation _sim;
 
     private readonly Sprite _sprite;
-    private int _transformationId;
     private Vector2 _spriteOffset;
     
     private SpriteEffect _effect = null!;

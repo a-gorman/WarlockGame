@@ -9,7 +9,7 @@ class DamageComponent : IAoeTargetsSpellComponent {
     public float SelfFactor { get; init; } = 1;
     public bool Distributed { get; init; } = false;
 
-    public void Invoke(SpellContext context, IReadOnlyCollection<AoeTargetInfo> targets) {
+    public void Invoke(SpellContext context, Vector2 origin, IReadOnlyCollection<AoeTargetInfo> targets) {
         foreach (var target in targets) {
             var damageToInflict = Damage * target.FalloffFactor * context.Caster.DamageMultiplier;
 

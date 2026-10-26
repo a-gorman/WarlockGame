@@ -29,7 +29,7 @@ class LocationEffectComponent : ILocationSpellComponent, IAoeTargetsSpellCompone
         }
     }
 
-    public void Invoke(SpellContext context, IReadOnlyCollection<AoeTargetInfo> targets) {
+    public void Invoke(SpellContext context, Vector2 origin, IReadOnlyCollection<AoeTargetInfo> targets) {
         foreach (var target in targets) {
             foreach (var effect in EffectConstructors) {
                 context.EffectManager.Add(effect.Invoke(context, target.Entity.Position));

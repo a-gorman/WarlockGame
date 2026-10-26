@@ -36,5 +36,5 @@ interface IEntitySpellComponent {
 /// Component that applies to a group of targets in an Area of effect, such as 3 warlocks caught in an explosion
 /// </summary>
 interface IAoeTargetsSpellComponent {
-    void Invoke(SpellContext context, IReadOnlyCollection<AoeTargetInfo> targets);
+    void Invoke(SpellContext context, Vector2 origin, IReadOnlyCollection<AoeTargetInfo> targets);
 }

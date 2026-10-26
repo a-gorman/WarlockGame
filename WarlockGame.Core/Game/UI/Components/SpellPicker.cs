@@ -75,10 +75,14 @@ class SpellPicker : InterfaceComponent {
                 LeftClick = _ => OnLeftClickSelection(spellIndex)
             };
             selectionBox.AddComponent(new ToolTip(
-                wrappedElements: [
-                    new TextDisplay($"{spell.Name}\n{spell.Description}") {
-                        TextScale = 0.5f,
-                        BackgroundColor = Color.BurlyWood
+                components: [
+                    new Container(
+                        new TextDisplay($"{spell.Name}\n\n{spell.Description}\nCooldown: {spell.CooldownTime.Seconds:0.#} seconds") {
+                            Layout = Layout.WithMargin(2),
+                            TextScale = 0.45f,
+                            TextColor = Color.Black
+                        }) {
+                        Color = Color.BurlyWood
                     }
                 ]));
             

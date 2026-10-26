@@ -16,8 +16,8 @@ public class ExtensionsTests
 
         result.Should().HaveCount(4);
         result.Skip(0).First().Should().BeEquivalentTo(new Rectangle(0, 0, 5, 10));
-        result.Skip(1).First().Should().BeEquivalentTo(new Rectangle(0, 10, 5, 10));
-        result.Skip(2).First().Should().BeEquivalentTo(new Rectangle(5, 0, 5, 10));
+        result.Skip(1).First().Should().BeEquivalentTo(new Rectangle(5, 0, 5, 10));
+        result.Skip(2).First().Should().BeEquivalentTo(new Rectangle(0, 10, 5, 10));
         result.Skip(3).First().Should().BeEquivalentTo(new Rectangle(5, 10, 5, 10));
     }
 }

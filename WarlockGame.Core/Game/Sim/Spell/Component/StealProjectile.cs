@@ -5,7 +5,7 @@ using WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
 namespace WarlockGame.Core.Game.Sim.Spell.Component;
 
 class StealProjectile : IAoeTargetsSpellComponent {
-    public void Invoke(SpellContext context, IReadOnlyCollection<AoeTargetInfo> targets) {
+    public void Invoke(SpellContext context, Vector2 origin, IReadOnlyCollection<AoeTargetInfo> targets) {
         foreach (var target in targets) {
             if (target.Entity is Projectile projectile) {
                 projectile.Context.Caster = context.Caster;

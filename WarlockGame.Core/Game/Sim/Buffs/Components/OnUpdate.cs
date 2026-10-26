@@ -1,4 +1,3 @@
-
 using WarlockGame.Core.Game.Sim.Entities;
 using WarlockGame.Core.Game.Sim.Spell;
 using WarlockGame.Core.Game.Sim.Spell.Component;
@@ -10,9 +9,9 @@ class OnUpdate: BuffComponent {
 
     private readonly SimTime _repetitionRate;
     private readonly SpellContext _context;
-    private readonly ISelfSpellComponent[] _components;
+    private readonly IEntitySpellComponent[] _components;
 
-    public OnUpdate(SpellContext context, SimTime repeatEvery, ISelfSpellComponent[] components, bool triggerOnApplication = false) {
+    public OnUpdate(SpellContext context, SimTime repeatEvery, IEntitySpellComponent[] components, bool triggerOnApplication = false) {
         _context = context;
         _components = components;
         _repetitionRate = repeatEvery;
@@ -26,7 +25,7 @@ class OnUpdate: BuffComponent {
         }
 
         foreach (var component in _components) {
-            component.Invoke(_context);
+            component.Invoke(_context, target);
         }
 
         _timer = _repetitionRate.ToTimer();

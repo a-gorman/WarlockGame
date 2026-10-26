@@ -13,7 +13,7 @@ class LocationAreaOfEffect: ILocationSpellComponent, ISelfSpellComponent, IEntit
     public void Invoke(SpellContext context, Vector2 invokeLocation) {
         var aoeResult = Shape.GatherTargets(context, invokeLocation);
         foreach (var effect in Components) {
-            effect.Invoke(context, aoeResult.Targets);
+            effect.Invoke(context, invokeLocation, aoeResult.Targets);
         }
         
         if (Sound != null) {
@@ -39,7 +39,7 @@ class DirectionalAreaOfEffect: IDirectionalSpellComponent {
     public void Invoke(SpellContext context, Vector2 invokeLocation, Vector2 invokeDirection) {
         var aoeResult = Shape.GatherTargets(context, invokeLocation, invokeDirection);
         foreach (var effect in Effects) {
-            effect.Invoke(context, aoeResult.Targets);
+            effect.Invoke(context, invokeLocation, aoeResult.Targets);
         }
         
         if (Sound != null) {

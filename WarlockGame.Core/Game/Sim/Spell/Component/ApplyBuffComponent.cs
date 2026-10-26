@@ -14,7 +14,7 @@ class ApplyBuffComponent : ILocationSpellComponent, IAoeTargetsSpellComponent, I
         _buffConstructors = buffConstructors;
     }
 
-    public void Invoke(SpellContext context, IReadOnlyCollection<AoeTargetInfo> targets) {
+    public void Invoke(SpellContext context, Vector2 origin, IReadOnlyCollection<AoeTargetInfo> targets) {
         foreach (var target in targets) {
             if(IgnoreCaster && target.Entity == context.Caster) { continue; }
             if (target.Entity is Warlock warlock) {

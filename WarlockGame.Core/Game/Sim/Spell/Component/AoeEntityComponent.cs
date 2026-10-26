@@ -17,7 +17,7 @@ class AoeEntityComponent: IAoeTargetsSpellComponent {
         _entityConstructor = entityConstructor;
     }
 
-    public void Invoke(SpellContext context, IReadOnlyCollection<AoeTargetInfo> targets) {
+    public void Invoke(SpellContext context, Vector2 origin, IReadOnlyCollection<AoeTargetInfo> targets) {
         targets
             .SelectMany(x => _entityConstructor.Invoke(context, x))
             .ForEach(x => context.EntityManager.Add(x));
