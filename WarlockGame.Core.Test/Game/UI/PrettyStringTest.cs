@@ -74,7 +74,7 @@ public class PrettyStringTest {
     }
     
     [Theory]
-    [MemberData("FormatTokenDataProvider")]
+    [MemberData(nameof(FormatTokenDataProvider))]
     public void CanParseFormatTokens(string input, List<PrettyString.Token> expectedResult) {
         PrettyString.ParseTokens(input)
             .Select(x => x.Value)
