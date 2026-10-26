@@ -7,15 +7,15 @@ class ToolTip: InterfaceComponent {
     private readonly InterfaceComponent _wrapper;
     
     
-    public ToolTip(InterfaceComponent[] wrappedElements) {
+    public ToolTip(InterfaceComponent[] components) {
         ZIndex = ZLayer.Tooltip;
         
         _wrapper = new InterfaceComponent {
-            Layout = Layout.WithUnrestrictedBounds(154, -130, 150, 150, Alignment.TopRight),
+            Layout = Layout.WithUnrestrictedBounds(174, -140, 170, 170, Alignment.TopRight),
             Disabled = true
         };
         
-        foreach (var component in wrappedElements) {
+        foreach (var component in components) {
             _wrapper.AddComponent(component);
         }
         
