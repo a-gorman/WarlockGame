@@ -22,7 +22,7 @@ class SpriteComponent : BuffComponent {
     public override void OnAdd(Buff buff, Warlock target) {
         _spriteOffset = -_spriteOffset.Rotated(target.Orientation);
         
-        _effect = new SpriteEffect(() => _sprite, target.Position + _spriteOffset, duration: null, orientation: target.Orientation);
+        _effect = new SpriteEffect(_sprite, target.Position + _spriteOffset, duration: null, orientation: target.Orientation);
         _sim.EffectManager.Add(_effect);
     }
 

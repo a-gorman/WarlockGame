@@ -12,14 +12,16 @@ namespace WarlockGame.Core.Game.Sim.Entities;
 class Projectile : Entity {
     private static readonly Random _rand = new();
     private readonly IReadOnlyList<ILocationSpellComponent> _effects;
+    private readonly IReadOnlyList<ISelfSpellComponent> _casterEffects;
     public SpellContext Context { get; }
     
     public Projectile(Vector2 position, 
         Vector2 velocity,
         float radius,
         SpellContext context,
-        Sprite sprite, 
-        IReadOnlyList<ILocationSpellComponent> effects) : 
+        Sprite sprite,
+        IReadOnlyList<ILocationSpellComponent> effects,
+        IReadOnlyList<ISelfSpellComponent> casterEffects) : 
         base(sprite, position, radius: radius) {
         Context = context;
         Position = position;
@@ -28,7 +30,8 @@ class Projectile : Entity {
         BlocksProjectiles = true;
         ForceId = context.Caster.ForceId;
         _effects = effects;
-        
+        _casterEffects = casterEffects;
+
         CollisionFilters.Add((_, other) => {
             if (other is Warlock warlock) {
                 return !warlock.Jumping;
@@ -70,6 +73,9 @@ class Projectile : Entity {
     public void TriggerEffects() {
         foreach (var effect in _effects) {
             effect.Invoke(Context, Position);
+        }
+        foreach (var effect in _casterEffects) {
+            effect.Invoke(Context);
         }
     }
 }

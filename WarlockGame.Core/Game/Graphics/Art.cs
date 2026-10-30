@@ -20,6 +20,8 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D Triple { get; private set; } = null!;
 		public static Texture2D EnergySpark { get; private set; } = null!;
 		public static Texture2D PowerBall { get; private set; } = null!;
+		public static Texture2D BraveTickProjectile { get; private set; } = null!;
+		public static Texture2D SwapProjectile { get; private set; } = null!;
 		public static Texture2D Pointer { get; private set; } = null!;
 		public static Texture2D BlackHole { get; private set; } = null!;
 		public static Texture2D SparkJumpExpand { get; private set; } = null!;
@@ -61,6 +63,7 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D LightningJumpIcon { get; set; } = null!;
 		public static Texture2D GraveTickIcon { get; set; } = null!;
 		public static Texture2D GraveTickExplosion { get; set; } = null!;
+		public static Texture2D SwapEffect { get; set; } = null!;
 
 		public static void Load(ContentManager content)
 		{
@@ -70,19 +73,15 @@ namespace WarlockGame.Core.Game.Graphics
 			
 			Background = content.Load<Texture2D>("Art/Textures/Grass1_Color");
 			
-			
 			Lightning = content.Load<Texture2D>("Art/Lightning");
-			Fireball = content.Load<Texture2D>("Art/Fireball");
-			PoisonBall = content.Load<Texture2D>("Art/Poison_Ball");
-			EnergySpark = content.Load<Texture2D>("Art/Energy_Spark");
-			PowerBall = content.Load<Texture2D>("Art/Power_Ball");
-			Triple = content.Load<Texture2D>("Art/Triple");
+
 			Pointer = content.Load<Texture2D>("Art/Pointer");
 			BlackHole = content.Load<Texture2D>("Art/Black Hole");
 			SparkJumpExpand = content.Load<Texture2D>("Art/particle-fx_Eletric_Expansion");
 			SparkJumpTravel = content.Load<Texture2D>("Art/particle-fx_Eletric_A_Sheet");
 
 			GraveTickExplosion = content.Load<Texture2D>("Art/Power_Ball");
+			SwapEffect = content.Load<Texture2D>("Art/Effects/retro_impact_effect_pack_swap");
 			
 			LineParticle = content.Load<Texture2D>("Art/Laser");
 			Glow = content.Load<Texture2D>("Art/Glow");
@@ -97,6 +96,7 @@ namespace WarlockGame.Core.Game.Graphics
 			ItalicFont = content.Load<SpriteFont>("ItalicArialFont");
 			FontHeight = Font.MeasureString("l").Y;
 			
+			LoadProjectiles(content);
 			LoadIcons(content);
 		}
 
@@ -128,10 +128,20 @@ namespace WarlockGame.Core.Game.Graphics
 			ExplodeOnDamageIcon = LoadIcon(content, "cryomancer_32");
 		}
 
+		private static void LoadProjectiles(ContentManager content) {
+			Fireball = content.Load<Texture2D>("Art/Fireball");
+			PoisonBall = content.Load<Texture2D>("Art/Poison_Ball");
+			EnergySpark = content.Load<Texture2D>("Art/Energy_Spark");
+			PowerBall = content.Load<Texture2D>("Art/Power_Ball");
+			Triple = content.Load<Texture2D>("Art/Triple");
+			BraveTickProjectile = content.Load<Texture2D>("Art/Projectiles/pj3_death_wave_large_black");
+			SwapProjectile = content.Load<Texture2D>("Art/Projectiles/pj3_magic_spike_large_green");
+		}
+		
 		private static Texture2D LoadIcon(ContentManager content, string iconName) {
 			return content.Load<Texture2D>($"Art/Icons/{iconName}");
 		}
-
+		
 		public static Texture2D LoadTexture(string assetName)
 		{
 			var texture = Texture2D.FromFile(WarlockGame.Instance.GraphicsDevice, assetName);

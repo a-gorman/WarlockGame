@@ -25,7 +25,7 @@
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/bubbles_005.png;Art/Icons/bubbles_005.png
 
-#begin ../../../../GameContent/Art/Effects/retro_impact_effect_pack_2_B_grave_tick.png
+#begin ../../../../GameContent/Art/Effects/retro_impact_effect_pack_swap.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -35,7 +35,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:../../../../GameContent/Art/Effects/retro_impact_effect_pack_2_B_grave_tick.png;Art/Effects/retro_impact_effect_pack_2_B_grave_tick.png
+/build:../../../../GameContent/Art/Effects/retro_impact_effect_pack_swap.png;Art/Effects/retro_impact_effect_pack_swap.png
 
 #begin ../../../../GameContent/Art/Energy_Spark.png
 /importer:TextureImporter
@@ -516,6 +516,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Power_Ball.png;Art/Icons/Power_Ball.png
+
+#begin ../../../../GameContent/Art/Projectiles/pj3_death_wave_large_black.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Projectiles/pj3_death_wave_large_black.png;Art/Projectiles/pj3_death_wave_large_black.png
+
+#begin ../../../../GameContent/Art/Projectiles/pj3_magic_spike_large_green.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Projectiles/pj3_magic_spike_large_green.png;Art/Projectiles/pj3_magic_spike_large_green.png
 
 #begin ../../../../GameContent/Art/Textures/Grass1_Color.png
 /importer:TextureImporter

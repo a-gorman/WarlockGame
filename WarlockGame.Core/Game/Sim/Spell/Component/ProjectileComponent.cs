@@ -13,17 +13,20 @@ class ProjectileComponent: IDirectionalSpellComponent {
     private readonly int _speed;
     private readonly float _radius;
     private readonly Sprite _sprite;
+    private readonly ISelfSpellComponent[] _casterEffects;
     private readonly Func<Behavior[]>? _additionalBehaviors;
     private readonly ILocationSpellComponent[] _effects;
     private readonly SimTime? _maxLife = null;
 
     public ProjectileComponent(Sprite sprite, 
         IEnumerable<ILocationSpellComponent> effects, 
+        IEnumerable<ISelfSpellComponent>? casterEffects = null, 
         Func<Behavior[]>? additionalBehaviors = null,
         int speed = 8,
         float radius = 8,
         float? maxRange = null) {
         _sprite = sprite;
+        _casterEffects = casterEffects?.ToArray() ?? [];
         _additionalBehaviors = additionalBehaviors;
         _speed = speed;
         _radius = radius;
@@ -40,7 +43,8 @@ class ProjectileComponent: IDirectionalSpellComponent {
             radius: _radius,
             context: context,
             sprite: _sprite,
-            effects: _effects);
+            effects: _effects,
+            casterEffects: _casterEffects);
         
         if (_maxLife != null) {
             projectile.AddBehaviors(new TimedLife<Projectile>(_maxLife.Value, x => x.TriggerEffects()));

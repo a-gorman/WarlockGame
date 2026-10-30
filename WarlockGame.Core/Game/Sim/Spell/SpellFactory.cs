@@ -39,7 +39,7 @@ class SpellFactory {
             cooldownTime: SimTime.OfSeconds(3),
             effects: [
                 new ProjectileComponent(
-                    sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
+                    sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(40), scale: .12f),
                     effects: [
                         new LocationAreaOfEffect {
                             Shape = new CircleTarget(AoeSelectors.All, innerRadius: 8, outerRadius: 50),
@@ -183,7 +183,7 @@ class SpellFactory {
             cooldownTime: SimTime.OfSeconds(6),
             effects: [
                 new ProjectileComponent(
-                    sprite: Sprite.FromGridSpriteSheet(Art.PowerBall, 4, 4, SimTime.OfTicks(10)),
+                    sprite: Sprite.FromGridSpriteSheet(Art.PowerBall, 4, 4, SimTime.OfTicks(160)),
                     speed: 18,
                     effects: [
                         new LocationAreaOfEffect {
@@ -274,7 +274,7 @@ class SpellFactory {
             cooldownTime: SimTime.OfSeconds(8),
             effects: [
                 new ProjectileComponent(
-                    sprite: Sprite.FromGridSpriteSheet(Art.EnergySpark, 4, 4, SimTime.OfTicks(10), scale: 2f,
+                    sprite: Sprite.FromGridSpriteSheet(Art.EnergySpark, 4, 4, SimTime.OfTicks(160), scale: 2f,
                         rotates: false),
                     effects: [
                         new LocationAreaOfEffect {
@@ -310,7 +310,7 @@ class SpellFactory {
             cooldownTime: SimTime.OfSeconds(6),
             effects: [
                 new ProjectileComponent(
-                    sprite: Sprite.FromGridSpriteSheet(Art.Triple, 4, 4, SimTime.OfTicks(2), scale: 2f, rotates: false),
+                    sprite: Sprite.FromGridSpriteSheet(Art.Triple, 4, 4, SimTime.OfTicks(32), scale: 2f, rotates: false),
                     speed: 18,
                     radius: 23,
                     effects: [
@@ -376,20 +376,13 @@ class SpellFactory {
                             Art.FlameStrike,
                             subdivisionsX: 9,
                             subdivisionsY: 1,
-                            timeBetweenTransitions: SimTime.OfSeconds(animationDurationSeconds / 6),
-                            scale: 1 / 25f * radius
+                            loopTime: SimTime.OfSeconds(animationDurationSeconds),
+                            scale: 1 / 25f * radius,
+                            expiredSpriteBehavior: ExpiredSpriteBehavior.Invisible
                         );
-                        return new SpriteEffect(() => Sprite.FromGridSpriteSheet(
-                                Art.FlameStrike,
-                                subdivisionsX: 9,
-                                subdivisionsY: 1,
-                                timeBetweenTransitions: SimTime.OfSeconds(animationDurationSeconds / 6),
-                                scale: 1 / 25f * radius
-                            ), 
-                            position: location,
-                            duration: SimTime.OfSeconds(animationDurationSeconds)) {
-                            Origin = new Vector2(flameStrikeSprite.Size.X / 2, flameStrikeSprite.Size.Y / 1.3f)
-                        };
+                        return new SpriteEffect(flameStrikeSprite,
+                            position: location - new Vector2(0, flameStrikeSprite.Size.Y * 0.35f),
+                            duration: SimTime.OfSeconds(animationDurationSeconds));
                     })
                 )
             ]);
@@ -407,7 +400,7 @@ class SpellFactory {
                 direction: direction => direction.Rotated(_simulation.Random.NextSingle(-spreadAngle, spreadAngle)),
                 components: [
                     new ProjectileComponent(
-                        sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfMillis(100), scale: .12f),
+                        sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfMillis(400), scale: .12f),
                         speed: 10,
                         additionalBehaviors: () => [
                             new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies)
@@ -472,7 +465,7 @@ class SpellFactory {
         var damage = 10;
         var castRange = 650;
         var jumpTime = 0.75f;
-        var travelSprite = Sprite.FromGridSpriteSheet(Art.SparkJumpTravel, 3, 3, SimTime.OfSeconds(0.05f), scale: 2.3f);
+        var travelSprite = Sprite.FromGridSpriteSheet(Art.SparkJumpTravel, 3, 3, SimTime.OfSeconds(0.5f), scale: 2.3f);
 
         return new LocationSpell(
             id: 14,
@@ -510,7 +503,7 @@ class SpellFactory {
                                     ]
                                 },
                                 new LocationEffectComponent(x => new SpriteEffect(
-                                    spriteCtor: () => Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f), 1.35f),
+                                    sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f), 1.35f),
                                     position: x,
                                     duration: SimTime.OfSeconds(0.5f)))
                             ])
@@ -518,18 +511,16 @@ class SpellFactory {
                 })
             ],
             effects: [
-                new LocationEffectComponent((context, _) => {
-                    return new SpriteEffect(
-                        spriteCtor: ()=> Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.25f / 10f), 1.35f),
-                        position: context.CastFromPosition,
-                        duration: SimTime.OfSeconds(0.5f));
-                })
+                new LocationEffectComponent((context, _) => new SpriteEffect(
+                    sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.25f), 1.35f),
+                    position: context.CastFromPosition,
+                    duration: SimTime.OfSeconds(0.5f)))
             ]);
     }
 
     public SpellDefinition Swap() {
         var maxDistance = 500;
-        
+
         return new DirectionalSpell(
             id: 15,
             name: "Swap",
@@ -538,17 +529,26 @@ class SpellFactory {
             cooldownTime: SimTime.OfSeconds(12),
             effects: [
                 new ProjectileComponent(
-                    sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
+                    sprite: Sprite.FromGridSpriteSheet(Art.SwapProjectile, 8, 1, SimTime.OfTicks(30), scale: 1f),
                     maxRange: maxDistance,
                     speed: 11,
                     effects: [
                         new LocationAreaOfEffect {
-                            Shape = new CircleTarget(AoeSelectors.AllIgnoreCaster, radius: 100),
+                            Shape = new CircleTarget(AoeSelectors.AllIgnoreCaster, radius: 120),
                             Components = [ new SwapComponent() ]
-                        }
+                        },
+                        new LocationEffectComponent(CreateHitEffect)
                     ]
+                    // Disabled until order of effects can be assured. Right now effects go swap -> caster effect
+                    // casterEffects: [ new LocationEffectComponent(CreateHitEffect) ]
                 )
         ]);
+
+        static SpriteEffect CreateHitEffect(Vector2 x) =>
+            new SpriteEffect(Sprite.FromGridSpriteSheet(Art.SwapEffect, 9, 1,
+                    SimTime.OfSeconds(0.5f), scale: 3.3f, expiredSpriteBehavior: ExpiredSpriteBehavior.Invisible),
+                position: x,
+                duration: SimTime.OfSeconds(0.5f));
     }
 
     public SpellDefinition GraveTick() {
@@ -565,7 +565,7 @@ class SpellFactory {
             cooldownTime: SimTime.OfSeconds(16),
             effects: [
                 new ProjectileComponent(
-                    sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(10), scale: .12f),
+                    sprite: Sprite.FromGridSpriteSheet(Art.BraveTickProjectile, 10, 1, SimTime.OfTicks(40), scale: 1f),
                     effects: [
                         new LocationAreaOfEffect {
                             Shape = new CircleTarget(AoeSelectors.Warlocks, radius: 40),
@@ -582,7 +582,7 @@ class SpellFactory {
                                                 components: [
                                                     new LocationEffectComponent(x => 
                                                         new SpriteEffect(
-                                                            spriteCtor: () => Sprite.FromGridSpriteSheet(Art.GraveTickExplosion, 4, 4, SimTime.OfSeconds(0.5f / 10f), 4.5f),
+                                                            sprite: Sprite.FromGridSpriteSheet(Art.GraveTickExplosion, 4, 4, SimTime.OfSeconds(0.5f), 4.5f, opacity: 0.55f),
                                                             position: x,
                                                             onUpdate: static (sprite, transformId, timeElapsed) => { sprite.ChangeTransformation(transformId, 1.8f/30f * timeElapsed.Ticks); },
                                                             duration: SimTime.OfSeconds(0.5f))),

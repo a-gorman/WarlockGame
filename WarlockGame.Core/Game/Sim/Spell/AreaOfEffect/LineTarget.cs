@@ -29,7 +29,7 @@ class LineTarget : IDirectionalShape {
         Texture?.Run(x => {
             var sprite = new Sprite(x);
             context.EffectManager.Add(
-                new SpriteEffect(() => sprite, castLocation, duration: SimTime.OfTicks(10), orientation: invokeDirection.ToAngle()) 
+                new SpriteEffect(sprite, castLocation, duration: SimTime.OfTicks(10), orientation: invokeDirection.ToAngle()) 
                 {
                     Origin = new Vector2(0, sprite.Size.Y / 2)
                 });

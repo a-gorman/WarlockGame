@@ -5,7 +5,7 @@ using WarlockGame.Core.Game.Graphics;
 
 namespace WarlockGame.Core.Game.Sim.Effect.Display;
 
-public class SpriteEffect : IEffect
+class SpriteEffect : IEffect
 {
     public Vector2 Position { get; set; }
     
@@ -23,7 +23,7 @@ public class SpriteEffect : IEffect
     private int _ticksElapsed;
 
     public SpriteEffect(
-        Func<Sprite> spriteCtor,
+        Sprite sprite,
         Vector2 position,
         SimTime? duration,
         Action<Sprite, int, SimTime>? onUpdate = null,
@@ -31,7 +31,7 @@ public class SpriteEffect : IEffect
         
         Position = position;
         Orientation = orientation;
-        _sprite = spriteCtor.Invoke();
+        _sprite = sprite;
         _onUpdate = onUpdate;
         _timer = duration?.ToTimer();
         Origin = null;

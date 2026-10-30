@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,7 +8,7 @@ using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Graphics;
 
-public class Sprite: ISprite
+class Sprite: ISprite
 {
     private readonly Texture2D _image;
 
@@ -15,6 +16,8 @@ public class Sprite: ISprite
 
     public Color Color { get; set; } = Color.White;
 
+    public float Opacity { get; set; }
+    
     public float Scale { get; private set; }
     public bool Rotates { get; set; } = true;
 
@@ -24,10 +27,13 @@ public class Sprite: ISprite
     private readonly int _framesBetweenTransitions = 1;
     private int _frameCounter = 1;
 
+    private bool _invisible = false;
+    
     private Rectangle ActiveSourceRectangle => _sourceRectangles[_activeSourceRectangleIndex];
     
     private readonly float _baseScale;
-    
+    private readonly ExpiredSpriteBehavior _expiredSpriteBehavior;
+
     private IdDictionary<float>? _transformations;
 
     public Sprite(Texture2D image, float scale = 1)
@@ -36,25 +42,30 @@ public class Sprite: ISprite
         _sourceRectangles = [image.Bounds];
         Scale = scale;
         _baseScale = scale;
+        _expiredSpriteBehavior = ExpiredSpriteBehavior.Hold;
     }
 
-    private Sprite(Texture2D image, Rectangle[] sourceRectangles, int framesBetweenTransitions, float scale = 1f)
+    private Sprite(Texture2D image, Rectangle[] sourceRectangles, int framesBetweenTransitions, float scale, 
+        ExpiredSpriteBehavior expiredSpriteBehavior, float opacity)
     {
         _image = image;
         _sourceRectangles = sourceRectangles;
         _framesBetweenTransitions = framesBetweenTransitions;
         Scale = scale;
+        Opacity = opacity;
         _baseScale = scale;
+        _expiredSpriteBehavior = expiredSpriteBehavior;
     }
 
     public void Draw(SpriteBatch spriteBatch, Vector2 position, Angle orientation, Vector2? origin = null, float opacity = 1) {
+        if (_invisible) return;
         if (!Rotates) orientation = new Angle(0);
 
         spriteBatch.Draw(
             texture: _image,
             position: position,
             sourceRectangle: ActiveSourceRectangle,
-            color: Color * opacity,
+            color: Color * opacity * Opacity,
             rotation: orientation,
             origin: origin ?? new Vector2(ActiveSourceRectangle.Width, ActiveSourceRectangle.Height) / 2,
             scale: Scale,
@@ -109,17 +120,24 @@ public class Sprite: ISprite
     private void AdvanceSpriteFrame() {
         if (_frameCounter == _framesBetweenTransitions) {
             _frameCounter = 1;
-            NextSpriteFrame();
+            if (_activeSourceRectangleIndex != _sourceRectangles.Length - 1) {
+                _activeSourceRectangleIndex++;
+            } else {
+                switch (_expiredSpriteBehavior) {
+                    case ExpiredSpriteBehavior.Loop:
+                        _activeSourceRectangleIndex = 0;
+                        break;
+                    case ExpiredSpriteBehavior.Invisible:
+                        _invisible = true;
+                        break;
+                    case ExpiredSpriteBehavior.Hold:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
         } else {
             _frameCounter++;
-        }
-    }
-
-    private void NextSpriteFrame() {
-        if (_activeSourceRectangleIndex == _sourceRectangles.Length - 1) {
-            _activeSourceRectangleIndex = 0;
-        } else {
-            _activeSourceRectangleIndex++;
         }
     }
 
@@ -127,14 +145,18 @@ public class Sprite: ISprite
         Texture2D image,
         int subdivisionsX,
         int subdivisionsY,
-        SimTime timeBetweenTransitions,
+        SimTime loopTime,
         float scale = 1f,
-        bool rotates = true) {
+        bool rotates = true,
+        float opacity = 1f,
+        ExpiredSpriteBehavior expiredSpriteBehavior = ExpiredSpriteBehavior.Loop) {
         
         var sprite = new Sprite(image, 
             image.Bounds.Subdivide(subdivisionsX, subdivisionsY).ToArray(),
-            timeBetweenTransitions.Ticks,
-            scale) {
+            loopTime.Ticks / (subdivisionsX * subdivisionsY),
+            scale,
+            expiredSpriteBehavior,
+            opacity) {
             Rotates = rotates
         };
         return sprite;
