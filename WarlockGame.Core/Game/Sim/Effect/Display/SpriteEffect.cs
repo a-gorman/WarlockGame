@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Graphics;
@@ -15,21 +16,40 @@ public class SpriteEffect : IEffect
     public Vector2? Origin { get; init; }
     
     private readonly Sprite _sprite;
-
+    private readonly Action<Sprite, int, SimTime>? _onUpdate;
+    private int _transformationId;
+    
     private GameTimer? _timer;
+    private int _ticksElapsed;
 
-    public SpriteEffect(Sprite sprite, Vector2 position, SimTime? duration, float orientation = 0) {
+    public SpriteEffect(
+        Func<Sprite> spriteCtor,
+        Vector2 position,
+        SimTime? duration,
+        Action<Sprite, int, SimTime>? onUpdate = null,
+        float orientation = 0) {
+        
         Position = position;
         Orientation = orientation;
-        _sprite = sprite;
+        _sprite = spriteCtor.Invoke();
+        _onUpdate = onUpdate;
         _timer = duration?.ToTimer();
         Origin = null;
+
+        if (_onUpdate != null) {
+            _transformationId = _sprite.AddTransformation();
+        }
     }
 
     public void Update() {
+        _ticksElapsed++;
         _timer = _timer?.Decremented();
         if (_timer?.IsExpired ?? false) {
             IsExpired = true;
+        }
+
+        if (_onUpdate != null) {
+            _onUpdate?.Invoke(_sprite, _transformationId, SimTime.OfTicks(_ticksElapsed));
         }
     }
 

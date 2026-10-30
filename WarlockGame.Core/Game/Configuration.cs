@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Xna.Framework.Input;
 using WarlockGame.Core.Game.Input;
@@ -32,18 +33,21 @@ static class Configuration {
     public static int MapEdgeScrollLimitBoundary { get; set; }
     public static float SimSpeedFactor { get; set; }
     
+    public static float Volume { get; set; }
+    public static bool MuteWhenNotFocused { get; set; }
+    
     // Debug settings
     public static bool Server { get; set; }
     public static bool Client { get; set; }
     public static string JoinIp { get; set; } = null!;
     public static bool RestartOnJoin { get; set; }
+    public static int[]? StartingSpellIds { get; set; }
     public static Logger.Level LogDisplayLevel { get; set; }
     public static Logger.Level LogDedupeLevel { get; set; }
     public static bool DebugBoundingBoxVisualize { get; set; }
     public static bool DebugAoeVisualize { get; set; }
     public static string LogFileName { get; set; } = "logs";
-    public static float Volume { get; set; }
-    public static bool MuteWhenNotFocused { get; set; }
+
 
     public static void ParseArgs(IConfigurationRoot args) {
         WindowName = args["windowName"] ?? "WarlockGame";
@@ -102,6 +106,10 @@ static class Configuration {
         DebugBoundingBoxVisualize = args["debug:boundingBoxVisualize"]?.Let(bool.Parse) ?? false;
         DebugAoeVisualize = args["debug:aoeVisualize"]?.Let(bool.Parse) ?? false;
         LogFileName = args["debug:logFileName"] ?? LogFileName;
+
+#if DEBUG
+        StartingSpellIds = args["debug:startingSpellIds"]?.Split(",").Select(int.Parse).ToArray();
+#endif
     }
 
     private static Keys ParseKey(string? str, Keys defaultValue) {

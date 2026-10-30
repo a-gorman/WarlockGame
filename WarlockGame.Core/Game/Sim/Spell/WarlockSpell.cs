@@ -37,6 +37,7 @@ class WarlockSpell {
                 if (locationSpell.CastRange.HasValue) {
                     // Cast the spell at it's max range if cast beyond max range
                     castLocation = caster.Position + (castLocation - caster.Position).WithMaxLength(locationSpell.CastRange.Value);
+                    context.TargetPosition = castLocation;
                 }
 
                 locationSpell.Effects.ForEach(x => x.Invoke(context, castLocation));

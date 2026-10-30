@@ -27,8 +27,7 @@ public class RotatingSprite: ISprite
 
     private IdDictionary<float>? _transformations;
 
-    private RotatingSprite(Texture2D image, Rectangle[] sourceRectangles, float baseScale)
-    {
+    private RotatingSprite(Texture2D image, Rectangle[] sourceRectangles, float baseScale) {
         _image = image;
         _sourceRectangles = sourceRectangles;
         Size = sourceRectangles[0].Size.ToVector2();
@@ -36,8 +35,7 @@ public class RotatingSprite: ISprite
         _scale = baseScale;
     }
     
-    public static RotatingSprite FromGridSpriteSheet(Texture2D image, int rotations, float scale = 1f)
-    {
+    public static RotatingSprite FromGridSpriteSheet(Texture2D image, int rotations, float scale = 1f) {
         return new RotatingSprite(image, image.Bounds.Subdivide(1, rotations).ToArray(), scale);
     }
     

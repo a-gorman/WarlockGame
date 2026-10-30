@@ -18,7 +18,7 @@ class GameRules {
     
     public readonly int[] StartingSpells = [1, 4];
     
-    public readonly int[] AvailableSpells = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 14];
+    public readonly int[] AvailableSpells = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 14, 15, 16];
     
     public event Action<LivesChanged>? OnChanged;
 

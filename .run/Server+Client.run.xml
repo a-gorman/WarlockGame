@@ -7,7 +7,6 @@
             <option name="type" value="immediately" />
           </ConditionSnapshot>
         </option>
-        <option name="disableDebugging" value="true" />
         <option name="executable">
           <ExecutableSnapshot>
             <option name="id" value="runConfig:.NET Project.Server" />
@@ -32,6 +31,7 @@
             <option name="type" value="afterPreviousStarted" />
           </ConditionSnapshot>
         </option>
+        <option name="disableDebugging" value="true" />
         <option name="executable">
           <ExecutableSnapshot>
             <option name="id" value="runConfig:.NET Project.Client" />

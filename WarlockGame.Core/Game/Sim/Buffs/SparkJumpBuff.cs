@@ -31,7 +31,7 @@ class SparkJumpBuff : Buff {
         _spriteOffset = -_displacementPerTick.ToNormalized() * 100;
         
         var sprite = Sprite.FromGridSpriteSheet(Art.SparkJumpTravel, 3, 3, SimTime.OfSeconds(0.05f), scale: 2.3f);
-        _travelSprite = new SpriteEffect(sprite, target.Position + _spriteOffset, duration: null, orientation: (_displacementPerTick).ToAngle());
+        _travelSprite = new SpriteEffect(() => sprite, target.Position + _spriteOffset, duration: null, orientation: (_displacementPerTick).ToAngle());
         _sim.EffectManager.Add(_travelSprite);
         
         _transformationId = target.Sprite.AddTransformation(1f);

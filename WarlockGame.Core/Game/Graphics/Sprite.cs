@@ -64,7 +64,7 @@ public class Sprite: ISprite
         AdvanceSpriteFrame();
     }
 
-    public int AddTransformation(float scale) {
+    public int AddTransformation(float scale = 1) {
         _transformations ??= new IdDictionary<float>();
         var transformationId = _transformations.AddManual(scale);
 

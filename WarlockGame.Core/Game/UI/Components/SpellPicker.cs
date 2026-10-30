@@ -52,7 +52,7 @@ class SpellPicker : InterfaceComponent {
 
     protected override void OnUpdate(in UIManager.UpdateArgs args) {
         var playerId = PlayerManager.LocalPlayerId;
-        if (playerId == null) {
+        if (playerId == null || (_sim.Forces.FirstOrDefault(x => x.Id == playerId.Value)?.AreSpellsChosen ?? true)) {
             Visible = false;
         }
     }

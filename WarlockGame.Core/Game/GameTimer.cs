@@ -29,4 +29,8 @@ public readonly struct GameTimer
     {
         return new GameTimer(Math.Max(0, TicksRemaining - 1));
     }
+
+    public static GameTimer Expired() {
+        return new GameTimer(0);
+    }
 }

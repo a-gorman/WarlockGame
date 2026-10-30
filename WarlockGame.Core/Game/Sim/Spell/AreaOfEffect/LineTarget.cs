@@ -18,6 +18,10 @@ class LineTarget : IDirectionalShape {
     public Falloff.FalloffFactor2Axis FalloffFactor { get; init; } = Falloff.None;
 
     public AoeResult GatherTargets(SpellContext context, Vector2 castLocation, Vector2 invokeDirection) {
+        if (Configuration.DebugAoeVisualize) {
+            DebugVisualize(context, invokeDirection);
+        }
+        
         var startPoint = castLocation + context.Caster.Radius * invokeDirection.ToNormalized();
         var endPoint = startPoint + invokeDirection * Length;
 
@@ -25,7 +29,7 @@ class LineTarget : IDirectionalShape {
         Texture?.Run(x => {
             var sprite = new Sprite(x);
             context.EffectManager.Add(
-                new SpriteEffect(sprite, castLocation, duration: SimTime.OfTicks(10), orientation: invokeDirection.ToAngle()) 
+                new SpriteEffect(() => sprite, castLocation, duration: SimTime.OfTicks(10), orientation: invokeDirection.ToAngle()) 
                 {
                     Origin = new Vector2(0, sprite.Size.Y / 2)
                 });
@@ -50,6 +54,7 @@ class LineTarget : IDirectionalShape {
 
             var displacement1 = entity.Position - lineSegment.Start;
             var displacement2 = entity.Position - closetLinePoint;
+            
             yield return new AoeTargetInfo
             {
                 Entity = entity,

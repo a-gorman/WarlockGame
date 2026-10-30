@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Content;
+using MonoGame.Extended.Graphics;
 
 namespace WarlockGame.Core.Game.Graphics
 {
@@ -58,6 +60,7 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D ShockwaveIcon { get; set; } = null!;
 		public static Texture2D LightningJumpIcon { get; set; } = null!;
 		public static Texture2D GraveTickIcon { get; set; } = null!;
+		public static Texture2D GraveTickExplosion { get; set; } = null!;
 
 		public static void Load(ContentManager content)
 		{
@@ -79,6 +82,8 @@ namespace WarlockGame.Core.Game.Graphics
 			SparkJumpExpand = content.Load<Texture2D>("Art/particle-fx_Eletric_Expansion");
 			SparkJumpTravel = content.Load<Texture2D>("Art/particle-fx_Eletric_A_Sheet");
 
+			GraveTickExplosion = content.Load<Texture2D>("Art/Power_Ball");
+			
 			LineParticle = content.Load<Texture2D>("Art/Laser");
 			Glow = content.Load<Texture2D>("Art/Glow");
 

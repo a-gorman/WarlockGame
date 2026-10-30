@@ -379,8 +379,15 @@ class SpellFactory {
                             timeBetweenTransitions: SimTime.OfSeconds(animationDurationSeconds / 6),
                             scale: 1 / 25f * radius
                         );
-                        return new SpriteEffect(flameStrikeSprite, location,
-                            SimTime.OfSeconds(animationDurationSeconds)) {
+                        return new SpriteEffect(() => Sprite.FromGridSpriteSheet(
+                                Art.FlameStrike,
+                                subdivisionsX: 9,
+                                subdivisionsY: 1,
+                                timeBetweenTransitions: SimTime.OfSeconds(animationDurationSeconds / 6),
+                                scale: 1 / 25f * radius
+                            ), 
+                            position: location,
+                            duration: SimTime.OfSeconds(animationDurationSeconds)) {
                             Origin = new Vector2(flameStrikeSprite.Size.X / 2, flameStrikeSprite.Size.Y / 1.3f)
                         };
                     })
@@ -481,16 +488,7 @@ class SpellFactory {
                         new DamageComponent { Damage = damage },
                         new PushComponent() { Force = 100 }
                     ]
-                }
-            ],
-            effects: [
-                new LocationEffectComponent((context, _) => {
-                    return new SpriteEffect(
-                        sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f),
-                            1.35f),
-                        position: context.CastFromPosition,
-                        duration: SimTime.OfSeconds(0.5f));
-                }),
+                },
                 new ApplyBuffComponent(context => {
                     var displacement = context.TargetPosition - context.CastFromPosition;
                     return new Buff(
@@ -512,11 +510,19 @@ class SpellFactory {
                                     ]
                                 },
                                 new LocationEffectComponent(x => new SpriteEffect(
-                                    sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f), 1.35f),
+                                    spriteCtor: () => Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f), 1.35f),
                                     position: x,
                                     duration: SimTime.OfSeconds(0.5f)))
                             ])
                         ]);
+                })
+            ],
+            effects: [
+                new LocationEffectComponent((context, _) => {
+                    return new SpriteEffect(
+                        spriteCtor: ()=> Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.25f / 10f), 1.35f),
+                        position: context.CastFromPosition,
+                        duration: SimTime.OfSeconds(0.5f));
                 })
             ]);
     }
@@ -574,10 +580,12 @@ class SpellFactory {
                                                 context: context,
                                                 repeatEvery: timeBetweenTicks,
                                                 components: [
-                                                    new LocationEffectComponent(x => new SpriteEffect(
-                                                        sprite: Sprite.FromGridSpriteSheet(Art.SparkJumpExpand, 5, 2, SimTime.OfSeconds(0.5f / 10f), 1.35f),
-                                                        position: x,
-                                                        duration: SimTime.OfSeconds(0.5f))),
+                                                    new LocationEffectComponent(x => 
+                                                        new SpriteEffect(
+                                                            spriteCtor: () => Sprite.FromGridSpriteSheet(Art.GraveTickExplosion, 4, 4, SimTime.OfSeconds(0.5f / 10f), 4.5f),
+                                                            position: x,
+                                                            onUpdate: static (sprite, transformId, timeElapsed) => { sprite.ChangeTransformation(transformId, 1.8f/30f * timeElapsed.Ticks); },
+                                                            duration: SimTime.OfSeconds(0.5f))),
                                                     new LocationAreaOfEffect {
                                                         Shape = new CircleTarget(AoeSelectors.Warlocks, shareRadius),
                                                         Components = [

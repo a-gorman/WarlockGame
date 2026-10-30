@@ -221,6 +221,12 @@ public class WarlockGame: Microsoft.Xna.Framework.Game {
         
         ParticleManager.Clear();
         Simulation.Restart(seed);
+        if (Configuration.StartingSpellIds != null && NetworkManager.IsServer) {
+            foreach (var force in Simulation.Forces) {
+                CommandManager.AddSimulationCommand(new SelectSpells { PlayerId = force.Id, SpellDefIds = Configuration.StartingSpellIds});
+            }
+        }
+        
         State = GameState.Running;
     }
 
