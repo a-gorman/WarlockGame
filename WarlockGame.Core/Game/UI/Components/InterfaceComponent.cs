@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Util;
 
@@ -138,147 +137,53 @@ class InterfaceComponent {
     }
 
     public virtual void RefreshBounds(Rectangle parentBounds) {
-        int xOffset;
-        int yOffset;
-        switch (Layout.Type) {
-            case Layout.LayoutType.Margin:
-                BoundingBox = parentBounds
-                    .AtLocation(Layout.Offset)
-                    .WithMargin(Layout.Width, Layout.Height);
-                break;
-            case Layout.LayoutType.Unrestricted:
-                switch (Layout.Alignment) {
-                    case Alignment.TopLeft:
-                        xOffset = Layout.Offset.X;
-                        yOffset = Layout.Offset.Y;
-                        break;
-                    case Alignment.TopCenter:
-                        xOffset = CenterOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
-                        yOffset = Layout.Offset.Y;
-                        break;
-                    case Alignment.TopRight:
-                        xOffset = OppositeSideOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
-                        yOffset = Layout.Offset.Y;
-                        break;
-                    case Alignment.CenterLeft:
-                        xOffset = Layout.Offset.X;
-                        yOffset = CenterOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
-                        break;
-                    case Alignment.Center:
-                        xOffset = CenterOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
-                        yOffset = CenterOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
-                        break;
-                    case Alignment.CenterRight:
-                        xOffset = OppositeSideOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
-                        yOffset = CenterOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
-                        break;
-                    case Alignment.BottomLeft:
-                        xOffset = Layout.Offset.X;
-                        yOffset = OppositeSideOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
-                        break;
-                    case Alignment.BottomCenter:
-                        xOffset = CenterOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
-                        yOffset = OppositeSideOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
-                        break;
-                    case Alignment.BottomRight:
-                        xOffset = OppositeSideOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
-                        yOffset = OppositeSideOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(UI.Components.Layout.Type), Layout.Type, null);
-                }
+        int width = Layout.HasLayoutFlags(Layout.LayoutFlags.AutoWidth)
+            ? parentBounds.Width - 2 * Layout.Width // Interpret layout width as margin
+            : Layout.Width;
+        
+        int height = Layout.HasLayoutFlags(Layout.LayoutFlags.AutoHeight)
+            ? parentBounds.Height - 2 * Layout.Height // Interpret layout height as margin
+            : Layout.Height;
 
-                BoundingBox = new Rectangle(xOffset, yOffset, Layout.Width, Layout.Height);
-                break;
-            case Layout.LayoutType.ManualSize:
-                switch (Layout.Alignment) {
-                    case Alignment.TopLeft:
-                        xOffset = Layout.Offset.X;
-                        yOffset = Layout.Offset.Y;
-                        break;
-                    case Alignment.TopCenter:
-                        xOffset = CenterOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
-                        yOffset = Layout.Offset.Y;
-                        break;
-                    case Alignment.TopRight:
-                        xOffset = OppositeSideOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
-                        yOffset = Layout.Offset.Y;
-                        break;
-                    case Alignment.CenterLeft:
-                        xOffset = Layout.Offset.X;
-                        yOffset = CenterOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
-                        break;
-                    case Alignment.Center:
-                        xOffset = CenterOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
-                        yOffset = CenterOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
-                        break;
-                    case Alignment.CenterRight:
-                        xOffset = OppositeSideOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
-                        yOffset = CenterOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
-                        break;
-                    case Alignment.BottomLeft:
-                        xOffset = Layout.Offset.X;
-                        yOffset = OppositeSideOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
-                        break;
-                    case Alignment.BottomCenter:
-                        xOffset = CenterOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
-                        yOffset = OppositeSideOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
-                        break;
-                    case Alignment.BottomRight:
-                        xOffset = OppositeSideOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
-                        yOffset = OppositeSideOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(UI.Components.Layout.Type), Layout.Type, null);
-                }
+        int xOffset = GetBaseXOffset(Layout, width, parentBounds) + Layout.Offset.X;
+        int yOffset = GetBaseYOffset(Layout, height, parentBounds) + Layout.Offset.Y;
+        
+        var bounds = new Rectangle(xOffset, yOffset, width, height);
 
-                BoundingBox = parentBounds.AtOrigin().GetRelativeRectangle(xOffset, yOffset, Layout.Width, Layout.Height);
-                break;
-            case Layout.LayoutType.HeightMargin:
-                switch(Layout.Alignment) {
-                    case Alignment.Left:
-                        xOffset = Layout.Offset.X;
-                        break;
-                    case Alignment.Center:
-                        xOffset = CenterOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
-                        break;
-                    case Alignment.Right:
-                        xOffset = OppositeSideOffset(Layout.Offset.X, Layout.Width, parentBounds.Width);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(UI.Components.Layout.Alignment), Layout.Alignment, null);
-                }
-                BoundingBox = new Rectangle(xOffset, Layout.Height, Math.Min(Layout.Width, parentBounds.Width - xOffset), parentBounds.Height - 2*Layout.Height);
-                break;
-            case Layout.LayoutType.WidthMargin:
-                switch (Layout.Alignment) {
-                    case Alignment.Top:
-                        yOffset = Layout.Offset.Y;
-                        break;
-                    case Alignment.Center:
-                        yOffset = CenterOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
-                        break;
-                    case Alignment.Bottom:
-                        yOffset = OppositeSideOffset(Layout.Offset.Y, Layout.Height, parentBounds.Height);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(UI.Components.Layout.Alignment), Layout.Alignment, null);
-                }
-                BoundingBox = new Rectangle(Layout.Width, yOffset, parentBounds.Width - 2*Layout.Width, Math.Min(Layout.Height, parentBounds.Height - yOffset));
-                break;
+        if (Layout.HasLayoutFlags(Layout.LayoutFlags.RestrictBounds)) {
+            bounds = parentBounds.AtOrigin().GetRelativeRectangle(bounds);
         }
 
+        BoundingBox = bounds;
         IsLayoutDirty = false;
-        return;
+    }
 
-        // Nested functions
-        int CenterOffset(int offset, int childSideLength, int parentSideLength) {
-            return Math.Abs(parentSideLength - (childSideLength - offset)) / 2;
+    private static int GetBaseXOffset(in Layout layout, int width, Rectangle parentBounds) {
+        if (layout.HasAlignmentFlags(AlignmentFlags.HorizontalCenter)) {
+            return Math.Abs(parentBounds.Width - width) / 2;
+        }
+        if (layout.HasAlignmentFlags(AlignmentFlags.Left)) {
+            return 0;
+        }
+        if (layout.HasAlignmentFlags(AlignmentFlags.Right)) {
+            return Math.Abs(parentBounds.Width - width);
         }
 
-        int OppositeSideOffset(int offset, int childSideLength, int parentSideLength) {
-            return Math.Abs(parentSideLength - (childSideLength - offset));
+        throw new Exception("Invalid horizontal flags");
+    }
+    
+    private static int GetBaseYOffset(in Layout layout, int height, Rectangle parentBounds) {
+        if (layout.HasAlignmentFlags(AlignmentFlags.VerticalCenter)) {
+            return Math.Abs(parentBounds.Height - height) / 2;
         }
+        if (layout.HasAlignmentFlags(AlignmentFlags.Top)) {
+            return 0;
+        }
+        if (layout.HasAlignmentFlags(AlignmentFlags.Bottom)) {
+            return Math.Abs(parentBounds.Height - height);
+        }
+
+        throw new Exception("Invalid vertical flags");
     }
 
     private void DirtyIndexing() {
@@ -301,14 +206,18 @@ class InterfaceComponent {
     }
 }
 
-record struct Layout {
-    public LayoutType Type { get; set; }
-    public Alignment Alignment { get; set; }
-    public Point Offset { get; set; }
-    public int Width { get; set; }
-    public int Height { get; set; }
+readonly record struct Layout {
+    public LayoutType Type { get; }
+    public Alignment Alignment { get; }
+    public Point Offset { get; }
+    public int Width { get; }
+    public int Height { get; }
 
-    public Layout() { /* Fill */ }
+    public Layout() {
+        // By default, fill the parent
+        Type = LayoutType.Margin;
+        Alignment = Alignment.TopLeft;
+    }
     
     private Layout(LayoutType type, 
         Alignment alignment = Alignment.TopLeft, 
@@ -327,11 +236,11 @@ record struct Layout {
     }
     
     public static Layout WithMargin(int margin) {
-        return new Layout(LayoutType.Margin, width: margin, height: margin);
+        return new Layout(LayoutType.Margin, alignment: Alignment.Center, width: margin, height: margin);
     }
     
     public static Layout WithMargin(int widthMargin, int heightMargin) {
-        return new Layout(LayoutType.Margin, width: widthMargin, height: heightMargin);
+        return new Layout(LayoutType.Margin, alignment: Alignment.Center, width: widthMargin, height: heightMargin);
     }
 
     public static Layout WithHeight(int height, int heightOffset = 0, int widthMargin = 0, Alignment alignment = Alignment.Top) {
@@ -383,12 +292,30 @@ record struct Layout {
             height: height);
     }
 
+    public bool HasLayoutFlags(LayoutFlags flags) {
+        return ((int)Type & (int)flags) == (int)flags;
+    }
+    
+    public bool HasAlignmentFlags(AlignmentFlags flags) {
+        return ((int)Alignment & (int)flags) == (int)flags;
+    }
+    
     public enum LayoutType {
-        Margin,
-        HeightMargin,
-        WidthMargin,
-        ManualSize,
-        Unrestricted
+        Margin           = LayoutFlags.AutoHeight | LayoutFlags.AutoWidth | LayoutFlags.RestrictBounds,
+        HeightMargin     = LayoutFlags.AutoHeight | LayoutFlags.RestrictBounds,
+        WidthMargin      = LayoutFlags.AutoWidth | LayoutFlags.RestrictBounds,
+        ManualSize       = LayoutFlags.RestrictBounds,
+        Unrestricted     = 0,
+        Outside          = LayoutFlags.OutsideParent,
+        OutsideNoOverlap = LayoutFlags.OutsideParent | LayoutFlags.RestrictBounds
+    }
+
+    [Flags]
+    public enum LayoutFlags {
+        AutoWidth      = 0b0001,
+        AutoHeight     = 0b0010,
+        OutsideParent  = 0b0100,
+        RestrictBounds = 0b1000
     }
 }
 

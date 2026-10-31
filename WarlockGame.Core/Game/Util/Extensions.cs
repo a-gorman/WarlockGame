@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
 using WarlockGame.Core.Game.Networking.Packet;
@@ -128,6 +129,25 @@ internal static class Extensions {
         
         public Rectangle AtOrigin() {
             return source with { X = 0, Y = 0 };
+        }
+        
+        public Rectangle GetRelativeRectangle(
+            int x,
+            int y,
+            int width,
+            int height) {
+            int num1 = source.X + x;
+            int num2 = source.Y + y;
+            Rectangle relativeRectangle;
+            relativeRectangle.X = MathHelper.Clamp(num1, source.Left, source.Right);
+            relativeRectangle.Y = MathHelper.Clamp(num2, source.Top, source.Bottom);
+            relativeRectangle.Width = Math.Max(Math.Min(num1 + width, source.Right) - relativeRectangle.X, 0);
+            relativeRectangle.Height = Math.Max(Math.Min(num2 + height, source.Bottom) - relativeRectangle.Y, 0);
+            return relativeRectangle;
+        }
+        
+        public Rectangle GetRelativeRectangle(Rectangle other) {
+            return source.GetRelativeRectangle(other.X, other.Y, other.Width, other.Height);
         }
     }
 

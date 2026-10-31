@@ -12,6 +12,7 @@ sealed class Scoreboard : InterfaceComponent {
 
     public Scoreboard(GameRules gameRule) {
         _gameRule = gameRule;
+        Layout = Layout.WithMargin(5);
     }
 
     protected override void OnAdd() {
