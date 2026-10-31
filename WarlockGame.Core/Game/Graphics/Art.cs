@@ -28,7 +28,6 @@ namespace WarlockGame.Core.Game.Graphics
 
 		public static Texture2D FlameStrike { get; private set; } = null!;
 
-		public static Texture2D LineParticle { get; private set; } = null!;
 		public static Texture2D Glow { get; private set; } = null!;
 		public static Texture2D Pixel { get; private set; } = null!;		// a single white pixel
 
@@ -85,7 +84,6 @@ namespace WarlockGame.Core.Game.Graphics
 			SwapEffect = content.Load<Texture2D>("Art/Effects/retro_impact_effect_pack_swap");
 			ExplodeOnDamageEffect = content.Load<Texture2D>("Art/Effects/symmetrical_impact_004_large_blue");
 			
-			LineParticle = content.Load<Texture2D>("Art/Laser");
 			Glow = content.Load<Texture2D>("Art/Glow");
 
 			FlameStrike = content.Load<Texture2D>("Art/flame_strike");
