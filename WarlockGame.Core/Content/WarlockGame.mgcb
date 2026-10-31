@@ -37,6 +37,42 @@
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Effects/retro_impact_effect_pack_swap.png;Art/Effects/retro_impact_effect_pack_swap.png
 
+#begin ../../../../GameContent/Art/Effects/retro_impact_effect_pack_swap.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Effects/retro_impact_effect_pack_swap.png;Art/Effects/retro_impact_effect_pack_swap.png
+
+#begin ../../../../GameContent/Art/Effects/symmetrical_impact_003_large_orange.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Effects/symmetrical_impact_003_large_orange.png;Art/Effects/symmetrical_impact_003_large_orange.png
+
+#begin ../../../../GameContent/Art/Effects/symmetrical_impact_004_large_blue.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../GameContent/Art/Effects/symmetrical_impact_004_large_blue.png;Art/Effects/symmetrical_impact_004_large_blue.png
+
 #begin ../../../../GameContent/Art/Energy_Spark.png
 /importer:TextureImporter
 /processor:TextureProcessor

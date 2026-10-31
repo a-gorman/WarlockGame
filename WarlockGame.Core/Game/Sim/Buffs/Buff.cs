@@ -68,7 +68,8 @@ class Buff {
         Slow,
         Jumping,
         GraveTick,
-        ExplodeOnDamage
+        ExplodeOnDamage,
+        ExplodeOnDamageSlow
     }
 
     public enum StackingType {

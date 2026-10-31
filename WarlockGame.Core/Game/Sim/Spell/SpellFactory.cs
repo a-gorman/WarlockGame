@@ -128,7 +128,12 @@ class SpellFactory {
                         },
                         new DestroyProjectile()
                     ]
-                }
+                },
+                new LocationEffectComponent(x => 
+                    new SpriteEffect(
+                        sprite: Sprite.FromGridSpriteSheet(Art.BurstEffect, 7, 1, SimTime.OfSeconds(0.5f), 2f, opacity: 0.8f, expiredSpriteBehavior: ExpiredSpriteBehavior.Invisible),
+                        position: x,
+                        duration: SimTime.OfSeconds(0.5f)))
             ]
         );
     }

@@ -30,8 +30,8 @@ class CircleTarget : ILocationShape {
     
     public AoeResult GatherTargets(SpellContext context, Vector2 origin) {
         if (Configuration.DebugAoeVisualize) {
-            SimDebug.VisualizeCircle(InnerRadius, origin, Color.Blue, duration: 6);
-            SimDebug.VisualizeCircle(OuterRadius, origin, Color.Yellow, duration: 6);
+            SimDebug.VisualizeCircle(InnerRadius, origin, Color.Blue, duration: 20);
+            SimDebug.VisualizeCircle(OuterRadius, origin, Color.Yellow, duration: 20);
         }
         
         var targets = context.EntityManager.GetNearbyEntities(origin, OuterRadius)

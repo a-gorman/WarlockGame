@@ -63,6 +63,8 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D GraveTickIcon { get; set; } = null!;
 		public static Texture2D GraveTickExplosion { get; set; } = null!;
 		public static Texture2D SwapEffect { get; set; } = null!;
+		public static Texture2D BurstEffect { get; set; } = null!;
+		public static Texture2D ExplodeOnDamageEffect { get; set; } = null!;
 
 		public static void Load(ContentManager content)
 		{
@@ -79,7 +81,9 @@ namespace WarlockGame.Core.Game.Graphics
 			SparkJumpTravel = content.Load<Texture2D>("Art/particle-fx_Eletric_A_Sheet");
 
 			GraveTickExplosion = content.Load<Texture2D>("Art/Power_Ball");
+			BurstEffect = content.Load<Texture2D>("Art/Effects/symmetrical_impact_003_large_orange");
 			SwapEffect = content.Load<Texture2D>("Art/Effects/retro_impact_effect_pack_swap");
+			ExplodeOnDamageEffect = content.Load<Texture2D>("Art/Effects/symmetrical_impact_004_large_blue");
 			
 			LineParticle = content.Load<Texture2D>("Art/Laser");
 			Glow = content.Load<Texture2D>("Art/Glow");
