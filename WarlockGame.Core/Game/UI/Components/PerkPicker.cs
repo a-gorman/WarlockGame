@@ -31,7 +31,7 @@ sealed class PerkPicker: InterfaceComponent {
         _sim = sim;
         Layout = Layout.WithSize(600, 200, Alignment.Center);
         _pickingTimeDisplay = new PrettyTextDisplay(PrettyString.Parse("Time remaining: 0 seconds")) {
-            Layout = Layout.WithHeight((int)(Art.FontHeight * 0.75f), alignment: Alignment.Bottom),
+            Layout = Layout.WithHeight((int)(Art.FontHeight * 0.75f), alignment: Alignment.BottomCenter),
             TextScale = 0.75f,
             TextColor = Color.Black
         };

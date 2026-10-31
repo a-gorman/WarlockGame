@@ -82,7 +82,8 @@ class SpellPicker : InterfaceComponent {
                             TextScale = 0.45f,
                             TextColor = Color.Black
                         }) {
-                        Color = Color.BurlyWood
+                        Color = Color.BurlyWood,
+                        Layout = Layout.OutsideParent(4, 30, 170, 170, Alignment.TopRight)
                     }
                 ]));
             

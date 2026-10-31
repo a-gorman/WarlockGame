@@ -11,11 +11,7 @@ enum Alignment {
     CenterRight   = AlignmentFlags.Right            | AlignmentFlags.VerticalCenter,
     BottomLeft    = AlignmentFlags.Left             | AlignmentFlags.Bottom,
     BottomCenter  = AlignmentFlags.HorizontalCenter | AlignmentFlags.Bottom,
-    BottomRight   = AlignmentFlags.Right            | AlignmentFlags.Bottom,
-    Bottom        = AlignmentFlags.Bottom,
-    Top           = AlignmentFlags.Top,
-    Left          = AlignmentFlags.Left,
-    Right         = AlignmentFlags.Right
+    BottomRight   = AlignmentFlags.Right            | AlignmentFlags.Bottom
 }
 
 [Flags]

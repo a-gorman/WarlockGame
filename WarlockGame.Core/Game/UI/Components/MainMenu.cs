@@ -55,10 +55,10 @@ class MainMenu: InterfaceComponent {
     
     private Grid CreateJoinGrid() {
         var playerNameInput = new TextInput(textColor: Color.Black, backgroundColor: Color.White) 
-            { Layout = Layout.WithHeight(Art.Font.LineSpacing, alignment: Alignment.Top) };
+            { Layout = Layout.WithHeight(Art.Font.LineSpacing, alignment: Alignment.TopCenter) };
         
         var joinIpInput = new TextInput(textColor: Color.Black, backgroundColor: Color.White) 
-            { Layout = Layout.WithHeight(Art.Font.LineSpacing, alignment: Alignment.Top) };
+            { Layout = Layout.WithHeight(Art.Font.LineSpacing, alignment: Alignment.TopCenter) };
         
         var connectButton = new Button(_buttonTexture) {
             Layout = Layout.WithMargin(10), 
@@ -84,7 +84,7 @@ class MainMenu: InterfaceComponent {
     
     private Grid CreateHostGrid() {
         var playerNameInput = new TextInput(textColor: Color.Black, backgroundColor: Color.White) 
-            { Layout = Layout.WithHeight(Art.Font.LineSpacing, alignment: Alignment.Top) };
+            { Layout = Layout.WithHeight(Art.Font.LineSpacing, alignment: Alignment.TopCenter) };
         
         var startButton = new Button(_buttonTexture) {
             Layout = Layout.WithMargin(10), 

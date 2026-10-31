@@ -23,7 +23,6 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D BraveTickProjectile { get; private set; } = null!;
 		public static Texture2D SwapProjectile { get; private set; } = null!;
 		public static Texture2D Pointer { get; private set; } = null!;
-		public static Texture2D BlackHole { get; private set; } = null!;
 		public static Texture2D SparkJumpExpand { get; private set; } = null!;
 		public static Texture2D SparkJumpTravel { get; private set; } = null!;
 
@@ -76,7 +75,6 @@ namespace WarlockGame.Core.Game.Graphics
 			Lightning = content.Load<Texture2D>("Art/Lightning");
 
 			Pointer = content.Load<Texture2D>("Art/Pointer");
-			BlackHole = content.Load<Texture2D>("Art/Black Hole");
 			SparkJumpExpand = content.Load<Texture2D>("Art/particle-fx_Eletric_Expansion");
 			SparkJumpTravel = content.Load<Texture2D>("Art/particle-fx_Eletric_A_Sheet");
 

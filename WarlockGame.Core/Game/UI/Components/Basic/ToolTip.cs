@@ -11,7 +11,6 @@ class ToolTip: InterfaceComponent {
         ZIndex = ZLayer.Tooltip;
         
         _wrapper = new InterfaceComponent {
-            Layout = Layout.WithUnrestrictedBounds(174, -140, 170, 170, Alignment.TopRight),
             Disabled = true
         };
         

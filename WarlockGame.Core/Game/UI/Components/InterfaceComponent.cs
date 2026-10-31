@@ -9,7 +9,7 @@ namespace WarlockGame.Core.Game.UI.Components;
 
 class InterfaceComponent {
     public ZLayer ZIndex { get; init; }
-    
+
     /// <summary>
     /// Determines what is displayed on top of what among siblings in the interface tree.
     /// Higher layers are displayed on top of lower numbered layers.
@@ -17,7 +17,9 @@ class InterfaceComponent {
     public int SiblingLayer { get; init; }
 
     public bool IsExpired { get; set; }
-    public bool Disabled { get;
+
+    public bool Disabled {
+        get;
         set {
             if (value != field) {
                 RequiresReindexing = true;
@@ -25,7 +27,7 @@ class InterfaceComponent {
             }
         }
     }
-    
+
     public ClickableState Clickable { get; set; } = ClickableState.Ignore;
 
     public bool Visible {
@@ -68,7 +70,7 @@ class InterfaceComponent {
     protected bool IsVisibilityDirty { get; private set; } = true;
 
     protected bool WasMadeVisible => IsVisibilityDirty && Visible;
-    
+
     public Vector2 RelativeLocation => BoundingBox.Location.ToVector2();
 
     private readonly List<InterfaceComponent> _components = [];
@@ -81,18 +83,18 @@ class InterfaceComponent {
         Draw(location, spriteBatch);
         DirtyIndexing();
     }
-    
+
     protected virtual void Draw(Vector2 location, SpriteBatch spriteBatch) { }
 
     protected virtual void OnUpdate(in UIManager.UpdateArgs args) { }
-    
+
     /// <summary>
     /// Update function called each frame before drawing any components.
     /// </summary>
     public void Update(ref readonly UIManager.UpdateArgs args) {
         OnUpdate(args);
     }
-    
+
     public void AddComponent(InterfaceComponent component) {
         var originX = Math.Min(Math.Max(component.BoundingBox.X, 0), BoundingBox.Width);
         var originY = Math.Min(Math.Max(component.BoundingBox.Y, 0), BoundingBox.Height);
@@ -102,36 +104,40 @@ class InterfaceComponent {
         var newBounds = new Rectangle(originX, originY, oppositeX - originX, oppositeY - originY);
 
         if (newBounds != component.BoundingBox) {
-            Logger.Warning($"Nested component bounds are outside parent bounds. Adjusted '{component.BoundingBox}' to '{newBounds}'.", Logger.LogType.Interface);
+            Logger.Warning(
+                $"Nested component bounds are outside parent bounds. Adjusted '{component.BoundingBox}' to '{newBounds}'.",
+                Logger.LogType.Interface);
             component.BoundingBox = newBounds;
         }
-        
+
         _components.Add(component);
         _components.Sort((first, second) => second.SiblingLayer.CompareTo(first.SiblingLayer));
         component.OnAdd();
         DirtyIndexing();
     }
-    
+
     public void RemoveComponent(InterfaceComponent component) {
         _components.Remove(component);
         component.OnRemove();
         DirtyIndexing();
     }
-    
+
     public void RemoveAllComponents() {
         foreach (var component in _components) {
             component.OnRemove();
         }
+
         _components.Clear();
         DirtyIndexing();
     }
-    
+
     public void RemoveAllComponents(Predicate<InterfaceComponent> predicate) {
         foreach (var component in _components) {
             if (predicate(component)) {
                 component.OnRemove();
             }
         }
+
         _components.RemoveAll(predicate);
         DirtyIndexing();
     }
@@ -140,14 +146,14 @@ class InterfaceComponent {
         int width = Layout.HasLayoutFlags(Layout.LayoutFlags.AutoWidth)
             ? parentBounds.Width - 2 * Layout.Width // Interpret layout width as margin
             : Layout.Width;
-        
+
         int height = Layout.HasLayoutFlags(Layout.LayoutFlags.AutoHeight)
             ? parentBounds.Height - 2 * Layout.Height // Interpret layout height as margin
             : Layout.Height;
 
         int xOffset = GetBaseXOffset(Layout, width, parentBounds) + Layout.Offset.X;
         int yOffset = GetBaseYOffset(Layout, height, parentBounds) + Layout.Offset.Y;
-        
+
         var bounds = new Rectangle(xOffset, yOffset, width, height);
 
         if (Layout.HasLayoutFlags(Layout.LayoutFlags.RestrictBounds)) {
@@ -159,34 +165,61 @@ class InterfaceComponent {
     }
 
     private static int GetBaseXOffset(in Layout layout, int width, Rectangle parentBounds) {
-        if (layout.HasAlignmentFlags(AlignmentFlags.HorizontalCenter)) {
-            return Math.Abs(parentBounds.Width - width) / 2;
-        }
-        if (layout.HasAlignmentFlags(AlignmentFlags.Left)) {
-            return 0;
-        }
-        if (layout.HasAlignmentFlags(AlignmentFlags.Right)) {
-            return Math.Abs(parentBounds.Width - width);
+        if (!layout.HasLayoutFlags(Layout.LayoutFlags.OutsideParent)) {
+            if (layout.HasAlignmentFlags(AlignmentFlags.HorizontalCenter)) {
+                return (parentBounds.Width - width) / 2;
+            }
+
+            if (layout.HasAlignmentFlags(AlignmentFlags.Left)) {
+                return 0;
+            }
+
+            if (layout.HasAlignmentFlags(AlignmentFlags.Right)) {
+                return parentBounds.Width - width;
+            }
+        } else {
+            if (layout.HasAlignmentFlags(AlignmentFlags.HorizontalCenter)) {
+                return (parentBounds.Width - width) / 2;
+            }
+
+            if (layout.HasAlignmentFlags(AlignmentFlags.Left)) {
+                return -width;
+            }
+
+            if (layout.HasAlignmentFlags(AlignmentFlags.Right)) {
+                return parentBounds.Width;
+            }
         }
 
         throw new Exception("Invalid horizontal flags");
     }
-    
-    private static int GetBaseYOffset(in Layout layout, int height, Rectangle parentBounds) {
-        if (layout.HasAlignmentFlags(AlignmentFlags.VerticalCenter)) {
-            return Math.Abs(parentBounds.Height - height) / 2;
-        }
-        if (layout.HasAlignmentFlags(AlignmentFlags.Top)) {
-            return 0;
-        }
-        if (layout.HasAlignmentFlags(AlignmentFlags.Bottom)) {
-            return Math.Abs(parentBounds.Height - height);
-        }
 
+    private static int GetBaseYOffset(in Layout layout, int height, Rectangle parentBounds) {
+        if (!layout.HasLayoutFlags(Layout.LayoutFlags.OutsideParent)) {
+            if (layout.HasAlignmentFlags(AlignmentFlags.VerticalCenter)) {
+                return (parentBounds.Height - height) / 2;
+            }
+            if (layout.HasAlignmentFlags(AlignmentFlags.Top)) {
+                return 0;
+            }
+            if (layout.HasAlignmentFlags(AlignmentFlags.Bottom)) {
+                return parentBounds.Height - height;
+            }
+        } else {
+            if (layout.HasAlignmentFlags(AlignmentFlags.VerticalCenter)) {
+                return (parentBounds.Height) / 2;
+            }
+            if (layout.HasAlignmentFlags(AlignmentFlags.Top)) {
+                return -height;
+            }
+            if (layout.HasAlignmentFlags(AlignmentFlags.Bottom)) {
+                return parentBounds.Height;
+            }
+        }
         throw new Exception("Invalid vertical flags");
     }
 
-    private void DirtyIndexing() {
+private void DirtyIndexing() {
         RequiresReindexing |= !Disabled;
     }
 
@@ -243,7 +276,7 @@ readonly record struct Layout {
         return new Layout(LayoutType.Margin, alignment: Alignment.Center, width: widthMargin, height: heightMargin);
     }
 
-    public static Layout WithHeight(int height, int heightOffset = 0, int widthMargin = 0, Alignment alignment = Alignment.Top) {
+    public static Layout WithHeight(int height, int heightOffset = 0, int widthMargin = 0, Alignment alignment = Alignment.TopCenter) {
         return new Layout(LayoutType.WidthMargin,
             alignment: alignment,
             height: height,
@@ -252,7 +285,7 @@ readonly record struct Layout {
         );
     }
 
-    public static Layout WithWidth(int width, int widthOffset = 0, int heightMargin = 0, Alignment alignment = Alignment.Left) {
+    public static Layout WithWidth(int width, int widthOffset = 0, int heightMargin = 0, Alignment alignment = Alignment.CenterLeft) {
         return new Layout(LayoutType.WidthMargin,
             alignment: alignment,
             height: heightMargin,
@@ -292,6 +325,14 @@ readonly record struct Layout {
             height: height);
     }
 
+    public static Layout OutsideParent(int x, int y, int width, int height, Alignment alignment = Alignment.TopLeft) {
+        return new Layout(LayoutType.Outside,
+            alignment: alignment,
+            offset: new Point(x, y),
+            width: width,
+            height: height);
+    }
+    
     public bool HasLayoutFlags(LayoutFlags flags) {
         return ((int)Type & (int)flags) == (int)flags;
     }
