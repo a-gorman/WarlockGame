@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Content;
-using MonoGame.Extended.Graphics;
 
 namespace WarlockGame.Core.Game.Graphics
 {

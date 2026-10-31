@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-
-namespace WarlockGame.Core.Game.UI.Components.Basic;
+﻿namespace WarlockGame.Core.Game.UI.Components.Basic;
 
 class ToolTip: InterfaceComponent {
     private bool _toolTipDisplayed;

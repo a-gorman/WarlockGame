@@ -1,7 +1,6 @@
 using System.Linq;
 using WarlockGame.Core.Game.Log;
 using WarlockGame.Core.Game.Sim.Entities;
-using WarlockGame.Core.Game.Sim.Entities.Behaviors;
 
 namespace WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
 
