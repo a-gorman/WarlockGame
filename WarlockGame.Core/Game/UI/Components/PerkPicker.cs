@@ -54,7 +54,7 @@ sealed class PerkPicker: InterfaceComponent {
             var timeRemaining = _pickingEndTime - WarlockGame.GameTime.TotalGameTime;
             var asdf = new Dictionary<string, string>();
             asdf.Add("time", Math.Max(timeRemaining.Seconds, 0).ToString());
-            _pickingTimeDisplay.Text = PrettyString.Parse("Time remaining: <c=Red t='$time'> seconds", asdf);
+            _pickingTimeDisplay.Text = PrettyString.Parse("Time remaining: <#c=Red t=$time> seconds", asdf);
 
             if (timeRemaining.Ticks <= 0) {
                 var playerId = PlayerManager.LocalPlayerId;
@@ -76,14 +76,31 @@ sealed class PerkPicker: InterfaceComponent {
             layout: Layout.WithMargin(20),
             clickable: ClickableState.PassThrough,
             components: _perks.Select(perk => new Button(perk.Texture) {
-                    Layout = Layout.WithMargin(15),
-                    LeftClick = _ => {
-                        var playerId = PlayerManager.LocalPlayerId;
-                        if (playerId == null || _hasPicked) return;
-                        _hasPicked = true;
-                        InputManager.HandlePlayerAction(new SelectPerk { PlayerId = playerId.Value, PerkId = perk.Id });
+                Layout = Layout.WithMargin(15),
+                LeftClick = _ => {
+                    var playerId = PlayerManager.LocalPlayerId;
+                    if (playerId == null || _hasPicked) return;
+                    _hasPicked = true;
+                    InputManager.HandlePlayerAction(new SelectPerk { PlayerId = playerId.Value, PerkId = perk.Id });
+                }
+                }.Also(button => {
+                        button.AddComponent(new TextDisplay(perk.Name) { TextScale = 0.5f });
+                        button.AddComponent(new ToolTip(
+                                components: [
+                                    new Container(
+                                        new TextDisplay(
+                                            $"{perk.Name}\n\n{perk.Description}") {
+                                            Layout = Layout.WithMargin(2),
+                                            TextScale = 0.45f,
+                                            TextColor = Color.Black
+                                        }) {
+                                        Color = Color.BurlyWood,
+                                        Layout = Layout.OutsideParent(4, 30, 170, 170, Alignment.TopRight)
+                                    }
+                                ]))
+                            ;
                     }
-                }.Also(button => button.AddComponent(new TextDisplay(perk.Name) { TextScale = 0.5f }))
+                )
             ).ToArray<InterfaceComponent>()
         );
         

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using WarlockGame.Core.Game.Input;
 using WarlockGame.Core.Game.Sim.Spell;
+using WarlockGame.Core.Game.UI.Components.Basic;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.UI.Components; 
@@ -54,6 +55,21 @@ sealed class SpellDisplay : InterfaceComponent {
     private void AddSpell(int playerId, WarlockSpell spell) {
         if (PlayerManager.IsLocal(playerId)) {
             var spellIcon = new SpellIcon(spell, KeyMappings[Actions[spell.SlotLocation]]) { Layout = Layout.WithSize(50, 50) };
+
+            spellIcon.AddComponent(new ToolTip(
+                components: [
+                    new Container(
+                        new TextDisplay(
+                            $"{spell.Definition.Name}\n\n{spell.Definition.Description}\nCooldown: {spell.Definition.CooldownTime.Seconds:0.#} seconds") {
+                            Layout = Layout.WithMargin(2),
+                            TextScale = 0.45f,
+                            TextColor = Color.Black
+                        }) {
+                        Color = Color.BurlyWood,
+                        Layout = Layout.OutsideParent(4, 30, 170, 170, Alignment.TopRight)
+                    }
+                ]));
+            
             IconGrid.AddComponentToCell(spellIcon, 0, spell.SlotLocation);
         }
     }

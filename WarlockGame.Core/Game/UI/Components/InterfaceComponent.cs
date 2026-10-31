@@ -93,6 +93,7 @@ class InterfaceComponent {
     /// </summary>
     public void Update(ref readonly UIManager.UpdateArgs args) {
         OnUpdate(args);
+        IsVisibilityDirty = false;
     }
 
     public void AddComponent(InterfaceComponent component) {

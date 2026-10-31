@@ -16,6 +16,6 @@ class ReducedBoundsDamagePerk: PermanentBuffPerk {
         : base(
             id: 5,            
             name: "Reduced Bounds Damage",
-            description: "Permanently reduces the damage you take from being out of bounds.",
+            description: $"Permanently reduces the damage you take from being out of bounds by {1 - Factor:%}.",
             texture: Art.ReducedBoundaryDamageIcon) { }
 }

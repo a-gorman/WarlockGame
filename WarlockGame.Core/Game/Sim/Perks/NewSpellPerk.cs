@@ -6,7 +6,7 @@ abstract class NewSpellPerk : Perk {
     private SpellDefinition SpellDefinition { get; }
 
     protected NewSpellPerk(int id, SpellDefinition spell)
-        : base(id, spell.Name, spell.Name, spell.SpellIcon) {
+        : base(id, spell.Name, $"Adds {spell.Name} to your spellbook.\n\n{spell.Description}", spell.SpellIcon) {
         SpellDefinition = spell;
     }
 
