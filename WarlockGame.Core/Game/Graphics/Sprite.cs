@@ -16,7 +16,7 @@ class Sprite: ISprite
 
     public Color Color { get; set; } = Color.White;
 
-    public float Opacity { get; set; }
+    public float Opacity { get; set; } = 1;
     
     public float Scale { get; private set; }
     public bool Rotates { get; set; } = true;
