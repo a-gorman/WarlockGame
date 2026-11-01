@@ -5,7 +5,9 @@ using WarlockGame.Core.Game.Util;
 namespace WarlockGame.Core.Game.UI.Components.Basic;
 
 class Container : InterfaceComponent {
-    public Color? Color { get; set; } = null;
+    public Color? BackgroundColor { get; set; } = null;
+    public Color? BorderColor { get; set; } = null;
+    public int BorderWidth { get; set; } = 1;
 
     public Container(params InterfaceComponent[] interfaceComponents) {
         foreach (var component in interfaceComponents) {
@@ -14,8 +16,12 @@ class Container : InterfaceComponent {
     }
     
     protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
-        if (Color != null) {
-            spriteBatch.Draw(Art.Pixel, BoundingBox.WithOffset(location), Color.Value);
+        if (BackgroundColor != null) {
+            spriteBatch.Draw(Art.Pixel, BoundingBox.WithOffset(location), BackgroundColor.Value);
+        }
+        
+        if (BorderColor != null) {
+            UIUitils.DrawHollowRectangle(spriteBatch, Art.Pixel, BoundingBox.WithOffset(location), BorderColor.Value, width: BorderWidth);
         }
     }
 }

@@ -90,11 +90,12 @@ sealed class PerkPicker: InterfaceComponent {
                                     new Container(
                                         new TextDisplay(
                                             $"{perk.Name}\n\n{perk.Description}") {
-                                            Layout = Layout.WithMargin(2),
+                                            Layout = Layout.WithMargin(3),
                                             TextScale = 0.45f,
                                             TextColor = Color.Black
                                         }) {
-                                        Color = Color.BurlyWood,
+                                        BackgroundColor = Color.BurlyWood,
+                                        BorderColor = Color.Black,
                                         Layout = Layout.OutsideParent(4, 30, 170, 170, Alignment.TopRight)
                                     }
                                 ]))

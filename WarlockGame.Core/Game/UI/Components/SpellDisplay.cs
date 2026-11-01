@@ -61,11 +61,12 @@ sealed class SpellDisplay : InterfaceComponent {
                     new Container(
                         new TextDisplay(
                             $"{spell.Definition.Name}\n\n{spell.Definition.Description}\nCooldown: {spell.Definition.CooldownTime.Seconds:0.#} seconds") {
-                            Layout = Layout.WithMargin(2),
+                            Layout = Layout.WithMargin(3),
                             TextScale = 0.45f,
                             TextColor = Color.Black
                         }) {
-                        Color = Color.BurlyWood,
+                        BackgroundColor = Color.BurlyWood,
+                        BorderColor = Color.Black,
                         Layout = Layout.OutsideParent(4, 30, 170, 170, Alignment.TopRight)
                     }
                 ]));

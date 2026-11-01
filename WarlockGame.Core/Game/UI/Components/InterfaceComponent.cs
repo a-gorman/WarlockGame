@@ -60,6 +60,7 @@ class InterfaceComponent {
         set {
             if (field != value) {
                 DirtyIndexing();
+                IsLayoutDirty = true;
                 field = value;
             }
         }
