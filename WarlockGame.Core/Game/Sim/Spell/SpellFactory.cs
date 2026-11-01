@@ -351,7 +351,7 @@ class SpellFactory {
 
     public SpellDefinition FlameStrike() {
         var radius = 180;
-        var delaySeconds = 1.35f;
+        var delaySeconds = 1.7f;
         var animationDurationSeconds = 0.8f;
         var damage = 80;
         return new LocationSpell(
