@@ -10,7 +10,7 @@ static class PlayerManager {
     
     public static Player? LocalPlayer { get; private set; }
     public static int? LocalPlayerId { get; private set; }
-    private static readonly Color[] PlayerColors = [Color.Blue, Color.Red, Color.Yellow, Color.Green, Color.Purple, Color.Orange, Color.Brown, Color.Gold, Color.Gray];
+    private static readonly Color[] PlayerColors = [Color.White, Color.Blue, Color.Red, Color.Yellow, Color.Green, Color.Purple, Color.Orange, Color.Brown, Color.Gold, Color.Gray];
 
     public static Player AddLocalPlayer(string name, Color? color, int? id = null) {
         if (LocalPlayer is not null) throw new InvalidOperationException("Local player already exists");
