@@ -19,7 +19,7 @@ class DamageShare : Behavior {
 
     private void ShareDamage(OnDamagedEventArgs args) {
         var target = _simulation.EntityManager.GetEntity(_targetId);
-        if (target is not null) {
+        if (target is not null && args.DamageSource != target) {
             if (!args.DamageTypes.HasType(DamageType.Shared)) {
                 target.Damage(args.Amount, args.DamageTypes | DamageType.Shared, args.DamageSource);
             }

@@ -35,12 +35,11 @@ class CastWhenDamaged: BuffComponent {
         }
         
         if (args.DamagedEntity is Warlock caster) {
+            _cooldown = _cooldownDuration.ToTimer();
             var context = new SpellContext(caster, Vector2.Zero, _sim);
             foreach (var component in _castEffects) {
                 component.Invoke(context);
             }
-
-            _cooldown = _cooldownDuration.ToTimer();
         } else {
             Logger.Warning("Non-warlock tried casting a spell via CastWhenDamaged buff component", Logger.LogType.Simulation);
         }

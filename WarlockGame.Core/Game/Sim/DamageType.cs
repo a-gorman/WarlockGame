@@ -9,7 +9,7 @@ enum DamageType {
     Environment = 1<<1,
     Bounds = 1<<2,
     Shared = 1<<3,
-    Reflected = 1<<3,
+    Reflected = 1<<4
 }
 
 static class DamageTypeExtensions {

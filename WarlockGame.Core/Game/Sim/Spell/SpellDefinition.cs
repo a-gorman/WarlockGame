@@ -68,7 +68,7 @@ class LocationSpell : SpellDefinition {
 class SelfCastSpell : SpellDefinition {
     public ISelfSpellComponent[] Effects { get; }
     public ILocationSpellComponent[] CastLocationEffects { get; }
-
+    
     public SelfCastSpell(
         int id,
         string name,
