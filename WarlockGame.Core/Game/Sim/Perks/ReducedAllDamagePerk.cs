@@ -16,6 +16,6 @@ class ReducedAllDamagePerk : PermanentBuffPerk {
         : base(
             id: 7,            
             name: "Reduced Damage",
-            description: $"Permanently reduces the damage you take from all sources by {1 - Factor:%}.",
+            description: $"Permanently reduces the damage you take from all sources by {1 - Factor:0.#%}.",
             texture: Art.ReducedAllDamageIcon) { }
 }

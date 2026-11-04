@@ -8,15 +8,15 @@ class PowerFromDamagePerk : Perk {
     private const float Speed = 4;
     private const float GenericDefense = 0.5f;
     private const float BoundsDefense = 2f;
-    private const float DamageMultiplier = 2f;
-    private const float DurationSeconds = 2f;
+    private const float DamageMultiplier = 1.33f;
+    private const float DurationSeconds = 1.5f;
     
     
     public PowerFromDamagePerk()
         : base(
             id: 4,
             name: "Power from damage",
-            description: $"Whenever you take damage, you get a {Speed:0.#}x speed boost, {DamageMultiplier:0.#}x damage boost and {1 - GenericDefense:%} damage reduction for {DurationSeconds:0.#} seconds. Damage reduction does not work on bounds damage.",
+            description: $"Whenever you take damage, you get a {Speed:0.#}x speed boost, {DamageMultiplier:0.#}x damage boost and {1 - GenericDefense:0.#%} damage reduction for {DurationSeconds:0.#} seconds. Damage reduction does not work on bounds damage.",
             texture: Art.DefianceIcon) { }
 
     public override void OnAdded(int forceId, Simulation sim) {
@@ -27,7 +27,9 @@ class PowerFromDamagePerk : Perk {
     }
 
     private void AddBuff(OnDamagedEventArgs args) {
-        (args.DamagedEntity as Warlock)!.AddBuff(new SpeedBoost(SimTime.OfSeconds(DurationSeconds)));
+        if (!args.DamageTypes.HasType(DamageType.Bounds)) {
+            (args.DamagedEntity as Warlock)!.AddBuff(new SpeedBoost(SimTime.OfSeconds(DurationSeconds)));
+        }
     }
 
     public override void OnRemoved(int forceId, Simulation sim) {

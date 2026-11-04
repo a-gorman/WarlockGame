@@ -4,7 +4,7 @@ using WarlockGame.Core.Game.Sim.Buffs;
 namespace WarlockGame.Core.Game.Sim.Perks;
 
 class ReducedBoundsDamagePerk: PermanentBuffPerk {
-    private const float Factor = 0.15f;
+    private const float Factor = 0.1f;
 
     protected override Buff CreateBuff(Simulation _) {
         return new DefenseBuff(duration: null) {
@@ -16,6 +16,6 @@ class ReducedBoundsDamagePerk: PermanentBuffPerk {
         : base(
             id: 5,            
             name: "Reduced Bounds Damage",
-            description: $"Permanently reduces the damage you take from being out of bounds by {1 - Factor:%}.",
+            description: $"Permanently reduces the damage you take from being out of bounds by {1 - Factor:0.##%}.",
             texture: Art.ReducedBoundaryDamageIcon) { }
 }

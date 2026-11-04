@@ -40,6 +40,7 @@ class SpellFactory {
             effects: [
                 new ProjectileComponent(
                     sprite: Sprite.FromGridSpriteSheet(Art.Fireball, 2, 2, SimTime.OfTicks(40), scale: .12f),
+                    speed: 9,
                     effects: [
                         new LocationAreaOfEffect {
                             Shape = new CircleTarget(AoeSelectors.All, innerRadius: 8, outerRadius: 50),
@@ -257,7 +258,7 @@ class SpellFactory {
                         .Also(x => x.AddBehaviors(
                             new DebugVisualize(),
                             new TimedLife(SimTime.OfSeconds(4)),
-                            new OneCollisionPerEntity(),
+                            new OneCollisionPerEntity { Cooldown = SimTime.OfTicks(5) },
                             new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies),
                             new DeflectProjectiles {
                                 DeflectionFunc = DeflectProjectiles.OrientedRectangleReflection
@@ -276,7 +277,7 @@ class SpellFactory {
             name: "Homing",
             description: $"Launches a slow moving projectiles that accelerates towards the nearest enemy and deals {damage} damage on impact. Times out after {lifeTime.Seconds:0.#} seconds.",
             spellIcon: Art.HomingIcon,
-            cooldownTime: SimTime.OfSeconds(8),
+            cooldownTime: SimTime.OfSeconds(10),
             effects: [
                 new ProjectileComponent(
                     sprite: Sprite.FromGridSpriteSheet(Art.EnergySpark, 4, 4, SimTime.OfTicks(160), scale: 2f,
@@ -312,7 +313,7 @@ class SpellFactory {
             name: "Boomerang",
             description: $"Launches a large projectile that does {damage} damage that constantly attempts to return to you. Lasts {duration.Seconds:0.#} seconds before timing out.",
             spellIcon: Art.BoomerangIcon,
-            cooldownTime: SimTime.OfSeconds(6),
+            cooldownTime: SimTime.OfSeconds(7),
             effects: [
                 new ProjectileComponent(
                     sprite: Sprite.FromGridSpriteSheet(Art.Triple, 4, 4, SimTime.OfTicks(32), scale: 2f, rotates: false),
@@ -351,7 +352,7 @@ class SpellFactory {
 
     public SpellDefinition FlameStrike() {
         var radius = 180;
-        var delaySeconds = 1.7f;
+        var delaySeconds = 1.35f;
         var animationDurationSeconds = 0.8f;
         var damage = 80;
         return new LocationSpell(
@@ -367,10 +368,11 @@ class SpellFactory {
                 new DelayedLocationComponent(
                     SimTime.OfSeconds(delaySeconds),
                     new LocationAreaOfEffect {
-                        Shape = new CircleTarget(AoeSelectors.All, radius),
+                        Shape = new CircleTarget(AoeSelectors.All, innerRadius: 0, outerRadius: radius),
                         Components = [
                             new DamageComponent { Damage = damage },
-                            new PushComponent { Force = 200 }
+                            new PushComponent { Force = 200 },
+                            new DestroyProjectile()
                         ]
                     }
                 ),
@@ -436,18 +438,19 @@ class SpellFactory {
     }
 
     public SpellDefinition Blink() {
-        var distance = 350;
+        var distance = 200;
         return new LocationSpell(
             id: 12,
             name: "Teleport",
             description: $"You instantly teleport up to {distance} from your current position.",
             spellIcon: Art.TeleportIcon,
-            cooldownTime: SimTime.OfSeconds(7),
+            cooldownTime: SimTime.OfSeconds(5),
             castRange: distance,
             effects: [new TeleportComponent()]
         );
     }
 
+    // Not fully implemented
     public SpellDefinition Shockwave() {
         return new DirectionalSpell(
             id: 13,
@@ -468,7 +471,7 @@ class SpellFactory {
 
     public SpellDefinition LightningJump() {
         var damage = 10;
-        var castRange = 650;
+        var castRange = 750;
         var jumpTime = 0.75f;
         var travelSprite = Sprite.FromGridSpriteSheet(Art.SparkJumpTravel, 3, 3, SimTime.OfSeconds(0.5f), scale: 2.3f);
 
@@ -477,7 +480,7 @@ class SpellFactory {
             name: "Spark Jump",
             description: $"Jumps to another location up to {castRange} away. Creates an electrical discharges that deals {damage} damage at both the origin and landing points.",
             spellIcon: Art.LightningJumpIcon,
-            cooldownTime: SimTime.OfSeconds(20),
+            cooldownTime: SimTime.OfSeconds(14),
             castRange: castRange,
             selfEffects: [
                 new LocationAreaOfEffect {
@@ -524,22 +527,22 @@ class SpellFactory {
     }
 
     public SpellDefinition Swap() {
-        var maxDistance = 500;
+        var maxDistance = 550;
 
         return new DirectionalSpell(
             id: 15,
             name: "Swap",
             description: $"Launches a projectile that causes you to switch position with anything it touches. After the projectile moves {maxDistance}, you teleport to the projectile, even if nothing is nearby.",
             spellIcon: Art.SwapIcon,
-            cooldownTime: SimTime.OfSeconds(12),
+            cooldownTime: SimTime.OfSeconds(10),
             effects: [
                 new ProjectileComponent(
-                    sprite: Sprite.FromGridSpriteSheet(Art.SwapProjectile, 8, 1, SimTime.OfTicks(30), scale: 1f),
+                    sprite: Sprite.FromGridSpriteSheet(Art.SwapProjectile, 8, 1, SimTime.OfTicks(30), scale: 1.4f),
                     maxRange: maxDistance,
                     speed: 11,
                     effects: [
                         new LocationAreaOfEffect {
-                            Shape = new CircleTarget(AoeSelectors.AllIgnoreCaster, radius: 120),
+                            Shape = new CircleTarget(AoeSelectors.AllIgnoreCaster, radius: 220),
                             Components = [ new SwapComponent() ]
                         },
                         new LocationEffectComponent(CreateHitEffect)
@@ -560,16 +563,17 @@ class SpellFactory {
         var damage = 6;
         var timeBetweenTicks = SimTime.OfSeconds(2);
         var duration = SimTime.OfSeconds(10);
-        var shareRadius = 120;
+        var shareRadius = 240;
         
         return new DirectionalSpell(
             id: 16,
             name: "Grave Tick",
             description: $"Curses the victim to pulse with death energy. Every {timeBetweenTicks.Seconds:0.#} seconds, the target takes {damage} damage. The damage is divided between all targets within {shareRadius} of the target. Lasts {duration.Seconds:0.#} seconds.",
             spellIcon: Art.GraveTickIcon,
-            cooldownTime: SimTime.OfSeconds(16),
+            cooldownTime: SimTime.OfSeconds(10),
             effects: [
                 new ProjectileComponent(
+                    speed: 10,
                     sprite: Sprite.FromGridSpriteSheet(Art.BraveTickProjectile, 10, 1, SimTime.OfTicks(40), scale: 1f),
                     effects: [
                         new LocationAreaOfEffect {
@@ -589,7 +593,7 @@ class SpellFactory {
                                                         new SpriteEffect(
                                                             sprite: Sprite.FromGridSpriteSheet(Art.GraveTickExplosion, 4, 4, SimTime.OfSeconds(0.5f), 4.5f, opacity: 0.55f),
                                                             position: x,
-                                                            onUpdate: static (sprite, transformId, timeElapsed) => { sprite.ChangeTransformation(transformId, 1.8f/30f * timeElapsed.Ticks); },
+                                                            onUpdate: static (sprite, transformId, timeElapsed) => { sprite.ChangeTransformation(transformId, 3f/30f * timeElapsed.Ticks); },
                                                             duration: SimTime.OfSeconds(0.5f))),
                                                     new LocationAreaOfEffect {
                                                         Shape = new CircleTarget(AoeSelectors.Warlocks, shareRadius),
@@ -607,10 +611,40 @@ class SpellFactory {
             ]);
     }
 
+    // Not fully implemented
     public SpellDefinition Redirection() {
         return new DirectionalSpell(
             id: 17,
             name: "Redirection",
+            description: "Temp",
+            spellIcon: Art.LightningJumpIcon,
+            cooldownTime: SimTime.OfSeconds(1),
+            effects: [
+                new DirectionalEffectComponent((spellContext, castLoc, direction) =>
+                    new ContinuousSpellEffect(
+                        context: spellContext,
+                        location: castLoc,
+                        repeatTime: SimTime.OfTicks(5),
+                        duration: SimTime.OfSeconds(0.5f),
+                        components: [
+                            new LocationAreaOfEffect {
+                                Shape = new CircleTarget(
+                                    radius: 50,
+                                    targetSelector: AoeSelectors.Projectiles),
+                                Components = [
+                                    new RedirectProjectileComponent(direction)
+                                ]
+                            }
+                        ]
+                    )
+                )
+            ]);
+    }
+    
+    public SpellDefinition Snowball() {
+        return new DirectionalSpell(
+            id: 18,
+            name: "Snowball",
             description: "Temp",
             spellIcon: Art.LightningJumpIcon,
             cooldownTime: SimTime.OfSeconds(1),
