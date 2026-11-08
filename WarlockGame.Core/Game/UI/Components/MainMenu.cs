@@ -113,7 +113,7 @@ class MainMenu: InterfaceComponent {
     }
     
     private Grid CreateCreditsGrid() {
-        var creditsText = new TextDisplay(text: "Programmer and designer:\nAlex \"Red_Maw\" Gorman\n\nArt By:\nPaul\n\nPlaytesting:\nWalker Ranson\nNate Gorman\nJohn Degnin\nPaul\nXin Minghui\nLuke Terry\nErnin Gunn\nTrevor Knottnerus\n\nCreated with Monogame") {
+        var creditsText = new TextDisplay(text: "Programmer and designer:\nAlex \"Red_Maw\" Gorman\n\nArt By:\nPaul\n\nPlaytesting:\nWalker Ranson\nNate Gorman\nJohn Degnin\nPaul\nXin Minghui\nLuke Terry\nErin Gunn\nTrevor Knottnerus\n\nCreated with Monogame") {
             TextScale = 0.5f,
             Layout = Layout.WithMargin(10)
         };
