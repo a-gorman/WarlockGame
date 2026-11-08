@@ -9,6 +9,7 @@ class MainMenu: InterfaceComponent {
     private readonly Grid _mainGrid;
     private readonly Grid _joinGrid;
     private readonly Grid _hostGrid;
+    private readonly Grid _creditsGrid;
     private MenuState _state = MenuState.Main;
 
     private readonly Texture2D _buttonTexture;
@@ -29,6 +30,9 @@ class MainMenu: InterfaceComponent {
         
         _hostGrid = CreateHostGrid();
         AddComponent(_hostGrid);
+
+        _creditsGrid = CreateCreditsGrid();
+        AddComponent(_creditsGrid);
         
         TransitionToMainState();
     }
@@ -43,12 +47,17 @@ class MainMenu: InterfaceComponent {
             Layout = Layout.WithMargin(10), LeftClick = _ => TransitionToJoinState()
         }.Also(x => x.AddComponent(new TextDisplay("Connect", Alignment.Center)));
         
+        var creditsButton = new Button(_buttonTexture) {
+            Layout = Layout.WithMargin(10),
+            LeftClick = _ => { TransitionToCreditsState(); }
+        }.Also(x => x.AddComponent(new TextDisplay("Credits", Alignment.Center)));
+        
         var exitButton = new Button(_buttonTexture) { 
             Layout = Layout.WithMargin(10), 
             LeftClick = _ => { WarlockGame.Instance.Exit(); } 
         }.Also(x => x.AddComponent(new TextDisplay("Exit", Alignment.Center)));
 
-        return Grid.SingleColumn([hostButton, joinButton, exitButton],
+        return Grid.SingleColumn([hostButton, joinButton, creditsButton, exitButton],
             ClickableState.PassThrough,
             layout: Layout.WithMargin(10, 0));
     }
@@ -102,10 +111,27 @@ class MainMenu: InterfaceComponent {
             ClickableState.PassThrough,
             Layout.WithMargin(10, 0));
     }
+    
+    private Grid CreateCreditsGrid() {
+        var creditsText = new TextDisplay(text: "Programmer and designer:\nAlex \"Red_Maw\" Gorman\n\nArt By:\nPaul\n\nPlaytesting:\nWalker Ranson\nNate Gorman\nJohn Degnin\nPaul\nXin Minghui\nLuke Terry\nErnin Gunn\nTrevor Knottnerus\n\nCreated with Monogame") {
+            TextScale = 0.5f,
+            Layout = Layout.WithMargin(10)
+        };
+        
+        var backButton = new Button(_buttonTexture) {
+            Layout = Layout.WithHeight(30, heightOffset: -10, alignment: Alignment.BottomCenter), 
+            LeftClick = _ => TransitionToMainState()
+        }.Also(x => x.AddComponent(new TextDisplay("Back", Alignment.Center)));
+        
+        return Grid.SingleColumn([creditsText, backButton], 
+            clickable: ClickableState.PassThrough,
+            layout: Layout.WithMargin(10, 0));
+    }
 
     private void TransitionToMainState() {
         _mainGrid.Disabled = false;
         _joinGrid.Disabled = true;
+        _creditsGrid.Disabled = true;
         _hostGrid.Disabled = true;
         _state = MenuState.Main;
     }
@@ -113,6 +139,7 @@ class MainMenu: InterfaceComponent {
     private void TransitionToJoinState() {
         _mainGrid.Disabled = true;
         _joinGrid.Disabled = false;
+        _creditsGrid.Disabled = true;
         _hostGrid.Disabled = true;
         _state = MenuState.Join;
     }
@@ -120,7 +147,16 @@ class MainMenu: InterfaceComponent {
     private void TransitionToHostState() {
         _mainGrid.Disabled = true;
         _joinGrid.Disabled = true;
+        _creditsGrid.Disabled = true;
         _hostGrid.Disabled = false;
+        _state = MenuState.Host;
+    }
+    
+    private void TransitionToCreditsState() {
+        _mainGrid.Disabled = true;
+        _joinGrid.Disabled = true;
+        _creditsGrid.Disabled = false;
+        _hostGrid.Disabled = true;
         _state = MenuState.Host;
     }
 
@@ -140,7 +176,8 @@ class MainMenu: InterfaceComponent {
     private enum MenuState {
         Main,
         Join,
-        Host
+        Host,
+        Credits
     }
 }
 
