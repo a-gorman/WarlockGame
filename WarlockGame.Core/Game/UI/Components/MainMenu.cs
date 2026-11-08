@@ -157,7 +157,7 @@ class MainMenu: InterfaceComponent {
         _joinGrid.Disabled = true;
         _creditsGrid.Disabled = false;
         _hostGrid.Disabled = true;
-        _state = MenuState.Host;
+        _state = MenuState.Credits;
     }
 
     protected override void Draw(Vector2 location, SpriteBatch spriteBatch) {
