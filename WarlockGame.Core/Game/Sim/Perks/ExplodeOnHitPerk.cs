@@ -35,7 +35,7 @@ class ExplodeOnHitPerk : PermanentBuffPerk {
                                     Force = 150,
                                     SelfFactor = 0
                                 },
-                                new ApplyBuffComponent(_ => new Slow(0.70f, SimTime.OfSeconds(slowTimeSeconds))),
+                                new ApplyBuffComponent(_ => new Buff(Buff.BuffType.Slow, SimTime.OfSeconds(slowTimeSeconds), [ new SlowComponent(0.7f) ])),
                                 new DestroyProjectile()
                             ]
                         },

@@ -196,7 +196,7 @@ class SpellFactory {
                             Shape = new CircleTarget(AoeSelectors.Warlocks, innerRadius: 8, outerRadius: 20),
                             Components = [
                                 new DamageComponent { Damage = damage },
-                                new ApplyBuffComponent(_ => new Slow(slowFactor, SimTime.OfSeconds(3.5f))),
+                                new ApplyBuffComponent(_ => new Buff(Buff.BuffType.Slow, SimTime.OfSeconds(3.5f), [new SlowComponent(slowFactor)])),
                                 new AoeEntityComponent((spellContext, targetInfo) => {
                                         var imageMoveAngle = float.Pi / 6;
                                         return [CreateImage(imageMoveAngle), CreateImage(-imageMoveAngle)];
