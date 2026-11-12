@@ -22,7 +22,7 @@ sealed class SimulationView : InterfaceComponent {
     
     private const int HpBarVerticalOffset = 30;
     private const int HpBarWidth = 80;
-    private const int HpBarHeight = 3;
+    private const int HpBarHeight = 5;
 
     private readonly int _scrollBoundaryWidthTop;
     private readonly int _scrollBoundaryWidthBottom;
@@ -255,7 +255,11 @@ sealed class SimulationView : InterfaceComponent {
         float filledProportion = warlock.Health / warlock.MaxHealth;
 
         var filledTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-        filledTexture.SetData([Color.Lerp(Color.Red * opacity, Color.Green * opacity, filledProportion)]);
+        if (Configuration.ColorblindMode) {
+            filledTexture.SetData([Color.Lerp(Color.Gray * opacity, Color.Blue * opacity, filledProportion)]);
+        } else {
+            filledTexture.SetData([Color.Lerp(Color.Red * opacity, Color.Green * opacity, filledProportion)]);
+        }
 
         var unfilledTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
         unfilledTexture.SetData([Color.Black * opacity]);

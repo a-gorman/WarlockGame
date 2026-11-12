@@ -26,7 +26,7 @@ sealed class SpellDisplay : InterfaceComponent {
         KeyMappings = keyMappings.Where(x => Actions.Contains(x.Value)).ToDictionary(x => x.Value, x => x.Key.ToString());
         SiblingLayer = 2;
         Layout = Layout.WithBoundingBox(0, -30, 1880, 90, Alignment.BottomCenter);
-        IconGrid = new Basic.Grid(55, 20, Actions.Length, SpellSpacing, 1, 70) {
+        IconGrid = new Grid(55, 20, Actions.Length, SpellSpacing, 1, 70) {
             Clickable = ClickableState.PassThrough
         };
         AddComponent(IconGrid);
@@ -49,7 +49,7 @@ sealed class SpellDisplay : InterfaceComponent {
             _pointTexture.SetData([Color.Red, Color.Blue, Color.White, Color.Green]);
         }
         
-        UIUitils.DrawHollowRectangle(spriteBatch, _pointTexture, BoundingBox.WithOffset(location), Color.White);
+        UIUitils.DrawHollowRectangle(spriteBatch, _pointTexture, BoundingBox.WithOffset(location), Color.White, width: 2);
     }
 
     private void AddSpell(int playerId, WarlockSpell spell) {
