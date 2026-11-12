@@ -599,16 +599,26 @@ class SpellFactory {
                                                 components: [
                                                     new LocationEffectComponent(x => 
                                                         new SpriteEffect(
-                                                            sprite: Sprite.FromGridSpriteSheet(Art.GraveTickExplosion, 4, 4, SimTime.OfSeconds(0.5f), 4.5f, opacity: 0.55f),
+                                                            sprite: Sprite.FromGridSpriteSheet(Art.GraveTickExplosion, 4, 4, SimTime.OfSeconds(0.75f), 4.5f, opacity: 0.55f),
                                                             position: x,
-                                                            onUpdate: static (sprite, transformId, timeElapsed) => { sprite.ChangeTransformation(transformId, 3f/30f * timeElapsed.Ticks); },
-                                                            duration: SimTime.OfSeconds(0.5f))),
-                                                    new LocationAreaOfEffect {
-                                                        Shape = new CircleTarget(AoeSelectors.Warlocks, shareRadius),
-                                                        Components = [
-                                                            new DamageComponent { Damage = damage, SelfFactor = 0, Distributed = true }
-                                                        ]
-                                                    }
+                                                            onUpdate: static (sprite, transformId, timeElapsed) => { sprite.ChangeTransformation(transformId, 3f/45f * timeElapsed.Ticks); },
+                                                            duration: SimTime.OfSeconds(0.75f)),
+                                                       x => new ContinuousSpellEffect(context, x, SimTime.OfTicks(45),
+                                                            components: [
+                                                                new LocationAreaOfEffect {
+                                                                    Shape = new CircleTarget(AoeSelectors.Warlocks, shareRadius) { FalloffFactor = Falloff.None },
+                                                                    Components = [
+                                                                        new DamageComponent { Damage = damage / 45f, SelfFactor = 0, Distributed = true },
+                                                                    ]
+                                                                },
+                                                                new LocationAreaOfEffect {
+                                                                    Shape = new CircleTarget(AoeSelectors.AllIgnoreCaster, shareRadius) { FalloffFactor = Falloff.None },
+                                                                    Components = [
+                                                                        new PushComponent { Force = -1f, SelfFactor = 0, ProjectileFactor = 1 }
+                                                                    ]
+                                                                }
+                                                            ])
+                                                    )
                                                 ])
                                         ]);
                                 })
