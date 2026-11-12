@@ -10,8 +10,7 @@ using ZLinq;
 
 namespace WarlockGame.Core.Game
 {
-	internal class EntityManager
-	{
+	internal class EntityManager {
 		private int _nextEntityId = 1;
 		private readonly Dictionary<int, Entity> _entities = new();
 		private readonly List<Projectile> _projectiles = new();
@@ -207,8 +206,6 @@ namespace WarlockGame.Core.Game
 			}
 			return null;
 		}
-
-
 
 		public void Clear() {
 			_entities.Clear();

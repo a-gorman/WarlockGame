@@ -13,7 +13,7 @@ class ContinuousSpellEffect : IEffect {
     public GameTimer Timer { get; private set; }
     public int RepeatEvery { get; }
 
-    public ContinuousSpellEffect( SpellContext context,  
+    public ContinuousSpellEffect(SpellContext context,  
         Vector2 location, 
         SimTime duration, 
         IReadOnlyCollection<ILocationSpellComponent> components,

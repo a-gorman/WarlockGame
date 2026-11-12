@@ -7,7 +7,7 @@ closed class Perk {
     public string Name { get; }
     public string Description { get; }
     public Texture2D Texture { get; }
-
+    
     public Perk(int id, string name, string description, Texture2D texture) {
         Name = name;
         Description = description;

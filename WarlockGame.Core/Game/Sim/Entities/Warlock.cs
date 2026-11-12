@@ -12,7 +12,7 @@ namespace WarlockGame.Core.Game.Sim.Entities;
 
 class Warlock : Entity {
     public float Speed { get; set; } = 3.0f;
-    public const float RotationSpeed = 0.15f; // Radians per tick
+    public float RotationSpeed { get; set; } = 0.15f; // Radians per tick
 
     public float MaxHealth => 100;
     public float Health { get; set => field = float.Clamp(value, 0, MaxHealth); }

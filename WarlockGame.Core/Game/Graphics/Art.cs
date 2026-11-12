@@ -52,6 +52,7 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D ReducedBoundaryDamageIcon { get; set; } = null!;
 		public static Texture2D ReducedAllDamageIcon { get; set; } = null!;
 		public static Texture2D ExplodeOnDamageIcon { get; set; } = null!;
+		public static Texture2D AgilityIcon { get; set; } = null!;
 		public static Texture2D FireSprayIcon { get; set; } = null!;
 		public static Texture2D TeleportIcon { get; set; } = null!;
 		public static Texture2D SwapIcon { get; set; } = null!;
@@ -124,6 +125,7 @@ namespace WarlockGame.Core.Game.Graphics
 			ReducedBoundaryDamageIcon = LoadIcon(content, "rpg_skill_42");
 			ReducedAllDamageIcon = LoadIcon(content, "priest_skill_33");
 			ExplodeOnDamageIcon = LoadIcon(content, "cryomancer_32");
+			AgilityIcon = LoadIcon(content, "rpg-berserker-icons-21");
 		}
 
 		private static void LoadProjectiles(ContentManager content) {

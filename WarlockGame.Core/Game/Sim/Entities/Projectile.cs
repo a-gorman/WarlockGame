@@ -49,13 +49,8 @@ class Projectile : Entity {
         Position += Velocity;
 
         // delete projectiles that go off-screen
-        if (!new RectangleF(new Vector2(0), Simulation.ArenaSize).Contains(Position))
-        {
+        if (!new RectangleF(new Vector2(0), Simulation.ArenaSize).Contains(Position)) {
             IsExpired = true;
-
-            // for (int i = 0; i < 30; i++)
-            //     WarlockGame.ParticleManager.CreateParticle(Art.LineParticle, Position, Color.LightBlue, 50, 1,
-            //         new ParticleState { Velocity = _rand.NextVector2(0, 9), Type = ParticleType.Bullet, LengthMultiplier = 1 });
         }
         
         base.Update();

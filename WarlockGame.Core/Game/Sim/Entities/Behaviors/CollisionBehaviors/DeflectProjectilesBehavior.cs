@@ -4,7 +4,7 @@ using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Sim.Entities.Behaviors.CollisionBehaviors;
 
-class DeflectProjectiles : Behavior {
+class DeflectProjectilesBehavior : Behavior {
 
     public Func<Entity, Projectile, Vector2> DeflectionFunc { get; init; } = (_, projectile) => -projectile.Velocity;
     
