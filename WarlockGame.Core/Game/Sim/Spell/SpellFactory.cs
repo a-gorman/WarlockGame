@@ -577,7 +577,7 @@ class SpellFactory {
         return new DirectionalSpell(
             id: 16,
             name: "Grave Tick",
-            description: $"Curses the victim to pulse with death energy. Every {timeBetweenTicks.Seconds:0.#} seconds, the target takes {damage} damage. The damage is divided between all targets within {shareRadius} of the target. Lasts {duration.Seconds:0.#} seconds.",
+            description: $"Curses the victim to pulse with death energy. Every {timeBetweenTicks.Seconds:0.#} seconds, the target takes {damage} damage and pulls nearby projectiles towards themselves. The damage is divided between all targets within {shareRadius} of the target. Lasts {duration.Seconds:0.#} seconds.",
             spellIcon: Art.GraveTickIcon,
             cooldownTime: SimTime.OfSeconds(10),
             effects: [

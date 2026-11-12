@@ -67,7 +67,7 @@ sealed class SpellDisplay : InterfaceComponent {
                         }) {
                         BackgroundColor = Color.BurlyWood,
                         BorderColor = Color.Black,
-                        Layout = Layout.OutsideParent(4, 30, 170, 170, Alignment.TopRight)
+                        Layout = Layout.OutsideParent(4, 30, 170, 175, Alignment.TopRight)
                     }
                 ]));
             
