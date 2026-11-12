@@ -547,14 +547,15 @@ class SpellFactory {
                     maxRange: maxDistance,
                     speed: 11,
                     effects: [
-                        new LocationAreaOfEffect {
-                            Shape = new CircleTarget(AoeSelectors.AllIgnoreCaster, radius: 220),
-                            Components = [ new SwapComponent() ]
-                        },
+                        new DelayedLocationComponent(SimTime.OfMillis(275), [
+                            new LocationAreaOfEffect {
+                                Shape = new CircleTarget(AoeSelectors.AllIgnoreCaster, radius: 180),
+                                Components = [ new SwapComponent() ]
+                            }
+                        ]),
                         new LocationEffectComponent(CreateHitEffect)
-                    ]
-                    // Disabled until order of effects can be assured. Right now effects go swap -> caster effect
-                    // casterEffects: [ new LocationEffectComponent(CreateHitEffect) ]
+                    ],
+                    casterEffects: [ new LocationEffectComponent(CreateHitEffect) ]
                 )
         ]);
 
