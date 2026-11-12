@@ -364,7 +364,13 @@ class SpellFactory {
             castRange: 700,
             effects: [
                 new LocationEffectComponent(location =>
-                    new CircleTimingIndicator(new CircleF(location, radius), SimTime.OfSeconds(delaySeconds))),
+                    new CircleTimingIndicator(
+                        new CircleF(location, radius), 
+                        duration: SimTime.OfSeconds(delaySeconds),
+                        outerColor: Color.White,
+                        innerColor: Configuration.ColorblindMode ? Color.MediumVioletRed : Color.OrangeRed,
+                        outerThickness: 2, 
+                        innerThickness: 2)),
                 new DelayedLocationComponent(
                     SimTime.OfSeconds(delaySeconds),
                     new LocationAreaOfEffect {

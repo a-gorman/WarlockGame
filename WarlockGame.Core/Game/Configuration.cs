@@ -31,10 +31,14 @@ static class Configuration {
     public static float KeyScrollSpeed { get; set; }
     public static float MouseLookSensitivity { get; set; }
     public static int MapEdgeScrollLimitBoundary { get; set; }
-    public static float SimSpeedFactor { get; set; }
+    public static bool ColorblindMode { get; set; }
     
+    // Sound settings
     public static float Volume { get; set; }
     public static bool MuteWhenNotFocused { get; set; }
+    
+    // Game settings
+    public static float SimSpeedFactor { get; set; }
     
     // Debug settings
     public static bool Server { get; set; }
@@ -73,6 +77,7 @@ static class Configuration {
         KeyScrollSpeed = args["interface:keyScrollSpeed"]?.Let(int.Parse) ?? 6;
         
         MouseLookSensitivity = args["interface:middleMouseLookSensitivity"]?.Let(int.Parse) ?? 1;
+        ColorblindMode = args["accessibility:colorblindMode"]?.Let(bool.Parse) ?? false;
         
         KeyMappings = new Dictionary<Keys, InputAction> {
             { ParseKey(args["keymap:spell1"], Keys.Q), InputAction.Spell1 },
