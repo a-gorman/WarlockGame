@@ -111,7 +111,7 @@ namespace WarlockGame.Core.Game
 		}
 
 		private static bool IsColliding(Entity a, Entity b) {
-			if (a.CollisionType == CollisionType.None || b.CollisionType == CollisionType.None) {
+			if (a.CollisionShape == CollisionShape.None || b.CollisionShape == CollisionShape.None) {
 				return false;
 			}
 
@@ -135,41 +135,41 @@ namespace WarlockGame.Core.Game
 				}
 			}
 
-			switch (a.CollisionType) {
-				case CollisionType.Circle:
-					switch (b.CollisionType) {
-						case CollisionType.Circle:
+			switch (a.CollisionShape) {
+				case CollisionShape.Circle:
+					switch (b.CollisionShape) {
+						case CollisionShape.Circle:
 							float radius = a.Radius + b.Radius;
 							return Vector2.DistanceSquared(a.Position, b.Position) < radius.Squared();
-						case CollisionType.Rectangle:
+						case CollisionShape.Rectangle:
 							return new CircleF(a.Position, a.Radius).Intersects(b.BoundingRectangle);
-						case CollisionType.OrientedRectangle:
+						case CollisionShape.OrientedRectangle:
 							return b.OrientedRectangle.Intersects(new CircleF(a.Position, a.Radius));
 					}
 					break;
-				case CollisionType.Rectangle:
-					switch (b.CollisionType) {
-						case CollisionType.Circle:
+				case CollisionShape.Rectangle:
+					switch (b.CollisionShape) {
+						case CollisionShape.Circle:
 							return new CircleF(b.Position, b.Radius).Intersects(a.BoundingRectangle);
-						case CollisionType.Rectangle:
+						case CollisionShape.Rectangle:
 							return true;
-						case CollisionType.OrientedRectangle:
+						case CollisionShape.OrientedRectangle:
 							var bounds = a.BoundingRectangle;
 							var rect = RectangleF.CreateFrom(bounds.Center - bounds.HalfExtents * 2,
 								bounds.Center + bounds.HalfExtents * 2);
 							return b.OrientedRectangle.Intersects(rect);
 					}
 					break;
-				case CollisionType.OrientedRectangle:
-					switch (b.CollisionType) {
-						case CollisionType.Circle:
+				case CollisionShape.OrientedRectangle:
+					switch (b.CollisionShape) {
+						case CollisionShape.Circle:
 							return a.OrientedRectangle.Intersects(new CircleF(b.Position, b.Radius));
-						case CollisionType.Rectangle:
+						case CollisionShape.Rectangle:
 							var bounds = a.BoundingRectangle;
 							var rect = RectangleF.CreateFrom(bounds.Center - bounds.HalfExtents * 2,
 								bounds.Center + bounds.HalfExtents * 2);
 							return b.OrientedRectangle.Intersects(rect);
-						case CollisionType.OrientedRectangle:
+						case CollisionShape.OrientedRectangle:
 							return a.OrientedRectangle.Intersects(b.OrientedRectangle);
 					}
 					break;

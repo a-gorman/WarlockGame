@@ -21,13 +21,14 @@ class Projectile : Entity {
         SpellContext context,
         Sprite sprite,
         IReadOnlyList<ILocationSpellComponent> effects,
-        IReadOnlyList<ISelfSpellComponent> casterEffects) : 
+        IReadOnlyList<ISelfSpellComponent> casterEffects,
+        CollisionFlags collisionFlags) : 
         base(sprite, position, radius: radius) {
         Context = context;
         Position = position;
         Velocity = velocity;
         Orientation = Extensions.ToAngle(Velocity);
-        BlocksProjectiles = true;
+        CollisionFlags = collisionFlags;
         ForceId = context.Caster.ForceId;
         _effects = effects;
         _casterEffects = casterEffects;

@@ -207,7 +207,7 @@ class SpellFactory {
 
                                             var image = new Entity(new Sprite(Art.Ghost, scale: 2f),
                                                 targetInfo.TargetPosition, radius: 16) {
-                                                BlocksProjectiles = true,
+                                                CollisionFlags = CollisionFlags.BlocksProjectiles,
                                                 ForceId = spellContext.Caster.ForceId
                                             };
                                             
@@ -546,6 +546,7 @@ class SpellFactory {
                     sprite: Sprite.FromGridSpriteSheet(Art.SwapProjectile, 8, 1, SimTime.OfTicks(30), scale: 1.4f),
                     maxRange: maxDistance,
                     speed: 11,
+                    collisionFlags: CollisionFlags.ProjectileDefault & ~CollisionFlags.BlocksProjectiles,
                     effects: [
                         new DelayedLocationComponent(SimTime.OfMillis(275), [
                             new LocationAreaOfEffect {

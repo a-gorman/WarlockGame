@@ -93,7 +93,7 @@ class Warlock : Entity {
         _sim = simulation;
         Health = MaxHealth;
         ForceId = forceId;
-        BlocksProjectiles = true;
+        CollisionFlags = CollisionFlags.WarlockDefault;
 
         _slidingFriction = new Friction(a: 0.001f, b: 0.12f, c: 0.02f);
         

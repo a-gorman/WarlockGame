@@ -6,17 +6,17 @@ class DebugVisualize : Behavior {
     public Color Color { get; set; } = Color.White;
     
     public override void Update(Entity entity) {
-        switch (entity.CollisionType) {
-            case CollisionType.None:
+        switch (entity.CollisionShape) {
+            case CollisionShape.None:
                 SimDebug.VisualizePoint(entity.Position, Color);
                 break;
-            case CollisionType.Circle:
+            case CollisionShape.Circle:
                 SimDebug.VisualizeCircle(entity.Radius, entity.Position, Color);
                 break;
-            case CollisionType.Rectangle:
+            case CollisionShape.Rectangle:
                 SimDebug.Visualize(entity.BoundingRectangle, Color);
                 break;
-            case CollisionType.OrientedRectangle:
+            case CollisionShape.OrientedRectangle:
                 SimDebug.Visualize(entity.OrientedRectangle, Color);
                 break;
             default:
