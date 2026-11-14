@@ -58,11 +58,11 @@ static class UIManager {
         GlobalProps.MouseInBounds = new Rectangle(Point.Zero, Simulation.ArenaSize.ToPoint()).Contains(inputState.GetMousePosition());
         GlobalProps.InputState = inputState;
         
-        var args = new UpdateArgs {
-            MousePosition = GlobalProps.MousePosition,
-            UpdateFlags = UpdateArgs.Flags.Visible,
-            Global = GlobalProps
-        };
+        var args = new UpdateArgs(
+            mousePosition: GlobalProps.MousePosition,
+            updateFlags: UpdateArgs.Flags.Visible,
+            global: GlobalProps
+        );
         
         UpdateComponent(_view, null, ref args, false);
     }
@@ -81,7 +81,7 @@ static class UIManager {
             mousePos = null;
         }
 
-        var updateArgs = args with { MousePosition = mousePos, UpdateFlags = args.UpdateFlags.ClearFlagIf(UpdateArgs.Flags.Visible, !component.Visible) };
+        var updateArgs = new UpdateArgs(mousePos, args.UpdateFlags.ClearFlagIf(UpdateArgs.Flags.Visible, !component.Visible),args.Global);
         component.Update(ref updateArgs);
         if (parentBoundsRefreshed || component.IsLayoutDirty) {
             component.RefreshBounds(parent?.BoundingBox ?? new Rectangle(0, 0, Configuration.ScreenWidth, Configuration.ScreenHeight));
@@ -227,12 +227,18 @@ static class UIManager {
 
     private record struct ZIndexEntry(InterfaceComponent Component, Vector2 GlobalLocation);
     
-    public struct UpdateArgs {
-        public required Vector2? MousePosition;
+    public readonly record struct UpdateArgs {
+        public readonly Vector2? MousePosition;
 
-        public required Flags UpdateFlags;
+        public readonly Flags UpdateFlags;
 
-        public required GlobalProps Global;
+        public readonly GlobalProps Global;
+
+        public UpdateArgs(Vector2? mousePosition, Flags updateFlags, GlobalProps global) {
+            MousePosition = mousePosition;
+            UpdateFlags = updateFlags;
+            Global = global;
+        }
 
         public bool ComponentVisible => UpdateFlags.HasFlag(Flags.Visible);
 
