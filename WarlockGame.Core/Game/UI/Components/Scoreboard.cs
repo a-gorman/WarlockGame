@@ -8,7 +8,7 @@ namespace WarlockGame.Core.Game.UI.Components;
 sealed class Scoreboard : InterfaceComponent {
     private readonly GameRules _gameRule;
     private Container _container;
-    private readonly Dictionary<int, TextDisplay> _playerLifeDisplays = new();
+    private readonly Dictionary<int, TextDisplay> _forceLifeDisplays = new();
 
     public Scoreboard(GameRules gameRule) {
         _gameRule = gameRule;
@@ -34,12 +34,13 @@ sealed class Scoreboard : InterfaceComponent {
 
             _container.RemoveAllComponents();
             
-            var playerIds = _gameRule.Statuses.Keys.ToList();
-            var grid = new Grid(0, 0, 2, columnWidth, playerIds.Count, rowHeight) { Layout = Layout.WithMargin(2) };
-            for (int i = 0; i < playerIds.Count; i++) {
-                var id = playerIds[i];
+            _forceLifeDisplays.Clear();
+            var forceIds = _gameRule.Statuses.Keys.ToList();
+            var grid = new Grid(0, 0, 2, columnWidth, forceIds.Count, rowHeight) { Layout = Layout.WithMargin(2) };
+            for (int i = 0; i < forceIds.Count; i++) {
+                var id = forceIds[i];
                 var lives = _gameRule.Statuses[id].Lives;
-                var player = PlayerManager.GetPlayer(id);
+                var player = PlayerManager.GetPlayerByForceId(id);
                 if (player == null) continue;
                 grid.AddComponentToCell(new TextDisplay(player.Name) {
                     TextColor = player.Color,
@@ -50,14 +51,14 @@ sealed class Scoreboard : InterfaceComponent {
                     TextScale = 0.55f
                 };
                 grid.AddComponentToCell(lifeDisplay, i, 1);
-                _playerLifeDisplays[id] = lifeDisplay;
+                _forceLifeDisplays[id] = lifeDisplay;
             }
 
             var totalWidth = columnWidth * 2;
-            Layout = Layout.WithBoundingBox(10, 15, totalWidth, rowHeight * playerIds.Count, Alignment.TopRight);
+            Layout = Layout.WithBoundingBox(10, 15, totalWidth, rowHeight * forceIds.Count, Alignment.TopRight);
             _container.AddComponent(grid);
 
-            foreach (var playerId in _playerLifeDisplays.Keys) {
+            foreach (var playerId in _forceLifeDisplays.Keys) {
                 RecalculatePlayerLifeDisplay(playerId);
             }
         }
@@ -69,9 +70,9 @@ sealed class Scoreboard : InterfaceComponent {
     private void RecalculatePlayerLifeDisplay(int playerId) {
         var lives = _gameRule.Statuses[playerId].Lives;
         if (lives != 0) {
-            _playerLifeDisplays[playerId].Text = lives.ToString();
+            _forceLifeDisplays[playerId].Text = lives.ToString();
         } else {
-            _playerLifeDisplays[playerId].Text = "Defeated";
+            _forceLifeDisplays[playerId].Text = "Defeated";
         }
     }
 }

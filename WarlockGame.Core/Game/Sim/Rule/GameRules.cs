@@ -54,9 +54,10 @@ class GameRules {
         
         if (Statuses.Count(x => x.Value.Lives > 0) == 1) {
             var winningPlayerId = Statuses.First(x => x.Value.Lives > 0).Key;
+            // Violation: Simulation reaching outside the simulation!
             var message = winningPlayerId == PlayerManager.LocalPlayer!.Id
                 ? "You Win!!"
-                : $"{ PlayerManager.GetPlayer(winningPlayerId)?.Name ?? "Another player" } has won the game!";
+                : $"{ PlayerManager.GetPlayerByForceId(winningPlayerId)?.Name ?? "Another player" } has won the game!";
             SimDebug.Visualize(message, Simulation.ArenaSize / 2, 500);
         }
         else if (Statuses.All(x => x.Value.Lives == 0)) {

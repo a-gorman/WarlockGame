@@ -4,6 +4,7 @@ namespace WarlockGame.Core.Game.Networking.Packet;
 
 public interface IServerCommand : INetSerializable {
     enum Type {
+        Invalid = 0,
         StartGame,
         PlayerRemoved
     }
@@ -27,8 +28,13 @@ class StartGame : IServerCommand {
 public class PlayerRemoved : IServerCommand {
     public int PlayerId { get; set; }
 
-    public IServerCommand.Type GetSerializerType() => IServerCommand.Type.StartGame;
-    public void Serialize(NetDataWriter writer) { }
+    public IServerCommand.Type GetSerializerType() => IServerCommand.Type.PlayerRemoved;
 
-    public void Deserialize(NetDataReader reader) { }
+    public void Serialize(NetDataWriter writer) {
+        writer.Put(PlayerId);
+    }
+
+    public void Deserialize(NetDataReader reader) {
+        PlayerId = reader.GetInt();
+    }
 }

@@ -31,15 +31,19 @@ public class WarlockGame: Microsoft.Xna.Framework.Game {
     public static ParticleManager<ParticleState> ParticleManager { get; private set; } = null!;
     public static bool IsLocal => !NetworkManager.IsConnected;
 
-    public Queue<ServerTickProcessed> ServerTicks { get; } = new();
-    
     private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch = null!;
     private readonly BloomComponent _bloom;
     internal Simulation Simulation { get; private set; } = null!;
     
-    // Map of player Ids to most recent tick processed
-    private readonly Dictionary<int, int> _clientTicksProcessed = new();
+    // A queue of ticks processed by the server, and the information needed for us to process those ticks ourselves.
+    // Used only when in client mode
+    public Queue<ServerTickProcessed> ServerTicks { get; } = new();
+    
+    // Map of player Ids to most recent tick processed. This lets us know when someone is lagging behind.
+    // Used only when in server mode.
+    public readonly Dictionary<int, int> ClientTicksProcessed = new();
+    
     private readonly SpellDisplay _spellDisplay;
 
     // 60 FPS
@@ -130,7 +134,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game {
         Art.Load(Content);
         Sound.Load(Content);
 
-        MediaPlayer.IsRepeating = true;
+        // MediaPlayer.IsRepeating = true;
         // MediaPlayer.Play(Sound.Music);
     }
 
@@ -154,7 +158,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game {
                 break;
             case ClientTypeState.Server:
             {
-                if (State != GameState.Running || _clientTicksProcessed.Count != 0 && Simulation.Tick > _clientTicksProcessed.Values.Max() + 30)
+                if (State != GameState.Running || ClientTicksProcessed.Count != 0 && Simulation.Tick > ClientTicksProcessed.Values.Max() + 30)
                     break;
                 
                 var result = Simulation.Update(CommandManager.SimulationCommands);
@@ -216,14 +220,16 @@ public class WarlockGame: Microsoft.Xna.Framework.Game {
     public void RestartGame(int seed) {
         Logger.Info("Restarting game", Logger.LogType.Program);
         
-        CommandManager.Clear();
+        CommandManager.OnGameRestart();
         _spellDisplay.Reset();
         
         ParticleManager.Clear();
-        Simulation.Restart(seed);
+        PlayerManager.OnGameRestarted();
+        Simulation.Restart(seed, PlayerManager.Players.Count(x => x.IsActive));
+        
         if (Configuration.StartingSpellIds != null && NetworkManager.IsServer) {
             foreach (var force in Simulation.Forces) {
-                CommandManager.AddSimulationCommand(new SelectSpells { PlayerId = force.Id, SpellDefIds = Configuration.StartingSpellIds});
+                CommandManager.AddSimulationCommand(new SelectSpells { PlayerId = PlayerManager.Players.Find(x => x.ForceId == force.Id)!.Id, SpellDefIds = Configuration.StartingSpellIds});
             }
         }
         
@@ -250,7 +256,7 @@ public class WarlockGame: Microsoft.Xna.Framework.Game {
     }
 
     public void ClientTickProcessed(int playerId, ClientTickProcessed clientTickProcessed) {
-        _clientTicksProcessed[playerId] = clientTickProcessed.Tick;
+        ClientTicksProcessed[playerId] = clientTickProcessed.Tick;
         if (!clientTickProcessed.ChecksumMatched) {
             Logger.Error($"Client {playerId} checksum has diverged.", Logger.LogType.Network);
         }

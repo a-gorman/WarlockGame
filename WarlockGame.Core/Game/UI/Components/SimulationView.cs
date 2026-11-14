@@ -245,7 +245,7 @@ sealed class SimulationView : InterfaceComponent {
             }
         }
 
-        var playerColor = PlayerManager.GetPlayer(warlock.ForceId ?? -1)?.Color ?? Color.White;
+        var playerColor = PlayerManager.GetPlayerByForceId(warlock.ForceId ?? -1)?.Color ?? Color.White;
         spriteBatch.Draw(Art.WarlockGlow, warlock.Position + location - new Vector2(138f/4), null, playerColor * opacity, 0, Vector2.Zero, new Vector2(0.5f, 0.5f), SpriteEffects.None, 0);
         warlock.Sprite.Draw(spriteBatch, warlock.Position + location, new Angle(warlock.Orientation), opacity: opacity);
         DrawHealthBar(warlock, opacity, location, spriteBatch);

@@ -50,7 +50,7 @@ class Server : INetEventListener {
 
     private void OnJoinGameRequest(JoinGameRequest request, NetPeer sender) {
         var player = PlayerManager.AddRemotePlayer(request.PlayerName, color: request.ColorPreference);
-        _clientToPlayerMap.Add(sender.Id, player.Id);
+        _clientToPlayerMap[sender.Id] = player.Id;
         SendSerializableToAllExcept(new PlayerJoined { PlayerId = player.Id, PlayerName = request.PlayerName, Color = player.Color }, sender);
         SendToPeer(new JoinGameResponse { 
             PlayerId = player.Id, 
@@ -118,10 +118,10 @@ class Server : INetEventListener {
         Logger.Info($"Peer disconnected: {peer.Id}", Logger.LogType.Network);
         MessageDisplay.Display($"Peer disconnected: {peer.Id}");
         _clients.Remove(peer.Id);
+        WarlockGame.Instance.ClientTicksProcessed.Remove(_clientToPlayerMap[peer.Id]);
         Latency = CalculateLatency();
 
-        var packet = new PlayerRemoved { PlayerId = _clientToPlayerMap[peer.Id] };
-        SendToAll(packet);
+        CommandManager.AddServerCommand(new PlayerRemoved { PlayerId = _clientToPlayerMap[peer.Id] });
     }
 
     public void OnNetworkError(IPEndPoint endPoint, SocketError socketError) {

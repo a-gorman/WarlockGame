@@ -22,7 +22,6 @@ static class PlayerManager {
         return player;
     }
 
-
     public static Player AddRemotePlayer(string name, Color? color, int? id = null) {
         id ??= GetNextPlayerId();
 
@@ -30,15 +29,21 @@ static class PlayerManager {
     }
 
     private static Player CreatePlayer(int id, string name, Color color, bool isLocal) {
-        var player = new Player(name, id, color, isLocal);
+        // We won't have a forceId until the game is restarted
+        var player = new Player(name, id, color, isLocal, forceId: null);
 
         Players.Add(player);
 
         return player;
     }
 
+    // This method should not be used when connecting to simulation objects
     public static Player? GetPlayer(int playerId) {
         return Players.Find(x => x.Id == playerId);
+    }
+    
+    public static Player? GetPlayerByForceId(int forceId) {
+        return Players.Find(x => x.ForceId == forceId);
     }
 
     private static Color GetColor(int id) {
@@ -55,5 +60,17 @@ static class PlayerManager {
 
     public static bool IsLocal(int playerId) {
         return LocalPlayer != null && LocalPlayer.Id == playerId;
+    }
+
+    public static void OnGameRestarted() {
+        int forceId = 1;
+        foreach (var player in Players) {
+            if (!player.IsActive) {
+                player.ForceId = null;
+            } else {
+                player.ForceId = forceId;
+                forceId++;
+            }
+        }
     }
 }

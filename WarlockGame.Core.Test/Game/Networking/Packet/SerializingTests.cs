@@ -86,7 +86,8 @@ public class SerializingTests {
                 new SelectPerk { PlayerId = 5, PerkId = 11 }
             ],
             ServerCommands = [
-                new StartGame()
+                new StartGame { Seed = 1234 },
+                new PlayerRemoved {PlayerId = 5678}
             ]
         };
 

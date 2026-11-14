@@ -78,8 +78,7 @@ class ConsoleCommandHandler {
 
         if (WarlockGame.IsLocal) {
             WarlockGame.Instance.RestartGame(Random.Shared.Next());
-        }
-        else if (NetworkManager.IsServer) {
+        } else if (NetworkManager.IsServer) {
             CommandManager.AddServerCommand(new StartGame { Seed = Random.Shared.Next() });
         }
     }
@@ -124,7 +123,7 @@ class ConsoleCommandHandler {
     private static void DisplayDebugInformation() {
         MessageDisplay.Display(
             String.Join(separator: '\n',
-                $"Players:\n    {WarlockGame.Instance.Simulation.Forces.JoinToString(x => $"{x.Name}: Choosing spells: {!x.AreSpellsChosen}", "\n    ")}",
+                $"Players:\n    {WarlockGame.Instance.Simulation.Forces.JoinToString(x => $"{PlayerManager.GetPlayerByForceId(x.Id)?.Name ?? "INVALID"}: Choosing spells: {!x.AreSpellsChosen}", "\n    ")}",
                 $"Mouse position: {InputManager.LastInputState.GetMousePosition()}",
                 GetVersionDisplay(),
                 GetLatencyDisplay(),

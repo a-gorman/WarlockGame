@@ -2,10 +2,10 @@ namespace WarlockGame.Core.Game.Sim.Spell.AreaOfEffect;
 
 static class Falloff {
 
-    public struct Axis {
-        public Vector2 Displacement;
-        public float Max;
-        public float Min;
+    public readonly struct Axis {
+        public readonly Vector2 Displacement;
+        public readonly float Max;
+        public readonly float Min;
         
         public Axis(Vector2 displacement, float max, float min) {
             Displacement = displacement;
