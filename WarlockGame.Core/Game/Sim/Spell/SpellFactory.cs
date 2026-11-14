@@ -456,7 +456,7 @@ class SpellFactory {
         );
     }
 
-    // Not fully implemented
+    // Not implemented
     public SpellDefinition Shockwave() {
         return new DirectionalSpell(
             id: 13,
@@ -476,7 +476,7 @@ class SpellFactory {
     }
 
     public SpellDefinition LightningJump() {
-        var damage = 10;
+        var damage = 15;
         var castRange = 750;
         var jumpTime = 0.75f;
         var travelSprite = Sprite.FromGridSpriteSheet(Art.SparkJumpTravel, 3, 3, SimTime.OfSeconds(0.5f), scale: 2.3f);
@@ -630,7 +630,7 @@ class SpellFactory {
             ]);
     }
 
-    // Not fully implemented
+    // Not implemented
     public SpellDefinition Redirection() {
         return new DirectionalSpell(
             id: 17,
@@ -660,6 +660,7 @@ class SpellFactory {
             ]);
     }
     
+    // Not implemented
     public SpellDefinition Snowball() {
         return new DirectionalSpell(
             id: 18,
