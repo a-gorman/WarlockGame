@@ -59,6 +59,7 @@ static class UIManager {
         
         var args = new UpdateArgs {
             MousePosition = GlobalProps.MousePosition,
+            UpdateFlags = UpdateArgs.Flags.Visible,
             Global = GlobalProps
         };
         
@@ -79,7 +80,7 @@ static class UIManager {
             mousePos = null;
         }
 
-        var updateArgs = args with { MousePosition = mousePos };
+        var updateArgs = args with { MousePosition = mousePos, UpdateFlags = args.UpdateFlags.ClearFlagIf(UpdateArgs.Flags.Visible, !component.Visible) };
         component.Update(ref updateArgs);
         if (parentBoundsRefreshed || component.IsLayoutDirty) {
             component.RefreshBounds(parent?.BoundingBox ?? new Rectangle(0, 0, Configuration.ScreenWidth, Configuration.ScreenHeight));
@@ -226,14 +227,42 @@ static class UIManager {
     private record struct ZIndexEntry(InterfaceComponent Component, Vector2 GlobalLocation);
     
     public struct UpdateArgs {
-        public required Vector2? MousePosition { get; init; }
+        public required Vector2? MousePosition;
 
-        public required GlobalProps Global { get; init; }
+        public required Flags UpdateFlags;
+
+        public required GlobalProps Global;
+
+        public bool ComponentVisible => UpdateFlags.HasFlag(Flags.Visible);
 
         public class GlobalProps {
             public bool MouseInBounds { get; set; }
             public Vector2 MousePosition => InputState.GetMousePosition();
             public InputManager.InputState InputState { get; set; } = null!;
         }
+
+        [Flags]
+        public enum Flags {
+            // Indicates if the component is visible, including parent visibility
+            Visible = 1
+        }
+    }
+}
+
+file static class Extensions {
+    public static UIManager.UpdateArgs.Flags RaiseFlagIf(this UIManager.UpdateArgs.Flags source, UIManager.UpdateArgs.Flags flag, bool condition) {
+        if (condition) {
+            return source | flag;
+        }
+
+        return source;
+    }
+    
+    public static UIManager.UpdateArgs.Flags ClearFlagIf(this UIManager.UpdateArgs.Flags source, UIManager.UpdateArgs.Flags flag, bool condition) {
+        if (condition) {
+            return source & ~flag;
+        }
+
+        return source;
     }
 }

@@ -82,7 +82,6 @@ class InterfaceComponent {
 
     public void DrawComponent(Vector2 location, SpriteBatch spriteBatch) {
         Draw(location, spriteBatch);
-        DirtyIndexing();
     }
 
     protected virtual void Draw(Vector2 location, SpriteBatch spriteBatch) { }
@@ -125,6 +124,8 @@ class InterfaceComponent {
     }
 
     public void RemoveAllComponents() {
+        if (_components.Count == 0) return;
+        
         foreach (var component in _components) {
             component.OnRemove();
         }
@@ -140,8 +141,11 @@ class InterfaceComponent {
             }
         }
 
-        _components.RemoveAll(predicate);
-        DirtyIndexing();
+        var elementsRemoved = _components.RemoveAll(predicate);
+
+        if (elementsRemoved != 0) {
+            DirtyIndexing();
+        }
     }
 
     public virtual void RefreshBounds(Rectangle parentBounds) {
@@ -221,7 +225,7 @@ class InterfaceComponent {
         throw new Exception("Invalid vertical flags");
     }
 
-private void DirtyIndexing() {
+    private void DirtyIndexing() {
         RequiresReindexing |= !Disabled;
     }
 
