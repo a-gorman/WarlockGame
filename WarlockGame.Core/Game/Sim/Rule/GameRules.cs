@@ -12,7 +12,7 @@ class GameRules {
     public Vector2 InitialArenaSize = new Vector2(2500);
     public int InitialLives { get; }
     
-    public Dictionary<int, PlayerStatus> Statuses { get; } = new();
+    public Dictionary<int, ForceStatus> Statuses { get; } = new();
 
     public const int SpellSelections = 4;
     
@@ -32,11 +32,15 @@ class GameRules {
     public void Initialize() {
         _sim.PerkManager.PerkChosen += OnPerkChosen;
     }
+
+    public void Update() {
+        
+    }
     
     public void Reset() {
         Statuses.Clear();
         foreach (var force in _sim.Forces) {
-            Statuses.Add(force.Id, new PlayerStatus(InitialLives));
+            Statuses.Add(force.Id, new ForceStatus(InitialLives));
         }
 
         OnChanged?.Invoke(new LivesChanged { Reset = true });

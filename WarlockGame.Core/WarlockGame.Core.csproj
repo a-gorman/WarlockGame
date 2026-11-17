@@ -41,7 +41,7 @@
     <PackageReference Include="ZLinq" Version="1.5.6" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Content\bin\Windows" />
+    <Folder Include="Content\bin_old\Windows" />
   </ItemGroup>
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">

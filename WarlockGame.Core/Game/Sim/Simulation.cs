@@ -39,6 +39,7 @@ class Simulation {
             field = value;
         }
     }
+    
     public static Vector2 ArenaCenter { get; private set; }
 
     public Simulation() {
@@ -167,8 +168,6 @@ class Simulation {
             var spawnPos = ArenaSize / 2 + new Vector2(0, 400).Rotated(radiansPerPlayer * i);
             var warlock = new Warlock(x.Id, spawnPos, this);
 
-            // warlock.Sprite.Color = PlayerManager.GetPlayer(x.Id)!.Color;
-        
             return warlock;
         });
         foreach (var warlock in warlocks) {
