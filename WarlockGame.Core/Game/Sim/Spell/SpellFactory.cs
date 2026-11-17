@@ -534,7 +534,8 @@ class SpellFactory {
 
     public SpellDefinition Swap() {
         var maxDistance = 550;
-
+        var radius = 180;
+        
         return new DirectionalSpell(
             id: 15,
             name: "Swap",
@@ -548,9 +549,10 @@ class SpellFactory {
                     speed: 11,
                     collisionFlags: CollisionFlags.ProjectileDefault & ~CollisionFlags.BlocksProjectiles,
                     effects: [
+                        new SoundComponent(Sound.Swap, radius),
                         new DelayedLocationComponent(SimTime.OfMillis(275), [
                             new LocationAreaOfEffect {
-                                Shape = new CircleTarget(AoeSelectors.AllIgnoreCaster, radius: 180),
+                                Shape = new CircleTarget(AoeSelectors.AllIgnoreCaster, radius: radius),
                                 Components = [ new SwapComponent() ]
                             }
                         ]),
@@ -560,11 +562,12 @@ class SpellFactory {
                 )
         ]);
 
-        static SpriteEffect CreateHitEffect(Vector2 x) =>
-            new SpriteEffect(Sprite.FromGridSpriteSheet(Art.SwapEffect, 9, 1,
+        static SpriteEffect CreateHitEffect(Vector2 x) {
+            return new SpriteEffect(Sprite.FromGridSpriteSheet(Art.SwapEffect, 9, 1,
                     SimTime.OfSeconds(0.5f), scale: 3.3f, expiredSpriteBehavior: ExpiredSpriteBehavior.Invisible),
                 position: x,
                 duration: SimTime.OfSeconds(0.5f));
+        }
     }
 
     public SpellDefinition GraveTick() {

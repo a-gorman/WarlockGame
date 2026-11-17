@@ -13,6 +13,7 @@ namespace WarlockGame.Core.Game
 		public static GameSound FireHit = null!;
 		public static GameSound FireBallCast = null!;
 		public static GameSound FireSprayCast = null!;
+		public static GameSound Swap = null!;
 
 		public static void Load(ContentManager content)
 		{
@@ -20,6 +21,8 @@ namespace WarlockGame.Core.Game
 			FireHit = new GameSound(content.Load<SoundEffect>("Audio/fire_spell_hit_1"));
 			FireBallCast = new GameSound(content.Load<SoundEffect>("Audio/fire_spell_hit_6"));
 			FireSprayCast = new GameSound(content.Load<SoundEffect>("Audio/fire_spell_shoot_9_edited"));
+			FireSprayCast = new GameSound(content.Load<SoundEffect>("Audio/fire_spell_shoot_9_edited"));
+			Swap = new GameSound(content.Load<SoundEffect>("Audio/Effects/Portal_Opening_Sound_40"));
 			None = new GameSound(null!) { Disabled = true };
 		}
 	}

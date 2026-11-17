@@ -601,6 +601,12 @@
 /processorParam:TextureFormat=Color
 /build:../../../../GameContent/Art/Textures/Grass1_Color.png;Art/Textures/Grass1_Color.png
 
+#begin ../../../../GameContent/Audio/Effects/Portal_Opening_Sound_40.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:../../../../GameContent/Audio/Effects/Portal_Opening_Sound_40.wav;Audio/Effects/Portal_Opening_Sound_40.wav
+
 #begin ../../../../GameContent/Audio/fire_spell_hit_1.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
