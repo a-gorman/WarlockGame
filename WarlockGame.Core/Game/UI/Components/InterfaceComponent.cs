@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Log;
@@ -245,6 +246,7 @@ class InterfaceComponent {
     }
 }
 
+[StructLayout(LayoutKind.Auto)]
 readonly record struct Layout {
     public LayoutType Type { get; }
     public Alignment Alignment { get; }
@@ -347,7 +349,7 @@ readonly record struct Layout {
         return ((int)Alignment & (int)flags) == (int)flags;
     }
     
-    public enum LayoutType {
+    public enum LayoutType: short {
         Margin           = LayoutFlags.AutoHeight | LayoutFlags.AutoWidth | LayoutFlags.RestrictBounds,
         HeightMargin     = LayoutFlags.AutoHeight | LayoutFlags.RestrictBounds,
         WidthMargin      = LayoutFlags.AutoWidth | LayoutFlags.RestrictBounds,
@@ -358,7 +360,7 @@ readonly record struct Layout {
     }
 
     [Flags]
-    public enum LayoutFlags {
+    public enum LayoutFlags: byte {
         AutoWidth      = 0b0001,
         AutoHeight     = 0b0010,
         OutsideParent  = 0b0100,

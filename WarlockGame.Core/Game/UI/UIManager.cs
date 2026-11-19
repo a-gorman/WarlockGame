@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
@@ -227,6 +228,7 @@ static class UIManager {
 
     private record struct ZIndexEntry(InterfaceComponent Component, Vector2 GlobalLocation);
     
+    [StructLayout(LayoutKind.Auto)]
     public readonly record struct UpdateArgs {
         public readonly Vector2? MousePosition;
 
@@ -249,7 +251,7 @@ static class UIManager {
         }
 
         [Flags]
-        public enum Flags {
+        public enum Flags: byte {
             // Indicates if the component is visible, including parent visibility
             Visible = 1
         }
