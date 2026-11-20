@@ -9,7 +9,7 @@ using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Sim.Entities;
 
-class Projectile : Entity {
+sealed class Projectile : Entity {
     private static readonly Random _rand = new();
     private readonly IReadOnlyList<ILocationSpellComponent> _effects;
     private readonly IReadOnlyList<ISelfSpellComponent> _casterEffects;

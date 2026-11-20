@@ -10,7 +10,7 @@ using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Sim.Entities;
 
-class Warlock : Entity {
+sealed class Warlock : Entity {
     public float Speed { get; set; } = 3.0f;
     public float RotationSpeed { get; set; } = 0.15f; // Radians per tick
 
@@ -85,7 +85,7 @@ class Warlock : Entity {
 
     private LinkedList<IOrder> Orders { get; } = new();
 
-    private MoveState _moveState = MoveState.Stopped;
+    public MoveState MoveState { get; private set; } = MoveState.Stopped;
     private bool _moveStateDirty = true;
 
     public Warlock(int forceId, Vector2 position, Simulation simulation):
@@ -95,11 +95,11 @@ class Warlock : Entity {
         ForceId = forceId;
         CollisionFlags = CollisionFlags.WarlockDefault;
 
-        _slidingFriction = new Friction(a: 0.001f, b: 0.12f, c: 0.02f);
+        _slidingFriction = new Friction(a: 0.001f, b: 0.12f, c: 0.02f) { Condition = entity => (entity as Warlock)!.MoveState == MoveState.Sliding };
         
         OnPushed += HandlePushed;
         _pushableBehavior = new Pushable();
-        AddBehaviors(_pushableBehavior);
+        AddBehaviors(_pushableBehavior, _slidingFriction);
     }
 
     public override void Update() {
@@ -153,10 +153,9 @@ class Warlock : Entity {
     }
 
     private void Move() {
-        switch (_moveState) {
+        switch (MoveState) {
             case MoveState.Sliding: {
                 if (Velocity == Vector2.Zero) {
-                    RemoveBehaviors(_slidingFriction);
                     Sliding = false;
                 }
                 break;
@@ -195,7 +194,7 @@ class Warlock : Entity {
             case MoveState.Jumping:
                 break;
             default:
-                Logger.Error($"Invalid move state value {(int)_moveState}", Logger.LogType.Simulation);
+                Logger.Error($"Invalid move state value {(int)MoveState}", Logger.LogType.Simulation);
                 break;
         }
 
@@ -286,25 +285,24 @@ class Warlock : Entity {
 
     private void HandlePushed(OnPushedEventArgs args) {
         Sliding = true;
-        AddBehaviors(_slidingFriction);
     }
 
     private void RecalculateMoveState() {
         if (Jumping) {
             _pushableBehavior.Strength = 2.0f;
-            _moveState = MoveState.Jumping;
+            MoveState = MoveState.Jumping;
         } else if (Sliding) {
             _pushableBehavior.Strength = 1.0f;
-            _moveState = MoveState.Sliding;
+            MoveState = MoveState.Sliding;
         } else if (Direction != null && CanMove) {
             _pushableBehavior.Strength = 1.0f;
-            _moveState = MoveState.Moving;
+            MoveState = MoveState.Moving;
         } else if(DesiredOrientation != null && CanMove) {
             _pushableBehavior.Strength = 0.75f;
-            _moveState = MoveState.Rotating;
+            MoveState = MoveState.Rotating;
         } else {
             _pushableBehavior.Strength = 0.5f;
-            _moveState = MoveState.Stopped;
+            MoveState = MoveState.Stopped;
         }
     }
 }

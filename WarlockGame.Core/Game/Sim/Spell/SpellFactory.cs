@@ -609,7 +609,9 @@ class SpellFactory {
                                                             position: x,
                                                             onUpdate: (sprite, transformId, timeElapsed) => { sprite.ChangeTransformation(transformId, 3f/durationOfPulse.Ticks * timeElapsed.Ticks); },
                                                             duration: durationOfPulse),
-                                                       x => new ContinuousSpellEffect(context, x, durationOfPulse,
+                                                        x => new ContinuousSpellEffect(context, 
+                                                            location: x, 
+                                                            duration: durationOfPulse,
                                                             components: [
                                                                 new LocationAreaOfEffect {
                                                                     Shape = new CircleTarget(AoeSelectors.Warlocks, shareRadius) { FalloffFactor = Falloff.None },
