@@ -15,6 +15,6 @@ class PermanentRegenerationPerk : PermanentBuffPerk {
             texture: Art.HealIcon) { }
 
     protected override Buff CreateBuff(Simulation _) {
-        return new Regeneration(regenAmount: RegenAmountPerSecond/60, duration: null, damageDisableTime: SimTime.OfSeconds(DamageDisableTime));
+        return new Regeneration(regenAmount: RegenAmountPerSecond/60, duration: null, damageCooldown: SimTime.OfSeconds(DamageDisableTime));
     }
 }

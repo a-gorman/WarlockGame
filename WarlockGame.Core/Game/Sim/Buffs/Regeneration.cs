@@ -4,20 +4,37 @@ namespace WarlockGame.Core.Game.Sim.Buffs;
 
 class Regeneration: Buff {
     private readonly float _regenAmount;
-    private readonly SimTime? _damageDisableTime;
-    private GameTimer? _regenDelay;
+    private readonly SimTime? _damageCooldown;
+    private GameTimer _regenTimer;
 
-    public Regeneration(float regenAmount, SimTime? duration, SimTime? damageDisableTime) 
+    public Regeneration(float regenAmount, SimTime? duration, SimTime? damageCooldown) 
         : base(BuffType.Regeneration, duration) {
         _regenAmount = regenAmount;
-        _damageDisableTime = damageDisableTime;
+        _damageCooldown = damageCooldown;
+        _regenTimer = GameTimer.Expired();
     }
-    
+
+    public override void OnAdd(Warlock target) {
+        if (_damageCooldown != null) {
+            target.OnDamaged += HandleDamaged;
+        }
+    }
+
+    public override void OnRemove(Warlock target) {
+        if (_damageCooldown != null) {
+            target.OnDamaged -= HandleDamaged;
+        }
+    }
+
+    private void HandleDamaged(OnDamagedEventArgs args) {
+        _regenTimer = _damageCooldown!.Value.ToTimer();
+    }
+
     protected override void OnUpdate(Warlock target) {
-        if (!_regenDelay?.IsExpired ?? true) {
+        if (!_regenTimer.IsExpired) {
             target.Health += _regenAmount;
         }
 
-        _regenDelay = _regenDelay?.Decremented();
+        _regenTimer = _regenTimer.Decremented();
     }
 }
