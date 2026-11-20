@@ -607,6 +607,12 @@
 /processorParam:Quality=Best
 /build:../../../../GameContent/Audio/Effects/Portal_Opening_Sound_40.wav;Audio/Effects/Portal_Opening_Sound_40.wav
 
+#begin ../../../../GameContent/Audio/Effects/wind_spell_loop_3.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:../../../../GameContent/Audio/Effects/wind_spell_loop_3.wav;Audio/Effects/wind_spell_loop_3.wav
+
 #begin ../../../../GameContent/Audio/fire_spell_hit_1.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

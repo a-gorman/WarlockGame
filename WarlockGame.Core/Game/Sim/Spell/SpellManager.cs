@@ -30,7 +30,7 @@ class SpellManager {
             _spellFactory.Lightning(),
             _spellFactory.Poison(),
             _spellFactory.Burst(),
-            _spellFactory.WindShield(),
+            _spellFactory.WindWall(),
             _spellFactory.SoulShatter(),
             _spellFactory.DeflectionShield(),
             _spellFactory.Homing(),

@@ -139,8 +139,9 @@ class SpellFactory {
         );
     }
 
-    public SpellDefinition WindShield() {
+    public SpellDefinition WindWall() {
         var duration = SimTime.OfSeconds(6);
+        var radius = 200;
         return new SelfCastSpell(
             id: 5,
             name: "Wind Shield",
@@ -148,6 +149,7 @@ class SpellFactory {
             spellIcon: Art.WindWallIcon,
             cooldownTime: SimTime.OfSeconds(16),
             effects: [
+                new SoundComponent(Sound.WindwallLoop, radius: radius + 50),
                 new LocationEffectComponent((spellContext, location) =>
                     new ContinuousSpellEffect(
                         context: spellContext,
@@ -157,7 +159,7 @@ class SpellFactory {
                         components: [
                             new LocationAreaOfEffect {
                                 Shape = new Doughnut {
-                                    Radius = 200,
+                                    Radius = radius,
                                     Width = 30,
                                     IgnoreCaster = false,
                                     FalloffFactor = Falloff.None
