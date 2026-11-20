@@ -4,7 +4,7 @@ using WarlockGame.Core.Game.Sim.Buffs;
 namespace WarlockGame.Core.Game.Sim.Perks;
 
 class PermanentRegenerationPerk : PermanentBuffPerk {
-    private const float RegenAmountPerSecond = 3.5f;
+    private const float RegenAmountPerSecond = 3f;
     private const int DamageDisableTime = 5;
     
     public PermanentRegenerationPerk()

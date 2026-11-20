@@ -31,7 +31,7 @@ class Regeneration: Buff {
     }
 
     protected override void OnUpdate(Warlock target) {
-        if (!_regenTimer.IsExpired) {
+        if (_regenTimer.IsExpired) {
             target.Health += _regenAmount;
         }
 
