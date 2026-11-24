@@ -13,6 +13,8 @@ sealed class Projectile : Entity {
     private static readonly Random _rand = new();
     private readonly IReadOnlyList<ILocationSpellComponent> _effects;
     private readonly IReadOnlyList<ISelfSpellComponent> _casterEffects;
+    private bool collidesWithCaster = false;
+    private bool touchedCasterLastFrame = false;
     public SpellContext Context { get; }
     
     public Projectile(Vector2 position, 
@@ -53,14 +55,25 @@ sealed class Projectile : Entity {
         if (!new RectangleF(new Vector2(0), Simulation.ArenaSize).Contains(Position)) {
             IsExpired = true;
         }
-        
+
+        if (touchedCasterLastFrame == false)
+        {
+            collidesWithCaster = true;
+        }
+
+        touchedCasterLastFrame = false;
         base.Update();
     }
 
     public override void HandleCollision(Entity other) {
-        if (other != Context.Caster && other.BlocksProjectiles) {
+        if ((other != Context.Caster || collidesWithCaster == true) && other.BlocksProjectiles ) {
             IsExpired = true;
             TriggerEffects();
+        }
+
+        if (other == Context.Caster)
+        {
+            touchedCasterLastFrame = true;
         }
 
         base.HandleCollision(other);

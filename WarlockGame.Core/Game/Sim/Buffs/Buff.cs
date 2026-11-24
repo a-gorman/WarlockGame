@@ -70,6 +70,7 @@ class Buff {
         GraveTick,
         ExplodeOnDamage,
         ExplodeOnDamageSlow,
+        Reflect,
         Agility
     }
 
