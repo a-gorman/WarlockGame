@@ -43,6 +43,7 @@ class SpellManager {
             _spellFactory.Swap(),
             _spellFactory.GraveTick(),
             _spellFactory.Redirection(),
+            _spellFactory.Redirection2()
         }.ToDictionary(x => x.Id, x => x);
     }
     

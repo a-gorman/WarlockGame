@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Linq;
 using MonoGame.Extended;
 using WarlockGame.Core.Game.Graphics;
@@ -668,5 +669,20 @@ class SpellFactory {
                     )
                 )
             ]);
+    }
+    
+    public SpellDefinition Redirection2()
+    {
+        return new SelfCastSpell(
+            id: 19,
+            name: "Redirection",
+            description: "Temp",
+            spellIcon: Art.LightningJumpIcon,
+            cooldownTime: SimTime.OfSeconds(1),
+            effects:
+            [
+                new ApplyBuffComponent((spellContext) => new Buff(Buff.BuffType.Reflect, SimTime.OfTicks(1), [new DeflectComponent(_simulation)], Buff.StackingType.Refreshes))
+            ]
+        );
     }
 }
