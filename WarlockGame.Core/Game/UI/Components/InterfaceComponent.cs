@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Log;
@@ -82,7 +83,6 @@ class InterfaceComponent {
 
     public void DrawComponent(Vector2 location, SpriteBatch spriteBatch) {
         Draw(location, spriteBatch);
-        DirtyIndexing();
     }
 
     protected virtual void Draw(Vector2 location, SpriteBatch spriteBatch) { }
@@ -125,6 +125,8 @@ class InterfaceComponent {
     }
 
     public void RemoveAllComponents() {
+        if (_components.Count == 0) return;
+        
         foreach (var component in _components) {
             component.OnRemove();
         }
@@ -140,8 +142,11 @@ class InterfaceComponent {
             }
         }
 
-        _components.RemoveAll(predicate);
-        DirtyIndexing();
+        var elementsRemoved = _components.RemoveAll(predicate);
+
+        if (elementsRemoved != 0) {
+            DirtyIndexing();
+        }
     }
 
     public virtual void RefreshBounds(Rectangle parentBounds) {
@@ -221,7 +226,7 @@ class InterfaceComponent {
         throw new Exception("Invalid vertical flags");
     }
 
-private void DirtyIndexing() {
+    private void DirtyIndexing() {
         RequiresReindexing |= !Disabled;
     }
 
@@ -241,6 +246,7 @@ private void DirtyIndexing() {
     }
 }
 
+[StructLayout(LayoutKind.Auto)]
 readonly record struct Layout {
     public LayoutType Type { get; }
     public Alignment Alignment { get; }
@@ -343,7 +349,7 @@ readonly record struct Layout {
         return ((int)Alignment & (int)flags) == (int)flags;
     }
     
-    public enum LayoutType {
+    public enum LayoutType: short {
         Margin           = LayoutFlags.AutoHeight | LayoutFlags.AutoWidth | LayoutFlags.RestrictBounds,
         HeightMargin     = LayoutFlags.AutoHeight | LayoutFlags.RestrictBounds,
         WidthMargin      = LayoutFlags.AutoWidth | LayoutFlags.RestrictBounds,
@@ -354,7 +360,7 @@ readonly record struct Layout {
     }
 
     [Flags]
-    public enum LayoutFlags {
+    public enum LayoutFlags: byte {
         AutoWidth      = 0b0001,
         AutoHeight     = 0b0010,
         OutsideParent  = 0b0100,

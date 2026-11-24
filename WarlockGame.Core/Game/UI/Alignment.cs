@@ -2,7 +2,7 @@
 
 namespace WarlockGame.Core.Game.UI;
 
-enum Alignment {
+enum Alignment: short {
     TopLeft       = AlignmentFlags.Left             | AlignmentFlags.Top,
     TopCenter     = AlignmentFlags.HorizontalCenter | AlignmentFlags.Top,
     TopRight      = AlignmentFlags.Right            | AlignmentFlags.Top,
@@ -15,7 +15,7 @@ enum Alignment {
 }
 
 [Flags]
-enum AlignmentFlags {
+enum AlignmentFlags: short {
     Left = 0b0001,
     Right = 0b0010,
     HorizontalCenter = 0b0100,

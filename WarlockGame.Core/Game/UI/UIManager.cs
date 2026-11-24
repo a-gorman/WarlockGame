@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using WarlockGame.Core.Game.Graphics;
@@ -47,9 +48,10 @@ static class UIManager {
         spriteBatch.End();
 
         // draw the custom mouse cursor
-        spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
-        var color = InputManager.SelectedSpellId is null ? Color.White : Color.Red;
-        spriteBatch.Draw(Art.Pointer, StaticInput.MousePosition,  color);
+        spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+        var selectedColor = Configuration.ColorblindMode ? Color.Blue : Color.Red;
+        var color = InputManager.SelectedSpellId is null ? Color.White : selectedColor;
+        spriteBatch.Draw(Art.Pointer, StaticInput.MousePosition, color);
         spriteBatch.End();
     }
 
@@ -57,10 +59,11 @@ static class UIManager {
         GlobalProps.MouseInBounds = new Rectangle(Point.Zero, Simulation.ArenaSize.ToPoint()).Contains(inputState.GetMousePosition());
         GlobalProps.InputState = inputState;
         
-        var args = new UpdateArgs {
-            MousePosition = GlobalProps.MousePosition,
-            Global = GlobalProps
-        };
+        var args = new UpdateArgs(
+            mousePosition: GlobalProps.MousePosition,
+            updateFlags: UpdateArgs.Flags.Visible,
+            global: GlobalProps
+        );
         
         UpdateComponent(_view, null, ref args, false);
     }
@@ -79,7 +82,7 @@ static class UIManager {
             mousePos = null;
         }
 
-        var updateArgs = args with { MousePosition = mousePos };
+        var updateArgs = new UpdateArgs(mousePos, args.UpdateFlags.ClearFlagIf(UpdateArgs.Flags.Visible, !component.Visible),args.Global);
         component.Update(ref updateArgs);
         if (parentBoundsRefreshed || component.IsLayoutDirty) {
             component.RefreshBounds(parent?.BoundingBox ?? new Rectangle(0, 0, Configuration.ScreenWidth, Configuration.ScreenHeight));
@@ -225,15 +228,50 @@ static class UIManager {
 
     private record struct ZIndexEntry(InterfaceComponent Component, Vector2 GlobalLocation);
     
-    public struct UpdateArgs {
-        public required Vector2? MousePosition { get; init; }
+    [StructLayout(LayoutKind.Auto)]
+    public readonly record struct UpdateArgs {
+        public readonly Vector2? MousePosition;
 
-        public required GlobalProps Global { get; init; }
+        public readonly Flags UpdateFlags;
+
+        public readonly GlobalProps Global;
+
+        public UpdateArgs(Vector2? mousePosition, Flags updateFlags, GlobalProps global) {
+            MousePosition = mousePosition;
+            UpdateFlags = updateFlags;
+            Global = global;
+        }
+
+        public bool ComponentVisible => UpdateFlags.HasFlag(Flags.Visible);
 
         public class GlobalProps {
             public bool MouseInBounds { get; set; }
             public Vector2 MousePosition => InputState.GetMousePosition();
             public InputManager.InputState InputState { get; set; } = null!;
         }
+
+        [Flags]
+        public enum Flags: byte {
+            // Indicates if the component is visible, including parent visibility
+            Visible = 1
+        }
+    }
+}
+
+file static class Extensions {
+    public static UIManager.UpdateArgs.Flags RaiseFlagIf(this UIManager.UpdateArgs.Flags source, UIManager.UpdateArgs.Flags flag, bool condition) {
+        if (condition) {
+            return source | flag;
+        }
+
+        return source;
+    }
+    
+    public static UIManager.UpdateArgs.Flags ClearFlagIf(this UIManager.UpdateArgs.Flags source, UIManager.UpdateArgs.Flags flag, bool condition) {
+        if (condition) {
+            return source & ~flag;
+        }
+
+        return source;
     }
 }

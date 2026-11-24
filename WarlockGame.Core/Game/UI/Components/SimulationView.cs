@@ -22,7 +22,7 @@ sealed class SimulationView : InterfaceComponent {
     
     private const int HpBarVerticalOffset = 30;
     private const int HpBarWidth = 80;
-    private const int HpBarHeight = 3;
+    private const int HpBarHeight = 5;
 
     private readonly int _scrollBoundaryWidthTop;
     private readonly int _scrollBoundaryWidthBottom;
@@ -245,7 +245,7 @@ sealed class SimulationView : InterfaceComponent {
             }
         }
 
-        var playerColor = PlayerManager.GetPlayer(warlock.ForceId ?? -1)?.Color ?? Color.White;
+        var playerColor = PlayerManager.GetPlayerByForceId(warlock.ForceId ?? -1)?.Color ?? Color.White;
         spriteBatch.Draw(Art.WarlockGlow, warlock.Position + location - new Vector2(138f/4), null, playerColor * opacity, 0, Vector2.Zero, new Vector2(0.5f, 0.5f), SpriteEffects.None, 0);
         warlock.Sprite.Draw(spriteBatch, warlock.Position + location, new Angle(warlock.Orientation), opacity: opacity);
         DrawHealthBar(warlock, opacity, location, spriteBatch);
@@ -255,7 +255,11 @@ sealed class SimulationView : InterfaceComponent {
         float filledProportion = warlock.Health / warlock.MaxHealth;
 
         var filledTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-        filledTexture.SetData([Color.Lerp(Color.Red * opacity, Color.Green * opacity, filledProportion)]);
+        if (Configuration.ColorblindMode) {
+            filledTexture.SetData([Color.Lerp(Color.Gray * opacity, Color.Blue * opacity, filledProportion)]);
+        } else {
+            filledTexture.SetData([Color.Lerp(Color.Red * opacity, Color.Green * opacity, filledProportion)]);
+        }
 
         var unfilledTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
         unfilledTexture.SetData([Color.Black * opacity]);

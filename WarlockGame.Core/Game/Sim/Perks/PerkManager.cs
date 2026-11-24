@@ -32,6 +32,7 @@ class PerkManager {
         AddPerk(new PermanentDamageBoostPerk());
         AddPerk(new PowerFromDamagePerk());
         AddPerk(new ExplodeOnHitPerk());
+        AddPerk(new AgilityPerk());
     }
 
     public Perk[] GetAvailablePerks(int forceId) {

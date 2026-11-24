@@ -4,10 +4,10 @@ using WarlockGame.Core.Game.Sim.Buffs;
 namespace WarlockGame.Core.Game.Sim.Perks;
 
 class PermanentRegenerationPerk : PermanentBuffPerk {
-    private const float RegenAmountPerSecond = 3.5f;
+    private const float RegenAmountPerSecond = 3f;
     private const int DamageDisableTime = 5;
     
-    public PermanentRegenerationPerk() 
+    public PermanentRegenerationPerk()
         : base(
             id: 3,
             name: "Permanent Regeneration",
@@ -15,6 +15,6 @@ class PermanentRegenerationPerk : PermanentBuffPerk {
             texture: Art.HealIcon) { }
 
     protected override Buff CreateBuff(Simulation _) {
-        return new Regeneration(regenAmount: RegenAmountPerSecond/60, duration: null, damageDisableTime: SimTime.OfSeconds(DamageDisableTime));
+        return new Regeneration(regenAmount: RegenAmountPerSecond/60, duration: null, damageCooldown: SimTime.OfSeconds(DamageDisableTime));
     }
 }

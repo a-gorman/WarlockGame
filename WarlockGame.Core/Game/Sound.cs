@@ -13,6 +13,8 @@ namespace WarlockGame.Core.Game
 		public static GameSound FireHit = null!;
 		public static GameSound FireBallCast = null!;
 		public static GameSound FireSprayCast = null!;
+		public static GameSound WindwallLoop = null!;
+		public static GameSound Swap = null!;
 
 		public static void Load(ContentManager content)
 		{
@@ -20,28 +22,29 @@ namespace WarlockGame.Core.Game
 			FireHit = new GameSound(content.Load<SoundEffect>("Audio/fire_spell_hit_1"));
 			FireBallCast = new GameSound(content.Load<SoundEffect>("Audio/fire_spell_hit_6"));
 			FireSprayCast = new GameSound(content.Load<SoundEffect>("Audio/fire_spell_shoot_9_edited"));
-			None = new GameSound(null!) { Disabled = true };
+			FireSprayCast = new GameSound(content.Load<SoundEffect>("Audio/fire_spell_shoot_9_edited"));
+			Swap = new GameSound(content.Load<SoundEffect>("Audio/Effects/Portal_Opening_Sound_40"));
+			WindwallLoop = new GameSound(content.Load<SoundEffect>("Audio/Effects/wind_spell_loop_3"), volume: 0.5f);
+			None = new GameSound(null!);
 		}
 	}
 	
-	public class GameSound(SoundEffect soundEffect) {
-		public bool Disabled { get; set; } = false;
-		
+	public class GameSound(SoundEffect? soundEffect, float volume = 1f) {
 		public void Play() {
-			if(!Disabled && !(Configuration.MuteWhenNotFocused && !WarlockGame.Instance.IsActive))
-				soundEffect.Play(volume: Configuration.Volume, 0f, 0f);
+			if(soundEffect != null && !(Configuration.MuteWhenNotFocused && !WarlockGame.Instance.IsActive))
+				soundEffect.Play(volume: Configuration.Volume * volume, 0f, 0f);
 		}
 		
 		public void Play(Vector2 location) {
-			if(!Disabled && WarlockGame.Instance.IsPointOnScreen(location) 
+			if(soundEffect != null && WarlockGame.Instance.IsPointOnScreen(location) 
 			             && !(Configuration.MuteWhenNotFocused && !WarlockGame.Instance.IsActive))
-				soundEffect.Play(volume: Configuration.Volume, 0f, 0f);
+				soundEffect.Play(volume: Configuration.Volume * volume, 0f, 0f);
 		}
 		
 		public void Play(Vector2 location, float radius) {
-			if(!Disabled && WarlockGame.Instance.IsPointWithinDistanceOfScreen(location, radius) 
-			             && !(Configuration.MuteWhenNotFocused && !WarlockGame.Instance.IsActive))
-				soundEffect.Play(volume: Configuration.Volume, 0f, 0f);
+			if(soundEffect != null && WarlockGame.Instance.IsPointWithinDistanceOfScreen(location, radius) 
+			                        && !(Configuration.MuteWhenNotFocused && !WarlockGame.Instance.IsActive))
+				soundEffect.Play(volume: Configuration.Volume * volume, 0f, 0f);
 		}
 	}
 }

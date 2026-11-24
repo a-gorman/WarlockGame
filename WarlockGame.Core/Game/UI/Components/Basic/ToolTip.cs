@@ -20,12 +20,12 @@ class ToolTip: InterfaceComponent {
     }
 
     protected override void OnUpdate(in UIManager.UpdateArgs args) {
-        if (Visible && _toolTipDisplayed && args.MousePosition == null) {
+        if (args.ComponentVisible && _toolTipDisplayed && args.MousePosition == null) {
             _toolTipDisplayed = false;
             _wrapper.Disabled = true;
         }
 
-        if (!Visible || !_toolTipDisplayed && args.MousePosition != null) {
+        if (!args.ComponentVisible || !_toolTipDisplayed && args.MousePosition != null) {
             _toolTipDisplayed = true;
             _wrapper.Disabled = false;
         }

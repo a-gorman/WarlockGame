@@ -1,6 +1,6 @@
 namespace WarlockGame.Core.Game.Sim.Rule;
 
-public class PlayerStatus(int lives) {
+public class ForceStatus(int lives) {
     public int Lives = lives;
     public bool ChoosingPerk = false;
 }

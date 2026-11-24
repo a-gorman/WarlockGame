@@ -26,7 +26,6 @@ namespace WarlockGame.Core.Game.Graphics
 
 		public static Texture2D FlameStrike { get; private set; } = null!;
 
-		public static Texture2D Glow { get; private set; } = null!;
 		public static Texture2D Pixel { get; private set; } = null!;		// a single white pixel
 
 		public static SpriteFont Font { get; private set; } = null!;
@@ -52,6 +51,7 @@ namespace WarlockGame.Core.Game.Graphics
 		public static Texture2D ReducedBoundaryDamageIcon { get; set; } = null!;
 		public static Texture2D ReducedAllDamageIcon { get; set; } = null!;
 		public static Texture2D ExplodeOnDamageIcon { get; set; } = null!;
+		public static Texture2D AgilityIcon { get; set; } = null!;
 		public static Texture2D FireSprayIcon { get; set; } = null!;
 		public static Texture2D TeleportIcon { get; set; } = null!;
 		public static Texture2D SwapIcon { get; set; } = null!;
@@ -65,26 +65,24 @@ namespace WarlockGame.Core.Game.Graphics
 
 		public static void Load(ContentManager content)
 		{
-			Warlock = content.Load<Texture2D>("Art/WizardGuyGreen");
-			Ghost = content.Load<Texture2D>("Art/tiny ghost");
+			Warlock = content.Load<Texture2D>("Art/Entities/WizardGuyGreen");
+			Ghost = content.Load<Texture2D>("Art/Entities/tiny_ghost");
 			WarlockGlow = content.Load<Texture2D>("Art/bubbles_005");
 			
 			Background = content.Load<Texture2D>("Art/Textures/Grass1_Color");
 			
-			Lightning = content.Load<Texture2D>("Art/Lightning");
+			Lightning = content.Load<Texture2D>("Art/Effects/Lightning");
 
 			Pointer = content.Load<Texture2D>("Art/Pointer");
-			SparkJumpExpand = content.Load<Texture2D>("Art/particle-fx_Eletric_Expansion");
-			SparkJumpTravel = content.Load<Texture2D>("Art/particle-fx_Eletric_A_Sheet");
+			SparkJumpExpand = content.Load<Texture2D>("Art/Effects/particle-fx_Eletric_Expansion");
+			SparkJumpTravel = content.Load<Texture2D>("Art/Effects/particle-fx_Eletric_A_Sheet");
 
-			GraveTickExplosion = content.Load<Texture2D>("Art/Power_Ball");
+			GraveTickExplosion = content.Load<Texture2D>("Art/Projectiles/Power_Ball");
 			BurstEffect = content.Load<Texture2D>("Art/Effects/symmetrical_impact_003_large_orange");
 			SwapEffect = content.Load<Texture2D>("Art/Effects/retro_impact_effect_pack_swap");
 			ExplodeOnDamageEffect = content.Load<Texture2D>("Art/Effects/symmetrical_impact_004_large_blue");
 			
-			Glow = content.Load<Texture2D>("Art/Glow");
-
-			FlameStrike = content.Load<Texture2D>("Art/flame_strike");
+			FlameStrike = content.Load<Texture2D>("Art/Effects/flame_strike");
 
 			Pixel = new Texture2D(Warlock.GraphicsDevice, 1, 1);
 			Pixel.SetData(new[] { Color.White });
@@ -124,20 +122,25 @@ namespace WarlockGame.Core.Game.Graphics
 			ReducedBoundaryDamageIcon = LoadIcon(content, "rpg_skill_42");
 			ReducedAllDamageIcon = LoadIcon(content, "priest_skill_33");
 			ExplodeOnDamageIcon = LoadIcon(content, "cryomancer_32");
+			AgilityIcon = LoadIcon(content, "rpg-berserker-icons-21");
 		}
 
 		private static void LoadProjectiles(ContentManager content) {
-			Fireball = content.Load<Texture2D>("Art/Fireball");
-			PoisonBall = content.Load<Texture2D>("Art/Poison_Ball");
-			EnergySpark = content.Load<Texture2D>("Art/Energy_Spark");
-			PowerBall = content.Load<Texture2D>("Art/Power_Ball");
-			Triple = content.Load<Texture2D>("Art/Triple");
-			BraveTickProjectile = content.Load<Texture2D>("Art/Projectiles/pj3_death_wave_large_black");
-			SwapProjectile = content.Load<Texture2D>("Art/Projectiles/pj3_magic_spike_large_green");
+			Fireball = LoadProjectile(content, "Fireball");
+			PoisonBall = LoadProjectile(content, "Poison_Ball");
+			EnergySpark = LoadProjectile(content, "Energy_Spark");
+			PowerBall = LoadProjectile(content, "Power_Ball");
+			Triple = LoadProjectile(content, "Triple");
+			BraveTickProjectile = LoadProjectile(content, "pj3_death_wave_large_black");
+			SwapProjectile = LoadProjectile(content, "pj3_magic_spike_large_green");
 		}
 		
 		private static Texture2D LoadIcon(ContentManager content, string iconName) {
 			return content.Load<Texture2D>($"Art/Icons/{iconName}");
+		}
+		
+		private static Texture2D LoadProjectile(ContentManager content, string projectileName) {
+			return content.Load<Texture2D>($"Art/Projectiles/{projectileName}");
 		}
 		
 		public static Texture2D LoadTexture(string assetName)

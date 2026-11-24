@@ -2,7 +2,7 @@ using WarlockGame.Core.Game.Sim.Entities;
 
 namespace WarlockGame.Core.Game.Sim.Buffs;
 
-class Invisibility : Buff {
+sealed class Invisibility : Buff {
     public float Visibility {
         get;
         set => field = float.Clamp(value, 0, 1);

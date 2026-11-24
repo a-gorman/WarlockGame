@@ -1,3 +1,4 @@
+using System;
 using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Sim.Entities.Behaviors;
@@ -6,6 +7,8 @@ class Friction: Behavior {
     private readonly float _a;
     private readonly float _b;
     private readonly float _c;
+    
+    public Func<Entity, bool>? Condition { get; init; }
 
     // a*v^2 + b*v + c
     public Friction(float a = 0f, float b = 0f, float c = 0f) {
@@ -15,6 +18,10 @@ class Friction: Behavior {
     }
 
     public override void Update(Entity entity) {
+        if (Condition != null && !Condition.Invoke(entity)) {
+            return;
+        }
+        
         var frictionMagnitude = _a * entity.Velocity.LengthSquared() + _b * entity.Velocity.Length() + _c;
 
         if (frictionMagnitude.Squared() >= entity.Velocity.LengthSquared()) {

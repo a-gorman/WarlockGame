@@ -12,8 +12,10 @@ namespace WarlockGame.Core.Game.Sim.Entities
 		public int Id { get; set; }
 		public int? ForceId { get; set; }
 		public ISprite Sprite { get; }
-		public CollisionType CollisionType { get; }
-		public bool BlocksProjectiles { get; set; }
+		public CollisionShape CollisionShape { get; }
+		public CollisionFlags CollisionFlags { get; set; } = CollisionFlags.EntityDefault;
+
+		public bool BlocksProjectiles => CollisionFlags.HasFlag(CollisionFlags.BlocksProjectiles);
 		// used for rectangular collision detection
 		public BoundingRectangle BoundingRectangle { get; private set; }
 		// used for rotated rectangle collision detection
@@ -36,7 +38,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
 		public Vector2 Position {
 			get => BoundingRectangle.Center;
 			set {
-				if (CollisionType == CollisionType.OrientedRectangle) {
+				if (CollisionShape == CollisionShape.OrientedRectangle) {
 					var translation = Matrix3x2.CreateTranslation(value - Position);
 					OrientedRectangle = OrientedRectangle.Transform(OrientedRectangle, ref translation);
 				}
@@ -50,7 +52,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
 			get;
 			set {
 				var angle = value % float.Tau;
-				if (CollisionType == CollisionType.OrientedRectangle) {
+				if (CollisionShape == CollisionShape.OrientedRectangle) {
 					var rotation = Matrix3x2.CreateRotationZ(angle - field);
 					OrientedRectangle = OrientedRectangle.Transform(OrientedRectangle, ref rotation);
 					BoundingRectangle = OrientedRectangle.BoundingRectangle;
@@ -64,7 +66,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
 		/// </summary>
 		public Entity(ISprite sprite, Vector2 position, float radius = 20) {
 			Sprite = sprite;
-			CollisionType = CollisionType.Circle;
+			CollisionShape = CollisionShape.Circle;
 			Radius = radius;
 			BoundingRectangle = new CircleF(position, radius).BoundingRectangle;
 		}
@@ -76,7 +78,7 @@ namespace WarlockGame.Core.Game.Sim.Entities
 			Sprite = sprite;
 			Orientation = orientation;
 			
-			CollisionType = CollisionType.OrientedRectangle;
+			CollisionShape = CollisionShape.OrientedRectangle;
 			OrientedRectangle = new OrientedRectangle(center, new SizeF(width, height), Matrix3x2.CreateRotationZ(orientation));
 			BoundingRectangle = OrientedRectangle.BoundingRectangle;
 		}
@@ -129,8 +131,19 @@ namespace WarlockGame.Core.Game.Sim.Entities
 	}
 
 	delegate bool CollisionFilter(Entity source, Entity other);
+
+	[Flags]
+	internal enum CollisionFlags {
+		None = 0,
+		BlocksProjectiles = 1,
+		
+		
+		ProjectileDefault = BlocksProjectiles,
+		WarlockDefault = BlocksProjectiles,
+		EntityDefault = None,
+	}
 	
-	enum CollisionType {
+	enum CollisionShape {
 		None,
 		Circle,
 		Rectangle,

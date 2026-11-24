@@ -140,8 +140,9 @@ class SpellFactory {
         );
     }
 
-    public SpellDefinition WindShield() {
+    public SpellDefinition WindWall() {
         var duration = SimTime.OfSeconds(6);
+        var radius = 200;
         return new SelfCastSpell(
             id: 5,
             name: "Wind Shield",
@@ -149,6 +150,7 @@ class SpellFactory {
             spellIcon: Art.WindWallIcon,
             cooldownTime: SimTime.OfSeconds(16),
             effects: [
+                new SoundComponent(Sound.WindwallLoop, radius: radius + 50),
                 new LocationEffectComponent((spellContext, location) =>
                     new ContinuousSpellEffect(
                         context: spellContext,
@@ -158,7 +160,7 @@ class SpellFactory {
                         components: [
                             new LocationAreaOfEffect {
                                 Shape = new Doughnut {
-                                    Radius = 200,
+                                    Radius = radius,
                                     Width = 30,
                                     IgnoreCaster = false,
                                     FalloffFactor = Falloff.None
@@ -197,7 +199,7 @@ class SpellFactory {
                             Shape = new CircleTarget(AoeSelectors.Warlocks, innerRadius: 8, outerRadius: 20),
                             Components = [
                                 new DamageComponent { Damage = damage },
-                                new ApplyBuffComponent(_ => new Buff(Buff.BuffType.Slow, SimTime.OfSeconds(3.5f), [new SlowComponent(slowFactor)])),
+                                new ApplyBuffComponent(_ => new Buff(Buff.BuffType.Slow, SimTime.OfSeconds(3.5f), [new SpeedBuffComponent(slowFactor, 1f)])),
                                 new AoeEntityComponent((spellContext, targetInfo) => {
                                         var imageMoveAngle = float.Pi / 6;
                                         return [CreateImage(imageMoveAngle), CreateImage(-imageMoveAngle)];
@@ -208,7 +210,7 @@ class SpellFactory {
 
                                             var image = new Entity(new Sprite(Art.Ghost, scale: 2f),
                                                 targetInfo.TargetPosition, radius: 16) {
-                                                BlocksProjectiles = true,
+                                                CollisionFlags = CollisionFlags.BlocksProjectiles,
                                                 ForceId = spellContext.Caster.ForceId
                                             };
                                             
@@ -261,8 +263,8 @@ class SpellFactory {
                             new TimedLife(SimTime.OfSeconds(4)),
                             new OneCollisionPerEntity { Cooldown = SimTime.OfTicks(5) },
                             new SimpleCollisionFilter(SimpleCollisionFilter.IgnoreFriendlies),
-                            new DeflectProjectiles {
-                                DeflectionFunc = DeflectProjectiles.OrientedRectangleReflection
+                            new DeflectProjectilesBehavior {
+                                DeflectionFunc = DeflectProjectilesBehavior.OrientedRectangleReflection
                             }
                         ));
                 }
@@ -365,7 +367,13 @@ class SpellFactory {
             castRange: 700,
             effects: [
                 new LocationEffectComponent(location =>
-                    new CircleTimingIndicator(new CircleF(location, radius), SimTime.OfSeconds(delaySeconds))),
+                    new CircleTimingIndicator(
+                        new CircleF(location, radius), 
+                        duration: SimTime.OfSeconds(delaySeconds),
+                        outerColor: Color.White,
+                        innerColor: Configuration.ColorblindMode ? Color.MediumVioletRed : Color.OrangeRed,
+                        outerThickness: 2, 
+                        innerThickness: 2)),
                 new DelayedLocationComponent(
                     SimTime.OfSeconds(delaySeconds),
                     new LocationAreaOfEffect {
@@ -451,7 +459,7 @@ class SpellFactory {
         );
     }
 
-    // Not fully implemented
+    // Not implemented
     public SpellDefinition Shockwave() {
         return new DirectionalSpell(
             id: 13,
@@ -471,7 +479,7 @@ class SpellFactory {
     }
 
     public SpellDefinition LightningJump() {
-        var damage = 10;
+        var damage = 15;
         var castRange = 750;
         var jumpTime = 0.75f;
         var travelSprite = Sprite.FromGridSpriteSheet(Art.SparkJumpTravel, 3, 3, SimTime.OfSeconds(0.5f), scale: 2.3f);
@@ -529,7 +537,8 @@ class SpellFactory {
 
     public SpellDefinition Swap() {
         var maxDistance = 550;
-
+        var radius = 180;
+        
         return new DirectionalSpell(
             id: 15,
             name: "Swap",
@@ -541,35 +550,40 @@ class SpellFactory {
                     sprite: Sprite.FromGridSpriteSheet(Art.SwapProjectile, 8, 1, SimTime.OfTicks(30), scale: 1.4f),
                     maxRange: maxDistance,
                     speed: 11,
+                    collisionFlags: CollisionFlags.ProjectileDefault & ~CollisionFlags.BlocksProjectiles,
                     effects: [
-                        new LocationAreaOfEffect {
-                            Shape = new CircleTarget(AoeSelectors.AllIgnoreCaster, radius: 220),
-                            Components = [ new SwapComponent() ]
-                        },
+                        new SoundComponent(Sound.Swap, radius),
+                        new DelayedLocationComponent(SimTime.OfMillis(275), [
+                            new LocationAreaOfEffect {
+                                Shape = new CircleTarget(AoeSelectors.AllIgnoreCaster, radius: radius),
+                                Components = [ new SwapComponent() ]
+                            }
+                        ]),
                         new LocationEffectComponent(CreateHitEffect)
-                    ]
-                    // Disabled until order of effects can be assured. Right now effects go swap -> caster effect
-                    // casterEffects: [ new LocationEffectComponent(CreateHitEffect) ]
+                    ],
+                    casterEffects: [ new LocationEffectComponent(CreateHitEffect) ]
                 )
         ]);
 
-        static SpriteEffect CreateHitEffect(Vector2 x) =>
-            new SpriteEffect(Sprite.FromGridSpriteSheet(Art.SwapEffect, 9, 1,
+        static SpriteEffect CreateHitEffect(Vector2 x) {
+            return new SpriteEffect(Sprite.FromGridSpriteSheet(Art.SwapEffect, 9, 1,
                     SimTime.OfSeconds(0.5f), scale: 3.3f, expiredSpriteBehavior: ExpiredSpriteBehavior.Invisible),
                 position: x,
                 duration: SimTime.OfSeconds(0.5f));
+        }
     }
 
     public SpellDefinition GraveTick() {
         var damage = 6;
-        var timeBetweenTicks = SimTime.OfSeconds(2);
-        var duration = SimTime.OfSeconds(10);
+        var timeBetweenTicks = SimTime.OfSeconds(3);
+        var duration = SimTime.OfSeconds(15);
         var shareRadius = 240;
+        var durationOfPulse = SimTime.OfSeconds(1.5f);
         
         return new DirectionalSpell(
             id: 16,
             name: "Grave Tick",
-            description: $"Curses the victim to pulse with death energy. Every {timeBetweenTicks.Seconds:0.#} seconds, the target takes {damage} damage. The damage is divided between all targets within {shareRadius} of the target. Lasts {duration.Seconds:0.#} seconds.",
+            description: $"Curses the victim to pulse with death energy. Every {timeBetweenTicks.Seconds:0.#} seconds, the target takes {damage} damage and pulls nearby projectiles towards themselves. The damage is divided between all targets within {shareRadius} of the target. Lasts {duration.Seconds:0.#} seconds.",
             spellIcon: Art.GraveTickIcon,
             cooldownTime: SimTime.OfSeconds(10),
             effects: [
@@ -592,16 +606,28 @@ class SpellFactory {
                                                 components: [
                                                     new LocationEffectComponent(x => 
                                                         new SpriteEffect(
-                                                            sprite: Sprite.FromGridSpriteSheet(Art.GraveTickExplosion, 4, 4, SimTime.OfSeconds(0.5f), 4.5f, opacity: 0.55f),
+                                                            sprite: Sprite.FromGridSpriteSheet(Art.GraveTickExplosion, 4, 4, durationOfPulse, 4.5f, opacity: 0.55f),
                                                             position: x,
-                                                            onUpdate: static (sprite, transformId, timeElapsed) => { sprite.ChangeTransformation(transformId, 3f/30f * timeElapsed.Ticks); },
-                                                            duration: SimTime.OfSeconds(0.5f))),
-                                                    new LocationAreaOfEffect {
-                                                        Shape = new CircleTarget(AoeSelectors.Warlocks, shareRadius),
-                                                        Components = [
-                                                            new DamageComponent { Damage = damage, SelfFactor = 0, Distributed = true }
-                                                        ]
-                                                    }
+                                                            onUpdate: (sprite, transformId, timeElapsed) => { sprite.ChangeTransformation(transformId, 3f/durationOfPulse.Ticks * timeElapsed.Ticks); },
+                                                            duration: durationOfPulse),
+                                                        x => new ContinuousSpellEffect(context, 
+                                                            location: x, 
+                                                            duration: durationOfPulse,
+                                                            components: [
+                                                                new LocationAreaOfEffect {
+                                                                    Shape = new CircleTarget(AoeSelectors.Warlocks, shareRadius) { FalloffFactor = Falloff.None },
+                                                                    Components = [
+                                                                        new DamageComponent { Damage = (float)damage / durationOfPulse.Ticks, SelfFactor = 0, Distributed = true },
+                                                                    ]
+                                                                },
+                                                                new LocationAreaOfEffect {
+                                                                    Shape = new CircleTarget(AoeSelectors.AllIgnoreCaster, shareRadius) { FalloffFactor = Falloff.None },
+                                                                    Components = [
+                                                                        new PushComponent { Force = -0.5f, SelfFactor = 0, ProjectileFactor = 1 }
+                                                                    ]
+                                                                }
+                                                            ])
+                                                    )
                                                 ])
                                         ]);
                                 })
@@ -612,7 +638,7 @@ class SpellFactory {
             ]);
     }
 
-    // Not fully implemented
+    // Not implemented
     public SpellDefinition Redirection() {
         return new DirectionalSpell(
             id: 17,
@@ -642,6 +668,7 @@ class SpellFactory {
             ]);
     }
     
+    // Not implemented
     public SpellDefinition Snowball() {
         return new DirectionalSpell(
             id: 18,

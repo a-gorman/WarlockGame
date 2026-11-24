@@ -39,6 +39,7 @@ class Simulation {
             field = value;
         }
     }
+    
     public static Vector2 ArenaCenter { get; private set; }
 
     public Simulation() {
@@ -80,10 +81,10 @@ class Simulation {
         };
     }
     
-    public void Restart(int seed) {
+    public void Restart(int seed, int forces) {
         ClearGameState();
         Random = new Random(seed);
-        Forces = PlayerManager.Players.Select(x => new Force { Id = x.Id, Name = x.Name }).ToArray();
+        Forces = Enumerable.Range(1, forces).Select(x => new Force { Id = x }).ToArray();
         GameRules.Reset();
         
         foreach (var force in Forces) {
@@ -109,22 +110,33 @@ class Simulation {
 
     private void ProcessPlayerAction(IPlayerAction action) {
         Logger.Debug($"Issuing {action.GetSerializerType()} command for player {action.PlayerId}", Logger.LogType.PlayerAction | Logger.LogType.Simulation);
+        
+        // Violation: Simulation reaching outside simulation
+        var player = PlayerManager.GetPlayer(action.PlayerId);
+        if (player?.ForceId == null) {
+            Logger.Warning("Tried to process player command for player without a force that does not exist! Skipping...", Logger.LogType.PlayerAction | Logger.LogType.Simulation);
+            return;
+        }
+
+        var forceId = player.ForceId.Value;
+        
         switch (action) {
             case MoveAction move:
-                EntityManager.GetWarlockByForceId(move.PlayerId)
+                EntityManager.GetWarlockByForceId(forceId)
                     ?.GiveOrder(x => new DestinationMoveOrder(move.Location, x));
                 break;
             case CastAction cast:
-                EntityManager.GetWarlockByForceId(cast.PlayerId)
+                EntityManager.GetWarlockByForceId(forceId)
                     ?.GiveOrder(x => new CastOrder(cast.SpellId, cast.CastVector, x, cast.Type.ToSimType()));
                 break;
             case SelectPerk selectPerk:
-                var perk = PerkManager.ChoosePerk(selectPerk.PlayerId, selectPerk.PerkId);
-                var playerName = PlayerManager.GetPlayer(selectPerk.PlayerId)?.Name ?? "INVALID";
+                
+                var perk = PerkManager.ChoosePerk(forceId, selectPerk.PerkId);
+                var playerName = player.Name;
                 MessageDisplay.Display($"{playerName} picked the {perk?.Name} perk!");
                 break;
             case SelectSpells selectSpells:
-                var force = Forces.FirstOrDefault(x => x.Id == selectSpells.PlayerId);
+                var force = Forces.FirstOrDefault(x => x.Id == forceId);
 
                 if (force == null) {
                     Logger.Error($"Tried choosing spells for invalid force! {selectSpells.PlayerId}", Logger.LogType.Simulation | Logger.LogType.PlayerAction);
@@ -156,8 +168,6 @@ class Simulation {
             var spawnPos = ArenaSize / 2 + new Vector2(0, 400).Rotated(radiansPerPlayer * i);
             var warlock = new Warlock(x.Id, spawnPos, this);
 
-            // warlock.Sprite.Color = PlayerManager.GetPlayer(x.Id)!.Color;
-        
             return warlock;
         });
         foreach (var warlock in warlocks) {
@@ -178,7 +188,6 @@ class Simulation {
 
     public class Force {
         public required int Id { get; init; }
-        public required string Name { get; init; }
         public bool AreSpellsChosen { get; set; }
     }
 }

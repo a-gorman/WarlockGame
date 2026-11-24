@@ -9,7 +9,7 @@ using WarlockGame.Core.Game.Util;
 
 namespace WarlockGame.Core.Game.Sim.Entities;
 
-class Projectile : Entity {
+sealed class Projectile : Entity {
     private static readonly Random _rand = new();
     private readonly IReadOnlyList<ILocationSpellComponent> _effects;
     private readonly IReadOnlyList<ISelfSpellComponent> _casterEffects;
@@ -23,13 +23,14 @@ class Projectile : Entity {
         SpellContext context,
         Sprite sprite,
         IReadOnlyList<ILocationSpellComponent> effects,
-        IReadOnlyList<ISelfSpellComponent> casterEffects) : 
+        IReadOnlyList<ISelfSpellComponent> casterEffects,
+        CollisionFlags collisionFlags) : 
         base(sprite, position, radius: radius) {
         Context = context;
         Position = position;
         Velocity = velocity;
         Orientation = Extensions.ToAngle(Velocity);
-        BlocksProjectiles = true;
+        CollisionFlags = collisionFlags;
         ForceId = context.Caster.ForceId;
         _effects = effects;
         _casterEffects = casterEffects;
@@ -51,8 +52,7 @@ class Projectile : Entity {
         Position += Velocity;
 
         // delete projectiles that go off-screen
-        if (!new RectangleF(new Vector2(0), Simulation.ArenaSize).Contains(Position))
-        {
+        if (!new RectangleF(new Vector2(0), Simulation.ArenaSize).Contains(Position)) {
             IsExpired = true;
         }
 
